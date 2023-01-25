@@ -17,3 +17,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 
 - Test A
 - Test B
+
+# Screenshots/Demos
+
+Please include screenshots, gifs, or demos of your change, if applicable (ie. UI, runtime visual bug fixes, etc).
