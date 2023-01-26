@@ -8,12 +8,11 @@ public class AssetController : MonoBehaviour {
     private MapEditorManager Editor;
 
     void Start() {
-        GameObject MapEditorManager = GameObject.FindGameObjectWithTag("MapEditorManager");
-        Editor = MapEditorManager.GetComponent<MapEditorManager>();
+        _editor = GameObject.FindGameObjectWithTag("MapEditorManager").GetComponent<MapEditorManager>();
     }
 
     public void ButtonClicked() {
         Clicked = true;
-        Editor.CurrentButtonPressed = Id;
+        _editor.CurrentButtonPressed = Id;
     }
 }
