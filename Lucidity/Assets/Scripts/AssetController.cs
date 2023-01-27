@@ -5,7 +5,7 @@ using UnityEngine;
 public class AssetController : MonoBehaviour {
     public int Id;
     public bool Clicked = false;
-    private MapEditorManager Editor;
+    private MapEditorManager _editor;
 
     void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager").GetComponent<MapEditorManager>();
