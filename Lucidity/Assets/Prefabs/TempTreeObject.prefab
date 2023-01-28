@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 5643009079545502605}
   - component: {fileID: 5643009079545502604}
   - component: {fileID: 5643009079545502607}
-  m_Layer: 5
+  - component: {fileID: 5470440310217384789}
+  m_Layer: 6
   m_Name: TempTreeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,3 +103,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5470440310217384789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5643009079545502601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c073312a2ce1ab049ac7756b6a299819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scanRadius: {x: 1, y: 1, z: 0}
+  filterMask:
+    serializedVersion: 2
+    m_Bits: 64
+  originalMaterial: {fileID: 0}
+  errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
