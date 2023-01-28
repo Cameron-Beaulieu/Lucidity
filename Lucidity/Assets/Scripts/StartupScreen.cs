@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartupScreen : MonoBehaviour
-{
+public class StartupScreen : MonoBehaviour {
     [SerializeField] private Button newMapBtn;
     [SerializeField] private Button loadMapBtn;
     // Start is called before the first frame update
