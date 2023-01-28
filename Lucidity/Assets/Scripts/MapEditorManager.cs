@@ -5,11 +5,11 @@ using UnityEngine;
 public class MapEditorManager : MonoBehaviour {
     public List<AssetController> AssetButtons;
     public List<GameObject> AssetPrefabs;
+    public List<GameObject> AssetImage;
     public int CurrentButtonPressed;
 
     private void Update() {
-        Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector2 worldPosition = getMousePosition();
 
         if (Input.GetMouseButtonDown(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
@@ -17,5 +17,10 @@ public class MapEditorManager : MonoBehaviour {
                         new Vector3(worldPosition.x, worldPosition.y, 0),
                         Quaternion.identity);
         }
+    }
+
+    public static Vector2 getMousePosition() {
+        Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        return Camera.main.ScreenToWorldPoint(screenPosition);
     }
 }
