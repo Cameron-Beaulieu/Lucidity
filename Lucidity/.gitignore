@@ -60,3 +60,6 @@ crashlytics-build.properties
 
 # Unity user cache
 /UserSettings/
+
+# Remove vsconfig file
+.vsconfig
