@@ -12,6 +12,7 @@ public class StartupScreen : MonoBehaviour
         newMapBtn.onClick.AddListener(NewMapClickHandler);
         loadMapBtn.onClick.AddListener(LoadMapClickHandler);
     }
+    
     public void NewMapClickHandler() {
         Debug.Log("Create new map button clicked");
     }
