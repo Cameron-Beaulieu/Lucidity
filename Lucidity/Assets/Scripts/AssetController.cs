@@ -33,7 +33,7 @@ public class AssetController : MonoBehaviour {
         _editor.CurrentButtonPressed = Id;
 
         GameObject parentContainer = GameObject.Find(
-            _editor.AssetPrefabs[_editor.CurrentButtonPressed].transform.parent.name);
+            _editor.AssetPrefabs[Id].transform.parent.name);
 
         // Un-highlight previously selected asset in "Sprites" pane
         if (_prevParentContainer != null) {
