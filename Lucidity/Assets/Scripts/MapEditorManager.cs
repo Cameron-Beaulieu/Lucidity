@@ -9,12 +9,22 @@ public class MapEditorManager : MonoBehaviour {
     public int CurrentButtonPressed;
     private LinkedList<EditorAction> _actions;
     private LinkedListNode<EditorAction> _currentAction;
+    public Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
+    private List<string> _toolKeys = new List<string>();
+
+    void Start() {
+        GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
+        foreach (GameObject tool in selectableTools) {
+            ToolStatus.Add(tool.name, false);
+            _toolKeys.Add(tool.name);
+        }
+    }
 
     private void Update() {
         Vector2 worldPosition = getMousePosition();
 
         if (Input.GetMouseButtonDown(0)
-                && AssetButtons[CurrentButtonPressed].Clicked && worldPosition.x > -5f) {
+                && AssetButtons[CurrentButtonPressed].Clicked) {
             GameObject mapObject = (GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
                         new Vector3(worldPosition.x, worldPosition.y, 0),
                         Quaternion.identity);
@@ -24,8 +34,7 @@ public class MapEditorManager : MonoBehaviour {
                     _currentAction = _actions.First;
                 } else {
                     if (_currentAction.Next != null) {
-                        // these actions can no longer be redone -- currently this errors bc we're still able to place assets on the toolbar itself
-                        // so if i click redo with an asset selected, it'll put an asset on the toolbar (adding to the Next for _currentAction) and want to destroy any objects that had been undone before
+                        // these actions can no longer be redone
                         PermanentlyDeleteActions(_currentAction.Next);
                         LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
                         while (actionToRemove != null) {
@@ -85,8 +94,6 @@ public class MapEditorManager : MonoBehaviour {
             }
         }
     }
-
-    // [1,2,3,4]
 
     public void Redo() {
         if ((_currentAction == null && _actions != null) || _currentAction.Next != null) {
@@ -148,6 +155,33 @@ public class MapEditorManager : MonoBehaviour {
              Destroy(actionToDelete.Value.getGameObject());
             }
             actionToDelete = actionToDelete.Next;
+        }
+    }
+
+    /// <summary>
+    /// Removes the asset following the cursor (if any) and deselects the brush tool button and selected sprite/terrain.
+    /// </summary>
+    public void StopPainting() {
+        ToolStatus["Brush Tool"] = false;
+        Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        foreach (GameObject button in paintButtons) {
+            if (button.GetComponent<AssetController>().Clicked) {
+                button.GetComponent<AssetController>().UnselectButton();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Changes which tool is currently being used based on user's selection.
+    /// </summary>
+    public void ChangeTools(string toolSelected) {
+        foreach (string toolKey in _toolKeys) {
+            if (toolKey != toolSelected) {
+                ToolStatus[toolKey] = false;
+            } else {
+                ToolStatus[toolKey] = true;
+            }
         }
     }
 }

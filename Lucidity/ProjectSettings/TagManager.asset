@@ -6,6 +6,8 @@ TagManager:
   tags:
   - MapEditorManager
   - AssetImage
+  - PaintButton
+  - SelectableTool
   layers:
   - Default
   - TransparentFX
