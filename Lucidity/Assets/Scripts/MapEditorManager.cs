@@ -33,7 +33,7 @@ public class MapEditorManager : MonoBehaviour {
                     _actions.AddFirst(new PaintAction(mapObject));
                     _currentAction = _actions.First;
                 } else {
-                    if (_currentAction.Next != null) {
+                    if (_currentAction != null && _currentAction.Next != null) {
                         // these actions can no longer be redone
                         PermanentlyDeleteActions(_currentAction.Next);
                         LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
@@ -41,11 +41,20 @@ public class MapEditorManager : MonoBehaviour {
                             _actions.Remove(actionToRemove);
                             actionToRemove = actionToRemove.Next;
                         }
+                        _actions.AddAfter(_currentAction, new PaintAction(mapObject));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction != null) {
+                        _actions.AddAfter(_currentAction, new PaintAction(mapObject));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction == null && _actions != null) {
+                        // there is only one action and it has been undone
+                        PermanentlyDeleteActions(_actions.First);
+                        _actions.Clear();
+                        _actions.AddFirst(new PaintAction(mapObject));
+                        _currentAction = _actions.First;
                     }
-                    _actions.AddAfter(_currentAction, new PaintAction(mapObject));
-                    _currentAction = _currentAction.Next;
                 }
-
+                Debug.Log(_actions.ToString());
         }
         // TODO: Implement other actions here
     }
