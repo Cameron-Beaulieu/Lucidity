@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PaintAction : EditorAction {
-    public PaintAction (GameObject gameObject) {
-        base.setActionType(ActionType.Paint);
-        base.setGameObject(gameObject);
+    public PaintAction (List<GameObject> relatedObjects) {
+        base.Type = ActionType.Paint;
+        base.RelatedObjects = relatedObjects;
     }
 }

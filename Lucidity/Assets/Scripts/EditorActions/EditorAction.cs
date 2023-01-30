@@ -14,23 +14,17 @@ public abstract class EditorAction {
         MoveLayer,
         RenameLayer
     }
-    private ActionType _actionType;
-    private GameObject _gameObject;
+    private ActionType _type;
+    private List<GameObject> _relatedObjects = new List<GameObject>();
 
-    public ActionType getActionType() {
-        return _actionType;
+    public ActionType Type {
+        get { return _type; }
+        set { _type = value; }
     }
 
-    public GameObject getGameObject() {
-        return _gameObject;
+    public List<GameObject> RelatedObjects {
+        get { return _relatedObjects; }
+        set { _relatedObjects = value; }
     }
-
-    public void setActionType(ActionType actionType) {
-        _actionType = actionType;
-    }
-
-    public void setGameObject(GameObject gameObject) {
-        _gameObject = gameObject;
-    } 
 
 }

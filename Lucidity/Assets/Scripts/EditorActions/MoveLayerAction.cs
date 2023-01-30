@@ -6,9 +6,9 @@ public class MoveLayerAction : EditorAction {
     private int _oldIndex;
     private int _newIndex;
 
-    public MoveLayerAction (GameObject gameObject, int oldIndex, int newIndex) {
-        base.setActionType(ActionType.MoveLayer);
-        base.setGameObject(gameObject);
+    public MoveLayerAction (List<GameObject> relatedObjects, int oldIndex, int newIndex) {
+        base.Type = ActionType.MoveLayer;
+        base.RelatedObjects = relatedObjects;
         _oldIndex = oldIndex;
         _newIndex = newIndex;
     }

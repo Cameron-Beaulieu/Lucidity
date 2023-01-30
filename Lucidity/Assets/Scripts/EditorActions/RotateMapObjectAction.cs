@@ -6,9 +6,9 @@ public class RotateMapObjectAction : EditorAction {
     private Quaternion _oldRotation;
     private Quaternion _newRotation;
 
-    public RotateMapObjectAction (GameObject gameObject, Quaternion oldRotation, Quaternion newRotation) {
-        base.setActionType(ActionType.RotateMapObject);
-        base.setGameObject(gameObject);
+    public RotateMapObjectAction (List<GameObject> relatedObjects, Quaternion oldRotation, Quaternion newRotation) {
+        base.Type = ActionType.RotateMapObject;
+        base.RelatedObjects = relatedObjects;
         _oldRotation = oldRotation;
         _newRotation = newRotation;
     }

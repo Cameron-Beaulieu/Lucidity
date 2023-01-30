@@ -6,9 +6,9 @@ public class MoveMapObjectAction : EditorAction {
     private Vector2 _oldPosition;
     private Vector2 _newPosition;
 
-    public MoveMapObjectAction (GameObject gameObject, Vector2 oldPosition, Vector2 newPosition) {
-        base.setActionType(ActionType.MoveMapObject);
-        base.setGameObject(gameObject);
+    public MoveMapObjectAction (List<GameObject> relatedObjects, Vector2 oldPosition, Vector2 newPosition) {
+        base.Type = ActionType.MoveMapObject;
+        base.RelatedObjects = relatedObjects;
         _oldPosition = oldPosition;
         _newPosition = newPosition;
     }
