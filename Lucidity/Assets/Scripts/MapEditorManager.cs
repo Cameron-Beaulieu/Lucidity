@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapEditorManager : MonoBehaviour {
     public List<AssetController> AssetButtons;
@@ -11,8 +12,12 @@ public class MapEditorManager : MonoBehaviour {
     private LinkedListNode<EditorAction> _currentAction;
     public Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
     private List<string> _toolKeys = new List<string>();
+    public InputField CountInput;
+    public int Count;
 
     void Start() {
+        Debug.Log("This should only run once");
+        Count = 1;
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
             if (tool.name == "Selection Tool") {
@@ -29,8 +34,9 @@ public class MapEditorManager : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
-            GameObject mapObject = (GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                        new Vector3(worldPosition.x, worldPosition.y, 0),
+            for (int i = 0; i < Count; i++) {
+                GameObject mapObject = (GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
+                        new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
                         Quaternion.identity);
                 if (_actions == null) {
                     _actions = new LinkedList<EditorAction>();
@@ -58,6 +64,7 @@ public class MapEditorManager : MonoBehaviour {
                         _currentAction = _actions.First;
                     }
                 }
+            }
         }
         // TODO: Implement other actions here
     }
@@ -194,6 +201,16 @@ public class MapEditorManager : MonoBehaviour {
             } else {
                 ToolStatus[toolKey] = true;
             }
+        }
+    }
+
+    public void ReadCountInput(string s) {
+        Debug.Log("ReadCountInput method");
+        Count = int.Parse(s);
+        // Restrict input to only be positive
+        if (Count < 0) {
+            Count *= -1;
+            CountInput.text = "" + Count;
         }
     }
 }
