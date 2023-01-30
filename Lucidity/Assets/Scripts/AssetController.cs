@@ -43,5 +43,18 @@ public class AssetController : MonoBehaviour {
         // Highlight asset in "Sprites" pane
         parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
         _prevParentContainer = parentContainer;
+
+        // set painting status
+        _editor.ChangeTools("Brush Tool");
+    }
+
+    /// <summary>
+    /// Unselects the associated asset button.
+    /// </summary>
+    public void UnselectButton() { 
+        Clicked = false;
+        if (_prevParentContainer != null) {
+            _prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
+        }
     }
 }
