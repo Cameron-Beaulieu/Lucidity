@@ -6,9 +6,9 @@ public class ResizeMapObjectAction : EditorAction {
     private Vector2 _oldSize;
     private Vector2 _newSize;
 
-    public ResizeMapObjectAction (GameObject gameObject, Vector2 oldSize, Vector2 newSize) {
-        base.setActionType(ActionType.RotateMapObject);
-        base.setGameObject(gameObject);
+    public ResizeMapObjectAction (List<GameObject> relatedObjects, Vector2 oldSize, Vector2 newSize) {
+        base.Type = ActionType.RotateMapObject;
+        base.RelatedObjects = relatedObjects;
         _oldSize = oldSize;
         _newSize = newSize;
     }

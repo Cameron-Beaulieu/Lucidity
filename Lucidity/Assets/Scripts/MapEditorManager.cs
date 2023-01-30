@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapEditorManager : MonoBehaviour {
     public List<AssetController> AssetButtons;
@@ -11,8 +12,11 @@ public class MapEditorManager : MonoBehaviour {
     private LinkedListNode<EditorAction> _currentAction;
     public Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
     private List<string> _toolKeys = new List<string>();
+    public InputField CountInput;
+    public int Count;
 
     void Start() {
+        Count = 1;
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
             if (tool.name == "Selection Tool") {
@@ -29,35 +33,41 @@ public class MapEditorManager : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
-            GameObject mapObject = (GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                        new Vector3(worldPosition.x, worldPosition.y, 0),
-                        Quaternion.identity);
-                if (_actions == null) {
-                    _actions = new LinkedList<EditorAction>();
-                    _actions.AddFirst(new PaintAction(mapObject));
-                    _currentAction = _actions.First;
-                } else {
-                    if (_currentAction != null && _currentAction.Next != null) {
-                        // these actions can no longer be redone
-                        PermanentlyDeleteActions(_currentAction.Next);
-                        LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
-                        while (actionToRemove != null) {
-                            _actions.Remove(actionToRemove);
-                            actionToRemove = actionToRemove.Next;
-                        }
-                        _actions.AddAfter(_currentAction, new PaintAction(mapObject));
-                        _currentAction = _currentAction.Next;
-                    } else if (_currentAction != null) {
-                        _actions.AddAfter(_currentAction, new PaintAction(mapObject));
-                        _currentAction = _currentAction.Next;
-                    } else if (_currentAction == null && _actions != null) {
-                        // there is only one action and it has been undone
-                        PermanentlyDeleteActions(_actions.First);
-                        _actions.Clear();
-                        _actions.AddFirst(new PaintAction(mapObject));
-                        _currentAction = _actions.First;
-                    }
+            List<GameObject> mapObjects = new List<GameObject>();
+            for (int i = 0; i < Count; i++) {
+                GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
+                        new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
+                        Quaternion.identity));
+                if (temp != null) {
+                    mapObjects.Add(temp);
                 }
+            }
+            if (_actions == null) {
+                    _actions = new LinkedList<EditorAction>();
+                    _actions.AddFirst(new PaintAction(mapObjects));
+                    _currentAction = _actions.First;
+            } else {
+                if (_currentAction != null && _currentAction.Next != null) {
+                    // these actions can no longer be redone
+                    PermanentlyDeleteActions(_currentAction.Next);
+                    LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
+                    while (actionToRemove != null) {
+                        _actions.Remove(actionToRemove);
+                        actionToRemove = actionToRemove.Next;
+                    }
+                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                    _currentAction = _currentAction.Next;
+                } else if (_currentAction != null) {
+                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                    _currentAction = _currentAction.Next;
+                } else if (_currentAction == null && _actions != null) {
+                    // there is only one action and it has been undone
+                    PermanentlyDeleteActions(_actions.First);
+                    _actions.Clear();
+                    _actions.AddFirst(new PaintAction(mapObjects));
+                    _currentAction = _actions.First;
+                }
+            }
         }
         // TODO: Implement other actions here
     }
@@ -70,21 +80,29 @@ public class MapEditorManager : MonoBehaviour {
     public void Undo() {
         if (_currentAction != null) {
             EditorAction actionToUndo = _currentAction.Value;
-            switch(actionToUndo.getActionType()) {
+            switch(actionToUndo.Type) {
                 case EditorAction.ActionType.Paint:
-                    actionToUndo.getGameObject().SetActive(false);
+                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            obj.SetActive(false);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
-                    actionToUndo.getGameObject().SetActive(true);
+                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            obj.SetActive(true);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.MoveMapObject:
-                    actionToUndo.getGameObject().transform.position = ((MoveMapObjectAction) actionToUndo).OldPosition;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    actionToUndo.getGameObject().transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    actionToUndo.getGameObject().transform.rotation = ((RotateMapObjectAction) actionToUndo).OldRotation;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     // TODO: Implement
@@ -118,21 +136,29 @@ public class MapEditorManager : MonoBehaviour {
             }
             
             // EditorAction actionToRedo = _currentAction.Next.Value;
-            switch(actionToRedo.getActionType()) {
+            switch(actionToRedo.Type) {
                 case EditorAction.ActionType.Paint:
-                    actionToRedo.getGameObject().SetActive(true);
+                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            obj.SetActive(true);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
-                    actionToRedo.getGameObject().SetActive(false);
+                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            obj.SetActive(false);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.MoveMapObject:
-                    actionToRedo.getGameObject().transform.position = ((MoveMapObjectAction) actionToRedo).NewPosition;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    actionToRedo.getGameObject().transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    actionToRedo.getGameObject().transform.rotation = ((RotateMapObjectAction) actionToRedo).NewRotation;
+                    // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     // TODO: Implement
@@ -163,8 +189,10 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     private void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
         while (actionToDelete != null) {
-            if (actionToDelete.Value.getActionType() == EditorAction.ActionType.Paint) {
-             Destroy(actionToDelete.Value.getGameObject());
+            if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
+                foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
+                    Destroy(obj);
+                }
             }
             actionToDelete = actionToDelete.Next;
         }
@@ -194,6 +222,15 @@ public class MapEditorManager : MonoBehaviour {
             } else {
                 ToolStatus[toolKey] = true;
             }
+        }
+    }
+
+    public void ReadCountInput(string s) {
+        Count = int.Parse(s);
+        // Restrict input to only be positive
+        if (Count < 0) {
+            Count *= -1;
+            CountInput.text = "" + Count;
         }
     }
 }

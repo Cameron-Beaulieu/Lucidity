@@ -6,9 +6,9 @@ public class RenameLayerAction : EditorAction {
     private string _oldName;
     private string _newName;
 
-    public RenameLayerAction (GameObject gameObject, string oldName, string newName) {
-        base.setActionType(ActionType.RenameLayer);
-        base.setGameObject(gameObject);
+    public RenameLayerAction (List<GameObject> relatedObjects, string oldName, string newName) {
+        base.Type = ActionType.RenameLayer;
+        base.RelatedObjects = relatedObjects;
         _oldName = oldName;
         _newName = newName;
     }
