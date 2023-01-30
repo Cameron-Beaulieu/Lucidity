@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -998,7 +998,7 @@ GameObject:
   - component: {fileID: 80135594}
   m_Layer: 5
   m_Name: HouseButton
-  m_TagString: Untagged
+  m_TagString: PaintButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2318,7 +2318,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1403460569}
   m_HandleRect: {fileID: 1403460568}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -4664,7 +4664,7 @@ GameObject:
   - component: {fileID: 802284745}
   m_Layer: 5
   m_Name: MountainButton
-  m_TagString: Untagged
+  m_TagString: PaintButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6501,8 +6501,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 956387567}
   m_HandleRect: {fileID: 956387566}
   m_Direction: 2
-  m_Value: 0.9999999
-  m_Size: 0.60871273
+  m_Value: 1.0000001
+  m_Size: 0.60871285
   m_NumberOfSteps: 4
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7676,7 +7676,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1275525379}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1640203419}
+        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
+        m_MethodName: Undo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1275525379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7743,9 +7755,10 @@ GameObject:
   - component: {fileID: 1284587186}
   - component: {fileID: 1284587185}
   - component: {fileID: 1284587188}
+  - component: {fileID: 1284587189}
   m_Layer: 0
   m_Name: Brush Tool
-  m_TagString: Untagged
+  m_TagString: SelectableTool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7815,9 +7828,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1284587185}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: Select
+      - m_Target: {fileID: 1284587189}
+        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
+        m_MethodName: ButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7880,6 +7893,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
   m_EffectDistance: {x: 0.15, y: -0.15}
   m_UseGraphicAlpha: 1
+--- !u!114 &1284587189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284587182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9373ebd18f2ce4c59b9d19a4943ff90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1299731965
 GameObject:
   m_ObjectHideFlags: 0
@@ -9685,7 +9710,7 @@ GameObject:
   - component: {fileID: 1529515672}
   m_Layer: 5
   m_Name: TreeButton
-  m_TagString: Untagged
+  m_TagString: PaintButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10505,7 +10530,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1639185545}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1640203419}
+        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
+        m_MethodName: Redo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1639185545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10632,9 +10669,10 @@ GameObject:
   - component: {fileID: 1659620804}
   - component: {fileID: 1659620803}
   - component: {fileID: 1659620806}
+  - component: {fileID: 1659620807}
   m_Layer: 0
   m_Name: Selection Tool
-  m_TagString: Untagged
+  m_TagString: SelectableTool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10704,9 +10742,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1659620803}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: Select
+      - m_Target: {fileID: 1659620807}
+        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
+        m_MethodName: ButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10769,6 +10807,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
   m_EffectDistance: {x: 0.15, y: -0.14}
   m_UseGraphicAlpha: 0
+--- !u!114 &1659620807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659620801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9373ebd18f2ce4c59b9d19a4943ff90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1708878830
 GameObject:
   m_ObjectHideFlags: 0
@@ -12144,7 +12194,7 @@ GameObject:
   - component: {fileID: 1977044379}
   m_Layer: 5
   m_Name: FortressButton
-  m_TagString: Untagged
+  m_TagString: PaintButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12835,9 +12885,10 @@ GameObject:
   - component: {fileID: 2085592400}
   - component: {fileID: 2085592399}
   - component: {fileID: 2085592402}
+  - component: {fileID: 2085592403}
   m_Layer: 0
   m_Name: Panning Tool
-  m_TagString: Untagged
+  m_TagString: SelectableTool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12907,9 +12958,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2085592399}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: Select
+      - m_Target: {fileID: 2085592403}
+        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
+        m_MethodName: ButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12972,6 +13023,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
   m_EffectDistance: {x: 0.15, y: -0.15}
   m_UseGraphicAlpha: 1
+--- !u!114 &2085592403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085592396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9373ebd18f2ce4c59b9d19a4943ff90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2094879682
 GameObject:
   m_ObjectHideFlags: 0
