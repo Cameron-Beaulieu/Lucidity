@@ -15,7 +15,11 @@ public class MapEditorManager : MonoBehaviour {
     void Start() {
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
-            ToolStatus.Add(tool.name, false);
+            if (tool.name == "Selection Tool") {
+                ToolStatus.Add(tool.name, true);
+            } else {
+                ToolStatus.Add(tool.name, false);
+            }
             _toolKeys.Add(tool.name);
         }
     }
@@ -54,7 +58,6 @@ public class MapEditorManager : MonoBehaviour {
                         _currentAction = _actions.First;
                     }
                 }
-                Debug.Log(_actions.ToString());
         }
         // TODO: Implement other actions here
     }
