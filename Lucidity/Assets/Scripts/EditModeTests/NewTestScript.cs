@@ -10,7 +10,7 @@ public class NewTestScript
     [Test]
     public void Test1() {
         // Use the Assert class to test conditions
-        Debug.Log("First test!");
+        Debug.Log("First Edit Mode test!");
         Assert.That(5 * 20, Is.EqualTo(100)); // should pass
 
     }
@@ -18,7 +18,7 @@ public class NewTestScript
     [Test]
     public void Test2() {
         // Use the Assert class to test conditions
-        Debug.Log("Second test!");
+        Debug.Log("Second Edit Mode test!");
         Assert.That(4, Is.InRange(5,25)); // should fail
 
     }

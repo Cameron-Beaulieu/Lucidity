@@ -11,7 +11,7 @@ public class NewTestScript
     public void Test1() {
         // Use the Assert class to test conditions
         Debug.Log("First Play Mode test!");
-        var list = new List<string>() {
+        List<string> list = new List<string>() {
             "carrot",
             "octopus",
             "computer"
@@ -24,8 +24,8 @@ public class NewTestScript
     public void Test2() {
         // Use the Assert class to test conditions
         Debug.Log("Second Play Mode test!");
-        int c = 3;
-        Assert.That(c, Is.Not.EqualTo(3)); // should fail
+        int c = 4;
+        Assert.That(c, Is.Not.EqualTo(3)); // should pass
 
     }
 
