@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
     private GameObject _selectedObject;
-    private static GameObject _prevSelectedObject;
+    // private static GameObject _prevSelectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
     
@@ -16,9 +16,13 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public void OnPointerClick(PointerEventData eventData) {
         _selectedObject = eventData.pointerClick;
 
-        if (_prevSelectedObject == null) {
-            _prevSelectedObject = _selectedObject;
-        } else {
+        // if (_prevSelectedObject == null) {
+        //     _prevSelectedObject = _selectedObject;
+        // } else {
+        //     Destroy(_outline);
+        // }
+
+        if (_outline) {
             Destroy(_outline);
         }
 
