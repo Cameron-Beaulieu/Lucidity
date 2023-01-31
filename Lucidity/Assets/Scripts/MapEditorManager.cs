@@ -40,7 +40,6 @@ public class MapEditorManager : MonoBehaviour {
         else if (mapSize == "Large"){
             map.transform.localScale = new Vector2(2f, 2f);
         }
-        map.GetComponent<BoxCollider>().size = new Vector2(mapRect.rect.width * mapRect.localScale.x, mapRect.rect.height * mapRect.localScale.y);
     }
 
     private void Update() {

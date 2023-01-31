@@ -3305,7 +3305,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 524975342}
-  - component: {fileID: 524975343}
   m_Layer: 5
   m_Name: Nav Menu
   m_TagString: Untagged
@@ -3334,19 +3333,6 @@ RectTransform:
   m_AnchoredPosition: {x: 720, y: -15}
   m_SizeDelta: {x: 1440, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!65 &524975343
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524975341}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &533287519
 GameObject:
   m_ObjectHideFlags: 0
@@ -4107,7 +4093,6 @@ GameObject:
   - component: {fileID: 694560444}
   - component: {fileID: 694560443}
   - component: {fileID: 694560442}
-  - component: {fileID: 694560447}
   m_Layer: 7
   m_Name: Map
   m_TagString: Untagged
@@ -4234,19 +4219,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!65 &694560447
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 694560440}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1361.78, y: 780, z: 50}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &722826855
 GameObject:
   m_ObjectHideFlags: 0
@@ -6599,7 +6571,7 @@ GameObject:
   - component: {fileID: 989587154}
   - component: {fileID: 989587159}
   - component: {fileID: 989587158}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11827,7 +11799,6 @@ GameObject:
   - component: {fileID: 1798106780}
   - component: {fileID: 1798106782}
   - component: {fileID: 1798106781}
-  - component: {fileID: 1798106783}
   m_Layer: 0
   m_Name: Tool Bar
   m_TagString: Untagged
@@ -11946,19 +11917,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798106777}
   m_CullTransparentMesh: 1
---- !u!65 &1798106783
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798106777}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1823208462
 GameObject:
   m_ObjectHideFlags: 0
