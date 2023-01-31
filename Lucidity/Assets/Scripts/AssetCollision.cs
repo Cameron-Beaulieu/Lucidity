@@ -31,9 +31,9 @@ public class AssetCollision : MonoBehaviour {
           collisionCount++;
         }
       }
-      if (hitColliders.Length - collisionCount > 1){
+      if (hitColliders.Length - collisionCount > 1) {
         gameObject.tag = "CollisionObject";
-        foreach (Collider collisionObject in hitColliders){
+        foreach (Collider collisionObject in hitColliders) {
           _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>().material;
           collisionObject.gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
           StartCoroutine(RevertMaterialAndDestroy(_originalMaterial, collisionObject.gameObject));
@@ -52,7 +52,7 @@ public class AssetCollision : MonoBehaviour {
       if (collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
-        if (collisionObject == gameObject){
+        if (collisionObject == gameObject) {
           Destroy(gameObject);
         }
       }
@@ -64,7 +64,7 @@ public class AssetCollision : MonoBehaviour {
     /// </summary>
     void OnDrawGizmos() {
       Gizmos.color = Color.red;
-      if (_detectionStarted){
+      if (_detectionStarted) {
         //Draw a cube where the OverlapBox is (positioned where your GameObject is as well as a size)
         Gizmos.DrawWireCube(transform.position, transform.localScale);
       }
