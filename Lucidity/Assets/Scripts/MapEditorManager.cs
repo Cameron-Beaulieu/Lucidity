@@ -14,12 +14,17 @@ public class MapEditorManager : MonoBehaviour {
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
+    private GameObject _selectionMenu;
+    private GameObject _paintingMenu;
 
     void Start() {
         Count = 1;
+        _paintingMenu = GameObject.Find("Painting Menu");
+        _selectionMenu = GameObject.Find("Selection Menu");
+        _selectionMenu.SetActive(false);
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
-            if (tool.name == "Selection Tool") {
+            if (tool.name == "Brush Tool") {
                 ToolStatus.Add(tool.name, true);
             } else {
                 ToolStatus.Add(tool.name, false);
@@ -30,9 +35,9 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Update() {
         Vector2 worldPosition = getMousePosition();
-
+        // TODO: remove && worldPosition.x > -5 from if statement
         if (Input.GetMouseButtonDown(0)
-                && AssetButtons[CurrentButtonPressed].Clicked) {
+                && AssetButtons[CurrentButtonPressed].Clicked && worldPosition.x > -4) {
             List<GameObject> mapObjects = new List<GameObject>();
             for (int i = 0; i < Count; i++) {
                 GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
@@ -216,6 +221,19 @@ public class MapEditorManager : MonoBehaviour {
     /// Changes which tool is currently being used based on user's selection.
     /// </summary>
     public void ChangeTools(string toolSelected) {
+
+        switch (toolSelected) {
+            case "Brush Tool":
+                _paintingMenu.SetActive(true);
+                _selectionMenu.SetActive(false);
+                break;
+            // Default case is having the selection menu open
+            default:
+                _paintingMenu.SetActive(false);
+                _selectionMenu.SetActive(true);
+                break;
+        }
+
         foreach (string toolKey in _toolKeys) {
             if (toolKey != toolSelected) {
                 ToolStatus[toolKey] = false;
