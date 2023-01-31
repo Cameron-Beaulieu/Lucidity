@@ -1142,7 +1142,7 @@ GameObject:
   - component: {fileID: 99056259}
   - component: {fileID: 99056261}
   - component: {fileID: 99056260}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1452,7 +1452,7 @@ GameObject:
   - component: {fileID: 137398698}
   - component: {fileID: 137398700}
   - component: {fileID: 137398699}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1729,7 +1729,7 @@ GameObject:
   - component: {fileID: 224498650}
   - component: {fileID: 224498652}
   - component: {fileID: 224498651}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3657,7 +3657,7 @@ GameObject:
   - component: {fileID: 605033302}
   - component: {fileID: 605033304}
   - component: {fileID: 605033303}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5438,7 +5438,7 @@ GameObject:
   - component: {fileID: 860999431}
   - component: {fileID: 860999430}
   - component: {fileID: 860999433}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Zoom Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7620,7 +7620,7 @@ GameObject:
   - component: {fileID: 1168008137}
   - component: {fileID: 1168008139}
   - component: {fileID: 1168008138}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8002,7 +8002,7 @@ GameObject:
   - component: {fileID: 1275525379}
   - component: {fileID: 1275525378}
   - component: {fileID: 1275525381}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Undo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8153,7 +8153,7 @@ GameObject:
   - component: {fileID: 1284587185}
   - component: {fileID: 1284587188}
   - component: {fileID: 1284587189}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Brush Tool
   m_TagString: SelectableTool
   m_Icon: {fileID: 0}
@@ -8313,7 +8313,7 @@ GameObject:
   - component: {fileID: 1299731966}
   - component: {fileID: 1299731968}
   - component: {fileID: 1299731967}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10991,7 +10991,7 @@ GameObject:
   - component: {fileID: 1639185545}
   - component: {fileID: 1639185544}
   - component: {fileID: 1639185548}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Redo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11175,7 +11175,7 @@ MonoBehaviour:
   CurrentButtonPressed: 0
   CountInput: {fileID: 885781265}
   Count: 0
-  map: {fileID: 694560440}
+  _map: {fileID: 694560440}
 --- !u!4 &1640203420
 Transform:
   m_ObjectHideFlags: 0
@@ -11205,7 +11205,7 @@ GameObject:
   - component: {fileID: 1659620803}
   - component: {fileID: 1659620806}
   - component: {fileID: 1659620807}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Selection Tool
   m_TagString: SelectableTool
   m_Icon: {fileID: 0}
@@ -11799,7 +11799,7 @@ GameObject:
   - component: {fileID: 1798106780}
   - component: {fileID: 1798106782}
   - component: {fileID: 1798106781}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Tool Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12368,7 +12368,7 @@ GameObject:
   - component: {fileID: 1904598603}
   - component: {fileID: 1904598605}
   - component: {fileID: 1904598604}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13553,7 +13553,7 @@ GameObject:
   - component: {fileID: 2085592399}
   - component: {fileID: 2085592402}
   - component: {fileID: 2085592403}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Panning Tool
   m_TagString: SelectableTool
   m_Icon: {fileID: 0}
@@ -14126,7 +14126,7 @@ GameObject:
   - component: {fileID: 2120068037}
   - component: {fileID: 2120068036}
   - component: {fileID: 2120068039}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Zoom In
   m_TagString: Untagged
   m_Icon: {fileID: 0}
