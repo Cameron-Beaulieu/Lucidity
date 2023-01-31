@@ -14,6 +14,8 @@ public class MapEditorManager : MonoBehaviour {
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
+    private Vector2 _lastMousePosition;
+    public GameObject LastEncounteredObject;
 
     void Start() {
         Count = 1;
@@ -31,43 +33,57 @@ public class MapEditorManager : MonoBehaviour {
     private void Update() {
         Vector2 worldPosition = getMousePosition();
 
-        if (Input.GetMouseButtonDown(0)
+        float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
+        float assetHeight = AssetPrefabs[CurrentButtonPressed].transform.localScale.y;
+
+        if (Input.GetMouseButton(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
-            List<GameObject> mapObjects = new List<GameObject>();
-            for (int i = 0; i < Count; i++) {
-                GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
-                        Quaternion.identity));
-                if (temp != null) {
-                    mapObjects.Add(temp);
-                }
-            }
-            if (_actions == null) {
-                    _actions = new LinkedList<EditorAction>();
-                    _actions.AddFirst(new PaintAction(mapObjects));
-                    _currentAction = _actions.First;
-            } else {
-                if (_currentAction != null && _currentAction.Next != null) {
-                    // these actions can no longer be redone
-                    PermanentlyDeleteActions(_currentAction.Next);
-                    LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
-                    while (actionToRemove != null) {
-                        _actions.Remove(actionToRemove);
-                        actionToRemove = actionToRemove.Next;
+            // Check if mouse position relative to its last position and the previously encountered
+            // asset would allow for a legal placement. Reduces unnecessary computing.
+            if (_lastMousePosition != worldPosition &&
+                (!(LastEncounteredObject)
+                    || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
+                        >= assetWidth
+                    || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
+                        >= assetHeight)) {
+                List<GameObject> mapObjects = new List<GameObject>();
+                for (int i = 0; i < Count; i++) {
+                    GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
+                            new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
+                            Quaternion.identity));
+                    if (temp != null) {
+                        mapObjects.Add(temp);
                     }
-                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
-                    _currentAction = _currentAction.Next;
-                } else if (_currentAction != null) {
-                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
-                    _currentAction = _currentAction.Next;
-                } else if (_currentAction == null && _actions != null) {
-                    // there is only one action and it has been undone
-                    PermanentlyDeleteActions(_actions.First);
-                    _actions.Clear();
-                    _actions.AddFirst(new PaintAction(mapObjects));
-                    _currentAction = _actions.First;
                 }
+                if (_actions == null) {
+                    _actions = new LinkedList<EditorAction>();
+                _actions.AddFirst(new PaintAction(mapObjects));
+                    _currentAction = _actions.First;
+                } else {
+                    if (_currentAction != null && _currentAction.Next != null) {
+                        // these actions can no longer be redone
+                        PermanentlyDeleteActions(_currentAction.Next);
+                        LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
+                        while (actionToRemove != null) {
+                            _actions.Remove(actionToRemove);
+                            actionToRemove = actionToRemove.Next;
+                        }
+                _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction != null) {
+                _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction == null && _actions != null) {
+                        // there is only one action and it has been undone
+                        PermanentlyDeleteActions(_actions.First);
+                        _actions.Clear();
+                _actions.AddFirst(new PaintAction(mapObjects));
+                        _currentAction = _actions.First;
+                    }
+                }
+                LastEncounteredObject = mapObjects[0];
             }
+            _lastMousePosition = worldPosition;
         }
         // TODO: Implement other actions here
     }
