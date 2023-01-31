@@ -227,6 +227,7 @@ public class MapEditorManager : MonoBehaviour {
                 _paintingMenu.SetActive(true);
                 _selectionMenu.SetActive(false);
                 break;
+            // Default case is having the selection menu open
             default:
                 _paintingMenu.SetActive(false);
                 _selectionMenu.SetActive(true);
