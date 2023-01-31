@@ -16,12 +16,6 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public void OnPointerClick(PointerEventData eventData) {
         _selectedObject = eventData.pointerClick;
 
-        // if (_prevSelectedObject == null) {
-        //     _prevSelectedObject = _selectedObject;
-        // } else {
-        //     Destroy(_outline);
-        // }
-
         if (_outline) {
             Destroy(_outline);
         }
