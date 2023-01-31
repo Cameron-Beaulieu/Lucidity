@@ -19,8 +19,8 @@ public class MapEditorManager : MonoBehaviour {
 
     void Start() {
         Count = 1;
-        _paintingMenu = GameObject.FindGameObjectWithTag("PaintingMenu");
-        _selectionMenu = GameObject.FindGameObjectWithTag("SelectionMenu");
+        _paintingMenu = GameObject.Find("Painting Menu");
+        _selectionMenu = GameObject.Find("Selection Menu");
         _selectionMenu.SetActive(false);
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
