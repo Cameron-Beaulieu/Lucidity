@@ -16,9 +16,9 @@ public class MapEditorManager : MonoBehaviour {
     public int Count;
     private Vector2 _lastMousePosition;
     public GameObject LastEncounteredObject;
-    [SerializeField] private Slider BrushSizeSlider;
-    [SerializeField] private Text BrushSizeText;
-    [SerializeField] private float BrushSize;
+    [SerializeField] private Slider _brushSizeSlider;
+    [SerializeField] private Text _brushSizeText;
+    [SerializeField] private float _brushSize;
 
     void Start() {
         Count = 1;
@@ -255,8 +255,8 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     public void ShowBrushSizeSlider() {
-        BrushSize = BrushSizeSlider.value;
-        string sliderMessage = BrushSize + " px";
-        BrushSizeText.text = sliderMessage;
+        _brushSize = _brushSizeSlider.value;
+        string sliderMessage = _brushSize + " px";
+        _brushSizeText.text = sliderMessage;
     }
 }

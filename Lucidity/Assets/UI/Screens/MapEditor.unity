@@ -11658,9 +11658,9 @@ MonoBehaviour:
   CountInput: {fileID: 885781265}
   Count: 0
   LastEncounteredObject: {fileID: 0}
-  BrushSizeSlider: {fileID: 979449212}
-  BrushSizeText: {fileID: 1431803178}
-  BrushSize: 0
+  _brushSizeSlider: {fileID: 979449212}
+  _brushSizeText: {fileID: 1431803178}
+  _brushSize: 0
 --- !u!4 &1640203420
 Transform:
   m_ObjectHideFlags: 0
