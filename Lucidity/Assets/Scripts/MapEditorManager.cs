@@ -222,12 +222,15 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     public void ChangeTools(string toolSelected) {
 
-        if (toolSelected == "Brush Tool") {
-            _paintingMenu.SetActive(true);
-            _selectionMenu.SetActive(false);
-        } else {
-            _paintingMenu.SetActive(false);
-            _selectionMenu.SetActive(true);
+        switch (toolSelected) {
+            case "Brush Tool":
+                _paintingMenu.SetActive(true);
+                _selectionMenu.SetActive(false);
+                break;
+            default:
+                _paintingMenu.SetActive(false);
+                _selectionMenu.SetActive(true);
+                break;
         }
 
         foreach (string toolKey in _toolKeys) {
