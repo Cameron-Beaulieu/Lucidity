@@ -27,7 +27,7 @@ public class AssetController : MonoBehaviour {
 
         // Creates image that will follow mouse
         Instantiate(_editor.AssetImage[Id], 
-                    new Vector3(worldPosition.x, worldPosition.y, 0), 
+                    new Vector3(worldPosition.x, worldPosition.y, 90), 
                     Quaternion.identity);
 
         _editor.CurrentButtonPressed = Id;

@@ -23,13 +23,20 @@ public class AssetCollision : MonoBehaviour {
     void CheckCollisions() {
       Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, 
         transform.localScale / 2, Quaternion.identity, _filterMask);
-      if (hitColliders.Length > 1){
+      Debug.Log(hitColliders.Length);
+      Debug.Log(hitColliders[0].gameObject.layer);
+      if (hitColliders.Length > 2){
         foreach (Collider collisionObject in hitColliders){
           _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>().material;
           collisionObject.gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
           StartCoroutine(RevertMaterialAndDestroy(_originalMaterial, collisionObject.gameObject));
         }
       }  
+      else if (hitColliders.Length == 2){
+        if(hitColliders[0].gameObject.layer != 7){
+          Destroy(gameObject);
+        }
+      }
     }
 
     /// <summary>

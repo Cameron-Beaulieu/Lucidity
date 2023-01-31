@@ -8,6 +8,6 @@ public class FollowMouse : MonoBehaviour
     void Update()
     {
         Vector2 worldPosition = MapEditorManager.getMousePosition();
-        transform.position = worldPosition;
+        transform.position = new Vector3(worldPosition.x, worldPosition.y, 90f);
     }
 }

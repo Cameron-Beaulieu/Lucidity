@@ -14,6 +14,7 @@ public class MapEditorManager : MonoBehaviour {
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
+    [SerializeField] private GameObject map;
 
     void Start() {
         Count = 1;
@@ -26,6 +27,20 @@ public class MapEditorManager : MonoBehaviour {
             }
             _toolKeys.Add(tool.name);
         }
+
+        string mapSize = CreateNewMap.mapSize;
+        RectTransform mapRect = map.GetComponent<RectTransform>();
+
+        if (mapSize == "Small") {
+            map.transform.localScale = new Vector2(1f, 1f);
+        }
+        else if (mapSize == "Medium") {
+            map.transform.localScale = new Vector2(1.5f, 1.5f);
+        }
+        else if (mapSize == "Large"){
+            map.transform.localScale = new Vector2(2f, 2f);
+        }
+        map.GetComponent<BoxCollider>().size = new Vector2(mapRect.rect.width * mapRect.localScale.x, mapRect.rect.height * mapRect.localScale.y);
     }
 
     private void Update() {
@@ -36,7 +51,7 @@ public class MapEditorManager : MonoBehaviour {
             List<GameObject> mapObjects = new List<GameObject>();
             for (int i = 0; i < Count; i++) {
                 GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
+                        new Vector3(worldPosition.x + i*2, worldPosition.y, 90),
                         Quaternion.identity));
                 if (temp != null) {
                     mapObjects.Add(temp);

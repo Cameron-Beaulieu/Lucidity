@@ -117,5 +117,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _filterMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
