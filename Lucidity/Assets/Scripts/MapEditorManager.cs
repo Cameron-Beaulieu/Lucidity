@@ -14,7 +14,7 @@ public class MapEditorManager : MonoBehaviour {
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
-    [SerializeField] private GameObject map;
+    [SerializeField] private GameObject _map;
 
     void Start() {
         Count = 1;
@@ -29,16 +29,16 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         string mapSize = CreateNewMap.mapSize;
-        RectTransform mapRect = map.GetComponent<RectTransform>();
+        RectTransform mapRect = _map.GetComponent<RectTransform>();
 
         if (mapSize == "Small") {
-            map.transform.localScale = new Vector2(1f, 1f);
+            _map.transform.localScale = new Vector2(1f, 1f);
         }
         else if (mapSize == "Medium") {
-            map.transform.localScale = new Vector2(1.5f, 1.5f);
+            _map.transform.localScale = new Vector2(1.5f, 1.5f);
         }
         else if (mapSize == "Large"){
-            map.transform.localScale = new Vector2(2f, 2f);
+            _map.transform.localScale = new Vector2(2f, 2f);
         }
     }
 
