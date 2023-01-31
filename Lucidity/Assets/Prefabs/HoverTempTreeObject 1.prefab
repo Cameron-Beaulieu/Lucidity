@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5643009079545502604}
   - component: {fileID: 5643009079545502607}
   - component: {fileID: -2739634260906126302}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: HoverTempTreeObject 1
   m_TagString: AssetImage
   m_Icon: {fileID: 0}

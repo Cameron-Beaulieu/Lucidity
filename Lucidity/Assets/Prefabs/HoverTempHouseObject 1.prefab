@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1189500993391155857}
   - component: {fileID: 1189500993391155858}
   - component: {fileID: 5074222187911109997}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: HoverTempHouseObject 1
   m_TagString: AssetImage
   m_Icon: {fileID: 0}
