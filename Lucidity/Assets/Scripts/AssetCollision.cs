@@ -23,12 +23,23 @@ public class AssetCollision : MonoBehaviour {
     void CheckCollisions() {
       Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, 
         transform.localScale / 2, Quaternion.identity, _filterMask);
-      if (hitColliders.Length > 1){
-        foreach (Collider collisionObject in hitColliders){
+      int collisionCount = 0;
+      foreach (Collider collisionObject in hitColliders) {
+        // If an object is labeled with the "CollisionObject" tag, then it can be considered as
+        // not colliding, as it will not be placed because of legality.
+        if (collisionObject.tag == "CollisionObject") {
+          collisionCount++;
+        }
+      }
+      if (hitColliders.Length - collisionCount > 1) {
+        gameObject.tag = "CollisionObject";
+        foreach (Collider collisionObject in hitColliders) {
           _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>().material;
           collisionObject.gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
           StartCoroutine(RevertMaterialAndDestroy(_originalMaterial, collisionObject.gameObject));
         }
+        GameObject.FindGameObjectWithTag("MapEditorManager")
+          .GetComponent<MapEditorManager>().LastEncounteredObject = hitColliders[0].gameObject;
       }  
     }
 
@@ -38,10 +49,12 @@ public class AssetCollision : MonoBehaviour {
     /// Required during collision handling
     /// </summary>
     IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
-      yield return new WaitForSecondsRealtime(0.5f);
-      collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
-      if (collisionObject == gameObject){
-        Destroy(gameObject);
+      if (collisionObject) {
+        yield return new WaitForSecondsRealtime(0.5f);
+        collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
+        if (collisionObject == gameObject) {
+          Destroy(gameObject);
+        }
       }
     }
 
@@ -51,7 +64,7 @@ public class AssetCollision : MonoBehaviour {
     /// </summary>
     void OnDrawGizmos() {
       Gizmos.color = Color.red;
-      if (_detectionStarted){
+      if (_detectionStarted) {
         //Draw a cube where the OverlapBox is (positioned where your GameObject is as well as a size)
         Gizmos.DrawWireCube(transform.position, transform.localScale);
       }

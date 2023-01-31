@@ -16,9 +16,15 @@ public class MapEditorManager : MonoBehaviour {
     public int Count;
     private GameObject _selectionMenu;
     private GameObject _paintingMenu;
+    private Vector2 _lastMousePosition;
+    public GameObject LastEncounteredObject;
+    [SerializeField] private Slider _brushSizeSlider;
+    [SerializeField] private Text _brushSizeText;
+    [SerializeField] private float _brushSize;
 
     void Start() {
         Count = 1;
+        ShowBrushSizeSlider();
         _paintingMenu = GameObject.Find("Painting Menu");
         _selectionMenu = GameObject.Find("Selection Menu");
         _selectionMenu.SetActive(false);
@@ -36,43 +42,56 @@ public class MapEditorManager : MonoBehaviour {
     private void Update() {
         Vector2 worldPosition = getMousePosition();
         // TODO: remove && worldPosition.x > -5 from if statement
-        if (Input.GetMouseButtonDown(0)
+        if (Input.GetMouseButton(0)
                 && AssetButtons[CurrentButtonPressed].Clicked && worldPosition.x > -4) {
-            List<GameObject> mapObjects = new List<GameObject>();
-            for (int i = 0; i < Count; i++) {
-                GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
-                        Quaternion.identity));
-                if (temp != null) {
-                    mapObjects.Add(temp);
-                }
-            }
-            if (_actions == null) {
-                    _actions = new LinkedList<EditorAction>();
-                    _actions.AddFirst(new PaintAction(mapObjects));
-                    _currentAction = _actions.First;
-            } else {
-                if (_currentAction != null && _currentAction.Next != null) {
-                    // these actions can no longer be redone
-                    PermanentlyDeleteActions(_currentAction.Next);
-                    LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
-                    while (actionToRemove != null) {
-                        _actions.Remove(actionToRemove);
-                        actionToRemove = actionToRemove.Next;
+            float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
+            float assetHeight = AssetPrefabs[CurrentButtonPressed].transform.localScale.y;
+            // Check if mouse position relative to its last position and the previously encountered
+            // asset would allow for a legal placement. Reduces unnecessary computing.
+            if (_lastMousePosition != worldPosition &&
+                (!(LastEncounteredObject)
+                    || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
+                        >= assetWidth
+                    || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
+                        >= assetHeight)) {
+                List<GameObject> mapObjects = new List<GameObject>();
+                for (int i = 0; i < Count; i++) {
+                    GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
+                            new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
+                            Quaternion.identity));
+                    if (temp != null) {
+                        mapObjects.Add(temp);
                     }
-                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
-                    _currentAction = _currentAction.Next;
-                } else if (_currentAction != null) {
-                    _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
-                    _currentAction = _currentAction.Next;
-                } else if (_currentAction == null && _actions != null) {
-                    // there is only one action and it has been undone
-                    PermanentlyDeleteActions(_actions.First);
-                    _actions.Clear();
-                    _actions.AddFirst(new PaintAction(mapObjects));
-                    _currentAction = _actions.First;
                 }
+                if (_actions == null) {
+                    _actions = new LinkedList<EditorAction>();
+                _actions.AddFirst(new PaintAction(mapObjects));
+                    _currentAction = _actions.First;
+                } else {
+                    if (_currentAction != null && _currentAction.Next != null) {
+                        // these actions can no longer be redone
+                        PermanentlyDeleteActions(_currentAction.Next);
+                        LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
+                        while (actionToRemove != null) {
+                            _actions.Remove(actionToRemove);
+                            actionToRemove = actionToRemove.Next;
+                        }
+                _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction != null) {
+                _actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+                        _currentAction = _currentAction.Next;
+                    } else if (_currentAction == null && _actions != null) {
+                        // there is only one action and it has been undone
+                        PermanentlyDeleteActions(_actions.First);
+                        _actions.Clear();
+                _actions.AddFirst(new PaintAction(mapObjects));
+                        _currentAction = _actions.First;
+                    }
+                }
+                LastEncounteredObject = mapObjects[0];
             }
+            _lastMousePosition = worldPosition;
         }
         // TODO: Implement other actions here
     }
@@ -250,5 +269,11 @@ public class MapEditorManager : MonoBehaviour {
             Count *= -1;
             CountInput.text = "" + Count;
         }
+    }
+
+    public void ShowBrushSizeSlider() {
+        _brushSize = _brushSizeSlider.value;
+        string sliderMessage = _brushSize + " px";
+        _brushSizeText.text = sliderMessage;
     }
 }
