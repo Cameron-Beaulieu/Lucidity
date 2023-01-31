@@ -16,9 +16,13 @@ public class MapEditorManager : MonoBehaviour {
     public int Count;
     private Vector2 _lastMousePosition;
     public GameObject LastEncounteredObject;
+    public Slider BrushSizeSlider;
+    public Text BrushSizeText;
+    public float BrushSize;
 
     void Start() {
         Count = 1;
+        ShowBrushSizeSlider();
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
             if (tool.name == "Selection Tool") {
@@ -248,5 +252,11 @@ public class MapEditorManager : MonoBehaviour {
             Count *= -1;
             CountInput.text = "" + Count;
         }
+    }
+
+    public void ShowBrushSizeSlider() {
+        BrushSize = BrushSizeSlider.value;
+        string sliderMessage = BrushSize + " px";
+        BrushSizeText.text = sliderMessage;
     }
 }
