@@ -12,7 +12,7 @@ public class SliderTextValueUpdate : MonoBehaviour
 
     // Start is called before the first frame update
     private void Start() {
-        
+        _slider.value = 1.0f;
     }
 
     void Update() {

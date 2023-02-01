@@ -125,17 +125,25 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    //foreach (GameObject obj in actionToUndo.RelatedObjects) {
-                    //    if (obj != null)
-                    //    {
-                    //        obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
-                    //    }
-                    //}
+                    Debug.Log("Resize Undo");
+                    while ((CurrentAction.Previous != null) && (actionToUndo.Type == EditorAction.ActionType.ResizeMapObject))
+                    {
+                        CurrentAction = CurrentAction.Previous;
+                        actionToUndo = CurrentAction.Value;
+                    }
+                    foreach (GameObject obj in actionToUndo.RelatedObjects)
+                    {
+                        if (obj != null)
+                        {
+                            obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).NewSize;
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
+                    Debug.Log(CurrentAction.Value.Type);
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            if (((RotateMapObjectAction)actionToUndo).IsClockwise) {
+                            if (((RotateMapObjectAction) actionToUndo).IsClockwise) {
                                 obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
                             }
                             else {
@@ -195,13 +203,16 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    //foreach (GameObject obj in actionToRedo.RelatedObjects)
-                    //{
-                    //    if (obj != null)
-                    //    {
-                    //        obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
-                    //    }
-                    //}
+                    while ((CurrentAction.Next != null) && (actionToRedo.Type == EditorAction.ActionType.ResizeMapObject)) {
+                        CurrentAction = CurrentAction.Next;
+                        actionToRedo = CurrentAction.Value;
+                    }
+                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                        if (obj != null)
+                            {
+                                obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
+                            }
+                    }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
                     // TODO: Implement
