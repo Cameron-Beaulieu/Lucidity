@@ -761,7 +761,7 @@ GameObject:
   m_Component:
   - component: {fileID: 58692660}
   - component: {fileID: 58692662}
-  - component: {fileID: 58692661}
+  - component: {fileID: 58692664}
   m_Layer: 5
   m_Name: ValueText
   m_TagString: Untagged
@@ -789,7 +789,15 @@ RectTransform:
   m_AnchoredPosition: {x: -42.91, y: 332.8}
   m_SizeDelta: {x: 70, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &58692661
+--- !u!222 &58692662
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58692659}
+  m_CullTransparentMesh: 1
+--- !u!114 &58692664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -878,14 +886,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &58692662
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 58692659}
-  m_CullTransparentMesh: 1
 --- !u!1 &59320999
 GameObject:
   m_ObjectHideFlags: 0
@@ -10142,6 +10142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1237108171}
   - component: {fileID: 1237108172}
+  - component: {fileID: 1237108173}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -10235,6 +10236,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1237108173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237108170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b887f0da33744a949989f6df9eb4fff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slider: {fileID: 1237108172}
+  _sliderText: {fileID: 58692664}
 --- !u!1 &1275525375
 GameObject:
   m_ObjectHideFlags: 0

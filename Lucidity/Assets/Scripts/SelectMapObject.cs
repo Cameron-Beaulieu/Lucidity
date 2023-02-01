@@ -9,7 +9,6 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
-    private Slider _scaleSlider;
     
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
