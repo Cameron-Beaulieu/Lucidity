@@ -67,6 +67,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         Vector3 oldSize = SelectedObject.transform.localScale;
         Vector3 newSize = new Vector3(value, value, 1);
         SelectedObject.transform.localScale = newSize;
+        // for UNDO/REDO
         List<GameObject> objectsToScale = new List<GameObject>() { SelectedObject };
         _editor.Actions.AddAfter(_editor.CurrentAction, new ResizeMapObjectAction(objectsToScale, oldSize, newSize));
         _editor.CurrentAction = _editor.CurrentAction.Next;

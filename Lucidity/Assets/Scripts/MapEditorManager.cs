@@ -126,7 +126,7 @@ public class MapEditorManager : MonoBehaviour {
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
                     Debug.Log("Resize Undo");
-                    while ((CurrentAction.Previous != null) && (actionToUndo.Type == EditorAction.ActionType.ResizeMapObject))
+                    while ((CurrentAction.Previous != null) && (CurrentAction.Previous.Value.Type == EditorAction.ActionType.ResizeMapObject))
                     {
                         CurrentAction = CurrentAction.Previous;
                         actionToUndo = CurrentAction.Value;
@@ -203,7 +203,7 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    while ((CurrentAction.Next != null) && (actionToRedo.Type == EditorAction.ActionType.ResizeMapObject)) {
+                    while ((CurrentAction.Next != null) && (CurrentAction.Next.Value.Type == EditorAction.ActionType.ResizeMapObject)) {
                         CurrentAction = CurrentAction.Next;
                         actionToRedo = CurrentAction.Value;
                     }
