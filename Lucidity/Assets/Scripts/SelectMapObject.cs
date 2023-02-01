@@ -1,14 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
-    private GameObject _selectedObject;
-    // private static GameObject _prevSelectedObject;
+    private static GameObject _selectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
     
-    private void Awake() {
+    private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
     }
@@ -26,5 +27,13 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         _outline.OutlineMode = Outline.Mode.OutlineAll;
         _outline.OutlineColor = Color.red;
         _outline.OutlineWidth = 2f;
+    }
+
+    public void DeleteMapObject() {
+        _selectedObject.SetActive(false);
+        Destroy(_outline);
+        List<GameObject> objectsToDelete = new List<GameObject>() {_selectedObject};
+        MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+        MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
     }
 }
