@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CreateNewMap : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CreateNewMap : MonoBehaviour
     [SerializeField] private Button createBtn;
     [SerializeField] private Button cancelBtn;
     [SerializeField] private Toggle startingAssetsToggle;
+    public static string mapSize;
 
     // Start is called before the first frame update
     private void Start() {
@@ -51,6 +53,9 @@ public class CreateNewMap : MonoBehaviour
         Debug.Log("Map size: " + getMapSize());
         Debug.Log("Biome: " + getBiome().getName());
         Debug.Log("Start with assets: " + startingAssetsToggle.isOn);
+        
+        mapSize = getMapSize();
+        SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
     }
 
     public void CancelMapClickHandler() {

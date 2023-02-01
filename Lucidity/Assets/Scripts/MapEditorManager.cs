@@ -14,6 +14,7 @@ public class MapEditorManager : MonoBehaviour {
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
+    [SerializeField] private GameObject _map;
     private GameObject _selectionMenu;
     public GameObject SelectionOptions;
     private GameObject _paintingMenu;
@@ -39,13 +40,32 @@ public class MapEditorManager : MonoBehaviour {
             }
             _toolKeys.Add(tool.name);
         }
+
+        string mapSize = CreateNewMap.mapSize;
+        RectTransform mapRect = _map.GetComponent<RectTransform>();
+
+        switch (mapSize) {
+          case "Small":
+            _map.transform.localScale = new Vector2(1f, 1f);
+            break;
+          case "Medium":
+            _map.transform.localScale = new Vector2(1.5f, 1.5f);
+            break;
+          case "Large":
+            _map.transform.localScale = new Vector2(2f, 2f);
+            break;
+          default:
+            Debug.Log("Error with sending map size");
+            _map.transform.localScale = new Vector2(1.5f, 1.5f);
+            break;
+        }
     }
 
     private void Update() {
         Vector2 worldPosition = getMousePosition();
         // TODO: remove && worldPosition.x > -5 from if statement
         if (Input.GetMouseButton(0)
-                && AssetButtons[CurrentButtonPressed].Clicked && worldPosition.x > -4) {
+                && AssetButtons[CurrentButtonPressed].Clicked) {
             float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
             float assetHeight = AssetPrefabs[CurrentButtonPressed].transform.localScale.y;
             // Check if mouse position relative to its last position and the previously encountered
