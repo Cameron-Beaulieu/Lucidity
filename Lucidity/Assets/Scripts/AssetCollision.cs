@@ -19,25 +19,35 @@ public class AssetCollision : MonoBehaviour {
     CheckCollisions();
   }
 
-  /// <summary>
-  /// Checks for all collisions during placement of a new mapobject and handles them.
-  /// Handling involves turning the mapobject's material to an error material and
-  /// calling the a corountine to revert the materials and destroy the map object
-  /// </summary>
-  void CheckCollisions() {
-    Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, 
-      transform.localScale / 2, Quaternion.identity, _filterMask);
-    if (hitColliders.Length > 1){
-      foreach (Collider collisionObject in hitColliders){
-        Debug.Log(collisionObject.gameObject.name);
-        if(collisionObject.gameObject.layer == _assetLayer && collisionObject.gameObject.GetComponent<MeshRenderer>()){
+    /// <summary>
+    /// Checks for all collisions during placement of a new mapobject and handles them.
+    /// Handling involves turning the mapobject's material to an error material and
+    /// calling the a corountine to revert the materials and destroy the map object
+    /// </summary>
+    void CheckCollisions() {
+      Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, 
+        transform.localScale / 2, Quaternion.identity, _filterMask);
+      int collisionCount = 0;
+      foreach (Collider collisionObject in hitColliders) {
+        // If an object is labeled with the "CollisionObject" tag, then it can be considered as
+        // not colliding, as it will not be placed because of legality.
+        if (collisionObject.tag == "CollisionObject") {
+          collisionCount++;
+        }
+      }
+      if (hitColliders.Length - collisionCount > 1) {
+        gameObject.tag = "CollisionObject";
+        foreach (Collider collisionObject in hitColliders) {
+          if(collisionObject.gameObject.layer == _assetLayer && collisionObject.gameObject.GetComponent<MeshRenderer>()){
           _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>().material;
           collisionObject.gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
           StartCoroutine(RevertMaterialAndDestroy(_originalMaterial, collisionObject.gameObject));
+          }
         }
+      GameObject.FindGameObjectWithTag("MapEditorManager")
+          .GetComponent<MapEditorManager>().LastEncounteredObject = hitColliders[0].gameObject;
       }
     }  
-  }
 
   /// <summary>
   /// Changes a mapobject's material back to the original material from the error material and
@@ -49,8 +59,8 @@ public class AssetCollision : MonoBehaviour {
     collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
     if (collisionObject == gameObject) {
       Destroy(gameObject);
+      }  
     }
-  }
 
   /// <summary>
   /// Draws the Box Overlap as a gizmo to show where it currently is testing. 

@@ -8,6 +8,10 @@ TagManager:
   - AssetImage
   - PaintButton
   - SelectableTool
+  - SelectionMenu
+  - PaintingMenu
+  - CollisionObject
+  - SelectionScrollContent
   layers:
   - Default
   - TransparentFX
