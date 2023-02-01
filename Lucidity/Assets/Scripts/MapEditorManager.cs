@@ -125,8 +125,7 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    //foreach (GameObject obj in actionToUndo.RelatedObjects)
-                    //{
+                    //foreach (GameObject obj in actionToUndo.RelatedObjects) {
                     //    if (obj != null)
                     //    {
                     //        obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
@@ -134,7 +133,16 @@ public class MapEditorManager : MonoBehaviour {
                     //}
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
+                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            if (((RotateMapObjectAction)actionToUndo).IsClockwise) {
+                                obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+                            }
+                            else {
+                                obj.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     // TODO: Implement
@@ -197,6 +205,16 @@ public class MapEditorManager : MonoBehaviour {
                     break;
                 case EditorAction.ActionType.RotateMapObject:
                     // TODO: Implement
+                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            if (((RotateMapObjectAction)actionToRedo).IsClockwise) {
+                                obj.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+                            }
+                            else {
+                                obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     // TODO: Implement

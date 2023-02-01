@@ -45,21 +45,23 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     }
 
     public void RotateMapObjectCW() {
+        bool IsClockwise = true;
         Quaternion oldRotation = SelectedObject.transform.rotation;
-        Quaternion newRotation = Quaternion.Euler(oldRotation.x, oldRotation.y, oldRotation.z - 45);
-        SelectedObject.transform.rotation = newRotation;
-        Debug.Log(oldRotation.eulerAngles);
-        Debug.Log(newRotation.eulerAngles);
-        Debug.Log("cw clicked");
+        SelectedObject.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+        // for UNDO/REDO
+        List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
+        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, IsClockwise));
+        _editor.CurrentAction = _editor.CurrentAction.Next;
     }
 
     public void RotateMapObjectCCW() {
+        bool IsClockwise = false;
         Quaternion oldRotation = SelectedObject.transform.rotation;
-        Quaternion newRotation = Quaternion.Euler(oldRotation.x, oldRotation.y, oldRotation.z + 45);
-        SelectedObject.transform.rotation = newRotation;
-        Debug.Log(oldRotation.eulerAngles);
-        Debug.Log(newRotation.eulerAngles);
-        Debug.Log("ccw clicked");
+        SelectedObject.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+        // for UNDO/REDO
+        List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
+        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, IsClockwise));
+        _editor.CurrentAction = _editor.CurrentAction.Next;
     }
 
     public void ScaleMapObject(float value) {
