@@ -31,14 +31,20 @@ public class MapEditorManager : MonoBehaviour {
         string mapSize = CreateNewMap.mapSize;
         RectTransform mapRect = _map.GetComponent<RectTransform>();
 
-        if (mapSize == "Small") {
+        switch (mapSize) {
+          case "Small":
             _map.transform.localScale = new Vector2(1f, 1f);
-        }
-        else if (mapSize == "Medium") {
+            break;
+          case "Medium":
             _map.transform.localScale = new Vector2(1.5f, 1.5f);
-        }
-        else if (mapSize == "Large"){
+            break;
+          case "Large":
             _map.transform.localScale = new Vector2(2f, 2f);
+            break;
+          default:
+            Debug.Log("Error with sending map size");
+            _map.transform.localScale = new Vector2(1.5f, 1.5f);
+            break;
         }
     }
 

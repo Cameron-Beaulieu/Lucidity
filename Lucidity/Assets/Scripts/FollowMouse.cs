@@ -15,7 +15,7 @@ public class FollowMouse : MonoBehaviour {
       if (rayLib.IsPointerOverLayer(_uiLayer)){
         gameObject.GetComponent<MeshRenderer>().enabled = false;
       }
-      else if (!rayLib.IsPointerOverLayer(_uiLayer)) {
+      else {
         gameObject.GetComponent<MeshRenderer>().enabled = true;
       }
     }
