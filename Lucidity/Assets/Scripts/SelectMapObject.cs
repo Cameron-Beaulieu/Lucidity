@@ -15,20 +15,21 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        SelectedObject = eventData.pointerClick;
+        if (_editor.ToolStatus["Selection Tool"]) {
+            SelectedObject = eventData.pointerClick;
 
 
-        if (_outline) {
-            Destroy(_outline);
+            if (_outline) {
+                Destroy(_outline);
+            }
+
+            _editor.SelectionOptions.SetActive(true);
+
+            _outline = SelectedObject.AddComponent<Outline>();
+            _outline.OutlineMode = Outline.Mode.OutlineAll;
+            _outline.OutlineColor = Color.red;
+            _outline.OutlineWidth = 2f;
         }
-
-        _editor.ChangeTools("Selection Tool");
-        _editor.SelectionOptions.SetActive(true);
-
-        _outline = SelectedObject.AddComponent<Outline>();
-        _outline.OutlineMode = Outline.Mode.OutlineAll;
-        _outline.OutlineColor = Color.red;
-        _outline.OutlineWidth = 2f;
     }
 
     public void DeleteMapObject() {

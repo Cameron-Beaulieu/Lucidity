@@ -63,7 +63,6 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Update() {
         Vector2 worldPosition = getMousePosition();
-        // TODO: remove && worldPosition.x > -5 from if statement
         if (Input.GetMouseButton(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
             float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
