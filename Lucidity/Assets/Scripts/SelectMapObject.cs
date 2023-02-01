@@ -1,30 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
-    private GameObject _selectedObject;
-    // private static GameObject _prevSelectedObject;
+    public static GameObject SelectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
     
-    private void Awake() {
+    private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-            .GetComponent<MapEditorManager>();
+            .GetComponent<MapEditorManager>();  
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        _selectedObject = eventData.pointerClick;
+        SelectedObject = eventData.pointerClick;
+
 
         if (_outline) {
             Destroy(_outline);
         }
 
         _editor.ChangeTools("Selection Tool");
+        _editor.SelectionOptions.SetActive(true);
 
-        _outline = _selectedObject.AddComponent<Outline>();
+        _outline = SelectedObject.AddComponent<Outline>();
         _outline.OutlineMode = Outline.Mode.OutlineAll;
         _outline.OutlineColor = Color.red;
         _outline.OutlineWidth = 2f;
+    }
+
+    public void DeleteMapObject() {
+        SelectedObject.SetActive(false);
+        Destroy(_outline);
+        List<GameObject> objectsToDelete = new List<GameObject>() {SelectedObject};
+        _editor.Actions.AddAfter(_editor.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+        _editor.CurrentAction = _editor.CurrentAction.Next;
+        SelectedObject = null;
+        _editor.SelectionOptions.SetActive(false);
     }
 }
