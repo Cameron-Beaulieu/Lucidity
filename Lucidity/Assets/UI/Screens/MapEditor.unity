@@ -13468,7 +13468,7 @@ GameObject:
   - component: {fileID: 1595012132}
   m_Layer: 5
   m_Name: ScrollContent
-  m_TagString: Untagged
+  m_TagString: SelectionScrollContent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14177,6 +14177,7 @@ MonoBehaviour:
   CurrentButtonPressed: 0
   CountInput: {fileID: 885781265}
   Count: 0
+  SelectionOptions: {fileID: 0}
   LastEncounteredObject: {fileID: 0}
   _brushSizeSlider: {fileID: 979449212}
   _brushSizeText: {fileID: 1431803178}

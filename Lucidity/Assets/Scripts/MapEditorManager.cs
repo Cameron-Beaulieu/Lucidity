@@ -8,13 +8,14 @@ public class MapEditorManager : MonoBehaviour {
     public List<GameObject> AssetPrefabs;
     public List<GameObject> AssetImage;
     public int CurrentButtonPressed;
-    public static LinkedList<EditorAction> Actions;
-    public static LinkedListNode<EditorAction> CurrentAction;
+    public LinkedList<EditorAction> Actions;
+    public LinkedListNode<EditorAction> CurrentAction;
     public Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
     private List<string> _toolKeys = new List<string>();
     public InputField CountInput;
     public int Count;
     private GameObject _selectionMenu;
+    public GameObject SelectionOptions;
     private GameObject _paintingMenu;
     private Vector2 _lastMousePosition;
     public GameObject LastEncounteredObject;
@@ -27,6 +28,7 @@ public class MapEditorManager : MonoBehaviour {
         ShowBrushSizeSlider();
         _paintingMenu = GameObject.Find("Painting Menu");
         _selectionMenu = GameObject.Find("Selection Menu");
+        SelectionOptions = GameObject.FindGameObjectWithTag("SelectionScrollContent");
         _selectionMenu.SetActive(false);
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
         foreach (GameObject tool in selectableTools) {
@@ -144,7 +146,6 @@ public class MapEditorManager : MonoBehaviour {
             if (CurrentAction.Previous != null) {
                 CurrentAction = CurrentAction.Previous;
             } else {
-                Debug.Log("No previous actions");
                 CurrentAction = null;
             }
         }
@@ -251,6 +252,9 @@ public class MapEditorManager : MonoBehaviour {
             default:
                 _paintingMenu.SetActive(false);
                 _selectionMenu.SetActive(true);
+                if (SelectMapObject.SelectedObject == null) {
+                    SelectionOptions.SetActive(false);
+                }
                 break;
         }
 
