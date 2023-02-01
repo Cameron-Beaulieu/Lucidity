@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ResizeMapObjectAction : EditorAction {
-    private Vector2 _oldSize;
-    private Vector2 _newSize;
+    private Vector3 _oldSize;
+    private Vector3 _newSize;
 
-    public ResizeMapObjectAction (List<GameObject> relatedObjects, Vector2 oldSize, Vector2 newSize) {
+    public ResizeMapObjectAction (List<GameObject> relatedObjects, Vector3 oldSize, Vector3 newSize) {
         base.Type = ActionType.RotateMapObject;
         base.RelatedObjects = relatedObjects;
         _oldSize = oldSize;
         _newSize = newSize;
     }
 
-    public Vector2 OldSize {
+    public Vector3 OldSize {
         get { return _oldSize; }
     }
 
-    public Vector2 NewSize {
+    public Vector3 NewSize {
         get { return _newSize; }
     }
 }

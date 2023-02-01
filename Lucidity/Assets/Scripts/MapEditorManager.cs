@@ -125,7 +125,13 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    // TODO: Implement
+                    //foreach (GameObject obj in actionToUndo.RelatedObjects)
+                    //{
+                    //    if (obj != null)
+                    //    {
+                    //        obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
+                    //    }
+                    //}
                     break;
                 case EditorAction.ActionType.RotateMapObject:
                     // TODO: Implement
@@ -181,7 +187,13 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    // TODO: Implement
+                    //foreach (GameObject obj in actionToRedo.RelatedObjects)
+                    //{
+                    //    if (obj != null)
+                    //    {
+                    //        obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
+                    //    }
+                    //}
                     break;
                 case EditorAction.ActionType.RotateMapObject:
                     // TODO: Implement
