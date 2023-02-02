@@ -6,8 +6,8 @@ using TMPro;
 
 public class SliderTextValueUpdate : MonoBehaviour
 {
-    public Slider _slider;
-    public TextMeshProUGUI _sliderText;
+    public Slider Slider;
+    public TextMeshProUGUI SliderText;
     public SelectMapObject MapObject;
 
 
@@ -15,10 +15,10 @@ public class SliderTextValueUpdate : MonoBehaviour
     private void Start() {
         // TODO: Needs to fix this so it changes dynamically
         // when you click on a SelectMapObject Object
-        _slider.value = 1.0f;
+        Slider.value = 1.0f;
     }
 
     void Update() {
-        _sliderText.text = _slider.value.ToString("0.0" + "x");
+        SliderText.text = Slider.value.ToString("0.0" + "x");
     }
 }

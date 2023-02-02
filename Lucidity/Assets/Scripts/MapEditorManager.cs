@@ -125,7 +125,6 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    Debug.Log("Resize Undo");
                     while ((CurrentAction.Previous != null) && (CurrentAction.Previous.Value.Type == EditorAction.ActionType.ResizeMapObject))
                     {
                         CurrentAction = CurrentAction.Previous;
@@ -140,7 +139,6 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    Debug.Log(CurrentAction.Value.Type);
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
                             if (((RotateMapObjectAction) actionToUndo).IsClockwise) {
@@ -215,7 +213,6 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
                             if (((RotateMapObjectAction)actionToRedo).IsClockwise) {
