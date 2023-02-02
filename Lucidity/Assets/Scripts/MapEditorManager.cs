@@ -66,9 +66,10 @@ public class MapEditorManager : MonoBehaviour {
     private void Update() {
         Vector2 worldPosition = getMousePosition();
         if (Input.GetMouseButton(0)
-                && AssetButtons[CurrentButtonPressed].Clicked) {
-            float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
-            float assetHeight = AssetPrefabs[CurrentButtonPressed].transform.localScale.y;
+                && AssetButtons[CurrentButtonPressed].Clicked && ToolStatus["Brush Tool"]) {
+            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+            float assetWidth = activeImage.transform.localScale.x;
+            float assetHeight = activeImage.transform.localScale.y;
             // Check if mouse position relative to its last position and the previously encountered
             // asset would allow for a legal placement. Reduces unnecessary computing.
             if (_lastMousePosition != worldPosition &&
@@ -80,18 +81,18 @@ public class MapEditorManager : MonoBehaviour {
                 List<GameObject> mapObjects = new List<GameObject>();
                 for (int i = 0; i < Count; i++) {
                     GameObject tempParent = new GameObject();
-                    tempParent.name = "MapObject Parent";
+                    tempParent.name = AssetPrefabs[CurrentButtonPressed].name + " Parent";
                     tempParent.transform.SetParent(_mapContainer.transform, true);
                     tempParent.transform.localPosition = new Vector3(tempParent.transform.localPosition.x,
                             tempParent.transform.localPosition.y, 0);
                     GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
                             new Vector3(worldPosition.x + i*2, worldPosition.y, 90),
                             Quaternion.identity, tempParent.transform));
-                    // temp.transform.localPosition = new Vector3(temp.transform.localPosition.x,
-                    //         temp.transform.localPosition.y, 0);
-                    // temp.transform.SetParent(tempParent.transform, true);
-                    if (temp != null) {
+                    temp.transform.localScale = new Vector3 (temp.transform.localScale.x + Zoom.zoomFactor, temp.transform.localScale.y + Zoom.zoomFactor, temp.transform.localScale.z + Zoom.zoomFactor);
+                    if (temp != null && !temp.GetComponent<AssetCollision>().IsInvalidPlacement()) {
                         mapObjects.Add(temp);
+                    } else {
+                        Destroy(tempParent);
                     }
                 }
                 if (Actions == null) {
@@ -120,7 +121,9 @@ public class MapEditorManager : MonoBehaviour {
                         CurrentAction = Actions.First;
                     }
                 }
-                LastEncounteredObject = mapObjects[0];
+                if (mapObjects.Count > 0) {
+                    LastEncounteredObject = mapObjects[0];
+                }
             }
             _lastMousePosition = worldPosition;
         }
@@ -257,12 +260,14 @@ public class MapEditorManager : MonoBehaviour {
     /// Removes the asset following the cursor (if any) and deselects the brush tool button and selected sprite/terrain.
     /// </summary>
     public void StopPainting() {
-        ToolStatus["Brush Tool"] = false;
-        Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
-        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
-        foreach (GameObject button in paintButtons) {
-            if (button.GetComponent<AssetController>().Clicked) {
-                button.GetComponent<AssetController>().UnselectButton();
+        if (ToolStatus["Brush Tool"]) {
+            ToolStatus["Brush Tool"] = false;
+            Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
+            GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+            foreach (GameObject button in paintButtons) {
+                if (button.GetComponent<AssetController>().Clicked) {
+                    button.GetComponent<AssetController>().UnselectButton();
+                }
             }
         }
     }
@@ -276,6 +281,19 @@ public class MapEditorManager : MonoBehaviour {
             case "Brush Tool":
                 _paintingMenu.SetActive(true);
                 _selectionMenu.SetActive(false);
+                GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+                foreach (GameObject button in paintButtons) {
+                    if (button.GetComponent<AssetController>().Clicked) {
+                        // if there is an Image being shown on hover already, destroy it
+                        GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+                        Vector2 worldPosition = getMousePosition();
+                        if (activeImage == null) {
+                            Instantiate(AssetImage[button.GetComponent<AssetController>().Id], 
+                                    new Vector3(worldPosition.x, worldPosition.y, 90), 
+                                    Quaternion.identity);
+                        }
+                    }
+                }
                 break;
             // Default case is having the selection menu open
             default:

@@ -13,8 +13,10 @@ public class AssetCollision : MonoBehaviour {
   [SerializeField] private LayerMask _filterMask;
   private Material _originalMaterial;
   [SerializeField] private Material _errorMaterial;
+  // private RayLibrary _rayLib;
 
   void Start() {
+    // _rayLib = new RayLibrary();
     CheckValidPlacement();
     CheckCollisions();
   }
@@ -79,9 +81,17 @@ public class AssetCollision : MonoBehaviour {
   /// Ensures assets are not being placed on UI elements
   /// </summary>
   void CheckValidPlacement() {
-    RayLibrary rayLib = new RayLibrary();
-    if (rayLib.IsPointerOverLayer(_uiLayer)) {
+    if (IsInvalidPlacement()) {
+      Destroy(gameObject.transform.parent.gameObject);
       Destroy(gameObject);
     }
+  }
+
+  /// <summary>
+  /// Checks if the mouse is over a UI element
+  /// </summary>
+  public bool IsInvalidPlacement() {
+    RayLibrary rayLib = new RayLibrary();
+    return (rayLib.IsPointerOverLayer(_uiLayer));
   }
 }
