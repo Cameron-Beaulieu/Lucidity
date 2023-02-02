@@ -51,6 +51,12 @@ public class AssetController : MonoBehaviour {
         _editor.ChangeTools("Brush Tool");
     }
 
+    void OnDisable () {
+        if (Clicked && !_editor["Brush Tool"]) {
+            UnselectButton();
+        }
+    }
+
     /// <summary>
     /// Unselects the associated asset button.
     /// </summary>

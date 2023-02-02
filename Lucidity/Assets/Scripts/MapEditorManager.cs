@@ -281,19 +281,6 @@ public class MapEditorManager : MonoBehaviour {
             case "Brush Tool":
                 _paintingMenu.SetActive(true);
                 _selectionMenu.SetActive(false);
-                GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
-                foreach (GameObject button in paintButtons) {
-                    if (button.GetComponent<AssetController>().Clicked) {
-                        // if there is an Image being shown on hover already, destroy it
-                        GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
-                        Vector2 worldPosition = getMousePosition();
-                        if (activeImage == null) {
-                            Instantiate(AssetImage[button.GetComponent<AssetController>().Id], 
-                                    new Vector3(worldPosition.x, worldPosition.y, 90), 
-                                    Quaternion.identity);
-                        }
-                    }
-                }
                 break;
             // Default case is having the selection menu open
             default:
