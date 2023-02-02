@@ -86,8 +86,8 @@ public class MapEditorManager : MonoBehaviour {
                     tempParent.name = "MapObject Parent";
                     temp.transform.SetParent(tempParent.transform, true);
                     tempParent.transform.SetParent(_mapContainer.transform, true);
-                    // temp.transform.localScale = new Vector3(1,1,1);
-                    // temp.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
+                    tempParent.transform.localPosition = new Vector3(tempParent.transform.localPosition.x,
+                            tempParent.transform.localPosition.y, 0);
                     if (temp != null) {
                         mapObjects.Add(temp);
                     }
