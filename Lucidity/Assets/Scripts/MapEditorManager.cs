@@ -15,6 +15,7 @@ public class MapEditorManager : MonoBehaviour {
     public InputField CountInput;
     public int Count;
     [SerializeField] private GameObject _map;
+    [SerializeField] private GameObject _mapContainer;
     private GameObject _selectionMenu;
     public GameObject SelectionOptions;
     private GameObject _paintingMenu;
@@ -43,20 +44,21 @@ public class MapEditorManager : MonoBehaviour {
 
         string mapSize = CreateNewMap.mapSize;
         RectTransform mapRect = _map.GetComponent<RectTransform>();
+        Vector3 mapScale = _map.transform.localScale;
 
         switch (mapSize) {
           case "Small":
-            _map.transform.localScale = new Vector2(1f, 1f);
+            _map.transform.localScale = new Vector2(mapScale.x, mapScale.y);
             break;
           case "Medium":
-            _map.transform.localScale = new Vector2(1.5f, 1.5f);
+            _map.transform.localScale = new Vector2(mapScale.x * 1.5f, mapScale.y * 1.5f);
             break;
           case "Large":
-            _map.transform.localScale = new Vector2(2f, 2f);
+            _map.transform.localScale = new Vector2(mapScale.x * 2f, mapScale.y * 2f);
             break;
           default:
             Debug.Log("Error with sending map size");
-            _map.transform.localScale = new Vector2(1.5f, 1.5f);
+            _map.transform.localScale = new Vector2(mapScale.x * 1.5f, mapScale.y* 1.5f);
             break;
         }
     }
@@ -80,6 +82,7 @@ public class MapEditorManager : MonoBehaviour {
                     GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
                             new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
                             Quaternion.identity));
+                    temp.transform.SetParent(_mapContainer.transform);
                     if (temp != null) {
                         mapObjects.Add(temp);
                     }
