@@ -14,7 +14,6 @@ public class Pan : MonoBehaviour {
     
     void Update() {
         if (_isDragging && _editor.ToolStatus["Panning Tool"]) {
-            Debug.Log("Dragging");
             Vector2 mousePosition = Input.mousePosition;
             gameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
         }
