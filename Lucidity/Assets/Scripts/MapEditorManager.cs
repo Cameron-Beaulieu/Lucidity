@@ -79,15 +79,17 @@ public class MapEditorManager : MonoBehaviour {
                         >= assetHeight)) {
                 List<GameObject> mapObjects = new List<GameObject>();
                 for (int i = 0; i < Count; i++) {
-                    GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                            new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
-                            Quaternion.identity));
                     GameObject tempParent = new GameObject();
                     tempParent.name = "MapObject Parent";
-                    temp.transform.SetParent(tempParent.transform, true);
                     tempParent.transform.SetParent(_mapContainer.transform, true);
                     tempParent.transform.localPosition = new Vector3(tempParent.transform.localPosition.x,
                             tempParent.transform.localPosition.y, 0);
+                    GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
+                            new Vector3(worldPosition.x + i*2, worldPosition.y, 90),
+                            Quaternion.identity, tempParent.transform));
+                    // temp.transform.localPosition = new Vector3(temp.transform.localPosition.x,
+                    //         temp.transform.localPosition.y, 0);
+                    // temp.transform.SetParent(tempParent.transform, true);
                     if (temp != null) {
                         mapObjects.Add(temp);
                     }

@@ -58,6 +58,7 @@ public class AssetCollision : MonoBehaviour {
     yield return new WaitForSecondsRealtime(0.5f);
     collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
     if (collisionObject == gameObject) {
+      Destroy(gameObject.transform.parent.gameObject);
       Destroy(gameObject);
       }  
     }
