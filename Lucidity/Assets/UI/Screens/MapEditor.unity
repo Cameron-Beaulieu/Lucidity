@@ -7030,9 +7030,10 @@ GameObject:
   - component: {fileID: 860999431}
   - component: {fileID: 860999430}
   - component: {fileID: 860999433}
+  - component: {fileID: 860999434}
   m_Layer: 5
   m_Name: Zoom Out
-  m_TagString: Untagged
+  m_TagString: SelectableTool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7102,9 +7103,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 860999430}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: Select
+      - m_Target: {fileID: 860999434}
+        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
+        m_MethodName: ButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7167,6 +7168,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
   m_EffectDistance: {x: 0.15, y: -0.15}
   m_UseGraphicAlpha: 1
+--- !u!114 &860999434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860999427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9373ebd18f2ce4c59b9d19a4943ff90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &885781263
 GameObject:
   m_ObjectHideFlags: 0
@@ -13203,6 +13216,7 @@ GameObject:
   - component: {fileID: 1548539625}
   - component: {fileID: 1548539627}
   - component: {fileID: 1548539626}
+  - component: {fileID: 1548539628}
   m_Layer: 7
   m_Name: Map Container
   m_TagString: Untagged
@@ -13269,6 +13283,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1440, y: 810}
   m_EdgeRadius: 0
+--- !u!114 &1548539628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548539624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7fbd815ee144db6a8064c076f1b77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1556763095
 GameObject:
   m_ObjectHideFlags: 0
@@ -18123,9 +18149,10 @@ GameObject:
   - component: {fileID: 2120068037}
   - component: {fileID: 2120068036}
   - component: {fileID: 2120068039}
+  - component: {fileID: 2120068040}
   m_Layer: 5
   m_Name: Zoom In
-  m_TagString: Untagged
+  m_TagString: SelectableTool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18195,9 +18222,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2120068036}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: Select
+      - m_Target: {fileID: 2120068040}
+        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
+        m_MethodName: ButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -18260,6 +18287,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
   m_EffectDistance: {x: 0.15, y: -0.15}
   m_UseGraphicAlpha: 1
+--- !u!114 &2120068040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120068033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9373ebd18f2ce4c59b9d19a4943ff90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2120511712
 GameObject:
   m_ObjectHideFlags: 0

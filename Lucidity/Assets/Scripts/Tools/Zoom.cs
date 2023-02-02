@@ -6,20 +6,21 @@ public class Zoom : MonoBehaviour
 {
     private MapEditorManager _editor;
 
-    // Start is called before the first frame update
     void Start()
     {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
     }
 
-    void OnClick() {
-        Debug.Log("Click");
-        if (_editor.ToolStatus["Zoom In"]) {
-            Debug.Log("Zooming in");
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - 50);
-        } else if (_editor.ToolStatus["Zoom Out"]) {
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z + 50);
+    void OnMouseDown () {
+        if (Input.GetKey ("mouse 0")) {
+            if (_editor.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 5) {
+                gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x + 1f, gameObject.transform.localScale.y + 1f, gameObject.transform.localScale.z + 1f);
+            } else if (_editor.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
+                gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x - 1f, gameObject.transform.localScale.y - 1f, gameObject.transform.localScale.z - 1f);
+            }
         }
     }
 }
+
+// TODO: need to add scale factor to asset placement if zoomed in
