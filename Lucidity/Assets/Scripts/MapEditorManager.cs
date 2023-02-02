@@ -82,7 +82,12 @@ public class MapEditorManager : MonoBehaviour {
                     GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
                             new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
                             Quaternion.identity));
-                    temp.transform.SetParent(_mapContainer.transform);
+                    GameObject tempParent = new GameObject();
+                    tempParent.name = "MapObject Parent";
+                    temp.transform.SetParent(tempParent.transform, true);
+                    tempParent.transform.SetParent(_mapContainer.transform, true);
+                    // temp.transform.localScale = new Vector3(1,1,1);
+                    // temp.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
                     if (temp != null) {
                         mapObjects.Add(temp);
                     }

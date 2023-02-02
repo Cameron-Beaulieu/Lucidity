@@ -7972,7 +7972,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
 --- !u!114 &951280683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13203,7 +13203,7 @@ GameObject:
   - component: {fileID: 1548539625}
   - component: {fileID: 1548539627}
   - component: {fileID: 1548539626}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Map Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
