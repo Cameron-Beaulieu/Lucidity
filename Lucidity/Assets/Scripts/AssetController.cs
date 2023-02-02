@@ -52,7 +52,7 @@ public class AssetController : MonoBehaviour {
     }
 
     void OnDisable () {
-        if (Clicked && !_editor["Brush Tool"]) {
+        if (Clicked && !_editor.ToolStatus["Brush Tool"]) {
             UnselectButton();
         }
     }
