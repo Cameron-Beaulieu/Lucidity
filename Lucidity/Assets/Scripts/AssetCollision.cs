@@ -58,6 +58,7 @@ public class AssetCollision : MonoBehaviour {
     yield return new WaitForSecondsRealtime(0.5f);
     collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
     if (collisionObject == gameObject) {
+      Destroy(gameObject.transform.parent.gameObject);
       Destroy(gameObject);
       }  
     }
@@ -78,9 +79,17 @@ public class AssetCollision : MonoBehaviour {
   /// Ensures assets are not being placed on UI elements
   /// </summary>
   void CheckValidPlacement() {
-    RayLibrary rayLib = new RayLibrary();
-    if (rayLib.IsPointerOverLayer(_uiLayer)) {
+    if (IsInvalidPlacement()) {
+      Destroy(gameObject.transform.parent.gameObject);
       Destroy(gameObject);
     }
+  }
+
+  /// <summary>
+  /// Checks if the current mouse position would place an asset down illegally
+  /// </summary>
+  public bool IsInvalidPlacement() {
+    RayLibrary rayLib = new RayLibrary();
+    return (rayLib.IsPointerOverLayer(_uiLayer));
   }
 }

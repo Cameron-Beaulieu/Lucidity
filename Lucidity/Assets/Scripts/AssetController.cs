@@ -26,9 +26,12 @@ public class AssetController : MonoBehaviour {
         }
 
         // Creates image that will follow mouse
-        Instantiate(_editor.AssetImage[Id], 
+        GameObject hoverImage = Instantiate(_editor.AssetImage[Id], 
                     new Vector3(worldPosition.x, worldPosition.y, 90), 
                     Quaternion.identity);
+        hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+                    hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+                    hoverImage.transform.localScale.z + Zoom.zoomFactor);
 
         _editor.CurrentButtonPressed = Id;
 
@@ -46,6 +49,12 @@ public class AssetController : MonoBehaviour {
 
         // set painting status
         _editor.ChangeTools("Brush Tool");
+    }
+
+    void OnDisable () {
+        if (Clicked && !_editor.ToolStatus["Brush Tool"]) {
+            UnselectButton();
+        }
     }
 
     /// <summary>

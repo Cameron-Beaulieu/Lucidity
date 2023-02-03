@@ -15,6 +15,7 @@ public class MapEditorManager : MonoBehaviour {
     public InputField CountInput;
     public int Count;
     [SerializeField] private GameObject _map;
+    [SerializeField] private GameObject _mapContainer;
     private GameObject _selectionMenu;
     public GameObject SelectionOptions;
     private GameObject _paintingMenu;
@@ -23,6 +24,8 @@ public class MapEditorManager : MonoBehaviour {
     [SerializeField] private Slider _brushSizeSlider;
     [SerializeField] private Text _brushSizeText;
     [SerializeField] private float _brushSize;
+    public List<Texture2D> CursorTextures;
+    private Dictionary<string, Texture2D> _cursorDict = new Dictionary<string, Texture2D>();
 
     void Awake() {
         Count = 1;
@@ -41,32 +44,39 @@ public class MapEditorManager : MonoBehaviour {
             _toolKeys.Add(tool.name);
         }
 
+        foreach (Texture2D cursor in CursorTextures) {
+            _cursorDict.Add(cursor.name, cursor);
+        }
+
         string mapSize = CreateNewMap.mapSize;
         RectTransform mapRect = _map.GetComponent<RectTransform>();
+        Vector2 mapScale = _map.transform.localScale;
 
         switch (mapSize) {
-          case "Small":
-            _map.transform.localScale = new Vector2(1f, 1f);
-            break;
-          case "Medium":
-            _map.transform.localScale = new Vector2(1.5f, 1.5f);
-            break;
-          case "Large":
-            _map.transform.localScale = new Vector2(2f, 2f);
-            break;
-          default:
-            Debug.Log("Error with sending map size");
-            _map.transform.localScale = new Vector2(1.5f, 1.5f);
-            break;
+            case "Small":
+                mapScale *= 1f;
+                break;
+            case "Medium":
+                mapScale *= 1.5f;
+                break;
+            case "Large":
+                mapScale *= 2f;
+                break;
+            default:
+                Debug.Log("Error with sending map size");
+                mapScale *= 1.5f;
+                break;
         }
+        _map.transform.localScale = mapScale;
     }
 
     private void Update() {
         Vector2 worldPosition = getMousePosition();
         if (Input.GetMouseButton(0)
-                && AssetButtons[CurrentButtonPressed].Clicked) {
-            float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
-            float assetHeight = AssetPrefabs[CurrentButtonPressed].transform.localScale.y;
+                && AssetButtons[CurrentButtonPressed].Clicked && ToolStatus["Brush Tool"]) {
+            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+            float assetWidth = activeImage.transform.localScale.x;
+            float assetHeight = activeImage.transform.localScale.y;
             // Check if mouse position relative to its last position and the previously encountered
             // asset would allow for a legal placement. Reduces unnecessary computing.
             if (_lastMousePosition != worldPosition &&
@@ -77,14 +87,29 @@ public class MapEditorManager : MonoBehaviour {
                         >= assetHeight)) {
                 List<GameObject> mapObjects = new List<GameObject>();
                 for (int i = 0; i < Count; i++) {
+                    GameObject tempParent = new GameObject();
+                    tempParent.name = AssetPrefabs[CurrentButtonPressed].name + " Parent";
+                    tempParent.transform.SetParent(_mapContainer.transform, true);
+                    tempParent.transform.localPosition = 
+                        new Vector3(tempParent.transform.localPosition.x,
+                            tempParent.transform.localPosition.y, 0);
                     GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
-                            new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
-                            Quaternion.identity));
-                    if (temp != null) {
+                            new Vector3(worldPosition.x + i*2, worldPosition.y, 90),
+                                Quaternion.identity, tempParent.transform));
+                    temp.transform.localScale = new Vector3 (temp.transform.localScale.x 
+                        + Zoom.zoomFactor, temp.transform.localScale.y + Zoom.zoomFactor, 
+                            temp.transform.localScale.z + Zoom.zoomFactor);
+                    if (temp != null 
+                        && !temp.GetComponent<AssetCollision>().IsInvalidPlacement()) {
                         mapObjects.Add(temp);
+                    } else {
+                        Destroy(tempParent);
                     }
                 }
-                if (Actions == null) {
+                if (mapObjects.Count == 0) { 
+                    // Don't add action to history if there are no objects attached to it
+                }
+                else if (Actions == null) {
                     Actions = new LinkedList<EditorAction>();
                     Actions.AddFirst(new PaintAction(mapObjects));
                     CurrentAction = Actions.First;
@@ -110,7 +135,9 @@ public class MapEditorManager : MonoBehaviour {
                         CurrentAction = Actions.First;
                     }
                 }
-                LastEncounteredObject = mapObjects[0];
+                if (mapObjects.Count > 0) {
+                    LastEncounteredObject = mapObjects[0];
+                }
             }
             _lastMousePosition = worldPosition;
         }
@@ -247,12 +274,14 @@ public class MapEditorManager : MonoBehaviour {
     /// Removes the asset following the cursor (if any) and deselects the brush tool button and selected sprite/terrain.
     /// </summary>
     public void StopPainting() {
-        ToolStatus["Brush Tool"] = false;
-        Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
-        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
-        foreach (GameObject button in paintButtons) {
-            if (button.GetComponent<AssetController>().Clicked) {
-                button.GetComponent<AssetController>().UnselectButton();
+        if (ToolStatus["Brush Tool"]) {
+            ToolStatus["Brush Tool"] = false;
+            Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
+            GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+            foreach (GameObject button in paintButtons) {
+                if (button.GetComponent<AssetController>().Clicked) {
+                    button.GetComponent<AssetController>().UnselectButton();
+                }
             }
         }
     }
@@ -267,14 +296,23 @@ public class MapEditorManager : MonoBehaviour {
                 _paintingMenu.SetActive(true);
                 _selectionMenu.SetActive(false);
                 break;
-            // Default case is having the selection menu open
-            default:
+            case "Selection Tool":
                 _paintingMenu.SetActive(false);
                 _selectionMenu.SetActive(true);
                 if (SelectMapObject.SelectedObject == null) {
                     SelectionOptions.SetActive(false);
                 }
                 break;
+            default:
+                _paintingMenu.SetActive(false);
+                _selectionMenu.SetActive(false);
+                break;
+        }
+
+        if (_cursorDict.ContainsKey(toolSelected)) {
+            Cursor.SetCursor(_cursorDict[toolSelected], Vector2.zero, CursorMode.Auto);
+        } else {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
 
         foreach (string toolKey in _toolKeys) {
