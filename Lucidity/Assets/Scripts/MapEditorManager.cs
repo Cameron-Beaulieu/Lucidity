@@ -41,17 +41,17 @@ public class MapEditorManager : MonoBehaviour {
             _toolKeys.Add(tool.name);
         }
 
-        string mapSize = CreateNewMap.mapSize;
+        CreateNewMap.SizeType mapSize = CreateNewMap.Size;
         RectTransform mapRect = _map.GetComponent<RectTransform>();
 
         switch (mapSize) {
-          case "Small":
+          case CreateNewMap.SizeType.Small:
             _map.transform.localScale = new Vector2(1f, 1f);
             break;
-          case "Medium":
+          case CreateNewMap.SizeType.Medium:
             _map.transform.localScale = new Vector2(1.5f, 1.5f);
             break;
-          case "Large":
+          case CreateNewMap.SizeType.Large:
             _map.transform.localScale = new Vector2(2f, 2f);
             break;
           default:

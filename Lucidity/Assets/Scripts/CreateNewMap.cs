@@ -1,64 +1,105 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class CreateNewMap : MonoBehaviour
-{
-    [SerializeField] private InputField mapName;
-    [SerializeField] private Dropdown mapSizeDropdown;
-    [SerializeField] private Dropdown biomeDropdown;
-    [SerializeField] private Button createBtn;
-    [SerializeField] private Button cancelBtn;
-    [SerializeField] private Toggle startingAssetsToggle;
-    public static string mapSize;
+public class CreateNewMap : MonoBehaviour {
+	public enum SizeType {
+		Small,
+		Medium,
+		Large
+	}
+	[SerializeField] private InputField _mapName;
+	[SerializeField] private Dropdown _mapSizeDropdown;
+	[SerializeField] private Dropdown _biomeDropdown;
+	[SerializeField] private Button _createMapButton;
+	[SerializeField] private Button _cancelMapButton;
+	[SerializeField] private Toggle _startingAssetsToggle;
+	private static SizeType _mapSize;
 
-    // Start is called before the first frame update
-    private void Start() {
-        createBtn.onClick.AddListener(CreateMapClickHandler);
-        cancelBtn.onClick.AddListener(CancelMapClickHandler);
-    }
+	private void Start() {
+		_createMapButton.onClick.AddListener(CreateMapClickHandler);
+		_cancelMapButton.onClick.AddListener(CancelMapClickHandler);
+	}
 
-    public string getMapSize() {
-        switch(mapSizeDropdown.value) {
-        case 0:
-            return "Small";
-        case 1:
-            return "Medium";
-        case 2:
-            return "Large";
-        default:
-            return "Medium";
-        }
-    }
+	public static SizeType Size {
+		get { return _mapSize; }
+		set { _mapSize = value; }
+	}
 
-    public Biome getBiome() {
-        switch(biomeDropdown.value) {
-        case 0:
-            return new Biome(Biome.BiomeType.Forest);
-        case 1:
-            return new Biome(Biome.BiomeType.Desert);
-        case 2:
-            return new Biome(Biome.BiomeType.Ocean);
-        default:
-            return new Biome(Biome.BiomeType.Forest);
-        }
-    }
+	/// <summary>
+	/// Map name accessor.
+	/// </summary>
+	/// <returns>
+	/// <c>string</c> of the map.
+	/// </returns>
+	public string getMapName() { return _mapName.text; }
 
+	/// <summary>
+	/// Biome size accessor.
+	/// </summary>
+	/// <returns>
+	/// Enumerated <c>SizeType</c> corresponding to the map size.
+	/// </returns>
+	public SizeType getMapSize() {
+		switch(_mapSizeDropdown.value) {
+			case 0:
+				return SizeType.Small;
+			case 1:
+				return SizeType.Medium;
+			case 2:
+				return SizeType.Large;
+			default:
+				return SizeType.Medium;
+		}
+	}
 
-    public void CreateMapClickHandler() {
-        Debug.Log("Create button clicked");
-        Debug.Log("Map name: " + mapName.text);
-        Debug.Log("Map size: " + getMapSize());
-        Debug.Log("Biome: " + getBiome().Name);
-        Debug.Log("Start with assets: " + startingAssetsToggle.isOn);
-        
-        mapSize = getMapSize();
-        SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
-    }
+	/// <summary>
+	/// Biome accessor, providing the desired enumerated <c>BiomeType</c> to constructor.
+	/// </summary>
+	/// <returns>
+	/// <c>Biome</c> with the corresponding <c>BiomeType</c>.
+	/// </returns>
+	public Biome getBiome() {
+		switch(_biomeDropdown.value) {
+			case 0:
+				return new Biome(Biome.BiomeType.Forest);
+			case 1:
+				return new Biome(Biome.BiomeType.Desert);
+			case 2:
+				return new Biome(Biome.BiomeType.Ocean);
+			default:
+				return new Biome(Biome.BiomeType.Forest);
+		}
+	}
 
-    public void CancelMapClickHandler() {
-        Debug.Log("Cancel button clicked");
-    }
+	/// <summary>
+	/// Starting asset toggle accessor.
+	/// </summary>
+	/// <returns>
+	/// <c>bool</c> of starting asset toggle.
+	/// </returns>
+	public bool getStartingAssetsToggle() { return _startingAssetsToggle.isOn; }
+
+	/// <summary>
+	/// Button handler for <c>_createMapButton</c>, selected through in the Unity editor.
+	/// </summary>
+	public void CreateMapClickHandler() {
+		Debug.Log("Map name: " + getMapName());
+		Debug.Log("Map size: " + getMapSize());
+		Debug.Log("Biome: " + getBiome().Name);
+		Debug.Log("Start with assets: " + getStartingAssetsToggle());
+		
+		_mapSize = getMapSize();
+		SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
+	}
+
+	/// <summary>
+	/// Button handler for <c>_cancelMapButton</c>, selected through in the Unity editor.
+	/// </summary>
+	public void CancelMapClickHandler() {
+		Debug.Log("Cancel button clicked");
+		// TODO: Implement cancel creation user flow
+	}
 }

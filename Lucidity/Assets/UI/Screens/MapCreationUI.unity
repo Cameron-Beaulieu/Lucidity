@@ -872,12 +872,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c5bf9acdb616149900e6aaf0c6eac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapName: {fileID: 647274043}
-  mapSizeDropdown: {fileID: 167731028}
-  biomeDropdown: {fileID: 712463850}
-  createBtn: {fileID: 980980207}
-  cancelBtn: {fileID: 507416919}
-  startingAssetsToggle: {fileID: 1504588653}
+  _mapName: {fileID: 647274043}
+  _mapSizeDropdown: {fileID: 167731028}
+  _biomeDropdown: {fileID: 712463850}
+  _createMapButton: {fileID: 980980207}
+  _cancelMapButton: {fileID: 507416919}
+  _startingAssetsToggle: {fileID: 1504588653}
 --- !u!1 &241136727
 GameObject:
   m_ObjectHideFlags: 0
