@@ -90,13 +90,17 @@ public class MapEditorManager : MonoBehaviour {
                     GameObject tempParent = new GameObject();
                     tempParent.name = AssetPrefabs[CurrentButtonPressed].name + " Parent";
                     tempParent.transform.SetParent(_mapContainer.transform, true);
-                    tempParent.transform.localPosition = new Vector3(tempParent.transform.localPosition.x,
+                    tempParent.transform.localPosition = 
+                        new Vector3(tempParent.transform.localPosition.x,
                             tempParent.transform.localPosition.y, 0);
                     GameObject temp = ((GameObject) Instantiate(AssetPrefabs[CurrentButtonPressed],
                             new Vector3(worldPosition.x + i*2, worldPosition.y, 90),
-                            Quaternion.identity, tempParent.transform));
-                    temp.transform.localScale = new Vector3 (temp.transform.localScale.x + Zoom.zoomFactor, temp.transform.localScale.y + Zoom.zoomFactor, temp.transform.localScale.z + Zoom.zoomFactor);
-                    if (temp != null && !temp.GetComponent<AssetCollision>().IsInvalidPlacement()) {
+                                Quaternion.identity, tempParent.transform));
+                    temp.transform.localScale = new Vector3 (temp.transform.localScale.x 
+                        + Zoom.zoomFactor, temp.transform.localScale.y + Zoom.zoomFactor, 
+                            temp.transform.localScale.z + Zoom.zoomFactor);
+                    if (temp != null 
+                        && !temp.GetComponent<AssetCollision>().IsInvalidPlacement()) {
                         mapObjects.Add(temp);
                     } else {
                         Destroy(tempParent);

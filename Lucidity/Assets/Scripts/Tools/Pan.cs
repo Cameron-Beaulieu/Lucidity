@@ -5,7 +5,7 @@ using UnityEngine;
 public class Pan : MonoBehaviour {
     private MapEditorManager _editor;
     private bool _isDragging = false;
-    private Vector3 offset;
+    private Vector3 _offset;
 
     void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -15,14 +15,16 @@ public class Pan : MonoBehaviour {
     void Update() {
         if (_isDragging && _editor.ToolStatus["Panning Tool"]) {
             Vector2 mousePosition = Input.mousePosition;
-            gameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
+            gameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) 
+                + _offset;
         }
 
     }
 
     void OnMouseDown() {
         if (_editor.ToolStatus["Panning Tool"]) {
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            _offset = gameObject.transform.position - 
+                Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _isDragging = true;
         }
     }
