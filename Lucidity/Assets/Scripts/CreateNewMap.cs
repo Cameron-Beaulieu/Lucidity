@@ -36,13 +36,13 @@ public class CreateNewMap : MonoBehaviour
     public Biome getBiome() {
         switch(biomeDropdown.value) {
         case 0:
-            return new Biome(BiomeType.Forest);
+            return new Biome(Biome.BiomeType.Forest);
         case 1:
-            return new Biome(BiomeType.Desert);
+            return new Biome(Biome.BiomeType.Desert);
         case 2:
-            return new Biome(BiomeType.Ocean);
+            return new Biome(Biome.BiomeType.Ocean);
         default:
-            return new Biome(BiomeType.Forest);
+            return new Biome(Biome.BiomeType.Forest);
         }
     }
 
@@ -51,7 +51,7 @@ public class CreateNewMap : MonoBehaviour
         Debug.Log("Create button clicked");
         Debug.Log("Map name: " + mapName.text);
         Debug.Log("Map size: " + getMapSize());
-        Debug.Log("Biome: " + getBiome().getName());
+        Debug.Log("Biome: " + getBiome().Name);
         Debug.Log("Start with assets: " + startingAssetsToggle.isOn);
         
         mapSize = getMapSize();
