@@ -13,10 +13,8 @@ public class AssetCollision : MonoBehaviour {
   [SerializeField] private LayerMask _filterMask;
   private Material _originalMaterial;
   [SerializeField] private Material _errorMaterial;
-  // private RayLibrary _rayLib;
 
   void Start() {
-    // _rayLib = new RayLibrary();
     CheckValidPlacement();
     CheckCollisions();
   }
@@ -88,7 +86,7 @@ public class AssetCollision : MonoBehaviour {
   }
 
   /// <summary>
-  /// Checks if the mouse is over a UI element
+  /// Checks if the current mouse position would place an asset down illegally
   /// </summary>
   public bool IsInvalidPlacement() {
     RayLibrary rayLib = new RayLibrary();

@@ -50,23 +50,24 @@ public class MapEditorManager : MonoBehaviour {
 
         string mapSize = CreateNewMap.mapSize;
         RectTransform mapRect = _map.GetComponent<RectTransform>();
-        Vector3 mapScale = _map.transform.localScale;
+        Vector2 mapScale = _map.transform.localScale;
 
         switch (mapSize) {
-          case "Small":
-            _map.transform.localScale = new Vector2(mapScale.x, mapScale.y);
-            break;
-          case "Medium":
-            _map.transform.localScale = new Vector2(mapScale.x * 1.5f, mapScale.y * 1.5f);
-            break;
-          case "Large":
-            _map.transform.localScale = new Vector2(mapScale.x * 2f, mapScale.y * 2f);
-            break;
-          default:
-            Debug.Log("Error with sending map size");
-            _map.transform.localScale = new Vector2(mapScale.x * 1.5f, mapScale.y* 1.5f);
-            break;
+            case "Small":
+                mapScale *= 1f;
+                break;
+            case "Medium":
+                mapScale *= 1.5f;
+                break;
+            case "Large":
+                mapScale *= 2f;
+                break;
+            default:
+                Debug.Log("Error with sending map size");
+                mapScale *= 1.5f;
+                break;
         }
+        _map.transform.localScale = mapScale;
     }
 
     private void Update() {

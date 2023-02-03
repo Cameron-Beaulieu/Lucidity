@@ -20,7 +20,7 @@ public class Zoom : MonoBehaviour
     }
 
     void OnMouseDown () {
-        if (Input.GetKey ("mouse 0") && !_rayLib.IsPointerOverLayer(_uiLayer)) {
+        if (Input.GetMouseButtonDown(0) && !_rayLib.IsPointerOverLayer(_uiLayer)) {
             if (_editor.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
                 gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x + zoomIncrement, gameObject.transform.localScale.y + zoomIncrement, gameObject.transform.localScale.z + zoomIncrement);
                 zoomFactor += zoomIncrement;
