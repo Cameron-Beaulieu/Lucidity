@@ -15,7 +15,7 @@ public class AssetController : MonoBehaviour {
     }
 
     public void ButtonClicked() {
-        Vector2 worldPosition = MapEditorManager.getMousePosition();
+        Vector2 worldPosition = Mouse.getMousePosition();
         Clicked = true;
 
         GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");

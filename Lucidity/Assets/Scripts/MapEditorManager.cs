@@ -62,7 +62,7 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Update() {
-        Vector2 worldPosition = getMousePosition();
+        Vector2 worldPosition = Mouse.getMousePosition();
         if (Input.GetMouseButton(0)
                 && AssetButtons[CurrentButtonPressed].Clicked) {
             float assetWidth = AssetPrefabs[CurrentButtonPressed].transform.localScale.x;
@@ -115,11 +115,6 @@ public class MapEditorManager : MonoBehaviour {
             _lastMousePosition = worldPosition;
         }
         // TODO: Implement other actions here
-    }
-
-    public static Vector2 getMousePosition() {
-        Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        return Camera.main.ScreenToWorldPoint(screenPosition);
     }
 
     public void Undo() {
