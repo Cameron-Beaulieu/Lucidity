@@ -24,6 +24,8 @@ public class MapEditorManager : MonoBehaviour {
     [SerializeField] private Slider _brushSizeSlider;
     [SerializeField] private Text _brushSizeText;
     [SerializeField] private float _brushSize;
+    public List<Texture2D> CursorTextures;
+    private Dictionary<string, Texture2D> _cursorDict = new Dictionary<string, Texture2D>();
 
     void Awake() {
         Count = 1;
@@ -40,6 +42,10 @@ public class MapEditorManager : MonoBehaviour {
                 ToolStatus.Add(tool.name, false);
             }
             _toolKeys.Add(tool.name);
+        }
+
+        foreach (Texture2D cursor in CursorTextures) {
+            _cursorDict.Add(cursor.name, cursor);
         }
 
         string mapSize = CreateNewMap.mapSize;
@@ -95,7 +101,10 @@ public class MapEditorManager : MonoBehaviour {
                         Destroy(tempParent);
                     }
                 }
-                if (Actions == null) {
+                if (mapObjects.Count == 0) { 
+                    // Don't add action to history if there are no objects attached to it
+                }
+                else if (Actions == null) {
                     Actions = new LinkedList<EditorAction>();
                     Actions.AddFirst(new PaintAction(mapObjects));
                     CurrentAction = Actions.First;
@@ -282,14 +291,23 @@ public class MapEditorManager : MonoBehaviour {
                 _paintingMenu.SetActive(true);
                 _selectionMenu.SetActive(false);
                 break;
-            // Default case is having the selection menu open
-            default:
+            case "Selection Tool":
                 _paintingMenu.SetActive(false);
                 _selectionMenu.SetActive(true);
                 if (SelectMapObject.SelectedObject == null) {
                     SelectionOptions.SetActive(false);
                 }
                 break;
+            default:
+                _paintingMenu.SetActive(false);
+                _selectionMenu.SetActive(false);
+                break;
+        }
+
+        if (_cursorDict.ContainsKey(toolSelected)) {
+            Cursor.SetCursor(_cursorDict[toolSelected], Vector2.zero, CursorMode.Auto);
+        } else {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
 
         foreach (string toolKey in _toolKeys) {
