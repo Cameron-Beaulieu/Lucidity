@@ -6,12 +6,12 @@ using UnityEngine.EventSystems;
 
 public class AssetCollision : MonoBehaviour {
 	[SerializeField] private Material _errorMaterial;
+	private Material _originalMaterial;
+	private LayerMask _filterMask;
 	private int _assetLayer = 6;
+	private int _uiLayer = 5;
 	// Use this to ensure that the Gizmos are being drawn when in Play Mode
 	private bool _detectionStarted = true;
-	private LayerMask _filterMask;
-	private Material _originalMaterial;
-	private int _uiLayer = 5;
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
@@ -35,11 +35,9 @@ public class AssetCollision : MonoBehaviour {
 	/// appropriate amount of time.
 	/// </summary>
 	void CheckAssetCollisions() {
-		Collider[] hitColliders = Physics.OverlapBox(
-			gameObject.transform.position,
-			transform.localScale / 2, Quaternion.identity,
-			_filterMask
-		);
+		Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
+													 transform.localScale / 2, Quaternion.identity,
+													 _filterMask);
 		int collisions = hitColliders.Length;
 		foreach (Collider collisionObject in hitColliders) {
 			// If an object is labeled with the "CollisionObject" tag, then it can be considered as
@@ -57,11 +55,8 @@ public class AssetCollision : MonoBehaviour {
 											.material;
 					collisionObject.gameObject.GetComponent<MeshRenderer>()
 						.material = _errorMaterial;
-					StartCoroutine(
-						RevertMaterialAndDestroy(
-						_originalMaterial,
-						collisionObject.gameObject)
-					);
+					StartCoroutine(RevertMaterialAndDestroy(
+						_originalMaterial,collisionObject.gameObject));
 				}
 			}
 			MapEditorManager.LastEncounteredObject = hitColliders[0].gameObject;

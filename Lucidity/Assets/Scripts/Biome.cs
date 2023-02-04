@@ -8,18 +8,18 @@ public class Biome {
 		Desert,
 		Ocean
 	}
-	private string _groundColour;
 	private BiomeType _name;
+	private string _groundColour;
 	// TODO: Add baseAssets list of MapObjects to class
-
-	public string GroundColour {
-		get { return _groundColour; }
-		set { _groundColour = value; }
-	}
 
 	public BiomeType Name {
 		get { return _name; }
 		set { _name = value; }
+	}
+
+	public string GroundColour {
+		get { return _groundColour; }
+		set { _groundColour = value; }
 	}
 
 	/// <summary>

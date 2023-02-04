@@ -15,8 +15,7 @@ public class StartupScreen : MonoBehaviour {
 	/// <summary>
 	/// Button handler for <c>loadMapButton</c>, selected through in the Unity editor.
 	/// </summary>
-	public void LoadMapClickHandler()
-	{
+	public void LoadMapClickHandler() {
 		Debug.Log("Load map button clicked");
 	}
 

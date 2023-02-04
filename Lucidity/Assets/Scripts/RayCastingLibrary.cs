@@ -49,10 +49,8 @@ namespace RaycastingLibrary {
 		/// <returns>
 		/// <c>true</c> if touching/hovering over a Unity UI element; <c>false</c> otherwise.
 		/// </returns>
-		public bool IsPointerOverLayer(
-			List<RaycastResult> eventSystemRaycastResults,
-			int checkedLayer)
-		{
+		public bool IsPointerOverLayer(List<RaycastResult> eventSystemRaycastResults,
+									   int checkedLayer) {
 			for (int index = 0; index < eventSystemRaycastResults.Count; index++) {
 				RaycastResult currentRaysastResult = eventSystemRaycastResults[index];
 				if (currentRaysastResult.gameObject.layer == checkedLayer) {

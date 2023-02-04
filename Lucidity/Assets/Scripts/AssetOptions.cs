@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class AssetOptions : MonoBehaviour {
 	[SerializeField] private Slider _brushSizeSlider;
 	[SerializeField] private Text _brushSizeText;
+	private static float _brushSize;
 	[SerializeField] private InputField _countInput;
 	private static int _assetCount;
-	private static float _brushSize;
 
 	public static int AssetCount {
 		get { return _assetCount; }

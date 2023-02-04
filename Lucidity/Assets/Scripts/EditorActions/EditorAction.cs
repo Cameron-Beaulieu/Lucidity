@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EditorAction {
-	public enum ActionType
-	{
+	public enum ActionType {
 		Paint,
 		DeleteMapObject,
 		MoveMapObject,
@@ -15,16 +14,16 @@ public abstract class EditorAction {
 		MoveLayer,
 		RenameLayer
 	}
-	private List<GameObject> _relatedObjects = new List<GameObject>();
 	private ActionType _type;
-	
-	public List<GameObject> RelatedObjects {
-		get { return _relatedObjects; }
-		set { _relatedObjects = value; }
-	}
+	private List<GameObject> _relatedObjects = new List<GameObject>();
 
 	public ActionType Type {
 		get { return _type; }
 		set { _type = value; }
+	}
+
+	public List<GameObject> RelatedObjects {
+		get { return _relatedObjects; }
+		set { _relatedObjects = value; }
 	}
 }

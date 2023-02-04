@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MapEditorManager : MonoBehaviour {
-	public static LinkedList<EditorAction> Actions;
 	public List<AssetController> AssetButtons;
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
+	public static LinkedList<EditorAction> Actions;
 	private static LinkedListNode<EditorAction> _currentAction;
+	private static GameObject _map;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
-	private static GameObject _map;
 
 	public static LinkedListNode<EditorAction> CurrentAction {
 		get { return _currentAction; }
@@ -73,19 +73,17 @@ public class MapEditorManager : MonoBehaviour {
 			// Check if mouse position relative to its last position and the previously encountered
 			// asset would allow for a legal placement. Reduces unnecessary computing
 			if (Mouse.LastMousePosition != worldPosition
-				&& (LastEncounteredObject == null
-					|| Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
-						>= assetWidth
-					|| Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
-						>= assetHeight))
-			{
+					&& (LastEncounteredObject == null
+						|| Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
+							>= assetWidth
+						|| Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
+							>= assetHeight)) {
 				List<GameObject> mapObjects = new List<GameObject>();
 				for (int i = 0; i < AssetOptions.AssetCount; i++) {
 					GameObject newGameObject = (GameObject) Instantiate(
 						AssetPrefabs[_currentButtonPressed],
 						new Vector3(worldPosition.x + i*2, worldPosition.y, 0),
-						Quaternion.identity
-					);
+						Quaternion.identity);
 					if (newGameObject != null) {
 						mapObjects.Add(newGameObject);
 					}
@@ -132,14 +130,10 @@ public class MapEditorManager : MonoBehaviour {
 	/// <c>LinkedListNode</c> of the <c>EditorAction</c> to remove from the linked list (and its
 	/// associated actions).
 	/// </param>
-	private void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete)
-	{
-		while (actionToDelete != null)
-		{
-			if (actionToDelete.Value.Type == EditorAction.ActionType.Paint)
-			{
-				foreach (GameObject obj in actionToDelete.Value.RelatedObjects)
-				{
+	private void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
+		while (actionToDelete != null) {
+			if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
+				foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
 					Destroy(obj);
 				}
 			}
@@ -206,27 +200,20 @@ public class MapEditorManager : MonoBehaviour {
 	/// <summary>
 	/// Action redo functionality.
 	/// </summary>
-	public void Undo()
-	{
-		if (_currentAction != null)
-		{
+	public void Undo() {
+		if (_currentAction != null) {
 			EditorAction actionToUndo = _currentAction.Value;
-			switch (actionToUndo.Type)
-			{
+			switch (actionToUndo.Type) {
 				case EditorAction.ActionType.Paint:
-					foreach (GameObject obj in actionToUndo.RelatedObjects)
-					{
-						if (obj != null)
-						{
+					foreach (GameObject obj in actionToUndo.RelatedObjects) {
+						if (obj != null) {
 							obj.SetActive(false);
 						}
 					}
 					break;
 				case EditorAction.ActionType.DeleteMapObject:
-					foreach (GameObject obj in actionToUndo.RelatedObjects)
-					{
-						if (obj != null)
-						{
+					foreach (GameObject obj in actionToUndo.RelatedObjects) {
+						if (obj != null) {
 							obj.SetActive(true);
 						}
 					}
@@ -253,12 +240,10 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					break;
 			}
-			if (_currentAction.Previous != null)
-			{
+			if (_currentAction.Previous != null) {
 				_currentAction = _currentAction.Previous;
 			}
-			else
-			{
+			else {
 				_currentAction = null;
 			}
 		}

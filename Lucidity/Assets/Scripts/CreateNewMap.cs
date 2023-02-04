@@ -10,12 +10,12 @@ public class CreateNewMap : MonoBehaviour {
 		Medium,
 		Large
 	}
-	[SerializeField] private Dropdown _biomeDropdown;
-	[SerializeField] private Button _cancelMapButton;
-	[SerializeField] private Button _createMapButton;
 	[SerializeField] private InputField _mapName;
 	[SerializeField] private Dropdown _mapSizeDropdown;
+	[SerializeField] private Dropdown _biomeDropdown;
 	[SerializeField] private Toggle _startingAssetsToggle;
+	[SerializeField] private Button _cancelMapButton;
+	[SerializeField] private Button _createMapButton;
 	private static SizeType _mapSize;
 
 	public static SizeType Size {
@@ -32,8 +32,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// Button handler for <c>_cancelMapButton</c>, selected through in the Unity editor.
 	/// </summary>
 	public void CancelMapClickHandler() {
-		Debug.Log("Cancel button clicked");
-		// TODO: Implement cancel creation user flow
+		SceneManager.LoadScene("StarterScreenUI", LoadSceneMode.Single);
 	}
 
 	/// <summary>
