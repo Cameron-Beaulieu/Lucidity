@@ -24,7 +24,7 @@ public class AssetController : MonoBehaviour {
 	public void SelectAssetClickHandler() {
 		Vector2 worldPosition = Mouse.getMousePosition();
 		Clicked = true;
-		_editor.CurrentButtonPressed = Id;
+		MapEditorManager.CurrentButtonPressed = Id;
 		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 		// if there is an Image being shown on hover already, destroy it
 		if (activeImage != null) {
@@ -44,7 +44,7 @@ public class AssetController : MonoBehaviour {
 		parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
 		_prevParentContainer = parentContainer;
 		// set painting status
-		_editor.ChangeTools("Brush Tool");
+		Tool.ChangeTools("Brush Tool");
 	}
 
 	/// <summary>

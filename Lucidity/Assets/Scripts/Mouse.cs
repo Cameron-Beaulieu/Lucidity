@@ -5,6 +5,12 @@ using UnityEngine.EventSystems;
 
 public class Mouse : MonoBehaviour {
 	private int _uiLayer = 5;
+	private static Vector2 _lastMousePosition;
+
+	public static Vector2 LastMousePosition {
+		get { return _lastMousePosition; }
+		set { _lastMousePosition = value; }
+	}
 
 	void Update() {
 		Vector2 worldPosition = getMousePosition();

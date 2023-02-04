@@ -58,9 +58,7 @@ public class AssetCollision : MonoBehaviour {
 						collisionObject.gameObject));
 				}
 			}
-			GameObject.FindGameObjectWithTag("MapEditorManager")
-				.GetComponent<MapEditorManager>()
-				.LastEncounteredObject = hitColliders[0].gameObject;
+			MapEditorManager.LastEncounteredObject = hitColliders[0].gameObject;
 		}
 	}
 

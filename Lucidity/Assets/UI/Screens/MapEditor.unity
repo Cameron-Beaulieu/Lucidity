@@ -245,11 +245,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &1735291 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5643009079545502601, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
-  m_PrefabInstance: {fileID: 5643009079544078834}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1735292 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5643009079545502606, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
@@ -741,11 +736,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 37751768}
   m_CullTransparentMesh: 1
---- !u!1 &48453808 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1189500993391155859, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
-  m_PrefabInstance: {fileID: 1189500993372324387}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &48453812 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1189500993391155863, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
@@ -2782,11 +2772,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 282408486}
   m_CullTransparentMesh: 1
---- !u!1 &293256245 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6237695284832058577, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
-  m_PrefabInstance: {fileID: 6237695284553548004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &293256246 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6237695284832058578, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
@@ -6879,6 +6864,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 839706698}
   m_CullTransparentMesh: 1
+--- !u!1 &841502720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5643009079545502601, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
+  m_PrefabInstance: {fileID: 5643009079544078834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &848843752
 GameObject:
   m_ObjectHideFlags: 0
@@ -7240,19 +7230,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnDidEndEdit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1640203419}
-        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
-        m_MethodName: ReadCountInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8355,19 +8333,7 @@ MonoBehaviour:
   m_Value: 50
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1640203419}
-        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
-        m_MethodName: ShowBrushSizeSlider
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &989587153
 GameObject:
   m_ObjectHideFlags: 0
@@ -8697,9 +8663,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c073312a2ce1ab049ac7756b6a299819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _filterMask:
-    serializedVersion: 2
-    m_Bits: 64
   _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
 --- !u!114 &1053491540
 MonoBehaviour:
@@ -9660,6 +9623,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1151522060}
   m_CullTransparentMesh: 1
+--- !u!1 &1154778646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6237695284832058577, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
+  m_PrefabInstance: {fileID: 6237695284553548004}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1168008136
 GameObject:
   m_ObjectHideFlags: 0
@@ -10412,19 +10380,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1275525379}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1640203419}
-        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
-        m_MethodName: Undo
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1275525379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10563,19 +10519,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1284587186}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1284587189}
-        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
-        m_MethodName: ButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1284587186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14169,19 +14113,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1639185545}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1640203419}
-        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
-        m_MethodName: Redo
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1639185545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14245,6 +14177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1640203420}
   - component: {fileID: 1640203419}
+  - component: {fileID: 1640203421}
   m_Layer: 0
   m_Name: MapEditorManager
   m_TagString: MapEditorManager
@@ -14271,23 +14204,14 @@ MonoBehaviour:
   - {fileID: 1529515672}
   AssetPrefabs:
   - {fileID: 1053491531}
-  - {fileID: 48453808}
-  - {fileID: 293256245}
-  - {fileID: 1735291}
+  - {fileID: 1967082140}
+  - {fileID: 1154778646}
+  - {fileID: 841502720}
   AssetImage:
   - {fileID: 4242923788276325788, guid: 7ffe2cbc2ec123f4eb536e5db2c95e2d, type: 3}
   - {fileID: 1189500993391155859, guid: f398e1cfd2afbb242becc286843b1e12, type: 3}
   - {fileID: 6237695284832058577, guid: e3a42aa31e2dbf3448e2fd9b56d8a39e, type: 3}
   - {fileID: 5643009079545502601, guid: 042d12bce040c154f8561a44574aca6b, type: 3}
-  CurrentButtonPressed: 0
-  CountInput: {fileID: 885781265}
-  Count: 0
-  _map: {fileID: 951280678}
-  SelectionOptions: {fileID: 0}
-  LastEncounteredObject: {fileID: 0}
-  _brushSizeSlider: {fileID: 979449212}
-  _brushSizeText: {fileID: 1431803178}
-  _brushSize: 0
 --- !u!4 &1640203420
 Transform:
   m_ObjectHideFlags: 0
@@ -14303,6 +14227,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1640203421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640203418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0190867fac9915a42a65a44408d53b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _countInput: {fileID: 885781265}
+  _brushSizeSlider: {fileID: 979449212}
+  _brushSizeText: {fileID: 1431803178}
 --- !u!1 &1659620801
 GameObject:
   m_ObjectHideFlags: 0
@@ -14388,19 +14327,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1659620804}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1659620807}
-        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
-        m_MethodName: ButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1659620804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16425,6 +16352,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964454618}
   m_CullTransparentMesh: 1
+--- !u!1 &1967082140 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1189500993391155859, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
+  m_PrefabInstance: {fileID: 1189500993372324387}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1974198793
 GameObject:
   m_ObjectHideFlags: 0
@@ -17495,19 +17427,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2085592400}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2085592403}
-        m_TargetAssemblyTypeName: Tool, Assembly-CSharp
-        m_MethodName: ButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2085592400
 MonoBehaviour:
   m_ObjectHideFlags: 0
