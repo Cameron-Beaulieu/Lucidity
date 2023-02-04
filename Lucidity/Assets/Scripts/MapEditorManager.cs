@@ -19,6 +19,7 @@ public class MapEditorManager : MonoBehaviour {
     private GameObject _paintingMenu;
     private Vector2 _lastMousePosition;
     public GameObject LastEncounteredObject;
+    [SerializeField] private Slider _scaleSizeSlider;
     [SerializeField] private Slider _brushSizeSlider;
     [SerializeField] private Text _brushSizeText;
     [SerializeField] private float _brushSize;
@@ -125,8 +126,7 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    while ((CurrentAction.Previous != null) && (CurrentAction.Previous.Value.Type == EditorAction.ActionType.ResizeMapObject))
-                    {
+                    while ((CurrentAction.Previous != null) && (CurrentAction.Previous.Value.Type == EditorAction.ActionType.ResizeMapObject)) {
                         CurrentAction = CurrentAction.Previous;
                         actionToUndo = CurrentAction.Value;
                     }
@@ -134,7 +134,8 @@ public class MapEditorManager : MonoBehaviour {
                     {
                         if (obj != null)
                         {
-                            obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).NewSize;
+                            obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
+                            _scaleSizeSlider.value = ((ResizeMapObjectAction)actionToUndo).OldSize.x;
                         }
                     }
                     break;
@@ -206,9 +207,9 @@ public class MapEditorManager : MonoBehaviour {
                         actionToRedo = CurrentAction.Value;
                     }
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
-                        if (obj != null)
-                            {
+                        if (obj != null) {
                                 obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
+                                _scaleSizeSlider.value = ((ResizeMapObjectAction)actionToRedo).NewSize.x;
                             }
                     }
                     break;

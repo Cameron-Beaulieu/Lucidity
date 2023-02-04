@@ -819,8 +819,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1x
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
+  m_sharedMaterial: {fileID: 5577767176045332392, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4255,6 +4255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae7c926ab4194342bcafc0f2244576e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaleSliderValue: {fileID: 1237108172}
 --- !u!4 &531796472
 Transform:
   m_ObjectHideFlags: 0
@@ -8596,6 +8597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae7c926ab4194342bcafc0f2244576e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaleSliderValue: {fileID: 0}
 --- !u!1 &1064300308
 GameObject:
   m_ObjectHideFlags: 0
@@ -10249,8 +10251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScaleSlider: {fileID: 1237108172}
-  SliderText: {fileID: 0}
-  MapObject: {fileID: 0}
+  SliderText: {fileID: 58692664}
 --- !u!1 &1275525375
 GameObject:
   m_ObjectHideFlags: 0
@@ -12745,8 +12746,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Scale:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
+  m_sharedMaterial: {fileID: 5577767176045332392, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -14231,6 +14232,7 @@ MonoBehaviour:
   Count: 0
   SelectionOptions: {fileID: 0}
   LastEncounteredObject: {fileID: 0}
+  _scaleSizeSlider: {fileID: 1237108172}
   _brushSizeSlider: {fileID: 979449212}
   _brushSizeText: {fileID: 1431803178}
   _brushSize: 0

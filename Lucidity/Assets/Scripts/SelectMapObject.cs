@@ -9,16 +9,15 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
+    [SerializeField] private Slider _scaleSliderValue;
     
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
-        //ScaleSlider = GameObject.FindGameObjectWithTag("ScaleSlider");
     }
 
     public void OnPointerClick(PointerEventData eventData) {
         SelectedObject = eventData.pointerClick;
-
 
         if (_outline) {
             Destroy(_outline);
@@ -44,22 +43,20 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     }
 
     public void RotateMapObjectCW() {
-        bool IsClockwise = true;
         Quaternion oldRotation = SelectedObject.transform.rotation;
         SelectedObject.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
         // for UNDO/REDO
         List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
-        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, IsClockwise));
+        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, true));
         _editor.CurrentAction = _editor.CurrentAction.Next;
     }
 
     public void RotateMapObjectCCW() {
-        bool IsClockwise = false;
         Quaternion oldRotation = SelectedObject.transform.rotation;
         SelectedObject.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
         // for UNDO/REDO
         List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
-        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, IsClockwise));
+        _editor.Actions.AddAfter(_editor.CurrentAction, new RotateMapObjectAction(objectsToRotate, false));
         _editor.CurrentAction = _editor.CurrentAction.Next;
     }
 
