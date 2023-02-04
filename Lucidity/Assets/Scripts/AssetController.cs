@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AssetController : MonoBehaviour {
-	public int Id;
 	public bool Clicked;
+	public int Id;
 	private static GameObject _prevParentContainer;
 	private Button _assetButton;
 	private MapEditorManager _editor;
@@ -31,11 +31,13 @@ public class AssetController : MonoBehaviour {
 			Destroy(activeImage);
 		}
 		// Creates image that will follow mouse
-		Instantiate(_editor.AssetImage[Id], 
-					new Vector3(worldPosition.x, worldPosition.y, 90), 
-					Quaternion.identity);
-		GameObject parentContainer = GameObject.Find(
-			_editor.AssetPrefabs[Id].transform.parent.name);
+		Instantiate(
+			_editor.AssetImage[Id], 
+			new Vector3(worldPosition.x, worldPosition.y, 90), 
+			Quaternion.identity
+		);
+		GameObject parentContainer = GameObject
+			.Find(_editor.AssetPrefabs[Id].transform.parent.name);
 		// Un-highlight previously selected asset in "Sprites" pane
 		if (_prevParentContainer != null) {
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);

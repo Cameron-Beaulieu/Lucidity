@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Tool : MonoBehaviour {
-	private MapEditorManager _editor;
-	private string _name;
-	private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
+	public static List<string> ToolKeys = new List<string>();
+	public static Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
 	private static GameObject _paintingMenu;
 	private static GameObject _selectionMenu;
 	private static GameObject _selectionOptions;
-	public static List<string> ToolKeys = new List<string>();
-	public static Dictionary<string, bool> ToolStatus = new Dictionary<string, bool>();
+	private MapEditorManager _editor;
+	private string _name;
+	private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
 
 	public static GameObject PaintingMenu {
 		get { return _paintingMenu; }
@@ -38,23 +38,15 @@ public class Tool : MonoBehaviour {
 	void Update() {
 		if (ToolStatus.ContainsKey(_name)
 				&& ToolStatus[_name]
-				&& gameObject.GetComponent<Image>().color != Color.black) {
+				&& gameObject.GetComponent<Image>().color != Color.black)
+		{
 			gameObject.GetComponent<Image>().color = Color.black;
 		} else if (ToolStatus.ContainsKey(_name)
 				&& !ToolStatus[_name]
-				&& gameObject.GetComponent<Image>().color != _unselected) {
+				&& gameObject.GetComponent<Image>().color != _unselected)
+		{
 			gameObject.GetComponent<Image>().color = _unselected;
 		}
-	}
-
-	/// <summary>
-	/// Change the tool being used by the map editor to appropriately reflect the selected tool.
-	/// </summary>
-	public void ToolButtonClickHandler() {
-		if (_name != "Brush Tool" && ToolStatus["Brush Tool"]) {
-			StopPainting();
-		}
-		ChangeTools(_name);
 	}
 
 	/// <summary>
@@ -99,5 +91,15 @@ public class Tool : MonoBehaviour {
 				button.GetComponent<AssetController>().UnselectButton();
 			}
 		}
+	}
+
+	/// <summary>
+	/// Change the tool being used by the map editor to appropriately reflect the selected tool.
+	/// </summary>
+	public void ToolButtonClickHandler() {
+		if (_name != "Brush Tool" && ToolStatus["Brush Tool"]) {
+			StopPainting();
+		}
+		ChangeTools(_name);
 	}
 }

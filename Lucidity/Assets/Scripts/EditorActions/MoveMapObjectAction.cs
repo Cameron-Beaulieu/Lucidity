@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveMapObjectAction : EditorAction {
-	private Vector2 _oldPosition;
 	private Vector2 _newPosition;
+	private Vector2 _oldPosition;
+
+	public Vector2 NewPosition {
+		get { return _newPosition; }
+	}
+
+	public Vector2 OldPosition {
+		get { return _oldPosition; }
+	}
 
 	/// <summary>
 	/// Move map object constructor, initializing the <c>EditorAction</c> attributes and map
@@ -14,26 +22,19 @@ public class MoveMapObjectAction : EditorAction {
 	/// List of <c>GameObject</c> that are related to the map object to be moved.
 	/// </param>
 	/// <param name="oldPosition">
-	/// 2D vector corresponding to the original 2D position of the map object to be moved.
+	/// <c>Vector2</c> corresponding to the original 2D position of the map object to be moved.
 	/// </param>
 	/// <param name="newPosition">
-	/// 2D vector corresponding to the new 2D position for the map object to be moved to.
+	/// <c>Vector2</c> corresponding to the new 2D position for the map object to be moved to.
 	/// </param>
 	public MoveMapObjectAction (
 			List<GameObject> relatedObjects,
 			Vector2 oldPosition,
-			Vector2 newPosition) {
+			Vector2 newPosition)
+	{
 		base.Type = ActionType.MoveMapObject;
 		base.RelatedObjects = relatedObjects;
 		_oldPosition = oldPosition;
 		_newPosition = newPosition;
-	}
-
-	public Vector2 OldPosition {
-		get { return _oldPosition; }
-	}
-
-	public Vector2 NewPosition {
-		get { return _newPosition; }
 	}
 }

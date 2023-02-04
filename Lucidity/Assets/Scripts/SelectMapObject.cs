@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
-
 	public static GameObject SelectedObject;
 	private static Outline _outline;
 

@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AssetOptions : MonoBehaviour {
-	[SerializeField] private InputField _countInput;
 	[SerializeField] private Slider _brushSizeSlider;
 	[SerializeField] private Text _brushSizeText;
+	[SerializeField] private InputField _countInput;
 	private static int _assetCount;
 	private static float _brushSize;
 
