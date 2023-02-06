@@ -6,12 +6,10 @@ using UnityEngine;
 public class MapData {
     public string MapSize;
     public Biome Biome;
-    public bool StartingAssets;
 
-    public MapData(string mapSize, Biome biome, bool startingAssets) {
+    public MapData(string mapSize, Biome biome) {
         MapSize = mapSize;
         Biome = biome;
-        StartingAssets = startingAssets;
     }
 
     public string Serialize() {
