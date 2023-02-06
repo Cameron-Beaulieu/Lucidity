@@ -15,7 +15,7 @@ public class CreateNewMap : MonoBehaviour
     [SerializeField] private Button createBtn;
     [SerializeField] private Button cancelBtn;
     [SerializeField] private Toggle startingAssetsToggle;
-    [SerializeField] private Text _errorMessage;
+    private Text _errorMessage;
     public static string mapSize;
 
     // Start is called before the first frame update
