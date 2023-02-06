@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class CreateNewMap : MonoBehaviour
 {
@@ -12,12 +15,14 @@ public class CreateNewMap : MonoBehaviour
     [SerializeField] private Button createBtn;
     [SerializeField] private Button cancelBtn;
     [SerializeField] private Toggle startingAssetsToggle;
+    private Text _errorMessage;
     public static string mapSize;
 
     // Start is called before the first frame update
     private void Start() {
         createBtn.onClick.AddListener(CreateMapClickHandler);
         cancelBtn.onClick.AddListener(CancelMapClickHandler);
+        _errorMessage = GameObject.Find("ErrorMessage").GetComponent<Text>();
     }
 
     public string getMapSize() {
@@ -48,14 +53,39 @@ public class CreateNewMap : MonoBehaviour
 
 
     public void CreateMapClickHandler() {
-        Debug.Log("Create button clicked");
-        Debug.Log("Map name: " + mapName.text);
-        Debug.Log("Map size: " + getMapSize());
-        Debug.Log("Biome: " + getBiome().getName());
-        Debug.Log("Start with assets: " + startingAssetsToggle.isOn);
+        if (String.IsNullOrWhiteSpace(mapName.text)) {
+            _errorMessage.text = "You must provide a file name to create a map";
+            mapName.Select();
+            return;
+        }
         
-        mapSize = getMapSize();
-        SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
+        if (CreateFile()) {
+            SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
+        }
+    }
+
+    /// <summary>
+    /// Creates a json file at a location specified by the user. Returns true if the file creation
+    /// is successful. Otherwise an error message is displayed on the UI and false is returned.
+    /// </summary>
+    private bool CreateFile() {
+        string directory = EditorUtility.OpenFolderPanel("Select Directory", "", "");
+        // cancelled selecting a directory
+        if (directory.Equals("")) { return false; }
+
+        string fileName = mapName.text;
+        
+        fileName = directory + "/" + fileName + ".json";
+
+        if (!File.Exists(fileName)) {
+            MapData jsonContent = new MapData(getMapSize(), getBiome());
+            File.WriteAllText(fileName, jsonContent.Serialize());
+            return true;
+        }
+        
+        _errorMessage.text = "There is already a map with that name in the chosen directory";
+        mapName.Select();
+        return false;
     }
 
     public void CancelMapClickHandler() {
