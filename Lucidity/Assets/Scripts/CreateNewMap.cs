@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +53,7 @@ public class CreateNewMap : MonoBehaviour
 
 
     public void CreateMapClickHandler() {
-        if ((mapName.text).Equals("")) {
+        if (String.IsNullOrWhiteSpace(mapName.text)) {
             _errorMessage.text = "You must provide a file name to create a map";
             mapName.Select();
             return;
