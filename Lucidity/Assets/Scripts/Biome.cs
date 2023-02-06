@@ -1,15 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Biome {
 	public enum BiomeType {
 		Forest,
 		Desert,
 		Ocean
 	}
-	private BiomeType _name;
-	private string _groundColour;
+	[SerializeField] private BiomeType _name;
+	[SerializeField] private string _groundColour;
 	// TODO: Add baseAssets list of MapObjects to class
 
 	public BiomeType Name {
