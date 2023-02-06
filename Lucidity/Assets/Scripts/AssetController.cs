@@ -22,7 +22,6 @@ public class AssetController : MonoBehaviour {
 	/// Button handler for <c>_assetButton</c>.
 	/// </summary>
 	public void SelectAssetClickHandler() {
-		Vector2 worldPosition = Mouse.getMousePosition();
 		Clicked = true;
 		MapEditorManager.CurrentButtonPressed = Id;
 		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
@@ -31,9 +30,16 @@ public class AssetController : MonoBehaviour {
 			Destroy(activeImage);
 		}
 		// Creates image that will follow mouse
-		Instantiate(_editor.AssetImage[Id],
-					new Vector3(worldPosition.x, worldPosition.y, 90),
-					Quaternion.identity);
+		// GameObject hoverImage = Instantiate(_editor.AssetImage[Id],
+		// 			new Vector3(worldPosition.x, worldPosition.y, 90),
+		// 			Quaternion.identity);
+		// hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+        //             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+        //             hoverImage.transform.localScale.z + Zoom.zoomFactor);
+		CreateFollowingImage(_editor.AssetImage[Id]);
+
+		MapEditorManager.CurrentButtonPressed = Id;
+
 		GameObject parentContainer = GameObject.Find(
 			_editor.AssetPrefabs[Id].transform.parent.name);
 		// Un-highlight previously selected asset in "Sprites" pane
@@ -47,6 +53,16 @@ public class AssetController : MonoBehaviour {
 		Tool.ChangeTools("Brush Tool");
 	}
 
+	public static void CreateFollowingImage (GameObject prefab) {
+		Vector2 worldPosition = Mouse.getMousePosition();
+		GameObject hoverImage = Instantiate(prefab,
+					new Vector3(worldPosition.x, worldPosition.y, 90),
+					Quaternion.identity);
+		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+                    hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+                    hoverImage.transform.localScale.z + Zoom.zoomFactor);
+	}
+
 	/// <summary>
 	/// Unselects the selected button.
 	/// </summary>
@@ -56,4 +72,10 @@ public class AssetController : MonoBehaviour {
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
 		}
 	}
+
+	void OnDisable () {
+        if (Clicked && !Tool.ToolStatus["Brush Tool"]) {
+            UnselectButton();
+        }
+    }
 }

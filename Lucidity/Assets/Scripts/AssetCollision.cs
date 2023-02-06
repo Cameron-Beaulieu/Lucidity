@@ -67,8 +67,8 @@ public class AssetCollision : MonoBehaviour {
 	/// Checks asset placement and ensures that assets cannot be placed over UI elements.
 	/// </summary>
 	void CheckAssetOnUI() {
-		RayLibrary rayLib = new RayLibrary();
-		if (rayLib.IsPointerOverLayer(_uiLayer)) {
+		if (IsInvalidPlacement()) {
+			Destroy(gameObject.transform.parent.gameObject);
 			Destroy(gameObject);
 		}
 	}
@@ -90,5 +90,13 @@ public class AssetCollision : MonoBehaviour {
 		if (collisionObject == gameObject) {
 			Destroy(gameObject);
 		}
+	}
+
+	/// <summary>
+	/// Checks if the current mouse position would place an asset down illegally
+	/// </summary>
+	public bool IsInvalidPlacement() {
+		RayLibrary rayLib = new RayLibrary();
+		return (rayLib.IsPointerOverLayer(_uiLayer));
 	}
 }

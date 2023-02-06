@@ -61,12 +61,16 @@ public class Tool : MonoBehaviour {
 				_paintingMenu.SetActive(true);
 				_selectionMenu.SetActive(false);
 				break;
-			default:    // Default case is having the selection menu open
+			case "Selection Tool":
 				_paintingMenu.SetActive(false);
 				_selectionMenu.SetActive(true);
 				if (SelectMapObject.SelectedObject == null) {
 					SelectionOptions.SetActive(false);
 				}
+				break;
+			default:    // Default case is having the selection menu open
+				_paintingMenu.SetActive(false);
+				_selectionMenu.SetActive(false);
 				break;
 		}
 		foreach (string toolKey in ToolKeys) {
@@ -76,6 +80,12 @@ public class Tool : MonoBehaviour {
 				ToolStatus[toolKey] = true;
 			}
 		}
+
+		if (MapEditorManager.ToolToCursorMap.ContainsKey(toolSelected)) {
+			Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], Vector2.zero, CursorMode.Auto);
+		} else {
+			Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+		}
 	}
 
 	/// <summary>
@@ -83,14 +93,16 @@ public class Tool : MonoBehaviour {
 	/// selected sprite/terrain.
 	/// </summary>
 	public void StopPainting() {
-		ToolStatus["Brush Tool"] = false;
-		Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
-		GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
-		foreach (GameObject button in paintButtons) {
-			if (button.GetComponent<AssetController>().Clicked) {
-				button.GetComponent<AssetController>().UnselectButton();
-			}
-		}
+		if (ToolStatus["Brush Tool"]) {
+            ToolStatus["Brush Tool"] = false;
+            Destroy(GameObject.FindGameObjectWithTag("AssetImage"));
+            GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+            foreach (GameObject button in paintButtons) {
+                if (button.GetComponent<AssetController>().Clicked) {
+                    button.GetComponent<AssetController>().UnselectButton();
+                }
+            }
+        }
 	}
 
 	/// <summary>
