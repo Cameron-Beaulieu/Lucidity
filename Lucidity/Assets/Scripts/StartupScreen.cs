@@ -4,19 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class StartupScreen : MonoBehaviour {
-    [SerializeField] private Button newMapBtn;
-    [SerializeField] private Button loadMapBtn;
-    // Start is called before the first frame update
-    private void Start() {
-        newMapBtn.onClick.AddListener(NewMapClickHandler);
-        loadMapBtn.onClick.AddListener(LoadMapClickHandler);
-    }
-    
-    public void NewMapClickHandler() {
-        Debug.Log("Create new map button clicked");
-    }
+	[SerializeField] private Button loadMapButton;
+	[SerializeField] private Button newMapButton;
 
-    public void LoadMapClickHandler() {
-        Debug.Log("Load map button clicked");
-    }
+	private void Start() {
+		newMapButton.onClick.AddListener(NewMapClickHandler);
+		loadMapButton.onClick.AddListener(LoadMapClickHandler);
+	}
+
+	/// <summary>
+	/// Button handler for <c>loadMapButton</c>, selected through in the Unity editor.
+	/// </summary>
+	public void LoadMapClickHandler() {
+		Debug.Log("Load map button clicked");
+	}
+
+	/// <summary>
+	/// Button handler for <c>newMapButton</c>, selected through in the Unity editor.
+	/// </summary>
+	public void NewMapClickHandler() {
+		Debug.Log("Create new map button clicked");
+	}
 }

@@ -4,10 +4,10 @@ using UnityEngine;
 // TODO: Add other necessary fields for saving/loading files
 [Serializable]
 public class MapData {
-    public string MapSize;
+    public CreateNewMap.SizeType MapSize;
     public Biome Biome;
 
-    public MapData(string mapSize, Biome biome) {
+    public MapData(CreateNewMap.SizeType mapSize, Biome biome) {
         MapSize = mapSize;
         Biome = biome;
     }

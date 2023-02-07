@@ -21,13 +21,13 @@ public class Zoom : MonoBehaviour
 
     void OnMouseDown () {
         if (Input.GetMouseButtonDown(0) && !_rayLib.IsPointerOverLayer(_uiLayer)) {
-            if (_editor.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
+            if (Tool.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
                 gameObject.transform.localScale = 
                     new Vector3(gameObject.transform.localScale.x + zoomIncrement, 
                         gameObject.transform.localScale.y + zoomIncrement, 
                             gameObject.transform.localScale.z + zoomIncrement);
                 zoomFactor += zoomIncrement;
-            } else if (_editor.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
+            } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
                 gameObject.transform.localScale =
                     new Vector3(gameObject.transform.localScale.x - zoomIncrement, 
                         gameObject.transform.localScale.y - zoomIncrement, 

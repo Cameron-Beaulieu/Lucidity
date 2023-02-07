@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -952,13 +952,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c5bf9acdb616149900e6aaf0c6eac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapName: {fileID: 647274043}
-  mapSizeDropdown: {fileID: 167731028}
-  biomeDropdown: {fileID: 712463850}
-  createBtn: {fileID: 980980207}
-  cancelBtn: {fileID: 507416919}
-  startingAssetsToggle: {fileID: 1504588653}
-  _errorMessage: {fileID: 0}
+  _mapName: {fileID: 647274043}
+  _mapSizeDropdown: {fileID: 167731028}
+  _biomeDropdown: {fileID: 712463850}
+  _startingAssetsToggle: {fileID: 1504588653}
+  _cancelMapButton: {fileID: 507416919}
+  _createMapButton: {fileID: 980980207}
 --- !u!1 &241136727
 GameObject:
   m_ObjectHideFlags: 0

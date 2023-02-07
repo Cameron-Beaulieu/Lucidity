@@ -4,66 +4,78 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AssetController : MonoBehaviour {
-    public int Id;
-    public bool Clicked = false;
-    private MapEditorManager _editor;
-    private static GameObject _prevParentContainer;
+	public int Id;
+	public bool Clicked;
+	private MapEditorManager _editor;
+	private Button _assetButton;
+	private static GameObject _prevParentContainer;
 
-    void Start() {
-        _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-    }
+	void Start() {
+		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+			.GetComponent<MapEditorManager>();
+		_assetButton = gameObject.GetComponent<Button>();
+		_assetButton.onClick.AddListener(SelectAssetClickHandler);
+		Clicked = false;
+	}
 
-    public void ButtonClicked() {
-        Vector2 worldPosition = MapEditorManager.getMousePosition();
-        Clicked = true;
+	/// <summary>
+	/// Button handler for <c>_assetButton</c>.
+	/// </summary>
+	public void SelectAssetClickHandler() {
+		Clicked = true;
+		MapEditorManager.CurrentButtonPressed = Id;
+		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+		// if there is an Image being shown on hover already, destroy it
+		if (activeImage != null) {
+			Destroy(activeImage);
+		}
+		// Creates image that will follow mouse
+		// GameObject hoverImage = Instantiate(_editor.AssetImage[Id],
+		// 			new Vector3(worldPosition.x, worldPosition.y, 90),
+		// 			Quaternion.identity);
+		// hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+        //             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+        //             hoverImage.transform.localScale.z + Zoom.zoomFactor);
+		CreateFollowingImage(_editor.AssetImage[Id]);
 
-        GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+		MapEditorManager.CurrentButtonPressed = Id;
 
-        // if there is an Image being shown on hover already, destroy it
-        if (activeImage != null) {
-            Destroy(activeImage);
-        }
+		GameObject parentContainer = GameObject.Find(
+			_editor.AssetPrefabs[Id].transform.parent.name);
+		// Un-highlight previously selected asset in "Sprites" pane
+		if (_prevParentContainer != null) {
+			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
+		}
+		// Highlight asset in "Sprites" pane
+		parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
+		_prevParentContainer = parentContainer;
+		// set painting status
+		Tool.ChangeTools("Brush Tool");
+	}
 
-        // Creates image that will follow mouse
-        GameObject hoverImage = Instantiate(_editor.AssetImage[Id], 
-                    new Vector3(worldPosition.x, worldPosition.y, 90), 
-                    Quaternion.identity);
-        hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+	public static void CreateFollowingImage (GameObject prefab) {
+		Vector2 worldPosition = Mouse.getMousePosition();
+		GameObject hoverImage = Instantiate(prefab,
+					new Vector3(worldPosition.x, worldPosition.y, 90),
+					Quaternion.identity);
+		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
                     hoverImage.transform.localScale.y + Zoom.zoomFactor, 
                     hoverImage.transform.localScale.z + Zoom.zoomFactor);
+	}
 
-        _editor.CurrentButtonPressed = Id;
+	/// <summary>
+	/// Unselects the selected button.
+	/// </summary>
+	public void UnselectButton() { 
+		Clicked = false;
+		if (_prevParentContainer != null) {
+			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
+		}
+	}
 
-        GameObject parentContainer = GameObject.Find(
-            _editor.AssetPrefabs[Id].transform.parent.name);
-
-        // Un-highlight previously selected asset in "Sprites" pane
-        if (_prevParentContainer != null) {
-            _prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
-        }
-
-        // Highlight asset in "Sprites" pane
-        parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
-        _prevParentContainer = parentContainer;
-
-        // set painting status
-        _editor.ChangeTools("Brush Tool");
-    }
-
-    void OnDisable () {
-        if (Clicked && !_editor.ToolStatus["Brush Tool"]) {
+	void OnDisable () {
+        if (Clicked && !Tool.ToolStatus["Brush Tool"]) {
             UnselectButton();
-        }
-    }
-
-    /// <summary>
-    /// Unselects the associated asset button.
-    /// </summary>
-    public void UnselectButton() { 
-        Clicked = false;
-        if (_prevParentContainer != null) {
-            _prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
         }
     }
 }
