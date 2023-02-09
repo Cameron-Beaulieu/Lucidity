@@ -16,12 +16,10 @@ public class MapEditorManager : MonoBehaviour {
     public static Dictionary<int, MapObject> BaseLayer = new Dictionary<int, MapObject>();
     public int CurrentLayer = 0;
     public static LinkedList<EditorAction> Actions;
-    public static Dictionary<string, Texture2D> ToolToCursorMap = 
-        new Dictionary<string, Texture2D>();
+    public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
     private static LinkedListNode<EditorAction> _currentAction;
-    public static GameObject Map;
-      public static GameObject MapContainer;
-    public static Vector2 SpawnPoint;
+    private static GameObject _map;
+    private static GameObject _mapContainer;
     private static int _currentButtonPressed;
     private static GameObject _lastEncounteredObject;
 
@@ -116,7 +114,7 @@ public class MapEditorManager : MonoBehaviour {
             && Tool.ToolStatus["Brush Tool"]) {
             GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
             if (activeImage == null) {
-                AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
+                DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed]);
                 activeImage = GameObject.FindGameObjectWithTag("AssetImage");
             }
             float assetWidth = activeImage.transform.localScale.x;
@@ -135,8 +133,6 @@ public class MapEditorManager : MonoBehaviour {
                     GameObject newParent = new GameObject();
                     newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
                     newParent.transform.SetParent(MapContainer.transform, true);
-                    newParent.transform.position = new Vector3(worldPosition.x + i*2, 
-                                                                worldPosition.y, 0);
                     newParent.transform.localPosition = new Vector3(
                         newParent.transform.localPosition.x,
                         newParent.transform.localPosition.y, 0);
@@ -243,7 +239,6 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-
                             MapObjects[obj.GetInstanceID()].IsActive = false;
                             obj.SetActive(false);
                         }
