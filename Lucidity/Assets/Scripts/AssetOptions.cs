@@ -51,6 +51,11 @@ public class AssetOptions : MonoBehaviour {
 				assetPrefab.GetComponent<RectTransform>().rect.width,
 				assetPrefab.GetComponent<RectTransform>().rect.height);
 			
+			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+			// if there is an Image being shown on hover already, destroy it
+			if (activeImage != null) {
+				Destroy(activeImage);
+			}
 			DynamicBoundingBox.CreateDynamicAssetImage(
 				_editor.AssetImage[MapEditorManager.CurrentButtonPressed]);
 		}
