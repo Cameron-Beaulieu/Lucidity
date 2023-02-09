@@ -8,6 +8,7 @@ public class MapEditorManager : MonoBehaviour {
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
     public List<Texture2D> CursorTextures;
+	public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
 	public static LinkedList<EditorAction> Actions;
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
@@ -40,6 +41,7 @@ public class MapEditorManager : MonoBehaviour {
 		Tool.SelectionMenu.SetActive(false);
 		GameObject.Find("Undo").GetComponent<Button>().onClick.AddListener(Undo);
 		GameObject.Find("Redo").GetComponent<Button>().onClick.AddListener(Redo);
+		GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.AddListener(ConvertTo3D);
 		GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
 		foreach (GameObject tool in selectableTools) {
 			if (tool.name == "Brush Tool") {
@@ -93,7 +95,7 @@ public class MapEditorManager : MonoBehaviour {
 							>= assetWidth
 						|| Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
 							>= assetHeight)) {
-				List<GameObject> mapObjects = new List<GameObject>();
+				List<GameObject> newMapObjects = new List<GameObject>();
 				for (int i = 0; i < AssetOptions.AssetCount; i++) {
 					GameObject newParent = new GameObject();
 					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
@@ -112,16 +114,18 @@ public class MapEditorManager : MonoBehaviour {
 							+ Zoom.zoomFactor);
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
-						mapObjects.Add(newGameObject);
+						Debug.Log(newGameObject);
+						newMapObjects.Add(newGameObject);
+						AddNewMapObject(newGameObject);
 					} else {
 						Destroy(newParent);
 					}
 				}
-				if (mapObjects.Count == 0) {
+				if (newMapObjects.Count == 0) {
 					// Don't add action to history if there are no objects attached to it
 				} else if (Actions == null) {
 					Actions = new LinkedList<EditorAction>();
-					Actions.AddFirst(new PaintAction(mapObjects));
+					Actions.AddFirst(new PaintAction(newMapObjects));
 					_currentAction = Actions.First;
 				} else {
 					if (_currentAction != null && _currentAction.Next != null) {
@@ -132,21 +136,21 @@ public class MapEditorManager : MonoBehaviour {
 							Actions.Remove(actionToRemove);
 							actionToRemove = actionToRemove.Next;
 						}
-						Actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+						Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
 						_currentAction = _currentAction.Next;
 					} else if (_currentAction != null) {
-						Actions.AddAfter(_currentAction, new PaintAction(mapObjects));
+						Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
 						_currentAction = _currentAction.Next;
 					} else if (_currentAction == null && Actions != null) {
 						// There is only one action and it has been undone
 						PermanentlyDeleteActions(Actions.First);
 						Actions.Clear();
-						Actions.AddFirst(new PaintAction(mapObjects));
+						Actions.AddFirst(new PaintAction(newMapObjects));
 						_currentAction = Actions.First;
 					}
 				}
-				if (mapObjects.Count > 0) {
-					_lastEncounteredObject = mapObjects[0];
+				if (newMapObjects.Count > 0) {
+					_lastEncounteredObject = newMapObjects[0];
 				}
 			}
 			Mouse.LastMousePosition = worldPosition;
@@ -167,6 +171,7 @@ public class MapEditorManager : MonoBehaviour {
 		while (actionToDelete != null) {
 			if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
 				foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
+					MapObjects.Remove(obj.GetInstanceID());
 					Destroy(obj);
 				}
 			}
@@ -189,6 +194,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
+							MapObjects[obj.GetInstanceID()].IsActive = true;
 							obj.SetActive(true);
 						}
 					}
@@ -196,6 +202,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.DeleteMapObject:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
+							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
 					}
@@ -240,6 +247,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
+							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
 					}
@@ -247,6 +255,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.DeleteMapObject:
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
+							MapObjects[obj.GetInstanceID()].IsActive = true;
 							obj.SetActive(true);
 						}
 					}
@@ -280,5 +289,16 @@ public class MapEditorManager : MonoBehaviour {
 				_currentAction = null;
 			}
 		}
+	}
+
+	public void AddNewMapObject(GameObject newGameObject){
+		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), newGameObject, 
+			new Vector2(newGameObject.transform.localPosition.x, newGameObject.transform.localPosition.y), 
+			newGameObject.transform.localScale, newGameObject.transform.rotation, true);
+		MapObjects.Add(newMapObject.Id, newMapObject);
+	}
+
+	public void ConvertTo3D(){
+		Debug.Log(MapObjects.Count);
 	}
 }
