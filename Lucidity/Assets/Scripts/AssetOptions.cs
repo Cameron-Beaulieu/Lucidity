@@ -44,13 +44,9 @@ public class AssetOptions : MonoBehaviour {
 			_countInput.text = _assetCount.ToString();
 		}
 		DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
+		_brushSizeSlider.minValue = DynamicBoundingBox.DynamicSideLength;
 		if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
 				&& _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
-			GameObject assetPrefab = _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed];
-			_brushSizeSlider.minValue = DynamicBoundingBox.DynamicSideLength * Mathf.Max(
-				assetPrefab.GetComponent<RectTransform>().rect.width,
-				assetPrefab.GetComponent<RectTransform>().rect.height);
-			
 			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 			// if there is an Image being shown on hover already, destroy it
 			if (activeImage != null) {
@@ -66,7 +62,7 @@ public class AssetOptions : MonoBehaviour {
 	/// </summary>
 	public void BrushSizeSliderHandler() {
 		_brushSize = _brushSizeSlider.value;
-		string sliderMessage = _brushSize + " px";
+		string sliderMessage = _brushSize.ToString("0.0") + " x";
 		_brushSizeText.text = sliderMessage;
 	}
 }

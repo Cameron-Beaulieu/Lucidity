@@ -8875,10 +8875,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1068109423}
   m_HandleRect: {fileID: 1130625685}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 999
+  m_MinValue: 1
+  m_MaxValue: 10
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9443,8 +9443,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 956387567}
   m_HandleRect: {fileID: 956387566}
   m_Direction: 2
-  m_Value: 1.0000001
-  m_Size: 0.6087128
+  m_Value: 1.0000004
+  m_Size: 0.60871285
   m_NumberOfSteps: 4
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13152,7 +13152,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: px
+  m_Text: x
 --- !u!1 &1440528911
 GameObject:
   m_ObjectHideFlags: 0
