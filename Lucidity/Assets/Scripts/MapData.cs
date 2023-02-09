@@ -58,6 +58,6 @@ public class MapData {
 	/// Serializes an entire instance of the class into a json string.
 	/// </summary>
     public string Serialize() {
-        return JsonUtility.ToJson(this);
+        return JsonUtility.ToJson(this, true);
     }
 }
