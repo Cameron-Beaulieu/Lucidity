@@ -35,13 +35,34 @@ public class Biome {
 		// TODO: Update colours from placeholder values
 		switch(_name) {
 			case BiomeType.Forest:
-				_groundColour = "495c2e";
+				_groundColour = "5d875c";
 				break;
 			case BiomeType.Desert:
 				_groundColour = "b38f72";
 				break;
 			case BiomeType.Ocean:
 				_groundColour = "66a6d1";
+				break;
+		}
+	}
+
+	/// <summary>
+	/// Biome constructor, initializing the name and ground colour.
+	/// </summary>
+	/// <param name="groundColour">
+	/// Ground colour as a hex value <c>string</c> corresponding to the desired biome.
+	/// </param>
+	public Biome(string groundColour) {
+		_groundColour = groundColour;
+		switch(groundColour) {
+			case "5d875c":
+				_name = BiomeType.Forest;
+				break;
+			case "b38f72":
+				_name = BiomeType.Desert;
+				break;
+			case "66a6d1":
+				_name = BiomeType.Ocean;
 				break;
 		}
 	}
