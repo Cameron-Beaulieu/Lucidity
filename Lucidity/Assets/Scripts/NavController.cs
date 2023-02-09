@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -46,6 +47,16 @@ public class NavController : MonoBehaviour {
 		string path = EditorUtility.SaveFilePanel("Select Directory", "", "Untitled.json", "json");
         // cancelled selecting a path
         if (path.Equals("")) { return; }
+
+		// Guarantee the file is JSON
+		while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
+			bool tryAgain = EditorUtility.DisplayDialog(
+				"Invalid file name", "Your map can only be saved as a JSON file.", "Try again", 
+				"Cancel");
+			if (!tryAgain) {return;}
+
+			path = EditorUtility.SaveFilePanel("Select Directory", "", "Untitled.json", "json");
+		}
 
 		MapData.FileName = path;
 
