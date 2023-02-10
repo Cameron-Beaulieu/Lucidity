@@ -2,20 +2,42 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class NavController : MonoBehaviour {
+	[SerializeField] private TMP_Text _newKeybind;
+	[SerializeField] private TMP_Text _openKeybind;
+	[SerializeField] private TMP_Text _saveKeybind;
+	[SerializeField] private TMP_Text _saveAsKeybind;
+	[SerializeField] private TMP_Text _exportKeybind;
+
+	public void Start() {
+		if (Application.platform == RuntimePlatform.OSXPlayer || 
+			Application.platform == RuntimePlatform.OSXEditor) {
+			_newKeybind.text = "Cmd + Opt + N";
+			_openKeybind.text = "Cmd + Opt + O";
+			_saveKeybind.text = "Cmd + Opt + S";
+			_saveAsKeybind.text = "Cmd + Shift + Opt + S";
+			_exportKeybind.text = "Cmd + Opt + E";
+		}
+	}
+
 	/// <summary>
 	/// Click handler for the New button in the file menu.
+	/// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + N
 	/// </summary>
-    public void NewButtonClickHandler() {
+	[MenuItem("NavMenu/New %&n")]
+    public static void NewButtonClickHandler() {
         Debug.Log("New button clicked");
+		// TODO: Navigate to the MapCreation scene
     }
 
 	/// <summary>
 	/// Click handler for the Open button in the file menu.
+	/// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + O
 	/// </summary>
     [MenuItem("NavMenu/Open %&o")]
     public static void OpenButtonClickHandler() {
@@ -65,8 +87,10 @@ public class NavController : MonoBehaviour {
 
 	/// <summary>
 	/// Click handler for the Export button in the File menu
+	/// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + E
 	/// </summary>
-    public void ExportButtonClickHandler() {
+    [MenuItem("NavMenu/Export %&e")]
+    public static void ExportButtonClickHandler() {
         Debug.Log("Export button clicked");
     }
 
