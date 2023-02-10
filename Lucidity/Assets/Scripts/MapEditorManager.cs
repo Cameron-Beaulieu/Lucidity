@@ -113,7 +113,6 @@ public class MapEditorManager : MonoBehaviour {
 							+ Zoom.zoomFactor);
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
-						Debug.Log(newGameObject);
 						newMapObjects.Add(newGameObject);
 						AddNewMapObject(newGameObject);
 					} else {
