@@ -44,7 +44,6 @@ public class AssetOptions : MonoBehaviour {
 			_countInput.text = _assetCount.ToString();
 		}
 		DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
-		_brushSizeSlider.minValue = DynamicBoundingBox.DynamicSideLength;
 		if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
 				&& _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
 			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
