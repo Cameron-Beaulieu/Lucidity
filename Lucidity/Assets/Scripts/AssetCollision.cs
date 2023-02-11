@@ -68,6 +68,7 @@ public class AssetCollision : MonoBehaviour {
 	/// </summary>
 	void CheckAssetOnUI() {
 		if (IsInvalidPlacement()) {
+			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject.transform.parent.gameObject);
 			Destroy(gameObject);
 		}
@@ -88,6 +89,7 @@ public class AssetCollision : MonoBehaviour {
 		yield return new WaitForSecondsRealtime(0.5f);
 		collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
 		if (collisionObject == gameObject) {
+			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject);
 		}
 	}
