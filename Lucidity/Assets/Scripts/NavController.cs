@@ -13,8 +13,10 @@ public class NavController : MonoBehaviour {
 	[SerializeField] private TMP_Text _saveKeybind;
 	[SerializeField] private TMP_Text _saveAsKeybind;
 	[SerializeField] private TMP_Text _exportKeybind;
+	private static TMP_Text _savingText;
+	private static float _hideTextTimer = 0f;
 
-	public void Start() {
+	void Start() {
 		if (Application.platform == RuntimePlatform.OSXPlayer || 
 			Application.platform == RuntimePlatform.OSXEditor) {
 			_newKeybind.text = "Cmd + Opt + N";
@@ -22,6 +24,13 @@ public class NavController : MonoBehaviour {
 			_saveKeybind.text = "Cmd + Opt + S";
 			_saveAsKeybind.text = "Cmd + Shift + Opt + S";
 			_exportKeybind.text = "Cmd + Opt + E";
+		}
+		_savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
+	}
+
+	void Update() {
+		if (_savingText.text == "Saved!" && Time.time > _hideTextTimer) {
+			_savingText.text = "";
 		}
 	}
 
@@ -54,6 +63,7 @@ public class NavController : MonoBehaviour {
 		if (MapData.FileName == null) {
 			SaveAsButtonClickHandler();
 		} else {
+			_savingText.text = "Saving...";
 			SaveFile();
 		}
     }
@@ -69,6 +79,7 @@ public class NavController : MonoBehaviour {
 		string path = EditorUtility.SaveFilePanel("Select Directory", "", "Untitled.json", "json");
         // cancelled selecting a path
         if (path.Equals("")) { return; }
+		_savingText.text = "Saving...";
 
 		// Guarantee the file is JSON
 		while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
@@ -105,6 +116,8 @@ public class NavController : MonoBehaviour {
         MapData jsonContent = new MapData(size, new Biome(groundColour), 
 										  MapEditorManager.MapObjects);
 
-        File.WriteAllText(MapData.FileName, jsonContent.Serialize());   
+        File.WriteAllText(MapData.FileName, jsonContent.Serialize());
+		_savingText.text = "Saved!";
+		_hideTextTimer = Time.time + 3;
 	}
 }
