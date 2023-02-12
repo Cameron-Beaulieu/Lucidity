@@ -16,6 +16,16 @@ public class DynamicBoundingBox : MonoBehaviour {
 			.GetComponent<MapEditorManager>();
 	}
 
+	/// <summary>
+	/// Create a dynamic bounding box parent, with an appropriate n x n arrangement of asset images
+	/// placed within it. To be used for creating an appropriate asset image for mouse hovering.
+	/// </summary>
+	/// <param name="baseAssetImage">
+	/// <c>GameObject</c> corresponding to the desired asset to be shown on hover
+	/// </param>
+	/// <returns>
+	/// <c>GameObject</c> parent, that is the dynamic bounding box
+	/// </returns>
 	public static GameObject CreateDynamicAssetImage(GameObject baseAssetImage) {
 		Vector2 worldPosition = Mouse.getMousePosition();
 		GameObject dynamicAssetImage = Instantiate(baseAssetImage,
@@ -33,10 +43,31 @@ public class DynamicBoundingBox : MonoBehaviour {
 		return dynamicAssetImage;
 	}
 
+	/// <summary>
+	/// Creation of a single asset image, that will populate the n x n shaped dynamic bounding box.
+	/// </summary>
+	/// <param name="parentTransform">
+	/// <c>Transform</c> corresponding to the parent <c>GameObject</c>
+	/// </param>
+	/// <param name="baseAssetImage">
+	/// <c>GameObject</c> corresponding to the desired asset to be shown on hover
+	/// </param>
+	/// <param name="xOffset">
+	/// <c>int</c> corresponding to the x-position of the current asset image if the dynamic
+	/// bounding box were represented as a grid
+	/// </param>
+	/// <param name="yOffset">
+	/// <c>int</c> corresponding to the y-position of the current asset image if the dynamic
+	/// bounding box were represented as a grid
+	/// /// </param>
+	/// <returns>
+	/// <c>GameObject</c> corresponding to a single, current asset image of the
+	/// dynamic bounding box to be displayed
+	/// </returns>
 	public static GameObject CreateDynamicAssetImageChild(Transform parentTransform,
-			GameObject baseAssetImage,
-			int xOffset,
-			int yOffset) {
+														  GameObject baseAssetImage,
+														  int xOffset,
+														  int yOffset) {
 		GameObject obj = Instantiate(baseAssetImage, parentTransform, false);
 		obj.GetComponent<Mouse>().enabled = false;
 		obj.transform.localScale /= _dynamicSideLength * AssetOptions.BrushSize;
