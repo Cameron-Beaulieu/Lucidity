@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4256,6 +4256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scaleSliderValue: {fileID: 1237108172}
+  _sliderText: {fileID: 58692664}
 --- !u!4 &531796472
 Transform:
   m_ObjectHideFlags: 0
@@ -8556,7 +8557,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -151, y: -31.000153}
+  m_AnchoredPosition: {x: -151, y: -31.000122}
   m_SizeDelta: {x: 0, y: -843.00024}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1053491531 stripped
@@ -8598,6 +8599,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scaleSliderValue: {fileID: 0}
+  _sliderText: {fileID: 0}
 --- !u!1 &1064300308
 GameObject:
   m_ObjectHideFlags: 0
@@ -8682,7 +8684,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 956387567}
   m_HandleRect: {fileID: 956387566}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 1.0000001
   m_Size: 0.6087128
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -10144,7 +10146,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1237108171}
   - component: {fileID: 1237108172}
-  - component: {fileID: 1237108173}
   - component: {fileID: 1237108174}
   m_Layer: 5
   m_Name: Slider
@@ -10239,20 +10240,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1237108173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1237108170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b887f0da33744a949989f6df9eb4fff1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ScaleSlider: {fileID: 1237108172}
-  SliderText: {fileID: 58692664}
 --- !u!114 &1237108174
 MonoBehaviour:
   m_ObjectHideFlags: 0

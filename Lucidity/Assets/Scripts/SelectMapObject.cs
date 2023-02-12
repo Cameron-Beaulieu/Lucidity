@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     private MapEditorManager _editor;
     private SliderDrag _slider;
     [SerializeField] private Slider _scaleSliderValue;
+    [SerializeField] private TMP_Text _sliderText;
     
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -26,6 +28,11 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
         _editor.ChangeTools("Selection Tool");
         _editor.SelectionOptions.SetActive(true);
+        Debug.Log((SelectedObject.transform.localScale).ToString("0.0" + "x"));
+
+        // I'm not sure why this is needed here but not in the ScaleMapObject method
+        _sliderText = GameObject.Find("ValueText").GetComponent<TMP_Text>();
+        _sliderText.text = (SelectedObject.transform.localScale.x).ToString("0.0" + "x");
 
         _outline = SelectedObject.AddComponent<Outline>();
         _outline.OutlineMode = Outline.Mode.OutlineAll;
@@ -76,5 +83,6 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         List<GameObject> objectsToScale = new List<GameObject>() { SelectedObject };
         _editor.Actions.AddAfter(_editor.CurrentAction, new ResizeMapObjectAction(objectsToScale, oldSize, newSize));
         _editor.CurrentAction = _editor.CurrentAction.Next;
+        _sliderText.text = (_scaleSliderValue.value).ToString("0.0" + "x");
     }
 }
