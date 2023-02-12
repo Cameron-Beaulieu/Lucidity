@@ -9,6 +9,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
     private static Outline _outline;
     private MapEditorManager _editor;
+    private SliderDrag _slider;
     [SerializeField] private Slider _scaleSliderValue;
     
     private void Start() {
@@ -44,6 +45,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
     public void RotateMapObjectCW() {
         Quaternion oldRotation = SelectedObject.transform.rotation;
+        // will change to 90 degrees once we have real assets
         SelectedObject.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
         // for UNDO/REDO
         List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
@@ -53,6 +55,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
     public void RotateMapObjectCCW() {
         Quaternion oldRotation = SelectedObject.transform.rotation;
+        // will change to 90 degrees once we have real assets
         SelectedObject.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
         // for UNDO/REDO
         List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
@@ -65,6 +68,11 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         Vector3 newSize = new Vector3(value, value, 1);
         SelectedObject.transform.localScale = newSize;
         // for UNDO/REDO
+        // List<GameObject> objectsToScale = new List<GameObject>() { SelectedObject };
+        // _slider.OnPointerClick.AddEventListener(EndDrag => {
+        //     _editor.Actions.AddAfter(_editor.CurrentAction, new ResizeMapObjectAction(objectsToScale, oldSize, newSize));
+        //     _editor.CurrentAction = _editor.CurrentAction.Next;
+        // });
         List<GameObject> objectsToScale = new List<GameObject>() { SelectedObject };
         _editor.Actions.AddAfter(_editor.CurrentAction, new ResizeMapObjectAction(objectsToScale, oldSize, newSize));
         _editor.CurrentAction = _editor.CurrentAction.Next;
