@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6864,11 +6864,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 839706698}
   m_CullTransparentMesh: 1
---- !u!1 &841502720 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5643009079545502601, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
-  m_PrefabInstance: {fileID: 5643009079544078834}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &848843752
 GameObject:
   m_ObjectHideFlags: 0
@@ -8773,8 +8768,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 956387567}
   m_HandleRect: {fileID: 956387566}
   m_Direction: 2
-  m_Value: 1.0000004
-  m_Size: 0.60871285
+  m_Value: 1.0000002
+  m_Size: 0.6087128
   m_NumberOfSteps: 4
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9636,11 +9631,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1151522060}
   m_CullTransparentMesh: 1
---- !u!1 &1154778646 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6237695284832058577, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
-  m_PrefabInstance: {fileID: 6237695284553548004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1168008136
 GameObject:
   m_ObjectHideFlags: 0
@@ -14318,15 +14308,20 @@ MonoBehaviour:
   - {fileID: 802284745}
   - {fileID: 1529515672}
   AssetPrefabs:
-  - {fileID: 1053491531}
-  - {fileID: 1967082140}
-  - {fileID: 1154778646}
-  - {fileID: 841502720}
+  - {fileID: 5643009079545502601, guid: 89802079321f06f429a00a59c09a4433, type: 3}
+  - {fileID: 1189500993391155859, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
+  - {fileID: 6237695284832058577, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
+  - {fileID: 5643009079545502601, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
   AssetImage:
   - {fileID: 4242923788276325788, guid: 7ffe2cbc2ec123f4eb536e5db2c95e2d, type: 3}
   - {fileID: 1189500993391155859, guid: f398e1cfd2afbb242becc286843b1e12, type: 3}
   - {fileID: 6237695284832058577, guid: e3a42aa31e2dbf3448e2fd9b56d8a39e, type: 3}
   - {fileID: 5643009079545502601, guid: 042d12bce040c154f8561a44574aca6b, type: 3}
+  AssetNames:
+  - Fortress
+  - House
+  - Mountain
+  - Tree
   CursorTextures:
   - {fileID: 2800000, guid: 525830b3fc0c1473390e4bae3695f0b0, type: 3}
   - {fileID: 2800000, guid: 65238b17d2cdd4882adae509d7e23d7e, type: 3}
@@ -16472,11 +16467,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964454618}
   m_CullTransparentMesh: 1
---- !u!1 &1967082140 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1189500993391155859, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
-  m_PrefabInstance: {fileID: 1189500993372324387}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1974198793
 GameObject:
   m_ObjectHideFlags: 0
