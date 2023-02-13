@@ -7,12 +7,12 @@ public class MapEditorManager : MonoBehaviour {
 	public List<AssetController> AssetButtons;
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
-    public List<Texture2D> CursorTextures;
+	public List<Texture2D> CursorTextures;
 	public static LinkedList<EditorAction> Actions;
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
 	private static GameObject _map;
-    private static GameObject _mapContainer;
+	private static GameObject _mapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 
@@ -49,9 +49,9 @@ public class MapEditorManager : MonoBehaviour {
 			}
 			Tool.ToolKeys.Add(tool.name);
 		}
-        foreach (Texture2D cursor in CursorTextures) {
-            ToolToCursorMap.Add(cursor.name, cursor);
-        }
+		foreach (Texture2D cursor in CursorTextures) {
+			ToolToCursorMap.Add(cursor.name, cursor);
+		}
 
 		CreateNewMap.SizeType mapSize = CreateNewMap.Size;
 		RectTransform mapRect = _map.GetComponent<RectTransform>();
@@ -62,17 +62,17 @@ public class MapEditorManager : MonoBehaviour {
 			mapScale *= 1f;
 			break;
 		  case CreateNewMap.SizeType.Medium:
-		  	mapScale *= 1.5f;
+			mapScale *= 1.5f;
 			break;
 		  case CreateNewMap.SizeType.Large:
-		  	mapScale *= 2f;
+			mapScale *= 2f;
 			break;
 		  default:
-		  	mapScale *= 1.5f;
+			mapScale *= 1.5f;
 			break;
 		}
 		_map.transform.localScale = mapScale;
-    }
+	}
 
 	void Update() {
 		Vector2 worldPosition = Mouse.getMousePosition();
@@ -83,8 +83,8 @@ public class MapEditorManager : MonoBehaviour {
 				DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed]);
 				activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 			}
-            float assetWidth = activeImage.transform.localScale.x;
-            float assetHeight = activeImage.transform.localScale.y;
+			float assetWidth = activeImage.transform.localScale.x;
+			float assetHeight = activeImage.transform.localScale.y;
 			// Check if mouse position relative to its last position and the previously encountered
 			// asset would allow for a legal placement. Reduces unnecessary computing
 			if (Mouse.LastMousePosition != worldPosition
@@ -94,28 +94,52 @@ public class MapEditorManager : MonoBehaviour {
 						|| Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
 							>= assetHeight)) {
 				List<GameObject> mapObjects = new List<GameObject>();
-				for (int i = 0; i < AssetOptions.AssetCount; i++) {
-					GameObject newParent = new GameObject();
-					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-					newParent.transform.SetParent(_mapContainer.transform, true);
-					newParent.transform.localPosition = new Vector3(
-						newParent.transform.localPosition.x,
-						newParent.transform.localPosition.y, 0);
-					GameObject newGameObject = (GameObject) Instantiate(
-						AssetPrefabs[_currentButtonPressed],
-						new Vector3(worldPosition.x + i*2, worldPosition.y, 90), // TODO: why 90 again
-						Quaternion.identity, newParent.transform);
-					newGameObject.transform.localScale = 
-						new Vector3(newGameObject.transform.localScale.x
-							+ Zoom.zoomFactor, newGameObject.transform.localScale.y
-							+ Zoom.zoomFactor, newGameObject.transform.localScale.z
-							+ Zoom.zoomFactor);
-					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-							.IsInvalidPlacement()) {
-						mapObjects.Add(newGameObject);
-					} else {
-						Destroy(newParent);
+				GameObject newParent = new GameObject();
+				newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
+				newParent.transform.SetParent(_mapContainer.transform, true);
+				newParent.transform.localPosition = new Vector3(
+					newParent.transform.localPosition.x,
+					newParent.transform.localPosition.y, 0);				
+				
+				GameObject dynamicBoundingBox = (GameObject) Instantiate(
+					AssetPrefabs[_currentButtonPressed],
+					new Vector3(worldPosition.x, worldPosition.y, 90), // TODO: why 90 again
+					Quaternion.identity);
+				dynamicBoundingBox.transform.localScale = 
+					new Vector3(dynamicBoundingBox.transform.localScale.x
+						+ Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.y
+						+ Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.z
+						+ Zoom.zoomFactor)
+					* DynamicBoundingBox.DynamicSideLength * AssetOptions.BrushSize;
+				if (dynamicBoundingBox != null
+						&& !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
+						&& dynamicBoundingBox
+							.GetComponent<AssetCollision>().GetCollisionCount() <= 1) {
+					Destroy(dynamicBoundingBox);
+					foreach (KeyValuePair<int,int> coordinate
+							in AssetOptions.RandomAssetArrangement) {
+						float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+										.transform.position.x;
+						float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+										.transform.position.y;
+						float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+										.transform.position.z;
+
+						GameObject newGameObject = Instantiate(
+							AssetPrefabs[_currentButtonPressed],
+							new Vector3(xPos, yPos, zPos),
+							Quaternion.identity, newParent.transform);
+						if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
+								.IsInvalidPlacement()) {
+							mapObjects.Add(newGameObject);
+						} else {
+							Destroy(newGameObject);
+							Destroy(newParent);
+						}
 					}
+				} else {
+					Destroy(dynamicBoundingBox);
+					Destroy(newParent);
 				}
 				if (mapObjects.Count == 0) {
 					// Don't add action to history if there are no objects attached to it

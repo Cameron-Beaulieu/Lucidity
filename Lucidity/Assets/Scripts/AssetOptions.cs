@@ -10,6 +10,7 @@ public class AssetOptions : MonoBehaviour {
 	private static float _brushSize;
 	[SerializeField] private InputField _countInput;
 	private static int _assetCount;
+	public static HashSet<KeyValuePair<int,int>> RandomAssetArrangement = new HashSet<KeyValuePair<int,int>>();
 
 	public static int AssetCount {
 		get { return _assetCount; }
@@ -54,6 +55,13 @@ public class AssetOptions : MonoBehaviour {
 			DynamicBoundingBox.CreateDynamicAssetImage(
 				_editor.AssetImage[MapEditorManager.CurrentButtonPressed]);
 		}
+		// Generate random coordinate pairs (with no repeating pair) up to the desired number
+		// of assets. These will be used in selecting the random arrangement of grouped assets
+		do {
+			RandomAssetArrangement.Add(new KeyValuePair<int,int>(
+				Random.Range(0, DynamicBoundingBox.DynamicSideLength),
+				Random.Range(0, DynamicBoundingBox.DynamicSideLength)));
+		} while (RandomAssetArrangement.Count < _assetCount);
 	}
 
 	/// <summary>

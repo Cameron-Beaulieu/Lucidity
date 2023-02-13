@@ -5,6 +5,7 @@ using UnityEngine;
 public class DynamicBoundingBox : MonoBehaviour {
 	private MapEditorManager _editor;
 	private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
+	public static GameObject[,] Images;
 
 	public static int DynamicSideLength {
 		get { return _dynamicSideLength; }
@@ -27,6 +28,7 @@ public class DynamicBoundingBox : MonoBehaviour {
 	/// <c>GameObject</c> parent, that is the dynamic bounding box
 	/// </returns>
 	public static GameObject CreateDynamicAssetImage(GameObject baseAssetImage) {
+		Images = new GameObject[_dynamicSideLength, _dynamicSideLength];
 		Vector2 worldPosition = Mouse.getMousePosition();
 		GameObject dynamicAssetImage = Instantiate(baseAssetImage,
 			new Vector3(worldPosition.x, worldPosition.y, 90),
@@ -37,7 +39,10 @@ public class DynamicBoundingBox : MonoBehaviour {
 		Destroy(dynamicAssetImage.GetComponent<MeshFilter>());
 		for (int i = 0; i < _dynamicSideLength; i++) {
 			for (int j = 0; j < _dynamicSideLength; j++) {
-				CreateDynamicAssetImageChild(dynamicAssetImage.transform, baseAssetImage, i, j);
+				Images[i,j] = CreateDynamicAssetImageChild(dynamicAssetImage.transform,
+														   baseAssetImage,
+														   i,
+														   j);
 			}
 		}
 		return dynamicAssetImage;
@@ -84,14 +89,14 @@ public class DynamicBoundingBox : MonoBehaviour {
 			obj.transform.SetLocalPositionAndRotation(
 				new Vector3(offset - obj.transform.localScale.x
 								* Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-								* AssetOptions.BrushSize + obj.transform.localScale.x
+								* AssetOptions.BrushSize + (obj.transform.localScale.x
 								* (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-								/ (_dynamicSideLength - 1f)) * xOffset,
+								/ (_dynamicSideLength - 1f)) + 1e-6f) * xOffset,
 							offset - obj.transform.localScale.y
 								* Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-								* AssetOptions.BrushSize + obj.transform.localScale.y
+								* AssetOptions.BrushSize + (obj.transform.localScale.y
 								* (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-								/ (_dynamicSideLength - 1f)) * yOffset,
+								/ (_dynamicSideLength - 1f)) + 1e-6f) * yOffset,
 							0),
 				Quaternion.identity);
 		}
