@@ -8,7 +8,6 @@ public class MapObject {
 	
 	public int Id;
 	public string Name;
-    public GameObject Asset;
     public Vector2 MapPosition;
 	public Vector2 MapOffset;
     public Vector3 Scale;
@@ -24,9 +23,6 @@ public class MapObject {
 	/// <param name="name">
 	/// name represents the type of the asset (fortress, tree, etc.)
 	/// </param>
-    /// <param name="asset">
-	/// The asset within the scene that will be attached to the MapObject
-	/// </param>
     /// <param name="mapPosition">
 	/// A 2D point that represents the (x,y) position of the asset on the 2D and 3D map
 	/// </param>
@@ -40,14 +36,14 @@ public class MapObject {
     /// <param name="rotation">
 	/// A Quaternion representing the rotation of the asset within the map
 	/// </param>
-	public MapObject (int id, string name, GameObject asset, Vector2 mapPosition, Vector2 mapOffset, Vector3 scale, 
+	public MapObject (int id, string name, Vector2 mapPosition, Vector2 mapOffset, Vector3 scale, 
         Quaternion rotation, bool isActive) {
 		Id = id;
 		Name = name;
-        Asset = asset;
         MapPosition = mapPosition;
         Scale = scale;
         Rotation = rotation;
 		MapOffset = mapOffset;
+		IsActive = isActive;
 	}
 }

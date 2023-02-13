@@ -14,10 +14,8 @@ public class MapEditorManager : MonoBehaviour {
 	public static LinkedList<EditorAction> Actions;
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
-	// Rename
-	public static GameObject _map;
-    public static GameObject _mapContainer;
-	// Rename
+	public static GameObject Map;
+    public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 
@@ -37,8 +35,8 @@ public class MapEditorManager : MonoBehaviour {
 	}
 
 	void Awake() {
-		_map = GameObject.Find("Map");
-		_mapContainer = GameObject.Find("Map Container");
+		Map = GameObject.Find("Map");
+		MapContainer = GameObject.Find("Map Container");
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
 		Tool.SelectionMenu = GameObject.Find("Selection Menu");
 		Tool.SelectionOptions = GameObject.FindGameObjectWithTag("SelectionScrollContent");
@@ -60,7 +58,7 @@ public class MapEditorManager : MonoBehaviour {
         }
 
 		CreateNewMap.SizeType mapSize = CreateNewMap.Size;
-		Vector2 mapScale = _map.transform.localScale;
+		Vector2 mapScale = Map.transform.localScale;
 
 		switch (mapSize) {
 		  case CreateNewMap.SizeType.Small:
@@ -76,7 +74,7 @@ public class MapEditorManager : MonoBehaviour {
 		  	mapScale *= 1.5f;
 			break;
 		}
-		_map.transform.localScale = mapScale;
+		Map.transform.localScale = mapScale;
     }
 
 	void Update() {
@@ -102,10 +100,7 @@ public class MapEditorManager : MonoBehaviour {
 				for (int i = 0; i < AssetOptions.AssetCount; i++) {
 					GameObject newParent = new GameObject();
 					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-					newParent.transform.SetParent(_mapContainer.transform, true);
-					// newParent.transform.localPosition = new Vector3(
-					// 	newParent.transform.localPosition.x,
-					// 	newParent.transform.localPosition.y, 0);
+					newParent.transform.SetParent(MapContainer.transform, true);
 					newParent.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
 					newParent.transform.localPosition = new Vector3(
 						newParent.transform.localPosition.x,
@@ -124,7 +119,6 @@ public class MapEditorManager : MonoBehaviour {
 						Debug.Log(newGameObject);
 						newMapObjects.Add(newGameObject);
 						AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], newParent);
-						//AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], _mapContainer);
 					} else {
 						Destroy(newParent);
 					}
@@ -202,6 +196,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
+							Debug.Log(obj.GetInstanceID());
 							MapObjects[obj.GetInstanceID()].IsActive = true;
 							obj.SetActive(true);
 						}
@@ -210,6 +205,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.DeleteMapObject:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
+							Debug.Log("calling the wrong thing");
 							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
@@ -255,6 +251,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
+							Debug.Log(obj.GetInstanceID());
 							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
@@ -312,7 +309,7 @@ public class MapEditorManager : MonoBehaviour {
 	/// The parent container storing the new GameObject
 	/// </param>
 	public void AddNewMapObject(GameObject newGameObject, string name, GameObject parentGameObject){
-		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, newGameObject, 
+		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
 			new Vector2(newGameObject.transform.localPosition.x , 
 			newGameObject.transform.localPosition.y),  
 			new Vector2(parentGameObject.transform.localPosition.x, 
