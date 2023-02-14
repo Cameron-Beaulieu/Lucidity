@@ -111,33 +111,37 @@ public class MapEditorManager : MonoBehaviour {
 						+ Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.z
 						+ Zoom.zoomFactor)
 					* DynamicBoundingBox.DynamicSideLength * AssetOptions.BrushSize;
+				// dynamicBoundingBox.GetComponent<AssetCollision>().CheckAssetCollisions();
 				if (dynamicBoundingBox != null
 						&& !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
-						&& dynamicBoundingBox
-							.GetComponent<AssetCollision>().GetCollisionCount() <= 1) {
-					Destroy(dynamicBoundingBox);
-					foreach (KeyValuePair<int,int> coordinate
-							in AssetOptions.RandomAssetArrangement) {
-						float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-										.transform.position.x;
-						float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-										.transform.position.y;
-						float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-										.transform.position.z;
+						&& dynamicBoundingBox.GetComponent<AssetCollision>().Collided == false) {
+					Debug.Log("Before invocation");
+					Debug.Log("Return from invocation: " + dynamicBoundingBox.GetComponent<AssetCollision>().GetCollisionCount());
+					Debug.Log("After invocation");
+				// 	//Destroy(dynamicBoundingBox);
+				// 	foreach (KeyValuePair<int,int> coordinate
+				// 			in AssetOptions.RandomAssetArrangement) {
+				// 		float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+				// 						.transform.position.x;
+				// 		float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+				// 						.transform.position.y;
+				// 		float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+				// 						.transform.position.z;
 
-						GameObject newGameObject = Instantiate(
-							AssetPrefabs[_currentButtonPressed],
-							new Vector3(xPos, yPos, zPos),
-							Quaternion.identity, newParent.transform);
-						if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-								.IsInvalidPlacement()) {
-							mapObjects.Add(newGameObject);
-						} else {
-							Destroy(newGameObject);
-							Destroy(newParent);
-						}
-					}
+				// 		GameObject newGameObject = Instantiate(
+				// 			AssetPrefabs[_currentButtonPressed],
+				// 			new Vector3(xPos, yPos, zPos),
+				// 			Quaternion.identity, newParent.transform);
+				// 		if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
+				// 				.IsInvalidPlacement()) {
+				// 			mapObjects.Add(newGameObject);
+				// 		} else {
+				// 			Destroy(newGameObject);
+				// 			Destroy(newParent);
+				// 		}
+				// 	}
 				} else {
+					Debug.Log("Did not enter conditional");
 					Destroy(dynamicBoundingBox);
 					Destroy(newParent);
 				}

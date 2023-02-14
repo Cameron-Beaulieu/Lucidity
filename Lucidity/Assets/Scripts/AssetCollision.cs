@@ -5,13 +5,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class AssetCollision : MonoBehaviour {
-    [SerializeField] private Material _errorMaterial;
-    private Material _originalMaterial;
-    private LayerMask _filterMask;
-    private int _assetLayer = 6;
-    private int _uiLayer = 5;
-    // Use this to ensure that the Gizmos are being drawn when in Play Mode
-    private bool _detectionStarted = true;
+	[SerializeField] private Material _errorMaterial;
+	private Material _originalMaterial;
+	private LayerMask _filterMask;
+	private int _assetLayer = 6;
+	private int _uiLayer = 5;
+	// Use this to ensure that the Gizmos are being drawn when in Play Mode
+	private bool _detectionStarted = true;
+	public bool Collided = false;
 
     private void Start() {
         _filterMask = LayerMask.GetMask("Asset");
@@ -35,7 +36,9 @@ public class AssetCollision : MonoBehaviour {
 	/// appropriate amount of time.
 	/// </summary>
 	public void CheckAssetCollisions() {
-		if (GetCollisionCount() > 2) {
+		Collider[] hitColliders = GetAssetCollisions();
+		if (GetCollisionCount() > 1) {
+			Collided = true;
 			gameObject.tag = "CollisionObject";
 			foreach (Collider collisionObject in hitColliders) {
 				if (collisionObject.gameObject.layer == _assetLayer
@@ -68,6 +71,7 @@ public class AssetCollision : MonoBehaviour {
 				collisions--;
 			}
 		}
+		Debug.Log("Within function GetCollisionCount(), value before return: " + collisions);
 		return collisions;
 	}
 
