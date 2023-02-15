@@ -2,18 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MapEditorManager : MonoBehaviour {
 	public List<AssetController> AssetButtons;
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
+	public List<string> AssetNames;
     public List<Texture2D> CursorTextures;
 	public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
 	public static LinkedList<EditorAction> Actions;
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
 	public static GameObject Map;
-    private static GameObject _mapContainer;
+  public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 
@@ -34,13 +36,14 @@ public class MapEditorManager : MonoBehaviour {
 
 	void Awake() {
 		Map = GameObject.Find("Map");
-		_mapContainer = GameObject.Find("Map Container");
+		MapContainer = GameObject.Find("Map Container");
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
 		Tool.SelectionMenu = GameObject.Find("Selection Menu");
 		Tool.SelectionOptions = GameObject.FindGameObjectWithTag("SelectionScrollContent");
 		Tool.SelectionMenu.SetActive(false);
 		GameObject.Find("Undo").GetComponent<Button>().onClick.AddListener(Undo);
 		GameObject.Find("Redo").GetComponent<Button>().onClick.AddListener(Redo);
+		GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.AddListener(ConvertTo3D);
 		GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
 		foreach (GameObject tool in selectableTools) {
 			if (tool.name == "Brush Tool") {
@@ -98,7 +101,8 @@ public class MapEditorManager : MonoBehaviour {
 				for (int i = 0; i < AssetOptions.AssetCount; i++) {
 					GameObject newParent = new GameObject();
 					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-					newParent.transform.SetParent(_mapContainer.transform, true);
+					newParent.transform.SetParent(MapContainer.transform, true);
+					newParent.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
 					newParent.transform.localPosition = new Vector3(
 						newParent.transform.localPosition.x,
 						newParent.transform.localPosition.y, 0);
@@ -114,7 +118,7 @@ public class MapEditorManager : MonoBehaviour {
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
 						newMapObjects.Add(newGameObject);
-						AddNewMapObject(newGameObject);
+						AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], newParent);
 					} else {
 						Destroy(newParent);
 					}
@@ -200,6 +204,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.DeleteMapObject:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
+
 							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
@@ -289,10 +294,36 @@ public class MapEditorManager : MonoBehaviour {
 		}
 	}
 
-	public void AddNewMapObject(GameObject newGameObject){
-		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), newGameObject, 
-			new Vector2(newGameObject.transform.localPosition.x, newGameObject.transform.localPosition.y), 
-			newGameObject.transform.localScale, newGameObject.transform.rotation, true);
+  /// <summary>
+	/// Adds a new MapObject to the list of all the MapObjects on the 2D map
+	/// </summary>
+	/// <param name="newGameObject">
+	/// The 2D GameObject that has just been added to the map
+	/// </param>
+	/// <param name="name">
+	/// name represents the type of the asset (fortress, tree, etc.)
+	/// </param>
+	/// <param name="parentGameObject">
+	/// The parent container storing the new GameObject
+	/// </param>
+	public void AddNewMapObject(GameObject newGameObject, string name, GameObject parentGameObject){
+		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
+			new Vector2(newGameObject.transform.localPosition.x , 
+			newGameObject.transform.localPosition.y),  
+			new Vector2(parentGameObject.transform.localPosition.x, 
+				parentGameObject.transform.localPosition.y),
+			new Vector3(newGameObject.transform.localScale.x
+				- Zoom.zoomFactor, newGameObject.transform.localScale.y
+				- Zoom.zoomFactor, newGameObject.transform.localScale.z
+				- Zoom.zoomFactor), 
+			newGameObject.transform.rotation, true);
 		MapObjects.Add(newMapObject.Id, newMapObject);
+	}
+
+	/// <summary>
+	/// Converts from the 2D scene to the 3D scene
+	/// </summary>
+	public void ConvertTo3D(){
+		SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
 	}
 }

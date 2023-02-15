@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/UI/Screens/MapEditor.unity
     guid: 78b6083e4c9ed431d8c447ff0c095e71
+  - enabled: 1
+    path: Assets/UI/Screens/3DMap.unity
+    guid: 8ad0dfa831d675545b98dff56742f9e3
   m_configObjects: {}
