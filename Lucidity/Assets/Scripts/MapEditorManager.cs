@@ -353,13 +353,14 @@ public class MapEditorManager : MonoBehaviour {
 			newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
 			newParent.transform.SetParent(MapContainer.transform, true);
 			newParent.transform.localPosition = new Vector3(
-				newParent.transform.localPosition.x,
-				newParent.transform.localPosition.y, 0);
-			
+				mapObject.MapOffset.x,
+				mapObject.MapOffset.y, 0);
 			GameObject newGameObject = (GameObject) Instantiate(
-						AssetPrefabs[mapObject.PrefabIndex],
-						new Vector3(mapObject.MapPosition.x, mapObject.MapPosition.y, 90),
-						mapObject.Rotation, newParent.transform);
+						AssetPrefabs[mapObject.PrefabIndex], 
+						newParent.transform);
+			newGameObject.transform.localPosition = new Vector3(
+				mapObject.MapPosition.x, mapObject.MapPosition.y, 0);
+			newGameObject.transform.rotation = mapObject.Rotation;
 			newGameObject.transform.localScale = 
 				new Vector3(newGameObject.transform.localScale.x
 					+ Zoom.zoomFactor, newGameObject.transform.localScale.y
