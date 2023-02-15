@@ -315,15 +315,28 @@ public class MapEditorManager : MonoBehaviour {
 	}
 
 	public void LoadMap() {
+		_mapContainer = GameObject.Find("Map Container");
 		MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
 		Biome = loadedMap.Biome;
 		CreateNewMap.Size = loadedMap.MapSize;
 		foreach (MapObject mapObject in loadedMap.MapObjects) {
 			if (mapObject.IsActive) {
+				GameObject newParent = new GameObject();
+				newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
+				newParent.transform.SetParent(_mapContainer.transform, true);
+				newParent.transform.localPosition = new Vector3(
+					newParent.transform.localPosition.x,
+					newParent.transform.localPosition.y, 0);
+				
 				GameObject newGameObject = (GameObject) Instantiate(
 							AssetPrefabs[mapObject.PrefabIndex],
 							new Vector3(mapObject.MapPosition.x, mapObject.MapPosition.y, 90),
-							mapObject.Rotation);
+							mapObject.Rotation, newParent.transform);
+				newGameObject.transform.localScale = 
+					new Vector3(newGameObject.transform.localScale.x
+						+ Zoom.zoomFactor, newGameObject.transform.localScale.y
+						+ Zoom.zoomFactor, newGameObject.transform.localScale.z
+						+ Zoom.zoomFactor);
 				MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
 			}
 		}
