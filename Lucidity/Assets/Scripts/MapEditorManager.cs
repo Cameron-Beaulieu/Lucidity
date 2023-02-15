@@ -19,6 +19,7 @@ public class MapEditorManager : MonoBehaviour {
   	public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
+	public static Vector2 SpawnPoint = new Vector2(0, 0);
 
 	public static LinkedListNode<EditorAction> CurrentAction {
 		get { return _currentAction; }
@@ -376,6 +377,7 @@ public class MapEditorManager : MonoBehaviour {
 	/// Converts from the 2D scene to the 3D scene
 	/// </summary>
 	public void ConvertTo3D(){
+		SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
 		SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
 	}
 }

@@ -20,7 +20,8 @@ public class Render3DScene : MonoBehaviour {
     void Awake() {
         _avatar = GameObject.Find("Avatar");
         CreateMap();
-        PlaceAssets();        
+        PlaceAssets();
+        PlaceAvatar();        
     }
 
     /// <summary>
@@ -135,6 +136,10 @@ public class Render3DScene : MonoBehaviour {
                 }
             }
         }
+    }
+
+    private void PlaceAvatar() {
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, MapEditorManager.SpawnPoint.y * _scaleFactor);
     }
 
     /// <summary>
