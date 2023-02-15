@@ -25,11 +25,19 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 	/// Deletes the selected map object.
 	/// </summary>
 	public void DeleteMapObject() {
+		MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
 		SelectedObject.SetActive(false);
 		Destroy(_outline);
 		List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
-		MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
-		MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+		// If a map was just loaded, deleting could be the first Action
+		if (MapEditorManager.Actions != null) {
+			MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+			MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+		} else {
+			MapEditorManager.Actions = new LinkedList<EditorAction>();
+			MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete));
+			MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+		}
 		SelectedObject = null;
 		Tool.SelectionOptions.SetActive(false);
 	}

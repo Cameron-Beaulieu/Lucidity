@@ -8,6 +8,7 @@ public class MapEditorManager : MonoBehaviour {
 	public List<AssetController> AssetButtons;
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
+	public Biome SelectedBiome;
 	public List<string> AssetNames;
     public List<Texture2D> CursorTextures;
 	public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
@@ -15,7 +16,7 @@ public class MapEditorManager : MonoBehaviour {
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
 	public static GameObject Map;
-  public static GameObject MapContainer;
+  	public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 
@@ -35,6 +36,24 @@ public class MapEditorManager : MonoBehaviour {
 	}
 
 	void Awake() {
+		if (StartupScreen.FilePath != null) {
+			// Static variables must be reset if a new map is loaded from another map
+			MapObjects = new Dictionary<int, MapObject>();
+			Actions = null;
+			ToolToCursorMap = new Dictionary<string, Texture2D>();
+			_currentAction = null;
+			Map = null;
+			MapContainer = null;
+			_currentButtonPressed = 0;
+			_lastEncounteredObject = null;
+			Tool.ToolKeys = new List<string>();
+			Tool.ToolStatus = new Dictionary<string, bool>();
+			LoadMap();
+			MapData.FileName = StartupScreen.FilePath;
+		} else {
+			SelectedBiome = CreateNewMap.ChosenBiome;
+		}
+
 		Map = GameObject.Find("Map");
 		MapContainer = GameObject.Find("Map Container");
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
@@ -294,7 +313,7 @@ public class MapEditorManager : MonoBehaviour {
 		}
 	}
 
-  /// <summary>
+	/// <summary>
 	/// Adds a new MapObject to the list of all the MapObjects on the 2D map
 	/// </summary>
 	/// <param name="newGameObject">
@@ -308,7 +327,8 @@ public class MapEditorManager : MonoBehaviour {
 	/// </param>
 	public void AddNewMapObject(GameObject newGameObject, string name, GameObject parentGameObject){
 		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
-			new Vector2(newGameObject.transform.localPosition.x , 
+			_currentButtonPressed,
+			new Vector2(newGameObject.transform.localPosition.x, 
 			newGameObject.transform.localPosition.y),  
 			new Vector2(parentGameObject.transform.localPosition.x, 
 				parentGameObject.transform.localPosition.y),
@@ -318,6 +338,38 @@ public class MapEditorManager : MonoBehaviour {
 				- Zoom.zoomFactor), 
 			newGameObject.transform.rotation, true);
 		MapObjects.Add(newMapObject.Id, newMapObject);
+	}	
+
+	/// <summary>
+	/// Loads a map that is stored as a MapData object.
+	/// </summary>
+	public void LoadMap() {
+		MapContainer = GameObject.Find("Map Container");
+		MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
+		SelectedBiome = loadedMap.Biome;
+		CreateNewMap.Size = loadedMap.MapSize;
+		foreach (MapObject mapObject in loadedMap.MapObjects) {
+			GameObject newParent = new GameObject();
+			newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
+			newParent.transform.SetParent(MapContainer.transform, true);
+			newParent.transform.localPosition = new Vector3(
+				mapObject.MapOffset.x,
+				mapObject.MapOffset.y, 0);
+			GameObject newGameObject = (GameObject) Instantiate(
+						AssetPrefabs[mapObject.PrefabIndex], 
+						newParent.transform);
+			newGameObject.transform.localPosition = new Vector3(
+				mapObject.MapPosition.x, mapObject.MapPosition.y, 0);
+			newGameObject.transform.rotation = mapObject.Rotation;
+			newGameObject.transform.localScale = 
+				new Vector3(newGameObject.transform.localScale.x
+					+ Zoom.zoomFactor, newGameObject.transform.localScale.y
+					+ Zoom.zoomFactor, newGameObject.transform.localScale.z
+					+ Zoom.zoomFactor);
+
+			MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
+			Debug.Log("Loaded MapObject" + mapObject.Name);	
+		}
 	}
 
 	/// <summary>

@@ -6,6 +6,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class NavController : MonoBehaviour {
 	[SerializeField] private TMP_Text _newKeybind;
@@ -50,7 +51,24 @@ public class NavController : MonoBehaviour {
 	/// </summary>
     [MenuItem("NavMenu/Open %&o")]
     public static void OpenButtonClickHandler() {
-        Debug.Log("Open button clicked");
+		// Yes = 0, Cancel = 1, No = 2
+		int savePrev = EditorUtility.DisplayDialogComplex(
+			"Save current map?", 
+			"Would you like to save your current map before opening a new one?", "Yes", 
+			"Cancel", "No");
+
+		// switch statement should go here to deal with options
+		switch (savePrev) {
+			case 0:
+				SaveButtonClickHandler();
+				StartupScreen.LoadMapClickHandler();
+				break;
+			case 1:
+				return;
+			case 2:
+				StartupScreen.LoadMapClickHandler();
+				break;
+		}
     }
 
 	/// <summary>

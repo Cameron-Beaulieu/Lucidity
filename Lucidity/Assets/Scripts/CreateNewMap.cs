@@ -57,6 +57,7 @@ public class CreateNewMap : MonoBehaviour {
         }
         
         if (CreateFile()) {
+			_biome = getBiomeFromDropdown();
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
         }
     }
