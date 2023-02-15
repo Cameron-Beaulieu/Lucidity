@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 818228434662620163}
   - component: {fileID: 2054895381293239260}
   - component: {fileID: 1758282529240779726}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DesertPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
