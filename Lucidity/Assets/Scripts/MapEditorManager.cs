@@ -15,7 +15,7 @@ public class MapEditorManager : MonoBehaviour {
 	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
 	public static GameObject Map;
-    public static GameObject MapContainer;
+  public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 
@@ -58,6 +58,7 @@ public class MapEditorManager : MonoBehaviour {
         }
 
 		CreateNewMap.SizeType mapSize = CreateNewMap.Size;
+		RectTransform mapRect = Map.GetComponent<RectTransform>();
 		Vector2 mapScale = Map.transform.localScale;
 
 		switch (mapSize) {
@@ -116,7 +117,6 @@ public class MapEditorManager : MonoBehaviour {
 							+ Zoom.zoomFactor);
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
-						Debug.Log(newGameObject);
 						newMapObjects.Add(newGameObject);
 						AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], newParent);
 					} else {
@@ -196,7 +196,6 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
-							Debug.Log(obj.GetInstanceID());
 							MapObjects[obj.GetInstanceID()].IsActive = true;
 							obj.SetActive(true);
 						}
@@ -205,7 +204,7 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.DeleteMapObject:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
-							Debug.Log("calling the wrong thing");
+
 							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
@@ -251,7 +250,6 @@ public class MapEditorManager : MonoBehaviour {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
-							Debug.Log(obj.GetInstanceID());
 							MapObjects[obj.GetInstanceID()].IsActive = false;
 							obj.SetActive(false);
 						}
@@ -296,7 +294,7 @@ public class MapEditorManager : MonoBehaviour {
 		}
 	}
 
-	/// <summary>
+  /// <summary>
 	/// Adds a new MapObject to the list of all the MapObjects on the 2D map
 	/// </summary>
 	/// <param name="newGameObject">

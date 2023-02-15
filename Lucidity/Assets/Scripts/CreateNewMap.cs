@@ -77,7 +77,7 @@ public class CreateNewMap : MonoBehaviour {
         fileName = directory + "/" + fileName + ".json";
 
         if (!File.Exists(fileName)) {
-            MapData jsonContent = new MapData(Size, ChosenBiome);
+            MapData jsonContent = new MapData(fileName, Size, ChosenBiome);
             File.WriteAllText(fileName, jsonContent.Serialize());
             return true;
         }
