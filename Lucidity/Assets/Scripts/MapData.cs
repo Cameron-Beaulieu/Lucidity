@@ -1,7 +1,7 @@
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 // TODO: Add other necessary fields for saving/loading files
@@ -53,13 +53,16 @@ public class MapData {
         // Each MapObject in the list contains its ID, which will be used as the key
         // when converted back to a dictionary
         MapObjects = new List<MapObject>(mapObjects.Values);
+        // Remove deleted MapObjects
+        MapObjects.RemoveAll(obj => obj.IsActive == false);
     }
 
     /// <summary>
 	/// Serializes an entire instance of the class into a json string.
 	/// </summary>
     public string Serialize() {
-        return JsonUtility.ToJson(this, true);
+        // Give a second parameter of true to format the json nicely
+        return JsonUtility.ToJson(this);
     }
 
     /// <summary>
