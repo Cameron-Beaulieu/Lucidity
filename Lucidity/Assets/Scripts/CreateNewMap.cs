@@ -20,11 +20,17 @@ public class CreateNewMap : MonoBehaviour {
 	[SerializeField] private Button _cancelMapButton;
 	[SerializeField] private Button _createMapButton;
 	private static SizeType _mapSize;
+	private static Biome _biome;
 	private Text _errorMessage;
 
 	public static SizeType Size {
 		get { return _mapSize; }
 		set { _mapSize = value; }
+	}
+
+	public static Biome ChosenBiome{
+		get { return _biome; }
+		set {_biome = value; }
 	}
 
 	private void Start() {
@@ -51,6 +57,7 @@ public class CreateNewMap : MonoBehaviour {
         }
         
         if (CreateFile()) {
+			_biome = getBiomeFromDropdown();
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
         }
     }
@@ -66,11 +73,12 @@ public class CreateNewMap : MonoBehaviour {
 
         string fileName = _mapName.text;
 		Size = getMapSize();
+		ChosenBiome = getBiomeFromDropdown();
         
         fileName = directory + "/" + fileName + ".json";
 
         if (!File.Exists(fileName)) {
-            MapData jsonContent = new MapData(fileName, Size, getBiome());
+            MapData jsonContent = new MapData(fileName, Size, ChosenBiome);
             File.WriteAllText(fileName, jsonContent.Serialize());
             return true;
         }
@@ -86,7 +94,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// <c>Biome</c> with the corresponding <c>BiomeType</c>.
 	/// </returns>
-	public Biome getBiome() {
+	public Biome getBiomeFromDropdown() {
 		switch (_biomeDropdown.value) {
 			case 0:
 				return new Biome(Biome.BiomeType.Forest);
