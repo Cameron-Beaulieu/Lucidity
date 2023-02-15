@@ -89,6 +89,7 @@ public class AssetCollision : MonoBehaviour {
 	IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
 		yield return new WaitForSecondsRealtime(0.5f);
 		if (collisionObject.gameObject.name == "Spawn Point") {
+			// spawn point doesn't have material (would hide the sprite)
 			collisionObject.gameObject.GetComponent<MeshRenderer>().materials = new Material[]{};
 		} else {
 			collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
