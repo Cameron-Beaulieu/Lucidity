@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class AvatarMovement : MonoBehaviour {
 
-    private float _speed = 100f;
-    private float _groundDrag = 5f;
-    private float _avatarHeight = 2f;
     public LayerMask GroundLayer;
-    private bool _isGrounded;
     public Transform Orientation;
+    private float _avatarHeight = 2f;
+    private float _groundDrag = 5f;
+    private bool _isGrounded;
+    private float _speed = 100f;
+    private float _rotationSpeed = 40f;
     private float _horizontalInput;
     private float _verticalInput;
-    private Vector3 _moveDirection;
     private Rigidbody _rb;
-    private float _yRotation;
-    private Vector3 _rotationSpeed = new Vector3(0,40f,0);
 
     void Start() {
         _rb = GetComponent<Rigidbody>();
@@ -24,12 +22,11 @@ public class AvatarMovement : MonoBehaviour {
 
     void Update()
     {
-        // ground check
+        // check if object is grounded
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _avatarHeight * 0.5f + 0.2f, GroundLayer);
         GetInput();
-        ControlSpeed();
 
-        // handle drag
+        // prevents the avatar from slipping around
         if (_isGrounded) {
             _rb.drag = _groundDrag;
         } else {
@@ -41,25 +38,26 @@ public class AvatarMovement : MonoBehaviour {
         MoveAvatar();
     }
 
+    /// <summary>
+    /// Gets the user's input.
+    /// </summary>
     void GetInput() {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
     }
 
+    /// <summary>
+    /// Moves and rotates the Avatar in the direction of the user's input.
+    /// </summary>
     void MoveAvatar() {
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
-        Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed.y * Time.fixedDeltaTime);
-        _rb.MovePosition(transform.position + Orientation.forward * _speed * direction.z * Time.fixedDeltaTime);
+        Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed * Time.fixedDeltaTime);
+        _rb.velocity = Orientation.forward * direction.z * _speed;
     }
 
-    void ControlSpeed() {
-        Vector3 flatVelocity = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
-
-        // limit velocity if necessary
-        if (flatVelocity.magnitude > _speed) {
-            Vector3 limitedVelocity = flatVelocity.normalized * _speed; // what max velocity should be
-            _rb.velocity = new Vector3(limitedVelocity.x, _rb.velocity.y, limitedVelocity.z);
-        }
+    void OnCollisionEnter() {
+        // Stop moving Avatar when it collides with an object
+        _rb.velocity = Vector3.zero;
     }
     
 }
