@@ -72,7 +72,7 @@ public class CreateNewMap : MonoBehaviour {
 
         string fileName = _mapName.text;
 		Size = getMapSize();
-		ChosenBiome = getBiome();
+		ChosenBiome = getBiomeFromDropdown();
         
         fileName = directory + "/" + fileName + ".json";
 
@@ -93,7 +93,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// <c>Biome</c> with the corresponding <c>BiomeType</c>.
 	/// </returns>
-	public Biome getBiome() {
+	public Biome getBiomeFromDropdown() {
 		switch (_biomeDropdown.value) {
 			case 0:
 				return new Biome(Biome.BiomeType.Forest);

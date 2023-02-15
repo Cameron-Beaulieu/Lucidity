@@ -41,9 +41,9 @@ public class MapObject {
 		Id = id;
 		Name = name;
         MapPosition = mapPosition;
-        Scale = scale;
+        MapOffset = mapOffset;
+		Scale = scale;
         Rotation = rotation;
-		MapOffset = mapOffset;
 		IsActive = isActive;
 	}
 }
