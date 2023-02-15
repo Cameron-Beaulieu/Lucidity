@@ -7,6 +7,7 @@ public class MapEditorManager : MonoBehaviour {
 	public List<AssetController> AssetButtons;
 	public List<GameObject> AssetPrefabs;
 	public List<GameObject> AssetImage;
+	public Biome Biome;
     public List<Texture2D> CursorTextures;
 	public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
 	public static LinkedList<EditorAction> Actions;
@@ -33,6 +34,22 @@ public class MapEditorManager : MonoBehaviour {
 	}
 
 	void Awake() {
+		if (StartupScreen.FilePath != null) {
+			// Static variables must be reset if a new map is loaded from another map
+			MapObjects = new Dictionary<int, MapObject>();
+			Actions = null;
+			ToolToCursorMap = new Dictionary<string, Texture2D>();
+			_currentAction = null;
+			Map = null;
+			_mapContainer = null;
+			_currentButtonPressed = 0;
+			_lastEncounteredObject = null;
+			Tool.ToolKeys = new List<string>();
+			Tool.ToolStatus = new Dictionary<string, bool>();
+			LoadMap();
+			MapData.FileName = StartupScreen.FilePath;
+		}
+
 		Map = GameObject.Find("Map");
 		_mapContainer = GameObject.Find("Map Container");
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
@@ -291,8 +308,24 @@ public class MapEditorManager : MonoBehaviour {
 
 	public void AddNewMapObject(GameObject newGameObject){
 		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), newGameObject, 
-			new Vector2(newGameObject.transform.localPosition.x, newGameObject.transform.localPosition.y), 
+			_currentButtonPressed, new Vector2(newGameObject.transform.localPosition.x, 
+											   newGameObject.transform.localPosition.y), 
 			newGameObject.transform.localScale, newGameObject.transform.rotation, true);
 		MapObjects.Add(newMapObject.Id, newMapObject);
+	}
+
+	public void LoadMap() {
+		MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
+		Biome = loadedMap.Biome;
+		CreateNewMap.Size = loadedMap.MapSize;
+		foreach (MapObject mapObject in loadedMap.MapObjects) {
+			if (mapObject.IsActive) {
+				GameObject newGameObject = (GameObject) Instantiate(
+							AssetPrefabs[mapObject.PrefabIndex],
+							new Vector3(mapObject.MapPosition.x, mapObject.MapPosition.y, 90),
+							mapObject.Rotation);
+				MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
+			}
+		}
 	}
 }
