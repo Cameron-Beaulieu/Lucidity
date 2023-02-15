@@ -8,6 +8,7 @@ public class MapObject {
 
 	public int Id;
     public GameObject Asset;
+	public int PrefabIndex;
     public Vector2 MapPosition;
     public Vector3 Scale;
     public Quaternion Rotation;
@@ -22,6 +23,9 @@ public class MapObject {
     /// <param name="asset">
 	/// The asset within the scene that will be attached to the MapObject
 	/// </param>
+	/// <param name="prefabIndex">
+	/// The index of the prefab (in MapEditorManager.AssetPrefabs) associated with the MapObject
+	/// </param>
     /// <param name="mapPosition">
 	/// A 2D point that represents the (x,y) position of the asset on the 2D and 3D map
 	/// </param>
@@ -31,12 +35,14 @@ public class MapObject {
     /// <param name="rotation">
 	/// A Quaternion representing the rotation of the asset within the map
 	/// </param>
-	public MapObject (int id, GameObject asset, Vector2 mapPosition, Vector3 scale, 
-        Quaternion rotation, bool isActive) {
+	public MapObject (int id, GameObject asset, int prefabIndex, Vector2 mapPosition, 
+		Vector3 scale, Quaternion rotation, bool isActive) {
 		Id = id;
         Asset = asset;
+		PrefabIndex = prefabIndex;
         MapPosition = mapPosition;
         Scale = scale;
         Rotation = rotation;
+		IsActive = isActive;
 	}
 }
