@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,5 +60,16 @@ public class MapData {
 	/// </summary>
     public string Serialize() {
         return JsonUtility.ToJson(this, true);
+    }
+
+    /// <summary>
+	/// Deserializes a MapData object that was saved as json.
+	/// </summary>
+    /// <param name="filePath">
+	/// The path to the json file being deserialized.
+	/// </param>
+    public static MapData Deserialize(string filePath) {
+        string jsonContent = File.ReadAllText(filePath);
+		return JsonUtility.FromJson<MapData>(jsonContent);
     }
 }
