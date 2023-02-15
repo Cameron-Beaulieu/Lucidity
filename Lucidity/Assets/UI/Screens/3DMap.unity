@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 714647773}
   - component: {fileID: 714647772}
   - component: {fileID: 714647774}
+  - component: {fileID: 714647775}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: Untagged
@@ -331,7 +332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 714647771}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.7543807, y: 1, z: 1.0160685}
+  m_LocalPosition: {x: 1, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -353,10 +354,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72bcbd0aa64c2437582d80df0f9d32dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WhatIsGround:
+  GroundLayer:
     serializedVersion: 2
     m_Bits: 256
   Orientation: {fileID: 1914061897}
+--- !u!114 &714647775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714647771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77073c1672f99433ebd32a788af12016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &950692115
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,7 +733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e38872424ec947288a4bf5b496d959b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPosition: {fileID: 312560060}
+  CameraPosition: {fileID: 312560060}
+  Orientation: {fileID: 1914061897}
 --- !u!1 &1745278823
 GameObject:
   m_ObjectHideFlags: 0
