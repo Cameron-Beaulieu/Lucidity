@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 818228434662620163}
   - component: {fileID: 2054895381293239260}
   - component: {fileID: 1758282529240779726}
+  - component: {fileID: 5017045070951537749}
   m_Layer: 8
   m_Name: ForestPlane
-  m_TagString: Untagged
+  m_TagString: 3DMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,3 +99,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!156049354 &5017045070951537749
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7090174936922692590}
+  m_Enabled: 1
+  m_CellSize: {x: 1, y: 1, z: 1}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0

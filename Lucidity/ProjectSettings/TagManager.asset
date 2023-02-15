@@ -12,6 +12,7 @@ TagManager:
   - PaintingMenu
   - CollisionObject
   - SelectionScrollContent
+  - 3DMap
   layers:
   - Default
   - TransparentFX

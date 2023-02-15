@@ -14,6 +14,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 				Destroy(_outline);
 			}
 			Tool.SelectionOptions.SetActive(true);
+			GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text = "Editing " + SelectedObject.name;
 			_outline = SelectedObject.AddComponent<Outline>();
 			_outline.OutlineMode = Outline.Mode.OutlineAll;
 			_outline.OutlineColor = Color.red;

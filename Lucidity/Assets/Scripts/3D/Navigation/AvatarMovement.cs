@@ -47,16 +47,9 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     void MoveAvatar() {
-        Vector2 direction = new Vector2(_horizontalInput, _verticalInput).normalized;
-        Quaternion deltaRotation = Quaternion.Euler(direction.x * _rotationSpeed * Time.fixedDeltaTime);
-        // _rb.MoveRotation(_rb.rotation * deltaRotation);
+        Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed.y * Time.fixedDeltaTime);
-        _rb.MovePosition(transform.position + Orientation.forward * _speed * direction.y * Time.fixedDeltaTime);
-        // _rb.MovePosition(_rb.position + (direction * _speed * Time.fixedDeltaTime));
-        // _moveDirection = (Orientation.forward * _verticalInput) + (Orientation.right * _horizontalInput);
-        // _rb.AddForce(_moveDirection.normalized * _speed * 10f, ForceMode.Force);
-        // _rb.MovePosition(transform.position + _moveDirection * _speed * Time.deltaTime);
-        // _rb.velocity = new Vector3(_horizontalInput, _rb.velocity.y, _verticalInput) * _speed;
+        _rb.MovePosition(transform.position + Orientation.forward * _speed * direction.z * Time.fixedDeltaTime);
     }
 
     void ControlSpeed() {

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1758282529240779726}
   m_Layer: 8
   m_Name: OceanPlane
-  m_TagString: Untagged
+  m_TagString: 3DMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
