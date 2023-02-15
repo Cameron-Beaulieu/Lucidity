@@ -12,11 +12,13 @@ public class Render3DScene : MonoBehaviour {
     private float _scaleFactor;
 
     // Arbitrary value to scale down the map to make up for the assets only being 1 x 1 x 1
-    private float _mapScaledownFactor = 10f;
+    private float _mapScaledownFactor = 1f;
+    private GameObject _avatar;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
     void Awake() {
+        _avatar = GameObject.Find("Avatar");
         CreateMap();
         PlaceAssets();        
     }
@@ -83,6 +85,8 @@ public class Render3DScene : MonoBehaviour {
 			break;
 		}
 
+        _scaleFactor = 1f;
+
         // Adjusting map size and dividing by 10 to properly scale it
         xScale = mapWidth * _scaleFactor / _mapScaledownFactor;
         zScale = mapHeight * _scaleFactor / _mapScaledownFactor;
@@ -93,6 +97,7 @@ public class Render3DScene : MonoBehaviour {
 	/// Places each asset from the 2D map on the 3D map
 	/// </summary>
     private void PlaceAssets() {
+        _scaleFactor = 10f;
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
             if(kvp.Value.IsActive) {

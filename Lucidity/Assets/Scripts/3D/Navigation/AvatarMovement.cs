@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class AvatarMovement : MonoBehaviour {
 
-    [Header("Movement")]
-    private float _speed = 5f;
-
-    [Header("Ground Check")]
+    private float _speed = 100f;
     private float _groundDrag = 5f;
     private float _avatarHeight = 2f;
-    public LayerMask WhatIsGround;
+    public LayerMask GroundLayer;
     private bool _isGrounded;
-
-
     public Transform Orientation;
     private float _horizontalInput;
     private float _verticalInput;
     private Vector3 _moveDirection;
     private Rigidbody _rb;
+    private float _yRotation;
+    private Vector3 _rotationSpeed = new Vector3(0,40f,0);
 
     void Start() {
         _rb = GetComponent<Rigidbody>();
@@ -28,7 +25,7 @@ public class AvatarMovement : MonoBehaviour {
     void Update()
     {
         // ground check
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _avatarHeight * 0.5f + 0.2f, WhatIsGround);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _avatarHeight * 0.5f + 0.2f, GroundLayer);
         GetInput();
         ControlSpeed();
 
@@ -50,9 +47,16 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     void MoveAvatar() {
-        _moveDirection = (Orientation.forward * _verticalInput) + (Orientation.right * _horizontalInput);
-        _rb.AddForce(_moveDirection.normalized * _speed * 10f, ForceMode.Force);
+        Vector2 direction = new Vector2(_horizontalInput, _verticalInput).normalized;
+        Quaternion deltaRotation = Quaternion.Euler(direction.x * _rotationSpeed * Time.fixedDeltaTime);
+        // _rb.MoveRotation(_rb.rotation * deltaRotation);
+        Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed.y * Time.fixedDeltaTime);
+        _rb.MovePosition(transform.position + Orientation.forward * _speed * direction.y * Time.fixedDeltaTime);
+        // _rb.MovePosition(_rb.position + (direction * _speed * Time.fixedDeltaTime));
+        // _moveDirection = (Orientation.forward * _verticalInput) + (Orientation.right * _horizontalInput);
+        // _rb.AddForce(_moveDirection.normalized * _speed * 10f, ForceMode.Force);
         // _rb.MovePosition(transform.position + _moveDirection * _speed * Time.deltaTime);
+        // _rb.velocity = new Vector3(_horizontalInput, _rb.velocity.y, _verticalInput) * _speed;
     }
 
     void ControlSpeed() {
