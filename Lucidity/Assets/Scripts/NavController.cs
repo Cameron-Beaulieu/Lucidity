@@ -132,7 +132,7 @@ public class NavController : MonoBehaviour {
         CreateNewMap.SizeType size = CreateNewMap.Size;
 
         MapData jsonContent = new MapData(size, new Biome(groundColour), 
-										  MapEditorManager.MapObjects);
+										  MapEditorManager.MapObjects, MapEditorManager.SpawnPoint);
 
         File.WriteAllText(MapData.FileName, jsonContent.Serialize());
 		_savingText.text = "Saved!";

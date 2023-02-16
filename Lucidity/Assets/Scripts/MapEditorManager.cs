@@ -19,7 +19,7 @@ public class MapEditorManager : MonoBehaviour {
   	public static GameObject MapContainer;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
-	public static Vector2 SpawnPoint = new Vector2(0, 0);
+	public static Vector2 SpawnPoint;
 
 	public static LinkedListNode<EditorAction> CurrentAction {
 		get { return _currentAction; }
@@ -57,9 +57,13 @@ public class MapEditorManager : MonoBehaviour {
 
 		Map = GameObject.Find("Map");
 		MapContainer = GameObject.Find("Map Container");
+		// below is a temp fix while moving objects is not implemented; allows for testing
+		// different spawn points by moving it within the editor before playing
+		SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition; 
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
 		Tool.SelectionMenu = GameObject.Find("Selection Menu");
-		Tool.SelectionOptions = GameObject.FindGameObjectWithTag("SelectionScrollContent");
+		Tool.SelectionOptions = GameObject.Find("SelectionOptionsScrollContent");
+		Tool.SpawnPointOptions = GameObject.Find("SpawnPointOptionsScrollContent");
 		Tool.SelectionMenu.SetActive(false);
 		GameObject.Find("Undo").GetComponent<Button>().onClick.AddListener(Undo);
 		GameObject.Find("Redo").GetComponent<Button>().onClick.AddListener(Redo);
@@ -349,6 +353,9 @@ public class MapEditorManager : MonoBehaviour {
 		MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
 		SelectedBiome = loadedMap.Biome;
 		CreateNewMap.Size = loadedMap.MapSize;
+		SpawnPoint = loadedMap.SpawnPoint;
+		GameObject.Find("Spawn Point").transform.localPosition = 
+			new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
 		foreach (MapObject mapObject in loadedMap.MapObjects) {
 			GameObject newParent = new GameObject();
 			newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";

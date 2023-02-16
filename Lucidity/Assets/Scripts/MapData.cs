@@ -12,6 +12,7 @@ public class MapData {
     public Biome Biome;  
     [NonSerialized] public static string FileName;
     public List<MapObject> MapObjects;
+    public Vector2 SpawnPoint;
 
     /// <summary>
     /// Constructor for creating the initial file.
@@ -45,8 +46,12 @@ public class MapData {
 	/// </param>
     /// <param name="mapObjects">
 	/// A dictionary containing all of the MapObjects currently on the screen.
+    /// </param>
+    /// <param name="spawnPoint">
+    /// The spawn point of the player when the map is converted to 3D.
 	/// </param>
-    public MapData(CreateNewMap.SizeType mapSize, Biome biome, Dictionary<int, MapObject> mapObjects) {
+    public MapData(CreateNewMap.SizeType mapSize, Biome biome, Dictionary<int, MapObject> mapObjects,
+        Vector2 spawnPoint) {
         MapSize = mapSize;
         Biome = biome;
         // Unity can't serialize a dictionary, so the values are converted to a list
@@ -55,6 +60,7 @@ public class MapData {
         MapObjects = new List<MapObject>(mapObjects.Values);
         // Remove deleted MapObjects
         MapObjects.RemoveAll(obj => obj.IsActive == false);
+        SpawnPoint = spawnPoint;
     }
 
     /// <summary>
