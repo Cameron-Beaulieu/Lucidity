@@ -98,7 +98,6 @@ public class Render3DScene : MonoBehaviour {
 	/// Places each asset from the 2D map on the 3D map
 	/// </summary>
     private void PlaceAssets() {
-        _scaleFactor = 10f;
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
             if(kvp.Value.IsActive) {
