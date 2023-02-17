@@ -126,14 +126,8 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    while ((CurrentAction.Previous != null) && (CurrentAction.Previous.Value.Type == EditorAction.ActionType.ResizeMapObject)) {
-                        CurrentAction = CurrentAction.Previous;
-                        actionToUndo = CurrentAction.Value;
-                    }
-                    foreach (GameObject obj in actionToUndo.RelatedObjects)
-                    {
-                        if (obj != null)
-                        {
+                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
                             obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
                             _scaleSizeSlider.value = ((ResizeMapObjectAction)actionToUndo).OldSize.x;
                         }
@@ -202,15 +196,11 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    while ((CurrentAction.Next != null) && (CurrentAction.Next.Value.Type == EditorAction.ActionType.ResizeMapObject)) {
-                        CurrentAction = CurrentAction.Next;
-                        actionToRedo = CurrentAction.Value;
-                    }
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-                                obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
-                                _scaleSizeSlider.value = ((ResizeMapObjectAction)actionToRedo).NewSize.x;
-                            }
+                            obj.transform.localScale = ((ResizeMapObjectAction)actionToRedo).NewSize;
+                            _scaleSizeSlider.value = ((ResizeMapObjectAction)actionToRedo).NewSize.x;
+                        }
                     }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
