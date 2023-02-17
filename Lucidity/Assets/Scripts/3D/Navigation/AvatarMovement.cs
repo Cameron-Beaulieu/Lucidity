@@ -20,10 +20,10 @@ public class AvatarMovement : MonoBehaviour {
         _rb.freezeRotation = true;
     }
 
-    void Update()
-    {
+    void Update() {
         // check if object is grounded
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _avatarHeight * 0.5f + 0.2f, GroundLayer);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, 
+                                        _avatarHeight * 0.5f + 0.2f, GroundLayer);
         GetInput();
 
         // prevents the avatar from slipping around

@@ -40,7 +40,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 		List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
 		// If a map was just loaded, deleting could be the first Action
 		if (MapEditorManager.Actions != null) {
-			MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+			MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+                                            new DeleteMapObjectAction(objectsToDelete));
 			MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
 		} else {
 			MapEditorManager.Actions = new LinkedList<EditorAction>();

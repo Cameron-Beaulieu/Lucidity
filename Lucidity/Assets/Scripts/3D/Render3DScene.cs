@@ -27,30 +27,34 @@ public class Render3DScene : MonoBehaviour {
     /// <summary>
 	/// Creates the terrain of the 3D scene during 2D to 3D conversion 
 	/// </summary>
-    private void CreateMap() {
+    void CreateMap() {
         // Adds a plane with a certain material based on the desired terrain type
-        if(CreateNewMap.ChosenBiome != null) {
+        if (CreateNewMap.ChosenBiome != null) {
             switch(CreateNewMap.ChosenBiome.Name) {
                 case Biome.BiomeType.Forest:
-                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 case Biome.BiomeType.Desert:
-                    _map = (GameObject) Instantiate(_mapTypes[1], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[1], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 case Biome.BiomeType.Ocean:
-                    _map = (GameObject) Instantiate(_mapTypes[2], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[2], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 default:
                     Debug.Log("Using Default");
-                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             }
-        }
-        else {
-            _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+        } else {
+            _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), 
+                                            Quaternion.identity);
         }
 
         Vector3 mapScale = _map.transform.localScale;
@@ -97,7 +101,7 @@ public class Render3DScene : MonoBehaviour {
     /// <summary>
 	/// Places each asset from the 2D map on the 3D map
 	/// </summary>
-    private void PlaceAssets() {
+    void PlaceAssets() {
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
             if(kvp.Value.IsActive) {
@@ -137,8 +141,13 @@ public class Render3DScene : MonoBehaviour {
         }
     }
 
-    private void PlaceAvatar() {
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, MapEditorManager.SpawnPoint.y * _scaleFactor);
+    /// <summary>
+    /// Places the avatar on the 3D map in accordance with the placement of the spawn point 
+    /// on the 2D map.
+    /// </summary>
+    void PlaceAvatar() {
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, 
+                                                MapEditorManager.SpawnPoint.y * _scaleFactor);
     }
 
     /// <summary>
@@ -150,7 +159,7 @@ public class Render3DScene : MonoBehaviour {
 	/// <param name="prefab">
 	/// The 3D prefab matching the 2D asset to be placed
 	/// </param>
-    private Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
+    Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
         float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x) * _scaleFactor ;
         float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y) * _scaleFactor ;
         float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) + _map.transform.position.y;

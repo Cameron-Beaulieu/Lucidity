@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class Zoom : MonoBehaviour
 {
-    private MapEditorManager _editor;
+    
     public static float zoomFactor;
+    private MapEditorManager _editor;
     private RayLibrary _rayLib;
     private int _uiLayer = 5;
     private float zoomIncrement = 0.5f;
 
-    void Start()
-    {
+    void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
         zoomFactor = 0f;
@@ -37,5 +37,3 @@ public class Zoom : MonoBehaviour
         }
     }
 }
-
-// TODO: need to add scale factor to asset placement if zoomed in

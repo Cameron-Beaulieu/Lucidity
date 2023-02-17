@@ -10,7 +10,7 @@ public class CreateLayerAction : EditorAction {
 	/// <param name="relatedObjects">
 	/// List of <c>GameObject</c> that are related to the layer to be created.
 	/// </param>
-	public CreateLayerAction (List<GameObject> relatedObjects) {
+	public CreateLayerAction(List<GameObject> relatedObjects) {
 		base.Type = ActionType.CreateLayer;
 		base.RelatedObjects = relatedObjects;
 	}

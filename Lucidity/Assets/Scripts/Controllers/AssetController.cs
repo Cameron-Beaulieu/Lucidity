@@ -29,13 +29,6 @@ public class AssetController : MonoBehaviour {
 		if (activeImage != null) {
 			Destroy(activeImage);
 		}
-		// Creates image that will follow mouse
-		// GameObject hoverImage = Instantiate(_editor.AssetImage[Id],
-		// 			new Vector3(worldPosition.x, worldPosition.y, 90),
-		// 			Quaternion.identity);
-		// hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.z + Zoom.zoomFactor);
 		CreateFollowingImage(_editor.AssetImage[Id]);
 
 		MapEditorManager.CurrentButtonPressed = Id;
@@ -53,14 +46,15 @@ public class AssetController : MonoBehaviour {
 		Tool.ChangeTools("Brush Tool");
 	}
 
-	public static void CreateFollowingImage (GameObject prefab) {
+	public static void CreateFollowingImage(GameObject prefab) {
 		Vector2 worldPosition = Mouse.getMousePosition();
 		GameObject hoverImage = Instantiate(prefab,
-					new Vector3(worldPosition.x, worldPosition.y, 90),
-					Quaternion.identity);
-		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-                    hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-                    hoverImage.transform.localScale.z + Zoom.zoomFactor);
+					                        new Vector3(worldPosition.x, worldPosition.y, 90),
+					                        Quaternion.identity);
+		hoverImage.transform.localScale = new Vector3(
+			hoverImage.transform.localScale.x + Zoom.zoomFactor, 
+            hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+            hoverImage.transform.localScale.z + Zoom.zoomFactor);
 	}
 
 	/// <summary>

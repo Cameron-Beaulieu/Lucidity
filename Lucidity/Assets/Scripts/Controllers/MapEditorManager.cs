@@ -13,13 +13,14 @@ public class MapEditorManager : MonoBehaviour {
     public List<Texture2D> CursorTextures;
 	public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
 	public static LinkedList<EditorAction> Actions;
-	public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
+	public static Dictionary<string, Texture2D> ToolToCursorMap = 
+		new Dictionary<string, Texture2D>();
 	private static LinkedListNode<EditorAction> _currentAction;
 	public static GameObject Map;
   	public static GameObject MapContainer;
+	public static Vector2 SpawnPoint;
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
-	public static Vector2 SpawnPoint;
 
 	public static LinkedListNode<EditorAction> CurrentAction {
 		get { return _currentAction; }
@@ -60,6 +61,7 @@ public class MapEditorManager : MonoBehaviour {
 		// below is a temp fix while moving objects is not implemented; allows for testing
 		// different spawn points by moving it within the editor before playing
 		SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition; 
+
 		Tool.PaintingMenu = GameObject.Find("Painting Menu");
 		Tool.SelectionMenu = GameObject.Find("Selection Menu");
 		Tool.SelectionOptions = GameObject.Find("SelectionOptionsScrollContent");
@@ -69,6 +71,7 @@ public class MapEditorManager : MonoBehaviour {
 		GameObject.Find("Redo").GetComponent<Button>().onClick.AddListener(Redo);
 		GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.AddListener(ConvertTo3D);
 		GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
+
 		foreach (GameObject tool in selectableTools) {
 			if (tool.name == "Brush Tool") {
 				Tool.ToolStatus.Add(tool.name, true);
@@ -77,6 +80,7 @@ public class MapEditorManager : MonoBehaviour {
 			}
 			Tool.ToolKeys.Add(tool.name);
 		}
+
         foreach (Texture2D cursor in CursorTextures) {
             ToolToCursorMap.Add(cursor.name, cursor);
         }
@@ -118,31 +122,36 @@ public class MapEditorManager : MonoBehaviour {
 			if (Mouse.LastMousePosition != worldPosition
 					&& (LastEncounteredObject == null
 						|| Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
-							>= assetWidth
+					        >= assetWidth
 						|| Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
-							>= assetHeight)) {
+						    >= assetHeight)) {
 				List<GameObject> newMapObjects = new List<GameObject>();
+
 				for (int i = 0; i < AssetOptions.AssetCount; i++) {
 					GameObject newParent = new GameObject();
 					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
 					newParent.transform.SetParent(MapContainer.transform, true);
-					newParent.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
+					newParent.transform.position = new Vector3(worldPosition.x + i*2, 
+                                                                worldPosition.y, 0);
 					newParent.transform.localPosition = new Vector3(
 						newParent.transform.localPosition.x,
 						newParent.transform.localPosition.y, 0);
+
 					GameObject newGameObject = (GameObject) Instantiate(
 						AssetPrefabs[_currentButtonPressed],
-						new Vector3(worldPosition.x + i*2, worldPosition.y, 90), // TODO: why 90 again
+						new Vector3(worldPosition.x + i*2, worldPosition.y, 90), 
 						Quaternion.identity, newParent.transform);
 					newGameObject.transform.localScale = 
 						new Vector3(newGameObject.transform.localScale.x
 							+ Zoom.zoomFactor, newGameObject.transform.localScale.y
 							+ Zoom.zoomFactor, newGameObject.transform.localScale.z
 							+ Zoom.zoomFactor);
+
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
 						newMapObjects.Add(newGameObject);
-						AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], newParent);
+						AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
+                                        newParent);
 					} else {
 						Destroy(newParent);
 					}
@@ -216,6 +225,7 @@ public class MapEditorManager : MonoBehaviour {
 			if (_currentAction != null) {
 				actionToRedo = _currentAction.Next.Value;
 			}
+
 			switch(actionToRedo.Type) {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
@@ -256,6 +266,7 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					break;
 			}
+
 			if (_currentAction == null) {
 				_currentAction = Actions.First;
 			} else {
@@ -270,6 +281,7 @@ public class MapEditorManager : MonoBehaviour {
 	public void Undo() {
 		if (_currentAction != null) {
 			EditorAction actionToUndo = _currentAction.Value;
+
 			switch (actionToUndo.Type) {
 				case EditorAction.ActionType.Paint:
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
@@ -309,6 +321,7 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					break;
 			}
+
 			if (_currentAction.Previous != null) {
 				_currentAction = _currentAction.Previous;
 			}
@@ -330,17 +343,17 @@ public class MapEditorManager : MonoBehaviour {
 	/// <param name="parentGameObject">
 	/// The parent container storing the new GameObject
 	/// </param>
-	public void AddNewMapObject(GameObject newGameObject, string name, GameObject parentGameObject){
+	public void AddNewMapObject(GameObject newGameObject, string name, 
+                                GameObject parentGameObject) {
 		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
 			_currentButtonPressed,
 			new Vector2(newGameObject.transform.localPosition.x, 
-			newGameObject.transform.localPosition.y),  
+			            newGameObject.transform.localPosition.y),  
 			new Vector2(parentGameObject.transform.localPosition.x, 
-				parentGameObject.transform.localPosition.y),
-			new Vector3(newGameObject.transform.localScale.x
-				- Zoom.zoomFactor, newGameObject.transform.localScale.y
-				- Zoom.zoomFactor, newGameObject.transform.localScale.z
-				- Zoom.zoomFactor), 
+				        parentGameObject.transform.localPosition.y),
+			new Vector3(newGameObject.transform.localScale.x - Zoom.zoomFactor, 
+                        newGameObject.transform.localScale.y - Zoom.zoomFactor, 
+                        newGameObject.transform.localScale.z - Zoom.zoomFactor), 
 			newGameObject.transform.rotation, true);
 		MapObjects.Add(newMapObject.Id, newMapObject);
 	}	
@@ -356,27 +369,23 @@ public class MapEditorManager : MonoBehaviour {
 		SpawnPoint = loadedMap.SpawnPoint;
 		GameObject.Find("Spawn Point").transform.localPosition = 
 			new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
+
 		foreach (MapObject mapObject in loadedMap.MapObjects) {
 			GameObject newParent = new GameObject();
 			newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
 			newParent.transform.SetParent(MapContainer.transform, true);
-			newParent.transform.localPosition = new Vector3(
-				mapObject.MapOffset.x,
-				mapObject.MapOffset.y, 0);
+			newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
+                                                            mapObject.MapOffset.y, 0);
 			GameObject newGameObject = (GameObject) Instantiate(
-						AssetPrefabs[mapObject.PrefabIndex], 
-						newParent.transform);
-			newGameObject.transform.localPosition = new Vector3(
-				mapObject.MapPosition.x, mapObject.MapPosition.y, 0);
+                AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
+			newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
+                                                                mapObject.MapPosition.y, 0);
 			newGameObject.transform.rotation = mapObject.Rotation;
 			newGameObject.transform.localScale = 
-				new Vector3(newGameObject.transform.localScale.x
-					+ Zoom.zoomFactor, newGameObject.transform.localScale.y
-					+ Zoom.zoomFactor, newGameObject.transform.localScale.z
-					+ Zoom.zoomFactor);
-
+				new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
+                            newGameObject.transform.localScale.y + Zoom.zoomFactor, 
+                            newGameObject.transform.localScale.z + Zoom.zoomFactor);
 			MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
-			Debug.Log("Loaded MapObject" + mapObject.Name);	
 		}
 	}
 

@@ -10,7 +10,7 @@ public class DeleteLayerAction : EditorAction {
 	/// <param name="relatedObjects">
 	/// List of <c>GameObject</c> that are related to the layer to be deleted.
 	/// </param>
-	public DeleteLayerAction (List<GameObject> relatedObjects) {
+	public DeleteLayerAction(List<GameObject> relatedObjects) {
 		base.Type = ActionType.DeleteLayer;
 		base.RelatedObjects = relatedObjects;
 	}

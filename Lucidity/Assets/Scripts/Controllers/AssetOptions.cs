@@ -21,7 +21,7 @@ public class AssetOptions : MonoBehaviour {
 	}
 
 	void Start() {
-		_countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
+		_countInput.onEndEdit.AddListener(delegate{AssetCountInputHandler(_countInput.text);});
 		_brushSizeSlider.onValueChanged.AddListener(delegate{BrushSizeSliderHandler();});
 		_assetCount = 1;
 		BrushSizeSliderHandler();

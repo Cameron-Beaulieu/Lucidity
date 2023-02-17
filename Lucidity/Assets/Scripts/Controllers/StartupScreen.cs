@@ -42,6 +42,6 @@ public class StartupScreen : MonoBehaviour {
 	/// Button handler for <c>newMapButton</c>, selected through in the Unity editor.
 	/// </summary>
 	public void NewMapClickHandler() {
-		SceneManager.LoadScene("MapCreationUI", LoadSceneMode.Single);
+		SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
 	}
 }

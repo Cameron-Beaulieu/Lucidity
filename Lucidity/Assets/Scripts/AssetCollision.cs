@@ -49,7 +49,6 @@ public class AssetCollision : MonoBehaviour {
 		if (collisions > 1) {
 			gameObject.tag = "CollisionObject";
 			foreach (Collider collisionObject in hitColliders) {
-
 				if (collisionObject.gameObject.layer == _assetLayer
 						&& collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
 					_originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()

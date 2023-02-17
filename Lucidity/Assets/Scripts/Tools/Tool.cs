@@ -89,7 +89,8 @@ public class Tool : MonoBehaviour {
 		}
 
 		if (MapEditorManager.ToolToCursorMap.ContainsKey(toolSelected)) {
-			Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], Vector2.zero, CursorMode.Auto);
+			Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], Vector2.zero, 
+                            CursorMode.Auto);
 		} else {
 			Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 		}

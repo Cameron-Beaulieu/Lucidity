@@ -28,7 +28,7 @@ public class CreateNewMap : MonoBehaviour {
 		set { _mapSize = value; }
 	}
 
-	public static Biome ChosenBiome{
+	public static Biome ChosenBiome {
 		get { return _biome; }
 		set {_biome = value; }
 	}
@@ -43,7 +43,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// Button handler for <c>_cancelMapButton</c>, selected through in the Unity editor.
 	/// </summary>
 	public void CancelMapClickHandler() {
-		SceneManager.LoadScene("StarterScreenUI", LoadSceneMode.Single);
+		SceneManager.LoadScene("StartupScreen", LoadSceneMode.Single);
 	}
 
 	/// <summary>
@@ -51,13 +51,13 @@ public class CreateNewMap : MonoBehaviour {
 	/// </summary>
     public void CreateMapClickHandler() {
         if (String.IsNullOrWhiteSpace(_mapName.text)) {
-            _errorMessage.text = "You must provide a file name to create a map";
+            _errorMessage.text = "You must provide a file name to create a map.";
             _mapName.Select();
             return;
         }
         
         if (CreateFile()) {
-			_biome = getBiomeFromDropdown();
+			_biome = GetBiomeFromDropdown();
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
         }
     }
@@ -72,8 +72,8 @@ public class CreateNewMap : MonoBehaviour {
         if (directory.Equals("")) { return false; }
 
         string fileName = _mapName.text;
-		Size = getMapSize();
-		ChosenBiome = getBiomeFromDropdown();
+		Size = GetMapSize();
+		ChosenBiome = GetBiomeFromDropdown();
         
         fileName = directory + "/" + fileName + ".json";
 
@@ -94,7 +94,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// <c>Biome</c> with the corresponding <c>BiomeType</c>.
 	/// </returns>
-	public Biome getBiomeFromDropdown() {
+	public Biome GetBiomeFromDropdown() {
 		switch (_biomeDropdown.value) {
 			case 0:
 				return new Biome(Biome.BiomeType.Forest);
@@ -113,7 +113,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// <c>string</c> of the map name.
 	/// </returns>
-	public string getMapName() { return _mapName.text; }
+	public string GetMapName() { return _mapName.text; }
 
 	/// <summary>
 	/// Biome size accessor.
@@ -121,7 +121,7 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// Enumerated <c>SizeType</c> corresponding to the map size.
 	/// </returns>
-	public SizeType getMapSize() {
+	public SizeType GetMapSize() {
 		switch(_mapSizeDropdown.value) {
 			case 0:
 				return SizeType.Small;
@@ -140,5 +140,5 @@ public class CreateNewMap : MonoBehaviour {
 	/// <returns>
 	/// <c>bool</c> of starting asset toggle.
 	/// </returns>
-	public bool getStartingAssetsToggle() { return _startingAssetsToggle.isOn; }
+	public bool GetStartingAssetsToggle() { return _startingAssetsToggle.isOn; }
 }

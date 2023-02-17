@@ -40,8 +40,11 @@ public class MapObject {
     /// <param name="rotation">
 	/// A Quaternion representing the rotation of the asset within the map
 	/// </param>
-	public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, 
-		Vector2 mapOffset, Vector3 scale, Quaternion rotation, bool isActive) {
+    /// <param name="isActive">
+    /// A boolean representing whether or not the asset is active in the map.
+    /// </param>
+	public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
+					Vector3 scale, Quaternion rotation, bool isActive) {
 		Id = id;
         Name = name;
 		PrefabIndex = prefabIndex;
