@@ -11,7 +11,7 @@ public class StartupScreen : MonoBehaviour {
 	[SerializeField] private Button newMapButton;
 	public static string FilePath;
 
-	private void Start() {
+	void Start() {
 		newMapButton.onClick.AddListener(NewMapClickHandler);
 		loadMapButton.onClick.AddListener(LoadMapClickHandler);
 	}

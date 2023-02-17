@@ -202,7 +202,7 @@ public class MapEditorManager : MonoBehaviour {
 	/// <c>LinkedListNode</c> of the <c>EditorAction</c> to remove from the linked list (and its
 	/// associated actions).
 	/// </param>
-	private void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
+	void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
 		while (actionToDelete != null) {
 			if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
 				foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {

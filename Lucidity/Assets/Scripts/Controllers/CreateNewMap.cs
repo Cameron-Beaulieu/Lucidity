@@ -33,7 +33,7 @@ public class CreateNewMap : MonoBehaviour {
 		set {_biome = value; }
 	}
 
-	private void Start() {
+	void Start() {
 		_createMapButton.onClick.AddListener(CreateMapClickHandler);
 		_cancelMapButton.onClick.AddListener(CancelMapClickHandler);
 		_errorMessage = GameObject.Find("ErrorMessage").GetComponent<Text>();
@@ -66,7 +66,7 @@ public class CreateNewMap : MonoBehaviour {
     /// Creates a json file at a location specified by the user. Returns true if the file creation
     /// is successful. Otherwise an error message is displayed on the UI and false is returned.
     /// </summary>
-    private bool CreateFile() {
+    bool CreateFile() {
         string directory = EditorUtility.OpenFolderPanel("Select Directory", "", "");
         // cancelled selecting a directory
         if (directory.Equals("")) { return false; }

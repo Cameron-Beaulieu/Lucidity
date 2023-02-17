@@ -18,7 +18,6 @@ public class Pan : MonoBehaviour {
             gameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) 
                 + _offset;
         }
-
     }
 
     void OnMouseDown() {
