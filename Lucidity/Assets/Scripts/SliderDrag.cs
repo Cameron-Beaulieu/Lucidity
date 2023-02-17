@@ -21,18 +21,18 @@ public class SliderDrag : MonoBehaviour, IPointerUpHandler
             return gameObject.GetComponent<Slider>().value;
         }
     }
- 
+
     public void OnPointerUp (PointerEventData data)
     {
-        Vector3 oldSize = SelectMapObject.SelectedObject.transform.localScale;
-        Vector3 newSize = new Vector3(SliderValue, SliderValue, 1);
-        SelectMapObject.SelectedObject.transform.localScale = newSize;
         if (EndDrag != null) {
             EndDrag(SliderValue);
         }
-        //Vector3 oldSize = SelectMapObject.SelectedObject.transform.localScale;
-        //Vector3 newSize = new Vector3(SliderValue, SliderValue, 1);
-        //SelectMapObject.SelectedObject.transform.localScale = newSize;
+        Vector3 oldSize = SelectMapObject.SelectedObject.transform.localScale;
+        Vector3 newSize = new Vector3(SliderValue, SliderValue, SliderValue);
+        SelectMapObject.SelectedObject.transform.localScale = newSize;
+
+        //Check for collision with other objects
+
         // for UNDO/REDO
         List<GameObject> objectsToScale = new List<GameObject>() { SelectMapObject.SelectedObject };
         _editor.Actions.AddAfter(_editor.CurrentAction, new ResizeMapObjectAction(objectsToScale, oldSize, newSize));

@@ -30,7 +30,9 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         _editor.SelectionOptions.SetActive(true);
 
         _sliderText = GameObject.Find("ValueText").GetComponent<TMP_Text>();
+        _scaleSliderValue = GameObject.Find("Slider").GetComponent<Slider>();
         _sliderText.text = (SelectedObject.transform.localScale.x).ToString("0.0" + "x");
+        _scaleSliderValue.value = SelectedObject.transform.localScale.x;
 
         _outline = SelectedObject.AddComponent<Outline>();
         _outline.OutlineMode = Outline.Mode.OutlineAll;
