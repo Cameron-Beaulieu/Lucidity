@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/UI/Screens/StarterScreenUI.unity
+    path: Assets/UI/Screens/StartupScreen.unity
     guid: a97f4d2c70fc9384d890a19822cf5a2a
   - enabled: 1
-    path: Assets/UI/Screens/MapCreationUI.unity
+    path: Assets/UI/Screens/MapCreation.unity
     guid: 08a31a0363e96184e950b6670b053eec
   - enabled: 1
     path: Assets/UI/Screens/MapEditor.unity
