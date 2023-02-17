@@ -9,6 +9,7 @@ public class Tool : MonoBehaviour {
 	private static GameObject _paintingMenu;
 	private static GameObject _selectionMenu;
 	private static GameObject _selectionOptions;
+	private static GameObject _spawnPointOptions;
 	private MapEditorManager _editor;
 	private string _name;
 	private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
@@ -26,6 +27,11 @@ public class Tool : MonoBehaviour {
 	public static GameObject SelectionOptions {
 		get { return _selectionOptions; }
 		set { _selectionOptions = value; }
+	}
+
+	public static GameObject SpawnPointOptions {
+		get { return _spawnPointOptions; }
+		set { _spawnPointOptions = value; }
 	}
 
 	void Start() {
@@ -66,7 +72,8 @@ public class Tool : MonoBehaviour {
 				_selectionMenu.SetActive(true);
 				if (SelectMapObject.SelectedObject == null) {
 					SelectionOptions.SetActive(false);
-				}
+					SpawnPointOptions.SetActive(false);
+				} 
 				break;
 			default:    // Default case is having the selection menu open
 				_paintingMenu.SetActive(false);

@@ -49,6 +49,7 @@ public class AssetCollision : MonoBehaviour {
 		if (collisions > 1) {
 			gameObject.tag = "CollisionObject";
 			foreach (Collider collisionObject in hitColliders) {
+
 				if (collisionObject.gameObject.layer == _assetLayer
 						&& collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
 					_originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()
@@ -87,7 +88,12 @@ public class AssetCollision : MonoBehaviour {
 	/// </param>
 	IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
 		yield return new WaitForSecondsRealtime(0.5f);
-		collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
+		if (collisionObject.gameObject.name == "Spawn Point") {
+			// spawn point doesn't have material (would hide the sprite)
+			collisionObject.gameObject.GetComponent<MeshRenderer>().materials = new Material[]{};
+		} else {
+			collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
+		}
 		if (collisionObject == gameObject) {
 			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject);

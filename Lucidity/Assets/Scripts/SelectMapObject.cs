@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,7 +14,15 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 			if (_outline != null) {
 				Destroy(_outline);
 			}
-			Tool.SelectionOptions.SetActive(true);
+			if (SelectedObject.name == "Spawn Point") {
+				Tool.SpawnPointOptions.SetActive(true);
+				Tool.SelectionOptions.SetActive(false);
+			} else {
+				Tool.SpawnPointOptions.SetActive(false);
+				Tool.SelectionOptions.SetActive(true);
+			}
+			GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
+				= "Editing " + SelectedObject.name;
 			_outline = SelectedObject.AddComponent<Outline>();
 			_outline.OutlineMode = Outline.Mode.OutlineAll;
 			_outline.OutlineColor = Color.red;
