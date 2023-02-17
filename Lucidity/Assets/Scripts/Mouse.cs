@@ -14,7 +14,7 @@ public class Mouse : MonoBehaviour {
 	}
 
 	void Update() {
-		Vector2 worldPosition = getMousePosition();
+		Vector2 worldPosition = GetMousePosition();
 		transform.position = new Vector3(worldPosition.x, worldPosition.y, 90f);
 		RayLibrary rayLib = new RayLibrary();
 		if (rayLib.IsPointerOverLayer(_uiLayer)) {
@@ -31,7 +31,7 @@ public class Mouse : MonoBehaviour {
 	/// <returns>
 	/// <c>Vector2</c> corresponding to the position of the mouse cursor.
 	/// </returns>
-	public static Vector2 getMousePosition() {
+	public static Vector2 GetMousePosition() {
 		Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 		return Camera.main.ScreenToWorldPoint(screenPosition);
 	}

@@ -107,7 +107,7 @@ public class MapEditorManager : MonoBehaviour {
     }
 
 	void Update() {
-		Vector2 worldPosition = Mouse.getMousePosition();
+		Vector2 worldPosition = Mouse.GetMousePosition();
 		if (Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
 			&& Tool.ToolStatus["Brush Tool"]) {
 			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");

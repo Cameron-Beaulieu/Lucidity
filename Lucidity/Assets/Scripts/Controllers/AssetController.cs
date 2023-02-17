@@ -47,7 +47,7 @@ public class AssetController : MonoBehaviour {
 	}
 
 	public static void CreateFollowingImage(GameObject prefab) {
-		Vector2 worldPosition = Mouse.getMousePosition();
+		Vector2 worldPosition = Mouse.GetMousePosition();
 		GameObject hoverImage = Instantiate(prefab,
 					                        new Vector3(worldPosition.x, worldPosition.y, 90),
 					                        Quaternion.identity);
