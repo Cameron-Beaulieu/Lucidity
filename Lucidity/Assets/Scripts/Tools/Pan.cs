@@ -7,12 +7,12 @@ public class Pan : MonoBehaviour {
     private bool _isDragging = false;
     private Vector3 _offset;
 
-    void Start() {
+    private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
     }
     
-    void Update() {
+    private void Update() {
         if (_isDragging && Tool.ToolStatus["Panning Tool"]) {
             Vector2 mousePosition = Input.mousePosition;
             gameObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) 
@@ -20,7 +20,7 @@ public class Pan : MonoBehaviour {
         }
     }
 
-    void OnMouseDown() {
+    private void OnMouseDown() {
         if (Tool.ToolStatus["Panning Tool"]) {
             _offset = gameObject.transform.position - 
                 Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -28,7 +28,7 @@ public class Pan : MonoBehaviour {
         }
     }
 
-    void OnMouseUp() {
+    private void OnMouseUp() {
         if (Tool.ToolStatus["Panning Tool"]) {
             _isDragging = false;
         }

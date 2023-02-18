@@ -13,7 +13,7 @@ public class Mouse : MonoBehaviour {
 		set { _lastMousePosition = value; }
 	}
 
-	void Update() {
+	private void Update() {
 		Vector2 worldPosition = GetMousePosition();
 		transform.position = new Vector3(worldPosition.x, worldPosition.y, 90f);
 		RayLibrary rayLib = new RayLibrary();

@@ -17,7 +17,7 @@ public class NavController : MonoBehaviour {
 	private static TMP_Text _savingText;
 	private static float _hideTextTimer = 0f;
 
-	void Start() {
+	private void Start() {
 		if (Application.platform == RuntimePlatform.OSXPlayer || 
 			Application.platform == RuntimePlatform.OSXEditor) {
 			_newKeybind.text = "Cmd + Opt + N";
@@ -29,7 +29,7 @@ public class NavController : MonoBehaviour {
 		_savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
 	}
 
-	void Update() {
+	private void Update() {
 		if (_savingText.text == "Saved!" && Time.time > _hideTextTimer) {
 			_savingText.text = "";
 		}

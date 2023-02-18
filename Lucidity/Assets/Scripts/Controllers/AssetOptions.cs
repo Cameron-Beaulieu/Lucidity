@@ -20,7 +20,7 @@ public class AssetOptions : MonoBehaviour {
 		set { _brushSize = value; }
 	}
 
-	void Start() {
+	private void Start() {
 		_countInput.onEndEdit.AddListener(delegate{AssetCountInputHandler(_countInput.text);});
 		_brushSizeSlider.onValueChanged.AddListener(delegate{BrushSizeSliderHandler();});
 		_assetCount = 1;

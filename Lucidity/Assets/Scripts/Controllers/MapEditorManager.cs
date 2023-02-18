@@ -37,7 +37,7 @@ public class MapEditorManager : MonoBehaviour {
 		set { _lastEncounteredObject = value; }
 	}
 
-	void Awake() {
+	private void Awake() {
 		if (StartupScreen.FilePath != null) {
 			// Static variables must be reset if a new map is loaded from another map
 			MapObjects = new Dictionary<int, MapObject>();
@@ -106,7 +106,7 @@ public class MapEditorManager : MonoBehaviour {
 		Map.transform.localScale = mapScale;
     }
 
-	void Update() {
+	private void Update() {
 		Vector2 worldPosition = Mouse.GetMousePosition();
 		if (Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
 			&& Tool.ToolStatus["Brush Tool"]) {
@@ -202,7 +202,7 @@ public class MapEditorManager : MonoBehaviour {
 	/// <c>LinkedListNode</c> of the <c>EditorAction</c> to remove from the linked list (and its
 	/// associated actions).
 	/// </param>
-	void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
+	private void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
 		while (actionToDelete != null) {
 			if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
 				foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {

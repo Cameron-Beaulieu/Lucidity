@@ -13,13 +13,13 @@ public class AssetCollision : MonoBehaviour {
 	// Use this to ensure that the Gizmos are being drawn when in Play Mode
 	private bool _detectionStarted = true;
 
-	void Start() {
+	private void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
 		CheckAssetOnUI();
 		CheckAssetCollisions();
 	}
 
-	void OnDrawGizmos() {
+	private void OnDrawGizmos() {
 		Gizmos.color = Color.red;
 		if (_detectionStarted) {
 			// Draw a cube where the OverlapBox is (positioned where the GameObject and with
@@ -34,7 +34,7 @@ public class AssetCollision : MonoBehaviour {
 	/// calling a corountine to revert the materials and destroy the map object after an
 	/// appropriate amount of time.
 	/// </summary>
-	void CheckAssetCollisions() {
+	private void CheckAssetCollisions() {
 		Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
 													 transform.localScale / 2, Quaternion.identity,
 													 _filterMask);
@@ -66,7 +66,7 @@ public class AssetCollision : MonoBehaviour {
 	/// <summary>
 	/// Checks asset placement and ensures that assets cannot be placed over UI elements.
 	/// </summary>
-	void CheckAssetOnUI() {
+	private void CheckAssetOnUI() {
 		if (IsInvalidPlacement()) {
 			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject.transform.parent.gameObject);

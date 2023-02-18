@@ -10,7 +10,7 @@ public class AssetController : MonoBehaviour {
 	private Button _assetButton;
 	private static GameObject _prevParentContainer;
 
-	void Start() {
+	private void Start() {
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 		_assetButton = gameObject.GetComponent<Button>();
@@ -67,7 +67,7 @@ public class AssetController : MonoBehaviour {
 		}
 	}
 
-	void OnDisable () {
+	private void OnDisable () {
         if (Clicked && !Tool.ToolStatus["Brush Tool"]) {
             UnselectButton();
         }

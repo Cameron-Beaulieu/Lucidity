@@ -17,7 +17,7 @@ public class Render3DScene : MonoBehaviour {
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
-    void Awake() {
+    private void Awake() {
         _avatar = GameObject.Find("Avatar");
         CreateMap();
         PlaceAssets();
@@ -27,7 +27,7 @@ public class Render3DScene : MonoBehaviour {
     /// <summary>
 	/// Creates the terrain of the 3D scene during 2D to 3D conversion 
 	/// </summary>
-    void CreateMap() {
+    private void CreateMap() {
         // Adds a plane with a certain material based on the desired terrain type
         if (CreateNewMap.ChosenBiome != null) {
             switch(CreateNewMap.ChosenBiome.Name) {
@@ -101,7 +101,7 @@ public class Render3DScene : MonoBehaviour {
     /// <summary>
 	/// Places each asset from the 2D map on the 3D map
 	/// </summary>
-    void PlaceAssets() {
+    private void PlaceAssets() {
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
             if(kvp.Value.IsActive) {
@@ -145,7 +145,7 @@ public class Render3DScene : MonoBehaviour {
     /// Places the avatar on the 3D map in accordance with the placement of the spawn point 
     /// on the 2D map.
     /// </summary>
-    void PlaceAvatar() {
+    private void PlaceAvatar() {
         _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, 
                                                 MapEditorManager.SpawnPoint.y * _scaleFactor);
     }
@@ -159,7 +159,7 @@ public class Render3DScene : MonoBehaviour {
 	/// <param name="prefab">
 	/// The 3D prefab matching the 2D asset to be placed
 	/// </param>
-    Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
+    private Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
         float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x) * _scaleFactor ;
         float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y) * _scaleFactor ;
         float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) + _map.transform.position.y;

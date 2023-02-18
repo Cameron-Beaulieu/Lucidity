@@ -34,14 +34,14 @@ public class Tool : MonoBehaviour {
 		set { _spawnPointOptions = value; }
 	}
 
-	void Start() {
+	private void Start() {
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 		_name = gameObject.name;
 		gameObject.GetComponent<Button>().onClick.AddListener(ToolButtonClickHandler);
 	}
 
-	void Update() {
+	private void Update() {
 		if (ToolStatus.ContainsKey(_name)
 				&& ToolStatus[_name]
 				&& gameObject.GetComponent<Image>().color != Color.black)

@@ -8,7 +8,7 @@ public class MoveCamera : MonoBehaviour {
     public Transform Orientation;
 
     // Update is called once per frame
-    void Update() {
+    private void Update() {
         transform.position = CameraPosition.position;
         transform.rotation = Orientation.rotation;
     }
