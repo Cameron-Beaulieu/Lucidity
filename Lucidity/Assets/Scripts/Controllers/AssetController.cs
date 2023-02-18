@@ -34,7 +34,7 @@ public class AssetController : MonoBehaviour {
 		MapEditorManager.CurrentButtonPressed = Id;
 
 		GameObject parentContainer = GameObject.Find(
-			_editor.AssetPrefabs[Id].transform.parent.name);
+			gameObject.transform.parent.name);
 		// Un-highlight previously selected asset in "Sprites" pane
 		if (_prevParentContainer != null) {
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
