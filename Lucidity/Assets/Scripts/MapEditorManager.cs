@@ -20,6 +20,10 @@ public class MapEditorManager : MonoBehaviour {
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 	public static Vector2 SpawnPoint;
+	[SerializeField] private Slider _scaleSizeSlider;
+	[SerializeField] private Slider _brushSizeSlider;
+	[SerializeField] private Text _brushSizeText;
+	[SerializeField] private float _brushSize;
 
 	public static LinkedListNode<EditorAction> CurrentAction {
 		get { return _currentAction; }
@@ -239,9 +243,25 @@ public class MapEditorManager : MonoBehaviour {
 					break;
 				case EditorAction.ActionType.ResizeMapObject:
 					// TODO: Implement
+					foreach (GameObject obj in actionToRedo.RelatedObjects) {
+						if (obj != null) {
+							obj.transform.localScale = ((ResizeMapObjectAction)actionToRedo).NewSize;
+							_scaleSizeSlider.value = ((ResizeMapObjectAction)actionToRedo).NewSize.x;
+						}
+					}
 					break;
 				case EditorAction.ActionType.RotateMapObject:
 					// TODO: Implement
+					foreach (GameObject obj in actionToRedo.RelatedObjects) {
+						if (obj != null) {
+							if (((RotateMapObjectAction)actionToRedo).IsClockwise) {
+								obj.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+							}
+							else {
+								obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+							}
+						}
+					}
 					break;
 				case EditorAction.ActionType.CreateLayer:
 					// TODO: Implement
@@ -292,9 +312,25 @@ public class MapEditorManager : MonoBehaviour {
 					break;
 				case EditorAction.ActionType.ResizeMapObject:
 					// TODO: Implement
+					foreach (GameObject obj in actionToUndo.RelatedObjects) {
+						if (obj != null) {
+							obj.transform.localScale = ((ResizeMapObjectAction)actionToUndo).OldSize;
+							_scaleSizeSlider.value = ((ResizeMapObjectAction)actionToUndo).OldSize.x;
+						}
+					}
 					break;
 				case EditorAction.ActionType.RotateMapObject:
 					// TODO: Implement
+					foreach (GameObject obj in actionToUndo.RelatedObjects) {
+						if (obj != null) {
+							if (((RotateMapObjectAction)actionToUndo).IsClockwise) {
+								obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+							}
+							else {
+								obj.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+							}
+						}
+					}
 					break;
 				case EditorAction.ActionType.CreateLayer:
 					// TODO: Implement
