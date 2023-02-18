@@ -10,6 +10,7 @@ public class AssetController : MonoBehaviour
 	private MapEditorManager _editor;
 	private Button _assetButton;
 	private static GameObject _prevParentContainer;
+	[SerializeField] private Slider _paintObjectScaleSlider;
 
 	void Start()
 	{
@@ -18,6 +19,7 @@ public class AssetController : MonoBehaviour
 		_assetButton = gameObject.GetComponent<Button>();
 		_assetButton.onClick.AddListener(SelectAssetClickHandler);
 		Clicked = false;
+		_paintObjectScaleSlider = GameObject.Find("Slider").GetComponent<Slider>();
 	}
 
 	/// <summary>
@@ -40,7 +42,7 @@ public class AssetController : MonoBehaviour
 		// hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
 		//             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
 		//             hoverImage.transform.localScale.z + Zoom.zoomFactor);
-		CreateFollowingImage(_editor.AssetImage[Id]);
+		CreateFollowingImage(_editor.AssetImage[Id], _paintObjectScaleSlider);
 
 		MapEditorManager.CurrentButtonPressed = Id;
 
@@ -58,15 +60,14 @@ public class AssetController : MonoBehaviour
 		Tool.ChangeTools("Brush Tool");
 	}
 
-	public static void CreateFollowingImage(GameObject prefab)
-	{
+	public static void CreateFollowingImage(GameObject prefab, Slider slider) {
 		Vector2 worldPosition = Mouse.getMousePosition();
 		GameObject hoverImage = Instantiate(prefab,
 					new Vector3(worldPosition.x, worldPosition.y, 90),
 					Quaternion.identity);
-		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor,
-					hoverImage.transform.localScale.y + Zoom.zoomFactor,
-					hoverImage.transform.localScale.z + Zoom.zoomFactor);
+		hoverImage.transform.localScale = new Vector3((hoverImage.transform.localScale.x + Zoom.zoomFactor) * slider.value,
+					(hoverImage.transform.localScale.y + Zoom.zoomFactor) * slider.value,
+					(hoverImage.transform.localScale.z + Zoom.zoomFactor) * slider.value);
 	}
 
 	/// <summary>

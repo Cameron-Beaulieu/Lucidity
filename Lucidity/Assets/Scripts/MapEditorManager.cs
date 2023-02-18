@@ -115,7 +115,7 @@ public class MapEditorManager : MonoBehaviour {
 			&& Tool.ToolStatus["Brush Tool"]) {
 			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 			if (activeImage == null) {
-				AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
+				AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed], _paintObjectScaleSlider);
 				activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 			}
             float assetWidth = activeImage.transform.localScale.x;
