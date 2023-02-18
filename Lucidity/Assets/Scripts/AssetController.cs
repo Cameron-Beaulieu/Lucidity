@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AssetController : MonoBehaviour {
+public class AssetController : MonoBehaviour
+{
 	public int Id;
 	public bool Clicked;
 	private MapEditorManager _editor;
 	private Button _assetButton;
 	private static GameObject _prevParentContainer;
 
-	void Start() {
+	void Start()
+	{
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 		_assetButton = gameObject.GetComponent<Button>();
@@ -21,12 +23,14 @@ public class AssetController : MonoBehaviour {
 	/// <summary>
 	/// Button handler for <c>_assetButton</c>.
 	/// </summary>
-	public void SelectAssetClickHandler() {
+	public void SelectAssetClickHandler()
+	{
 		Clicked = true;
 		MapEditorManager.CurrentButtonPressed = Id;
 		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 		// if there is an Image being shown on hover already, destroy it
-		if (activeImage != null) {
+		if (activeImage != null)
+		{
 			Destroy(activeImage);
 		}
 		// Creates image that will follow mouse
@@ -34,8 +38,8 @@ public class AssetController : MonoBehaviour {
 		// 			new Vector3(worldPosition.x, worldPosition.y, 90),
 		// 			Quaternion.identity);
 		// hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.z + Zoom.zoomFactor);
+		//             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
+		//             hoverImage.transform.localScale.z + Zoom.zoomFactor);
 		CreateFollowingImage(_editor.AssetImage[Id]);
 
 		MapEditorManager.CurrentButtonPressed = Id;
@@ -43,7 +47,8 @@ public class AssetController : MonoBehaviour {
 		GameObject parentContainer = GameObject.Find(
 			_editor.AssetPrefabs[Id].transform.parent.name);
 		// Un-highlight previously selected asset in "Sprites" pane
-		if (_prevParentContainer != null) {
+		if (_prevParentContainer != null)
+		{
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
 		}
 		// Highlight asset in "Sprites" pane
@@ -53,29 +58,34 @@ public class AssetController : MonoBehaviour {
 		Tool.ChangeTools("Brush Tool");
 	}
 
-	public static void CreateFollowingImage (GameObject prefab) {
+	public static void CreateFollowingImage(GameObject prefab)
+	{
 		Vector2 worldPosition = Mouse.getMousePosition();
 		GameObject hoverImage = Instantiate(prefab,
 					new Vector3(worldPosition.x, worldPosition.y, 90),
 					Quaternion.identity);
-		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-                    hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-                    hoverImage.transform.localScale.z + Zoom.zoomFactor);
+		hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor,
+					hoverImage.transform.localScale.y + Zoom.zoomFactor,
+					hoverImage.transform.localScale.z + Zoom.zoomFactor);
 	}
 
 	/// <summary>
 	/// Unselects the selected button.
 	/// </summary>
-	public void UnselectButton() { 
+	public void UnselectButton()
+	{
 		Clicked = false;
-		if (_prevParentContainer != null) {
+		if (_prevParentContainer != null)
+		{
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
 		}
 	}
 
-	void OnDisable () {
-        if (Clicked && !Tool.ToolStatus["Brush Tool"]) {
-            UnselectButton();
-        }
-    }
+	void OnDisable()
+	{
+		if (Clicked && !Tool.ToolStatus["Brush Tool"])
+		{
+			UnselectButton();
+		}
+	}
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,8 @@ public class MapEditorManager : MonoBehaviour {
 	private static GameObject _lastEncounteredObject;
 	public static Vector2 SpawnPoint;
 	[SerializeField] private Slider _scaleSizeSlider;
+	[SerializeField] private Slider _paintObjectScaleSlider;
+	[SerializeField] private TMP_Text _paintObjectScaleText;
 	[SerializeField] private Slider _brushSizeSlider;
 	[SerializeField] private Text _brushSizeText;
 	[SerializeField] private float _brushSize;
@@ -131,18 +134,18 @@ public class MapEditorManager : MonoBehaviour {
 					newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
 					newParent.transform.SetParent(MapContainer.transform, true);
 					newParent.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
-					newParent.transform.localPosition = new Vector3(
-						newParent.transform.localPosition.x,
-						newParent.transform.localPosition.y, 0);
+					newParent.transform.localPosition = new Vector3(newParent.transform.localPosition.x, newParent.transform.localPosition.y, 0);
 					GameObject newGameObject = (GameObject) Instantiate(
 						AssetPrefabs[_currentButtonPressed],
 						new Vector3(worldPosition.x + i*2, worldPosition.y, 90), // TODO: why 90 again
 						Quaternion.identity, newParent.transform);
+					// update the paint object scale slider dynamically
+					_paintObjectScaleText.text = (_paintObjectScaleSlider.value).ToString("0.0" + "x");
 					newGameObject.transform.localScale = 
-						new Vector3(newGameObject.transform.localScale.x
-							+ Zoom.zoomFactor, newGameObject.transform.localScale.y
-							+ Zoom.zoomFactor, newGameObject.transform.localScale.z
-							+ Zoom.zoomFactor);
+						new Vector3((newGameObject.transform.localScale.x
+							+ Zoom.zoomFactor) * _paintObjectScaleSlider.value, (newGameObject.transform.localScale.y
+							+ Zoom.zoomFactor) * _paintObjectScaleSlider.value, (newGameObject.transform.localScale.z
+							+ Zoom.zoomFactor) * _paintObjectScaleSlider.value);
 					if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
 							.IsInvalidPlacement()) {
 						newMapObjects.Add(newGameObject);
@@ -369,8 +372,8 @@ public class MapEditorManager : MonoBehaviour {
 	public void AddNewMapObject(GameObject newGameObject, string name, GameObject parentGameObject){
 		MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
 			_currentButtonPressed,
-			new Vector2(newGameObject.transform.localPosition.x, 
-			newGameObject.transform.localPosition.y),  
+			new Vector2(newGameObject.transform.localPosition.x * _paintObjectScaleSlider.value, 
+			newGameObject.transform.localPosition.y * _paintObjectScaleSlider.value),  
 			new Vector2(parentGameObject.transform.localPosition.x, 
 				parentGameObject.transform.localPosition.y),
 			new Vector3(newGameObject.transform.localScale.x

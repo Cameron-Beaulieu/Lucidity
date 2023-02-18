@@ -31,11 +31,12 @@ public class SliderDrag : MonoBehaviour, IPointerUpHandler
         {
             EndDrag(SliderValue);
         }
+        // for SelectMapObject objects
         Vector3 oldSize = SelectMapObject.SelectedObject.transform.localScale;
         Vector3 newSize = new Vector3(SliderValue, SliderValue, SliderValue);
         SelectMapObject.SelectedObject.transform.localScale = newSize;
 
-        //Check for collision with other objects
+        //TO-DO: Check for collision with other objects
 
         // for UNDO/REDO
         List<GameObject> objectsToScale = new List<GameObject>() { SelectMapObject.SelectedObject };

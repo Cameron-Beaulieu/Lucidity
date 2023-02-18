@@ -3173,7 +3173,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1403460569}
   m_HandleRect: {fileID: 1403460568}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -9843,7 +9843,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -151, y: -31}
+  m_AnchoredPosition: {x: -151, y: -30.999939}
   m_SizeDelta: {x: 0, y: -843.00024}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1045013707
@@ -12588,7 +12588,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1339011001}
   - component: {fileID: 1339011003}
-  - component: {fileID: 1339011002}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -12619,18 +12618,6 @@ RectTransform:
   m_AnchoredPosition: {x: -79.98, y: 304.6}
   m_SizeDelta: {x: 150, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1339011002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1339011000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7b95b63729494411923250f2b410833, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1339011003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15800,7 +15787,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226900040}
   m_HandleRect: {fileID: 1226900039}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -16347,6 +16334,8 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 2614a1796e5f949fcaba3be115c3d540, type: 3}
   - {fileID: 2800000, guid: 9e96820f1451643f5a99ca45ba440546, type: 3}
   _scaleSizeSlider: {fileID: 1237108172}
+  _paintObjectScaleSlider: {fileID: 1339011003}
+  _paintObjectScaleText: {fileID: 23202995}
   _brushSizeSlider: {fileID: 979449212}
   _brushSizeText: {fileID: 1431803178}
   _brushSize: 0
@@ -17374,7 +17363,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1784875815}
   - component: {fileID: 1784875817}
-  - component: {fileID: 1784875816}
   m_Layer: 5
   m_Name: ScaleContainer
   m_TagString: Untagged
@@ -17405,18 +17393,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.11000061, y: -33.059998}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1784875816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1784875814}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7b95b63729494411923250f2b410833, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1784875817
 MonoBehaviour:
   m_ObjectHideFlags: 0
