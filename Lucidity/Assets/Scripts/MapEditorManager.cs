@@ -21,6 +21,8 @@ public class MapEditorManager : MonoBehaviour {
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 	public static Vector2 SpawnPoint;
+	//private bool _isClockwise = false;
+	//private bool _isCClockwise = false;
 	[SerializeField] private Slider _scaleSizeSlider;
 	[SerializeField] private Slider _paintObjectScaleSlider;
 	[SerializeField] private TMP_Text _paintObjectScaleText;
@@ -43,7 +45,16 @@ public class MapEditorManager : MonoBehaviour {
 		set { _lastEncounteredObject = value; }
 	}
 
-	void Awake() {
+    private void Start()
+    {
+		// add event listeners to rotation buttons
+		Button buttonCW = GameObject.Find("CWButtonPaint").GetComponent<Button>();
+		buttonCW.onClick.AddListener(RotateCW);
+		Button buttonCCW = GameObject.Find("CCWButtonPaint").GetComponent<Button>();
+		buttonCCW.onClick.AddListener(RotateCCW);
+	}
+
+    void Awake() {
 		if (StartupScreen.FilePath != null) {
 			// Static variables must be reset if a new map is loaded from another map
 			MapObjects = new Dictionary<int, MapObject>();
@@ -107,7 +118,7 @@ public class MapEditorManager : MonoBehaviour {
 			break;
 		}
 		Map.transform.localScale = mapScale;
-    }
+	}
 
 	void Update() {
 		Vector2 worldPosition = Mouse.getMousePosition();
@@ -118,7 +129,7 @@ public class MapEditorManager : MonoBehaviour {
 				AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed], _paintObjectScaleSlider);
 				activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 			}
-            float assetWidth = activeImage.transform.localScale.x;
+			float assetWidth = activeImage.transform.localScale.x;
             float assetHeight = activeImage.transform.localScale.y;
 			// Check if mouse position relative to its last position and the previously encountered
 			// asset would allow for a legal placement. Reduces unnecessary computing
@@ -135,10 +146,12 @@ public class MapEditorManager : MonoBehaviour {
 					newParent.transform.SetParent(MapContainer.transform, true);
 					newParent.transform.position = new Vector3(worldPosition.x + i*2, worldPosition.y, 0);
 					newParent.transform.localPosition = new Vector3(newParent.transform.localPosition.x, newParent.transform.localPosition.y, 0);
+					// changed one argument from Quaternion.identity to activeImage.transform.rotation to update the newGameObject
+					// with the hovered image's rotation
 					GameObject newGameObject = (GameObject) Instantiate(
 						AssetPrefabs[_currentButtonPressed],
 						new Vector3(worldPosition.x + i*2, worldPosition.y, 90), // TODO: why 90 again
-						Quaternion.identity, newParent.transform);
+						activeImage.transform.rotation, newParent.transform);
 					// update the paint object scale slider dynamically
 					_paintObjectScaleText.text = (_paintObjectScaleSlider.value).ToString("0.0" + "x");
 					newGameObject.transform.localScale = 
@@ -189,6 +202,24 @@ public class MapEditorManager : MonoBehaviour {
 			Mouse.LastMousePosition = worldPosition;
 		}
 		// TODO: Implement other actions here
+	}
+
+	public void RotateCW() {
+		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+		if (activeImage != null) {
+			// I don't know why this is called 2 times in Start()
+			// I tried putting this in Update() but it just rotates back to 0 everytime
+			activeImage.transform.Rotate(0.0f, 0.0f, -22.5f, Space.World);
+		}
+	}
+
+	public void RotateCCW() {
+		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+		if (activeImage != null) {
+			// I don't know why this is called 2 times in Start()
+			// I tried putting this in Update() but it just rotates back to 0 everytime
+			activeImage.transform.Rotate(0.0f, 0.0f, 22.5f, Space.World);
+		}
 	}
 
 	/// <summary>

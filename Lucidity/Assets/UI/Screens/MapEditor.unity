@@ -16536,7 +16536,7 @@ GameObject:
   - component: {fileID: 1687718940}
   - component: {fileID: 1687718939}
   m_Layer: 5
-  m_Name: CCWButton
+  m_Name: CCWButtonPaint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16606,9 +16606,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531796471}
-        m_TargetAssemblyTypeName: SelectMapObject, Assembly-CSharp
-        m_MethodName: RotateMapObjectCCW
+      - m_Target: {fileID: 1640203419}
+        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
+        m_MethodName: RotateCCW
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16745,7 +16745,7 @@ GameObject:
   - component: {fileID: 1721103614}
   - component: {fileID: 1721103613}
   m_Layer: 5
-  m_Name: CWButton
+  m_Name: CWButtonPaint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16815,9 +16815,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531796471}
-        m_TargetAssemblyTypeName: SelectMapObject, Assembly-CSharp
-        m_MethodName: RotateMapObjectCW
+      - m_Target: {fileID: 1640203419}
+        m_TargetAssemblyTypeName: MapEditorManager, Assembly-CSharp
+        m_MethodName: RotateCW
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
