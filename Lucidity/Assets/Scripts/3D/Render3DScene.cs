@@ -68,26 +68,26 @@ public class Render3DScene : MonoBehaviour {
         // Everything is scaled by a _scaleFactor to create a larger navigatable terrain
         // Map height and width are taken from the 2D map size, scaleFactor is arbitrary
         switch (mapSize) {
-          case CreateNewMap.SizeType.Small:
-            mapWidth = 1400f;
-            mapHeight = 810f;
-            _scaleFactor = 100f;
-            break;
-          case CreateNewMap.SizeType.Medium:
-              mapWidth = 2100f;
-            mapHeight = 1215f;
-            _scaleFactor = 150f;
-            break;
-          case CreateNewMap.SizeType.Large:
-              mapWidth = 2800f;
-            mapHeight = 1620f;
-            _scaleFactor = 200f;
-            break;
-          default:
-              mapWidth = 2100f;
-            mapHeight = 1215f;
-            _scaleFactor = 150f;
-            break;
+            case CreateNewMap.SizeType.Small:
+                mapWidth = 1400f;
+                mapHeight = 810f;
+                _scaleFactor = 100f;
+                break;
+            case CreateNewMap.SizeType.Medium:
+                mapWidth = 2100f;
+                mapHeight = 1215f;
+                _scaleFactor = 150f;
+                break;
+            case CreateNewMap.SizeType.Large:
+                mapWidth = 2800f;
+                mapHeight = 1620f;
+                _scaleFactor = 200f;
+                break;
+            default:
+                mapWidth = 2100f;
+                mapHeight = 1215f;
+                _scaleFactor = 150f;
+                break;
         }
 
         _scaleFactor = 1f;
@@ -147,7 +147,7 @@ public class Render3DScene : MonoBehaviour {
     /// </summary>
     private void PlaceAvatar() {
         _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, 
-                                                MapEditorManager.SpawnPoint.y * _scaleFactor);
+                                                 MapEditorManager.SpawnPoint.y * _scaleFactor);
     }
 
     /// <summary>

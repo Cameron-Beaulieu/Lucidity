@@ -5,7 +5,6 @@ using UnityEngine;
 
 [Serializable]
 public class MapObject {
-
     public int Id;
     public string Name;
     public int PrefabIndex;

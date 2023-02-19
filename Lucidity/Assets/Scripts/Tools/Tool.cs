@@ -43,14 +43,12 @@ public class Tool : MonoBehaviour {
 
     private void Update() {
         if (ToolStatus.ContainsKey(_name)
-                && ToolStatus[_name]
-                && gameObject.GetComponent<Image>().color != Color.black)
-        {
+            && ToolStatus[_name]
+            && gameObject.GetComponent<Image>().color != Color.black) {
             gameObject.GetComponent<Image>().color = Color.black;
         } else if (ToolStatus.ContainsKey(_name)
-                && !ToolStatus[_name]
-                && gameObject.GetComponent<Image>().color != _unselected)
-        {
+            && !ToolStatus[_name]
+            && gameObject.GetComponent<Image>().color != _unselected) {
             gameObject.GetComponent<Image>().color = _unselected;
         }
     }
