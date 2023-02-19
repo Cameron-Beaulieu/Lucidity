@@ -18,14 +18,14 @@ public class MapData {
     /// Constructor for creating the initial file.
     /// </summary/>
     /// <param name="fileName">
-	/// The absolute path/filename of the map.
-	/// </param>
+    /// The absolute path/filename of the map.
+    /// </param>
     /// <param name="mapSize">
-	/// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
-	/// </param>
+    /// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
+    /// </param>
     /// <param name="biome">
-	/// The biome of the newly created map.
-	/// </param>
+    /// The biome of the newly created map.
+    /// </param>
     public MapData(string fileName, CreateNewMap.SizeType mapSize, Biome biome) {
         FileName = fileName;
         MapSize = mapSize;
@@ -36,20 +36,20 @@ public class MapData {
     /// Constructor for a non-empty map that is ready to be saved.
     /// </summary/>
     /// <param name="fileName">
-	/// The absolute path/filename of the map.
-	/// </param>
+    /// The absolute path/filename of the map.
+    /// </param>
     /// <param name="mapSize">
-	/// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
-	/// </param>
+    /// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
+    /// </param>
     /// <param name="biome">
-	/// The biome of the map.
-	/// </param>
+    /// The biome of the map.
+    /// </param>
     /// <param name="mapObjects">
-	/// A dictionary containing all of the MapObjects currently on the screen.
+    /// A dictionary containing all of the MapObjects currently on the screen.
     /// </param>
     /// <param name="spawnPoint">
     /// The x,z position of the player when the map is converted to 3D.
-	/// </param>
+    /// </param>
     public MapData(CreateNewMap.SizeType mapSize, Biome biome, 
                     Dictionary<int, MapObject> mapObjects, Vector2 spawnPoint) {
         MapSize = mapSize;
@@ -64,21 +64,21 @@ public class MapData {
     }
 
     /// <summary>
-	/// Serializes an entire instance of the class into a json string.
-	/// </summary>
+    /// Serializes an entire instance of the class into a json string.
+    /// </summary>
     public string Serialize() {
         // Give a second parameter of true to format the json nicely
         return JsonUtility.ToJson(this);
     }
 
     /// <summary>
-	/// Deserializes a MapData object that was saved as json.
-	/// </summary>
+    /// Deserializes a MapData object that was saved as json.
+    /// </summary>
     /// <param name="filePath">
-	/// The path to the json file being deserialized.
-	/// </param>
+    /// The path to the json file being deserialized.
+    /// </param>
     public static MapData Deserialize(string filePath) {
         string jsonContent = File.ReadAllText(filePath);
-		return JsonUtility.FromJson<MapData>(jsonContent);
+        return JsonUtility.FromJson<MapData>(jsonContent);
     }
 }

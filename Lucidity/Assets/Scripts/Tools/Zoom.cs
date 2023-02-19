@@ -24,14 +24,14 @@ public class Zoom : MonoBehaviour
             if (Tool.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
                 gameObject.transform.localScale = 
                     new Vector3(gameObject.transform.localScale.x + zoomIncrement, 
-                        gameObject.transform.localScale.y + zoomIncrement, 
-                            gameObject.transform.localScale.z + zoomIncrement);
+                                gameObject.transform.localScale.y + zoomIncrement, 
+                                gameObject.transform.localScale.z + zoomIncrement);
                 zoomFactor += zoomIncrement;
             } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
                 gameObject.transform.localScale =
                     new Vector3(gameObject.transform.localScale.x - zoomIncrement, 
-                        gameObject.transform.localScale.y - zoomIncrement, 
-                            gameObject.transform.localScale.z - zoomIncrement);
+                                gameObject.transform.localScale.y - zoomIncrement, 
+                                gameObject.transform.localScale.z - zoomIncrement);
                 zoomFactor -= zoomIncrement;
             }
         }

@@ -25,8 +25,8 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-	/// Creates the terrain of the 3D scene during 2D to 3D conversion 
-	/// </summary>
+    /// Creates the terrain of the 3D scene during 2D to 3D conversion 
+    /// </summary>
     private void CreateMap() {
         // Adds a plane with a certain material based on the desired terrain type
         if (CreateNewMap.ChosenBiome != null) {
@@ -67,40 +67,40 @@ public class Render3DScene : MonoBehaviour {
         // The scale of the map is based on the map size
         // Everything is scaled by a _scaleFactor to create a larger navigatable terrain
         // Map height and width are taken from the 2D map size, scaleFactor is arbitrary
-		switch (mapSize) {
-		  case CreateNewMap.SizeType.Small:
-			mapWidth = 1400f;
+        switch (mapSize) {
+          case CreateNewMap.SizeType.Small:
+            mapWidth = 1400f;
             mapHeight = 810f;
             _scaleFactor = 100f;
-			break;
-		  case CreateNewMap.SizeType.Medium:
-		  	mapWidth = 2100f;
+            break;
+          case CreateNewMap.SizeType.Medium:
+              mapWidth = 2100f;
             mapHeight = 1215f;
             _scaleFactor = 150f;
-			break;
-		  case CreateNewMap.SizeType.Large:
-		  	mapWidth = 2800f;
+            break;
+          case CreateNewMap.SizeType.Large:
+              mapWidth = 2800f;
             mapHeight = 1620f;
             _scaleFactor = 200f;
-			break;
-		  default:
-		  	mapWidth = 2100f;
+            break;
+          default:
+              mapWidth = 2100f;
             mapHeight = 1215f;
             _scaleFactor = 150f;
-			break;
-		}
+            break;
+        }
 
         _scaleFactor = 1f;
 
         // Adjusting map size and dividing by 10 to properly scale it
         xScale = mapWidth * _scaleFactor / _mapScaledownFactor;
         zScale = mapHeight * _scaleFactor / _mapScaledownFactor;
-		_map.transform.localScale = new Vector3 (xScale, 1f, zScale);
+        _map.transform.localScale = new Vector3 (xScale, 1f, zScale);
     }
 
     /// <summary>
-	/// Places each asset from the 2D map on the 3D map
-	/// </summary>
+    /// Places each asset from the 2D map on the 3D map
+    /// </summary>
     private void PlaceAssets() {
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
@@ -151,18 +151,19 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-	/// Calculates the Vector3 position where each new asset should be placed
-	/// </summary>
-	/// <param name="toBePlaced">
-	/// The MapObject of the current 2D map object to be placed on the 3D map
-	/// </param>
-	/// <param name="prefab">
-	/// The 3D prefab matching the 2D asset to be placed
-	/// </param>
+    /// Calculates the Vector3 position where each new asset should be placed
+    /// </summary>
+    /// <param name="toBePlaced">
+    /// The MapObject of the current 2D map object to be placed on the 3D map
+    /// </param>
+    /// <param name="prefab">
+    /// The 3D prefab matching the 2D asset to be placed
+    /// </param>
     private Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
         float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x) * _scaleFactor ;
         float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y) * _scaleFactor ;
-        float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) + _map.transform.position.y;
+        float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) 
+            + _map.transform.position.y;
         Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
         return placementPosition;
     }
