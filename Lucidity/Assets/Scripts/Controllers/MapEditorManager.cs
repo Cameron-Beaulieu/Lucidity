@@ -139,7 +139,8 @@ public class MapEditorManager : MonoBehaviour {
 
                     GameObject newGameObject = (GameObject) Instantiate(
                         AssetPrefabs[_currentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 90), 
+                        new Vector3(worldPosition.x + i*2, worldPosition.y, 
+                                    90), // the world Z position of the UI
                         Quaternion.identity, newParent.transform);
                     newGameObject.transform.localScale = 
                         new Vector3(newGameObject.transform.localScale.x
