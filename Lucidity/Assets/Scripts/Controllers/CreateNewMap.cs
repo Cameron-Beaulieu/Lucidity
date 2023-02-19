@@ -43,7 +43,7 @@ public class CreateNewMap : MonoBehaviour {
     /// Button handler for <c>_cancelMapButton</c>, selected through in the Unity editor.
     /// </summary>
     public void CancelMapClickHandler() {
-        SceneManager.LoadScene("StartupScreen", LoadSceneMode.Single);
+        SceneManager.LoadScene("Startup", LoadSceneMode.Single);
     }
 
     /// <summary>
