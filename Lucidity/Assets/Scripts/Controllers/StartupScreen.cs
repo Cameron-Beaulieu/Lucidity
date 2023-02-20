@@ -33,6 +33,7 @@ public class StartupScreen : MonoBehaviour {
 
             path = EditorUtility.OpenFilePanel("Select File", "", "json");
         }
+        
         FilePath = path;
 
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
