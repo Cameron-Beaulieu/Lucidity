@@ -28,8 +28,8 @@ public class MoveMapObjectAction : EditorAction {
     /// <c>Vector2</c> corresponding to the new 2D position for the map object to be moved to.
     /// </param>
     public MoveMapObjectAction(List<GameObject> relatedObjects,
-                                Vector2 oldPosition,
-                                Vector2 newPosition) {
+                               Vector2 oldPosition,
+                               Vector2 newPosition) {
         base.Type = ActionType.MoveMapObject;
         base.RelatedObjects = relatedObjects;
         _oldPosition = oldPosition;

@@ -51,7 +51,7 @@ public class MapData {
     /// The x,z position of the player when the map is converted to 3D.
     /// </param>
     public MapData(CreateNewMap.SizeType mapSize, Biome biome, 
-                    Dictionary<int, MapObject> mapObjects, Vector2 spawnPoint) {
+                   Dictionary<int, MapObject> mapObjects, Vector2 spawnPoint) {
         MapSize = mapSize;
         Biome = biome;
         // Unity can't serialize a dictionary, so the values are converted to a list

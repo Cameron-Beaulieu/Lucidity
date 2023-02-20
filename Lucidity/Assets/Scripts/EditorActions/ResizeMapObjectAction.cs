@@ -28,7 +28,7 @@ public class ResizeMapObjectAction : EditorAction {
     /// <c>Vector2</c> corresponding to the new scale for the map object to be resized to.
     /// </param>
     public ResizeMapObjectAction(List<GameObject> relatedObjects,
-                                Vector2 oldSize, Vector2 newSize) {
+                                 Vector2 oldSize, Vector2 newSize) {
         base.Type = ActionType.RotateMapObject;
         base.RelatedObjects = relatedObjects;
         _oldSize = oldSize;

@@ -43,7 +43,7 @@ public class MapObject {
     /// A boolean representing whether or not the asset is active in the map.
     /// </param>
     public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
-                    Vector3 scale, Quaternion rotation, bool isActive) {
+                      Vector3 scale, Quaternion rotation, bool isActive) {
         Id = id;
         Name = name;
         PrefabIndex = prefabIndex;

@@ -29,7 +29,7 @@ public class RotateMapObjectAction : EditorAction {
     /// <c>Quaternion</c> corresponding to the new orientation of the map object to be rotated to.
     /// </param>
     public RotateMapObjectAction(List<GameObject> relatedObjects,
-                                Quaternion oldRotation,Quaternion newRotation) {
+                                 Quaternion oldRotation,Quaternion newRotation) {
         base.Type = ActionType.RotateMapObject;
         base.RelatedObjects = relatedObjects;
         _oldRotation = oldRotation;
