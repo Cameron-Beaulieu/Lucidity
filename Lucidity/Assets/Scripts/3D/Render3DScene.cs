@@ -142,7 +142,7 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-    /// Places the avatar on the 3D map in accordance with the placement of the spawn point 
+    /// Places <c>_avatar</c> on the 3D map in accordance with the placement of the spawn point 
     /// on the 2D map.
     /// </summary>
     private void PlaceAvatar() {
@@ -151,10 +151,10 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-    /// Calculates the Vector3 position where each new asset should be placed
+    /// Calculates the <c>Vector3</c> position where each new asset should be placed
     /// </summary>
     /// <param name="toBePlaced">
-    /// The MapObject of the current 2D map object to be placed on the 3D map
+    /// The <c>MapObject</c> of the current 2D map object to be placed on the 3D map
     /// </param>
     /// <param name="prefab">
     /// The 3D prefab matching the 2D asset to be placed

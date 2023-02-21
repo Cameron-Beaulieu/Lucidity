@@ -45,7 +45,7 @@ public class MapData {
     /// The biome of the map.
     /// </param>
     /// <param name="mapObjects">
-    /// A dictionary containing all of the MapObjects currently on the screen.
+    /// A dictionary containing all of the <c>MapObject</c> instances currently on the screen.
     /// </param>
     /// <param name="spawnPoint">
     /// The x,z position of the player when the map is converted to 3D.

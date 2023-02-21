@@ -24,7 +24,7 @@ public class MapObject {
     /// name represents the type of the asset (fortress, tree, etc.)
     /// </param>
     /// <param name="prefabIndex">
-    /// The index of the prefab (in MapEditorManager.AssetPrefabs) associated with the MapObject
+    /// The index of the prefab (in <c>MapEditorManager.AssetPrefabs</c>) associated with the <c>MapObject</c>
     /// </param>
     /// <param name="mapPosition">
     /// A 2D point that represents the (x,y) position of the asset on the 2D and 3D map
@@ -34,13 +34,13 @@ public class MapObject {
     /// must be used to offset the asset's position on the map
     /// </param>
     /// <param name="scale">
-    /// A value representing the localScale of the asset within the map
+    /// A value representing the <c>localScale</c> of the asset within the map
     /// </param>
     /// <param name="rotation">
-    /// A Quaternion representing the rotation of the asset within the map
+    /// A <c>Quaternion</c> representing the rotation of the asset within the map
     /// </param>
     /// <param name="isActive">
-    /// A boolean representing whether or not the asset is active in the map.
+    /// A <c>boolean</c> representing whether or not the asset is active in the map.
     /// </param>
     public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
                       Vector3 scale, Quaternion rotation, bool isActive) {

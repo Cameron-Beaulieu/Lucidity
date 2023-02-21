@@ -57,7 +57,6 @@ public class NavController : MonoBehaviour {
             "Would you like to save your current map before opening a new one?", "Yes", 
             "Cancel", "No");
 
-        // switch statement should go here to deal with options
         switch (savePrev) {
             case 0:
                 SaveButtonClickHandler();

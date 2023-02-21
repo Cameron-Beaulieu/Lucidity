@@ -333,16 +333,16 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Adds a new MapObject to the list of all the MapObjects on the 2D map
+    /// Adds a new <c>MapObject</c> to the list of all the MapObjects on the 2D map
     /// </summary>
     /// <param name="newGameObject">
-    /// The 2D GameObject that has just been added to the map
+    /// The 2D <c>GameObject</c> that has just been added to the map
     /// </param>
     /// <param name="name">
-    /// name represents the type of the asset (fortress, tree, etc.)
+    /// <c>string</c> represents the type of the asset (fortress, tree, etc.)
     /// </param>
     /// <param name="parentGameObject">
-    /// The parent container storing the new GameObject
+    /// The parent container storing the new <c>GameObject</c>
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
                                 GameObject parentGameObject) {
