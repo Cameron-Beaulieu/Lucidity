@@ -15,15 +15,15 @@ public class AvatarMovement : MonoBehaviour {
     private float _verticalInput;
     private Rigidbody _rb;
 
-    void Start() {
+    private void Start() {
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
     }
 
-    void Update()
-    {
+    private void Update() {
         // check if object is grounded
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _avatarHeight * 0.5f + 0.2f, GroundLayer);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, 
+                                    _avatarHeight * 0.5f + 0.2f, GroundLayer);
         GetInput();
 
         // prevents the avatar from slipping around
@@ -34,14 +34,14 @@ public class AvatarMovement : MonoBehaviour {
         }
     }
 
-    void FixedUpdate() {
+    private void FixedUpdate() {
         MoveAvatar();
     }
 
     /// <summary>
     /// Gets the user's input.
     /// </summary>
-    void GetInput() {
+    private void GetInput() {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
     }
@@ -49,13 +49,13 @@ public class AvatarMovement : MonoBehaviour {
     /// <summary>
     /// Moves and rotates the Avatar in the direction of the user's input.
     /// </summary>
-    void MoveAvatar() {
+    private void MoveAvatar() {
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed * Time.fixedDeltaTime);
         _rb.velocity = Orientation.forward * direction.z * _speed;
     }
 
-    void OnCollisionEnter() {
+    private void OnCollisionEnter() {
         // Stop moving Avatar when it collides with an object
         _rb.velocity = Vector3.zero;
     }

@@ -17,7 +17,7 @@ public class Render3DScene : MonoBehaviour {
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
-    void Awake() {
+    private void Awake() {
         _avatar = GameObject.Find("Avatar");
         CreateMap();
         PlaceAssets();
@@ -25,32 +25,36 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-	/// Creates the terrain of the 3D scene during 2D to 3D conversion 
-	/// </summary>
+    /// Creates the terrain of the 3D scene during 2D to 3D conversion 
+    /// </summary>
     private void CreateMap() {
         // Adds a plane with a certain material based on the desired terrain type
-        if(CreateNewMap.ChosenBiome != null) {
+        if (CreateNewMap.ChosenBiome != null) {
             switch(CreateNewMap.ChosenBiome.Name) {
                 case Biome.BiomeType.Forest:
-                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 case Biome.BiomeType.Desert:
-                    _map = (GameObject) Instantiate(_mapTypes[1], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[1], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 case Biome.BiomeType.Ocean:
-                    _map = (GameObject) Instantiate(_mapTypes[2], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[2], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             
                 default:
                     Debug.Log("Using Default");
-                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+                    _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
+                                                    Quaternion.identity);
                     break;
             }
-        }
-        else {
-            _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), Quaternion.identity);
+        } else {
+            _map = (GameObject) Instantiate(_mapTypes[0], new Vector3 (0f, 0f, 0f), 
+                                            Quaternion.identity);
         }
 
         Vector3 mapScale = _map.transform.localScale;
@@ -63,40 +67,40 @@ public class Render3DScene : MonoBehaviour {
         // The scale of the map is based on the map size
         // Everything is scaled by a _scaleFactor to create a larger navigatable terrain
         // Map height and width are taken from the 2D map size, scaleFactor is arbitrary
-		switch (mapSize) {
-		  case CreateNewMap.SizeType.Small:
-			mapWidth = 1400f;
-            mapHeight = 810f;
-            _scaleFactor = 100f;
-			break;
-		  case CreateNewMap.SizeType.Medium:
-		  	mapWidth = 2100f;
-            mapHeight = 1215f;
-            _scaleFactor = 150f;
-			break;
-		  case CreateNewMap.SizeType.Large:
-		  	mapWidth = 2800f;
-            mapHeight = 1620f;
-            _scaleFactor = 200f;
-			break;
-		  default:
-		  	mapWidth = 2100f;
-            mapHeight = 1215f;
-            _scaleFactor = 150f;
-			break;
-		}
+        switch (mapSize) {
+            case CreateNewMap.SizeType.Small:
+                mapWidth = 1400f;
+                mapHeight = 810f;
+                _scaleFactor = 100f;
+                break;
+            case CreateNewMap.SizeType.Medium:
+                mapWidth = 2100f;
+                mapHeight = 1215f;
+                _scaleFactor = 150f;
+                break;
+            case CreateNewMap.SizeType.Large:
+                mapWidth = 2800f;
+                mapHeight = 1620f;
+                _scaleFactor = 200f;
+                break;
+            default:
+                mapWidth = 2100f;
+                mapHeight = 1215f;
+                _scaleFactor = 150f;
+                break;
+        }
 
         _scaleFactor = 1f;
 
         // Adjusting map size and dividing by 10 to properly scale it
         xScale = mapWidth * _scaleFactor / _mapScaledownFactor;
         zScale = mapHeight * _scaleFactor / _mapScaledownFactor;
-		_map.transform.localScale = new Vector3 (xScale, 1f, zScale);
+        _map.transform.localScale = new Vector3 (xScale, 1f, zScale);
     }
 
     /// <summary>
-	/// Places each asset from the 2D map on the 3D map
-	/// </summary>
+    /// Places each asset from the 2D map on the 3D map
+    /// </summary>
     private void PlaceAssets() {
         GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
@@ -137,23 +141,29 @@ public class Render3DScene : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Places <c>_avatar</c> on the 3D map in accordance with the placement of the spawn point 
+    /// on the 2D map.
+    /// </summary>
     private void PlaceAvatar() {
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, MapEditorManager.SpawnPoint.y * _scaleFactor);
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x * _scaleFactor, 1f, 
+                                                 MapEditorManager.SpawnPoint.y * _scaleFactor);
     }
 
     /// <summary>
-	/// Calculates the Vector3 position where each new asset should be placed
-	/// </summary>
-	/// <param name="toBePlaced">
-	/// The MapObject of the current 2D map object to be placed on the 3D map
-	/// </param>
-	/// <param name="prefab">
-	/// The 3D prefab matching the 2D asset to be placed
-	/// </param>
+    /// Calculates the <c>Vector3</c> position where each new asset should be placed
+    /// </summary>
+    /// <param name="toBePlaced">
+    /// The <c>MapObject</c> of the current 2D map object to be placed on the 3D map
+    /// </param>
+    /// <param name="prefab">
+    /// The 3D prefab matching the 2D asset to be placed
+    /// </param>
     private Vector3 calculatePlacementHeight(MapObject toBePlaced, GameObject prefab) {
         float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x) * _scaleFactor ;
         float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y) * _scaleFactor ;
-        float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) + _map.transform.position.y;
+        float yPosition = (prefab.transform.localScale.y * _scaleFactor / 2) 
+            + _map.transform.position.y;
         Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
         return placementPosition;
     }
