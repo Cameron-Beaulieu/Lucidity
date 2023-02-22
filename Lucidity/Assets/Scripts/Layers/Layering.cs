@@ -23,7 +23,6 @@ public class Layering : MonoBehaviour{
         GameObject newLayer = (GameObject) Instantiate(
             _layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
-        Debug.Log(MapEditorManager.Layers.Count);
     }
 
 }
