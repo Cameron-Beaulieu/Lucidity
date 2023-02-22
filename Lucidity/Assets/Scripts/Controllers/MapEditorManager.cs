@@ -12,6 +12,9 @@ public class MapEditorManager : MonoBehaviour {
     public List<string> AssetNames;
     public List<Texture2D> CursorTextures;
     public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
+    public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
+    public static Dictionary<int, MapObject> BaseLayer = new Dictionary<int, MapObject>();
+    public int CurrentLayer = 0;
     public static LinkedList<EditorAction> Actions;
     public static Dictionary<string, Texture2D> ToolToCursorMap = 
         new Dictionary<string, Texture2D>();
@@ -104,6 +107,7 @@ public class MapEditorManager : MonoBehaviour {
             break;
         }
         Map.transform.localScale = mapScale;
+        Layers.Add(BaseLayer);
     }
 
     private void Update() {
