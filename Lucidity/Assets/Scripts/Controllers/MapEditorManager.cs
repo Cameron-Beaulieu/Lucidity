@@ -129,33 +129,57 @@ public class MapEditorManager : MonoBehaviour {
                             >= assetHeight)) {
                 List<GameObject> newMapObjects = new List<GameObject>();
 
-                for (int i = 0; i < AssetOptions.AssetCount; i++) {
-                    GameObject newParent = new GameObject();
-                    newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-                    newParent.transform.SetParent(MapContainer.transform, true);
-                    newParent.transform.localPosition = new Vector3(
-                        newParent.transform.localPosition.x,
-                        newParent.transform.localPosition.y, 0);
+                GameObject newParent = new GameObject();
+                newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
+                newParent.transform.SetParent(MapContainer.transform, true);
+                newParent.transform.localPosition = new Vector3(
+                    newParent.transform.localPosition.x,
+                    newParent.transform.localPosition.y,
+                    0);				
+                
+                GameObject dynamicBoundingBox = (GameObject) Instantiate(
+                    AssetPrefabs[_currentButtonPressed],
+                    new Vector3(worldPosition.x, worldPosition.y, 90), // TODO: why 90 again
+                    Quaternion.identity, newParent.transform);
+                dynamicBoundingBox.transform.localScale = 
+                    new Vector3(dynamicBoundingBox.transform.localScale.x
+                        + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.y
+                        + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.z
+                        + Zoom.zoomFactor)
+                    * DynamicBoundingBox.DynamicSideLength * AssetOptions.BrushSize;
+                // dynamicBoundingBox.GetComponent<AssetCollision>().CheckAssetCollisions();
+                if (dynamicBoundingBox != null
+                        && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
+                        && dynamicBoundingBox.GetComponent<AssetCollision>().Collided == false) {
+                    Debug.Log("Before invocation");
+                    Debug.Log("Return from invocation: " + dynamicBoundingBox.GetComponent<AssetCollision>().GetCollisionCount());
+                    Debug.Log("After invocation");
+                // 	//Destroy(dynamicBoundingBox);
+                // 	foreach (KeyValuePair<int,int> coordinate
+                // 			in AssetOptions.RandomAssetArrangement) {
+                // 		float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                // 						.transform.position.x;
+                // 		float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                // 						.transform.position.y;
+                // 		float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                // 						.transform.position.z;
 
-                    GameObject newGameObject = (GameObject) Instantiate(
-                        AssetPrefabs[_currentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 
-                                    90), // the world Z position of the UI
-                        Quaternion.identity, newParent.transform);
-                    newGameObject.transform.localScale = 
-                        new Vector3(newGameObject.transform.localScale.x
-                            + Zoom.zoomFactor, newGameObject.transform.localScale.y
-                            + Zoom.zoomFactor, newGameObject.transform.localScale.z
-                            + Zoom.zoomFactor);
-
-                    if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-                            .IsInvalidPlacement()) {
-                        newMapObjects.Add(newGameObject);
-                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                        newParent);
-                    } else {
-                        Destroy(newParent);
-                    }
+                // 		GameObject newGameObject = Instantiate(
+                // 			AssetPrefabs[_currentButtonPressed],
+                // 			new Vector3(xPos, yPos, zPos),
+                // 			Quaternion.identity, newParent.transform);
+                // 		if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
+                // 				.IsInvalidPlacement()) {
+                // 			mapObjects.Add(newGameObject);
+                // 		} else {
+                // 			Destroy(newGameObject);
+                // 			Destroy(newParent);
+                // 		}
+                // 	}
+                } else {
+                    Debug.Log("Did not enter conditional");
+                    Destroy(dynamicBoundingBox);
+                    Destroy(newParent);
                 }
                 if (newMapObjects.Count == 0) {
                     // Don't add action to history if there are no objects attached to it

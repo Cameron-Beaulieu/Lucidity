@@ -10,6 +10,7 @@ public class AssetOptions : MonoBehaviour {
 	private static float _brushSize;
 	[SerializeField] private InputField _countInput;
 	private static int _assetCount;
+	public static HashSet<KeyValuePair<int,int>> RandomAssetArrangement = new HashSet<KeyValuePair<int,int>>();
 
 	public static int AssetCount {
 		get { return _assetCount; }
@@ -44,12 +45,23 @@ public class AssetOptions : MonoBehaviour {
 			_countInput.text = _assetCount.ToString();
 		}
 		DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
-		if (_editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
-			GameObject assetPrefab = _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed];
-			_brushSizeSlider.minValue = DynamicBoundingBox.DynamicSideLength * Mathf.Max(
-				assetPrefab.GetComponent<RectTransform>().rect.width,
-				assetPrefab.GetComponent<RectTransform>().rect.width);
+		if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
+				&& _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
+			GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+			// if there is an Image being shown on hover already, destroy it
+			if (activeImage != null) {
+				Destroy(activeImage);
+			}
+			DynamicBoundingBox.CreateDynamicAssetImage(
+				_editor.AssetImage[MapEditorManager.CurrentButtonPressed]);
 		}
+		// Generate random coordinate pairs (with no repeating pair) up to the desired number
+		// of assets. These will be used in selecting the random arrangement of grouped assets
+		do {
+			RandomAssetArrangement.Add(new KeyValuePair<int,int>(
+				Random.Range(0, DynamicBoundingBox.DynamicSideLength),
+				Random.Range(0, DynamicBoundingBox.DynamicSideLength)));
+		} while (RandomAssetArrangement.Count < _assetCount);
 	}
 
 	/// <summary>
@@ -57,7 +69,7 @@ public class AssetOptions : MonoBehaviour {
 	/// </summary>
 	public void BrushSizeSliderHandler() {
 		_brushSize = _brushSizeSlider.value;
-		string sliderMessage = _brushSize + " px";
+		string sliderMessage = _brushSize.ToString("0.0") + " x";
 		_brushSizeText.text = sliderMessage;
 	}
 }
