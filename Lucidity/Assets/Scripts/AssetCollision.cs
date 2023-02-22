@@ -12,9 +12,8 @@ public class AssetCollision : MonoBehaviour {
 	private int _uiLayer = 5;
 	// Use this to ensure that the Gizmos are being drawn when in Play Mode
 	private bool _detectionStarted = true;
-	public bool Collided = false;
 
-    private void Start() {
+    private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
         CheckAssetCollisions();
@@ -36,9 +35,11 @@ public class AssetCollision : MonoBehaviour {
 	/// appropriate amount of time.
 	/// </summary>
 	public void CheckAssetCollisions() {
+        if (gameObject.tag != "DynamicBoundingBox") {
+            return;
+        }
 		Collider[] hitColliders = GetAssetCollisions();
 		if (GetCollisionCount() > 1) {
-			Collided = true;
 			gameObject.tag = "CollisionObject";
 			foreach (Collider collisionObject in hitColliders) {
 				if (collisionObject.gameObject.layer == _assetLayer
@@ -71,7 +72,6 @@ public class AssetCollision : MonoBehaviour {
 				collisions--;
 			}
 		}
-		Debug.Log("Within function GetCollisionCount(), value before return: " + collisions);
 		return collisions;
 	}
 

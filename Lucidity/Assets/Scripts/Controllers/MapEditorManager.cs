@@ -126,57 +126,54 @@ public class MapEditorManager : MonoBehaviour {
                             >= assetHeight)) {
                 List<GameObject> newMapObjects = new List<GameObject>();
 
-                GameObject newParent = new GameObject();
-                newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-                newParent.transform.SetParent(MapContainer.transform, true);
-                newParent.transform.localPosition = new Vector3(
-                    newParent.transform.localPosition.x,
-                    newParent.transform.localPosition.y,
-                    0);				
-                
                 GameObject dynamicBoundingBox = (GameObject) Instantiate(
                     AssetPrefabs[_currentButtonPressed],
                     new Vector3(worldPosition.x, worldPosition.y, 90), // TODO: why 90 again
-                    Quaternion.identity, newParent.transform);
+                    Quaternion.identity);
+                dynamicBoundingBox.name = "DynamicBoundingBox";
+                dynamicBoundingBox.tag = "DynamicBoundingBox";
                 dynamicBoundingBox.transform.localScale = 
                     new Vector3(dynamicBoundingBox.transform.localScale.x
                         + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.y
                         + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.z
                         + Zoom.zoomFactor)
                     * DynamicBoundingBox.DynamicSideLength * AssetOptions.BrushSize;
-                // dynamicBoundingBox.GetComponent<AssetCollision>().CheckAssetCollisions();
+                Destroy(dynamicBoundingBox.GetComponent<MeshRenderer>());
+		        Destroy(dynamicBoundingBox.GetComponent<MeshFilter>());
                 if (dynamicBoundingBox != null
                         && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
-                        && dynamicBoundingBox.GetComponent<AssetCollision>().Collided == false) {
-                    Debug.Log("Before invocation");
-                    Debug.Log("Return from invocation: " + dynamicBoundingBox.GetComponent<AssetCollision>().GetCollisionCount());
-                    Debug.Log("After invocation");
-                // 	//Destroy(dynamicBoundingBox);
-                // 	foreach (KeyValuePair<int,int> coordinate
-                // 			in AssetOptions.RandomAssetArrangement) {
-                // 		float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                // 						.transform.position.x;
-                // 		float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                // 						.transform.position.y;
-                // 		float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                // 						.transform.position.z;
+                        && dynamicBoundingBox.GetComponent<AssetCollision>().GetCollisionCount() <= 1) {
+                	foreach (KeyValuePair<int,int> coordinate
+                			in AssetOptions.RandomAssetArrangement) {
+                		float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                						.transform.position.x;
+                		float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                						.transform.position.y;
+                		float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
+                						.transform.position.z;
 
-                // 		GameObject newGameObject = Instantiate(
-                // 			AssetPrefabs[_currentButtonPressed],
-                // 			new Vector3(xPos, yPos, zPos),
-                // 			Quaternion.identity, newParent.transform);
-                // 		if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-                // 				.IsInvalidPlacement()) {
-                // 			mapObjects.Add(newGameObject);
-                // 		} else {
-                // 			Destroy(newGameObject);
-                // 			Destroy(newParent);
-                // 		}
-                // 	}
+                        GameObject newParent = new GameObject();
+                        newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
+                        newParent.transform.SetParent(MapContainer.transform, true);
+                        newParent.transform.position = new Vector3(xPos, yPos, zPos);
+                        newParent.transform.localPosition = new Vector3(
+                            newParent.transform.localPosition.x,
+                            newParent.transform.localPosition.y, 0);
+
+                		GameObject newGameObject = Instantiate(
+                			AssetPrefabs[_currentButtonPressed],
+                			new Vector3(xPos, yPos, zPos),
+                			Quaternion.identity, newParent.transform);
+                		if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
+                				.IsInvalidPlacement()) {
+                			newMapObjects.Add(newGameObject);
+                		} else {
+                			Destroy(newGameObject);
+                			Destroy(newParent);
+                		}
+                	}
                 } else {
-                    Debug.Log("Did not enter conditional");
                     Destroy(dynamicBoundingBox);
-                    Destroy(newParent);
                 }
                 if (newMapObjects.Count == 0) {
                     // Don't add action to history if there are no objects attached to it
@@ -211,6 +208,14 @@ public class MapEditorManager : MonoBehaviour {
                 }
             }
             Mouse.LastMousePosition = worldPosition;
+        } else if (!Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
+            && Tool.ToolStatus["Brush Tool"]) {
+            GameObject[] dynamicBoundingBoxes = GameObject.FindGameObjectsWithTag("DynamicBoundingBox");
+            if (dynamicBoundingBoxes.Length > 0) {
+                foreach (GameObject dynamicBoundingBox in dynamicBoundingBoxes) {
+                    Destroy(dynamicBoundingBox);
+                }
+            }
         }
         // TODO: Implement other actions here
     }

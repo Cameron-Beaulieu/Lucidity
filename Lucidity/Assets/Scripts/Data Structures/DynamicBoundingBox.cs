@@ -12,7 +12,7 @@ public class DynamicBoundingBox : MonoBehaviour {
 		set { _dynamicSideLength = value; }
 	}
 
-	void Start() {
+	private void Start() {
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 	}
@@ -34,8 +34,6 @@ public class DynamicBoundingBox : MonoBehaviour {
 			new Vector3(worldPosition.x, worldPosition.y, 90),
 			Quaternion.identity);
 		dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
-		Debug.Log(_dynamicSideLength);
-		Debug.Log(AssetOptions.BrushSize);
 		dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
 		Destroy(dynamicAssetImage.GetComponent<MeshRenderer>());
 		Destroy(dynamicAssetImage.GetComponent<MeshFilter>());
