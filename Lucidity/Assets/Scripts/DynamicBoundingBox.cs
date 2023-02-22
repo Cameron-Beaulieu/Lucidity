@@ -29,11 +29,13 @@ public class DynamicBoundingBox : MonoBehaviour {
 	/// </returns>
 	public static GameObject CreateDynamicAssetImage(GameObject baseAssetImage) {
 		Images = new GameObject[_dynamicSideLength, _dynamicSideLength];
-		Vector2 worldPosition = Mouse.getMousePosition();
+		Vector2 worldPosition = Mouse.GetMousePosition();
 		GameObject dynamicAssetImage = Instantiate(baseAssetImage,
 			new Vector3(worldPosition.x, worldPosition.y, 90),
 			Quaternion.identity);
 		dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
+		Debug.Log(_dynamicSideLength);
+		Debug.Log(AssetOptions.BrushSize);
 		dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
 		Destroy(dynamicAssetImage.GetComponent<MeshRenderer>());
 		Destroy(dynamicAssetImage.GetComponent<MeshFilter>());
