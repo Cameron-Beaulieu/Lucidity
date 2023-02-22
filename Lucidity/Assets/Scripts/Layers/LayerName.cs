@@ -11,14 +11,17 @@ public class LayerName : MonoBehaviour{
 
     private void Start() {
        _layerText = gameObject.GetComponent<TMP_InputField>();
-       _layerText.onSubmit.AddListener (HandleSubmission);
-       _layerText.onDeselect.AddListener (HandleSubmission);
+       _layerText.onSubmit.AddListener(HandleSubmission);
+       _layerText.onDeselect.AddListener(HandleSubmission);
        _layerText.onSelect.AddListener(UpdateCurrentText);
     }
 
     /// <summary>
     /// Saves the current text before it is changed incase of invalid input.
     /// </summary>
+    /// <param name="newName">
+    /// <c>string</c> corresponding to the new layer name inputted by the user.
+    /// </param>
     public void UpdateCurrentText(string newName){
         _currentText = _layerText.text;
     }

@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 
 public class Layer : MonoBehaviour{
-    public static List<string> LayerKeys = new List<string>();
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
+    public static List<string> LayerNames = new List<string>();
     private static GameObject _layerContainer;
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
@@ -20,7 +20,7 @@ public class Layer : MonoBehaviour{
         _layerContainer = GameObject.Find("LayerScrollContent");
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
-        gameObject.name = "Layer" + (LayerKeys.Count).ToString();
+        gameObject.name = "Layer" + (LayerStatus.Count).ToString();
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
         _layerText.text = _name;
@@ -30,9 +30,9 @@ public class Layer : MonoBehaviour{
         _layerEdit = gameObject.transform.GetChild(3).gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
-        LayerKeys.Add(_name);
         LayerStatus.Add(_name, false);
         LayerIndex.Add(_name, LayerIndex.Count);
+        LayerNames.Add(_name);
         ChangeSelectedLayer();
     }
 
@@ -42,12 +42,14 @@ public class Layer : MonoBehaviour{
             && gameObject.GetComponent<Image>().color != Color.black) {
             gameObject.GetComponent<Image>().color = Color.black;
             _layerTrashCan.SetActive(true);
+            _layerEdit.SetActive(true);
             _editor.CurrentLayer = LayerIndex[_name];
         } else if (LayerStatus.ContainsKey(_name)
             && !LayerStatus[_name]
             && gameObject.GetComponent<Image>().color != _unselected) {
             gameObject.GetComponent<Image>().color = _unselected;
             _layerTrashCan.SetActive(false);
+            _layerEdit.SetActive(false);
         }
     }
 
@@ -55,7 +57,7 @@ public class Layer : MonoBehaviour{
     /// Changes the layer currently selected from the layer menu.
     /// </summary>
     private void ChangeSelectedLayer(){
-        foreach (string layerKey in LayerKeys) {
+        foreach (string layerKey in new List<string>(LayerStatus.Keys)) {
             if (layerKey != _name) {
                 LayerStatus[layerKey] = false;
             } else {

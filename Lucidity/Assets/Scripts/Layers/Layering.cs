@@ -10,19 +10,33 @@ public class Layering : MonoBehaviour{
 
     private void Start() {
         _layerContainer = GameObject.Find("LayerScrollContent");
-        gameObject.GetComponent<Button>().onClick.AddListener(AddLayer);
+        gameObject.GetComponent<Button>().onClick.AddListener(CreateNewLayer);
     }
 
     /// <summary>
     /// Adds a layer to the layer menu and a new dictionary to the MapEditorManager Layers list.
     /// </summary>
-    private void AddLayer(){
+    public static void AddLayer(GameObject layerPrefab){
         MapEditorManager.Layers.Add(new Dictionary<int, MapObject>());
-        float layerHeight = _layerPrefab.GetComponent<RectTransform>().rect.height;
-        Vector3 newPosition = new Vector3(150, -30 - (layerHeight * MapEditorManager.Layers.Count), 0);
+        Vector3 newPosition = new Vector3(150, 0, 0);
         GameObject newLayer = (GameObject) Instantiate(
-            _layerPrefab, _layerContainer.transform);
+            layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
+    }
+
+    private void CreateNewLayer(){
+        AddLayer(_layerPrefab);
+    }
+
+    public static void DeleteLastLayer(){
+        Debug.Log("Deleting Last Layer");
+        Layer.LayerStatus.Remove(Layer.LayerNames.Last());
+        Layer.LayerIndex.Remove(Layer.LayerNames.Last());
+        MapEditorManager.Layers.RemoveAt(MapEditorManager.Layers.Count - 1);
+        GameObject layerToBeRemoved = GameObject.Find(Layer.LayerNames.Last());
+        Debug.Log(layerToBeRemoved.name);
+        Destroy(layerToBeRemoved);
+        Layer.LayerNames.Remove(Layer.LayerNames.Last());
     }
 
 }
