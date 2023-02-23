@@ -218,6 +218,9 @@ public class DynamicBoundingBox : MonoBehaviour {
         return new Vector3(0, 0, 0);
     }
 
+    /// <summary>
+    /// Delete all existing dynamic bounding boxes.
+    /// </summary>
     public static void DeleteDynamicBoundingBoxes() {
         GameObject[] dynamicBoundingBoxes
             = GameObject.FindGameObjectsWithTag("DynamicBoundingBox");
