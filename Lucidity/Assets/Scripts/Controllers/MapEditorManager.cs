@@ -138,6 +138,11 @@ public class MapEditorManager : MonoBehaviour {
                     List<GameObject> newGameObjects =
                         DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
                                                         dynamicBoundingBox);
+                    foreach (GameObject newGameObject in newGameObjects) {
+                        newMapObjects.Add(newGameObject);
+                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
+                                        newGameObject.transform.parent.gameObject);
+                    }
                     newMapObjects.AddRange(newGameObjects);
                 } else {
                     Destroy(dynamicBoundingBox);
