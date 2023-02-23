@@ -56,14 +56,18 @@ public class Layer : MonoBehaviour{
     /// <summary>
     /// Changes the layer currently selected from the layer menu.
     /// </summary>
-    private void ChangeSelectedLayer(){
+    public static void SelectedChangeSelectedLayer(string layerName){
         foreach (string layerKey in new List<string>(LayerStatus.Keys)) {
-            if (layerKey != _name) {
+            if (layerKey != layerName) {
                 LayerStatus[layerKey] = false;
             } else {
                 LayerStatus[layerKey] = true;
             }
         }
+    }
+
+    private void ChangeSelectedLayer(){
+        SelectedChangeSelectedLayer(_name);
     }
 
     /// <summary>
