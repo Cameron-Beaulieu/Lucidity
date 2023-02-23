@@ -112,7 +112,8 @@ public class MapEditorManager : MonoBehaviour {
             && Tool.ToolStatus["Brush Tool"]) {
             GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
             if (activeImage == null) {
-                DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed]);
+                DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed],
+                                                           worldPosition);
                 activeImage = GameObject.FindGameObjectWithTag("AssetImage");
             }
             float assetWidth = activeImage.transform.localScale.x;
@@ -128,13 +129,15 @@ public class MapEditorManager : MonoBehaviour {
                 List<GameObject> newMapObjects = new List<GameObject>();
 
                 GameObject dynamicBoundingBox = DynamicBoundingBox.CreateDynamicBoundingBox(
-                    AssetPrefabs[_currentButtonPressed]);
+                    AssetPrefabs[_currentButtonPressed],
+                    worldPosition);
                 if (dynamicBoundingBox != null
                         && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
                         && dynamicBoundingBox.GetComponent<AssetCollision>()
                             .GetCollisionCount() <= 1) {
                     List<GameObject> newGameObjects =
-                        DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed]);
+                        DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
+                                                        dynamicBoundingBox);
                     newMapObjects.AddRange(newGameObjects);
                 } else {
                     Destroy(dynamicBoundingBox);

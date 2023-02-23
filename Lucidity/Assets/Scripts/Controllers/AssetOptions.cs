@@ -52,7 +52,8 @@ public class AssetOptions : MonoBehaviour {
                 Destroy(activeImage);
             }
             DynamicBoundingBox.CreateDynamicAssetImage(
-                _editor.AssetImage[MapEditorManager.CurrentButtonPressed]);
+                _editor.AssetImage[MapEditorManager.CurrentButtonPressed],
+                Mouse.GetMousePosition());
         }
         DynamicBoundingBox.GenerateRandomCoordinates();
     }

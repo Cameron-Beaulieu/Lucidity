@@ -5,7 +5,6 @@ using UnityEngine;
 public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
-    private static GameObject[,] _images;
     private static HashSet<Vector2> _randomAssetArrangement = new HashSet<Vector2>();
 
     public static int DynamicSideLength {
@@ -16,6 +15,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
+        
     }
 
     /// <summary>
@@ -25,14 +25,15 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <param name="assetImage">
     /// <c>GameObject</c> corresponding to the desired asset to be shown on hover
     /// </param>
+    /// <param name="position">
+    /// <c>Vector2</c> corresponding to the position of the cursor
+    /// </param>
     /// <returns>
     /// <c>GameObject</c> parent, that is the dynamic bounding box
     /// </returns>
-    public static GameObject CreateDynamicAssetImage(GameObject assetImage) {
-        _images = new GameObject[_dynamicSideLength, _dynamicSideLength];
-        Vector2 worldPosition = Mouse.GetMousePosition();
+    public static GameObject CreateDynamicAssetImage(GameObject assetImage, Vector2 position) {
         GameObject dynamicAssetImage = Instantiate(assetImage,
-            new Vector3(worldPosition.x, worldPosition.y, 90),
+            new Vector3(position.x, position.y, 90),
             Quaternion.identity);
         dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
         dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
@@ -44,9 +45,7 @@ public class DynamicBoundingBox : MonoBehaviour {
         for (int i = 0; i < _dynamicSideLength; i++) {
             for (int j = 0; j < _dynamicSideLength; j++) {
                 Vector2 offset = new Vector2(i, j);
-                _images[i,j] = CreateDynamicAssetImageChild(assetImage,
-                                                            offset,
-                                                            dynamicAssetImage.transform);
+                CreateDynamicAssetImageChild(assetImage, offset, dynamicAssetImage.transform);
             }
         }
 
@@ -66,22 +65,17 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <param name="parentTransform">
     /// <c>Transform</c> corresponding to the parent <c>GameObject</c>
     /// </param>
-    /// <returns>
-    /// <c>GameObject</c> corresponding to a single, current asset image of the
-    /// dynamic bounding box to be displayed
-    /// </returns>
-    public static GameObject CreateDynamicAssetImageChild(GameObject assetImage,
-                                                          Vector2 coordinate,
-                                                          Transform parentTransform) {
+    public static void CreateDynamicAssetImageChild(GameObject assetImage,
+                                                    Vector2 coordinate,
+                                                    Transform parentTransform) {
         GameObject obj = Instantiate(assetImage, parentTransform, false);
         obj.GetComponent<Mouse>().enabled = false;
         obj.transform.localScale /= _dynamicSideLength * AssetOptions.BrushSize;
-        Vector3 position = GetOffsetPosition(obj, coordinate);
-        obj.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+        Vector3 offsetPosition = GetOffsetPosition(coordinate, obj.transform.localScale);
+        obj.transform.SetLocalPositionAndRotation(offsetPosition, Quaternion.identity);
         obj.transform.localScale = new Vector3(obj.transform.localScale.x + Zoom.zoomFactor,
                                                obj.transform.localScale.y + Zoom.zoomFactor,
                                                obj.transform.localScale.z + Zoom.zoomFactor);
-        return obj;
     }
 
     /// <summary>
@@ -91,22 +85,23 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <param name="assetPrefab">
     /// <c>GameObject<c> corresponding to the desired prefab that will be used
     /// </prefab>
+    /// <param name="position">
+    /// <c>Vector2</c> corresponding to the position of the cursor
+    /// </param>
     /// <return>
     /// <c>GameObject</c> corresponding to the dynamic bounding box
     /// </return>
-    public static GameObject CreateDynamicBoundingBox(GameObject assetPrefab) {
-        Vector2 worldPosition = Mouse.GetMousePosition();
-        GameObject dynamicBoundingBox = Instantiate(
-            assetPrefab,
-            new Vector3(worldPosition.x, worldPosition.y, 90),
-            Quaternion.identity);
+    public static GameObject CreateDynamicBoundingBox(GameObject assetPrefab, Vector2 position) {
+        GameObject dynamicBoundingBox = Instantiate(assetPrefab,
+                                                    new Vector3(position.x, position.y, 90),
+                                                    Quaternion.identity);
         dynamicBoundingBox.name = "DynamicBoundingBox";
         dynamicBoundingBox.tag = "DynamicBoundingBox";
-        dynamicBoundingBox.transform.localScale = 
+        dynamicBoundingBox.transform.localScale =
             new Vector3(dynamicBoundingBox.transform.localScale.x + Zoom.zoomFactor,
                         dynamicBoundingBox.transform.localScale.y + Zoom.zoomFactor,
                         dynamicBoundingBox.transform.localScale.z + Zoom.zoomFactor)
-            * _dynamicSideLength * AssetOptions.BrushSize;
+                * _dynamicSideLength * AssetOptions.BrushSize;
         Destroy(dynamicBoundingBox.GetComponent<MeshRenderer>());
         Destroy(dynamicBoundingBox.GetComponent<MeshFilter>());
         return dynamicBoundingBox;
@@ -118,17 +113,19 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <param name="assetPrefab">
     /// <c>GameObject<c> corresponding to the desired prefab that will be used
     /// </param>
+    /// <param name="dynamicBoundingBox">
+    /// <c>GameObject</c> corresponding to the dynamic bounding box that the asset resides in
+    /// </param>
     /// <returns>
     /// <c>List</c> of <c>GameObject<c>, corresponding to all newly created objects
     /// </returns>
-    public static List<GameObject> CreateAssets(GameObject assetPrefab) {
+    public static List<GameObject> CreateAssets(GameObject assetPrefab,
+                                                GameObject dynamicBoundingBox) {
         List<GameObject> assets = new List<GameObject>();
         foreach (Vector2 coordinate in _randomAssetArrangement) {
-            // Retrieve position based on the appropriate coordinate of the hovering asset image
-            GameObject newGameObject = CreateNewObject(assetPrefab, new Vector3(
-                (_images[(int)coordinate.x, (int)coordinate.y]).transform.position.x,
-                (_images[(int)coordinate.x, (int)coordinate.y]).transform.position.y,
-                (_images[(int)coordinate.x, (int)coordinate.y]).transform.position.z));
+            GameObject newGameObject = CreateNewObject(assetPrefab,
+                                                       coordinate,
+                                                       dynamicBoundingBox);
             if (newGameObject != null) {
                 assets.Add(newGameObject);
             }
@@ -137,29 +134,36 @@ public class DynamicBoundingBox : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Create an instance of the desired <c>GameObject</c> in an appropriate position.
     /// </summary>
     /// <param name="assetPrefab">
     /// <c>GameObject<c> corresponding to the desired prefab that will be used
     /// </param>
-    /// <param name="position">
-    /// <c>Vector3<c> corresponding to the desired position of the <c>MapObject</c>
+    /// <param name="coordinate">
+    /// <c>Vector2</c> corresponding to the x and y offsets of the current asset image if the
+    /// dynamic bounding box were represented as a grid
+    /// </param>
+    /// <param name="dynamicBoundingBox">
+    /// <c>GameObject</c> corresponding to the dynamic bounding box that the asset resides in
     /// </param>
     /// <returns>
     /// <c>GameObject</c> corresponding to the new <c>MapObject</c>. If a valid <c>MapObject</c>
     /// cannot be made, return <c>null</c>
     /// </returns>
-    public static GameObject CreateNewObject(GameObject assetPrefab, Vector3 position) {
+    public static GameObject CreateNewObject(GameObject assetPrefab,
+                                             Vector2 coordinate,
+                                             GameObject dynamicBoundingBox) {
         GameObject parent = new GameObject();
         parent.name = assetPrefab.name + " Parent";
         parent.transform.SetParent(MapEditorManager.MapContainer.transform, true);
-        parent.transform.position = new Vector3(position.x, position.y, position.z);
-        parent.transform.localPosition = new Vector3(
-            parent.transform.localPosition.x,
-            parent.transform.localPosition.y, 0);
 
-        GameObject newGameObject = Instantiate(assetPrefab, position, Quaternion.identity,
-                                               parent.transform);
+        Vector3 scale = Vector3.one / (_dynamicSideLength * AssetOptions.BrushSize);
+        Vector3 relativePosition =
+            dynamicBoundingBox.transform.TransformPoint(GetOffsetPosition(coordinate, scale));
+        parent.transform.position = relativePosition;
+
+        GameObject newGameObject = Instantiate(assetPrefab, parent.transform);
+        newGameObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
                 .IsInvalidPlacement()) {
             return newGameObject;
@@ -186,31 +190,32 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// Given coordinate position of a specific child object, retrieve its position relative to
     /// its parent's dynamic size.
     /// </summary>
-    /// <param name="obj">
-    /// Instantiated <c>GameObject</c> parent
-    /// </param>
     /// <param name="coordinate">
     /// <c>Vector2</c> corresponding to the x and y offsets of the current asset image if the
     /// dynamic bounding box were represented as a grid
     /// </param>
+    /// <param name="scale">
+    /// <c>Vector3</c> corresponding to the relative scales of new <c>GameObject</c> inside the
+    /// bounding box
+    /// </param>
     /// <returns>
     /// <c>Vector3<c> corresponding to the appropriate local position of the <c>GameObject</c>
     /// </returns>
-    public static Vector3 GetOffsetPosition(GameObject obj, Vector2 coordinate) {
+    public static Vector3 GetOffsetPosition(Vector2 coordinate, Vector3 scale) {
         if (_dynamicSideLength > 1) {
             float offset;
             if (_dynamicSideLength % 2 == 0) {
-                offset = obj.transform.localScale.x * 0.5f;
+                offset = scale.x * 0.5f;
             } else {
-                offset = obj.transform.localScale.x * -0.5f * (AssetOptions.BrushSize - 1);
+                offset = scale.x * -0.5f * (AssetOptions.BrushSize - 1);
             }
             return new Vector3(
-                offset - obj.transform.localScale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-                    * AssetOptions.BrushSize + (obj.transform.localScale.x
+                offset - scale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
+                    * AssetOptions.BrushSize + (scale.x
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
                     / (_dynamicSideLength - 1f)) + 1e-6f) * coordinate.x,
-                offset - obj.transform.localScale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-                    * AssetOptions.BrushSize + (obj.transform.localScale.y
+                offset - scale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
+                    * AssetOptions.BrushSize + (scale.y
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
                     / (_dynamicSideLength - 1f)) + 1e-6f) * coordinate.y,
                 0);

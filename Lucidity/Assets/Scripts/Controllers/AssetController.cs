@@ -29,7 +29,8 @@ public class AssetController : MonoBehaviour {
         if (activeImage != null) {
             Destroy(activeImage);
         }
-        DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id]);
+        DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id],
+                                                   Mouse.GetMousePosition());
 
         MapEditorManager.CurrentButtonPressed = Id;
 
