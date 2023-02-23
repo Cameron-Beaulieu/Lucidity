@@ -17,12 +17,12 @@ public class Mouse : MonoBehaviour {
         Vector2 worldPosition = GetMousePosition();
         transform.position = new Vector3(worldPosition.x, worldPosition.y, 90f);
         RayLibrary rayLib = new RayLibrary();
-        if (rayLib.IsPointerOverLayer(_uiLayer)
-				&& gameObject.GetComponent<MeshRenderer>() != null) {
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
-        }
-		else if (gameObject.GetComponent<MeshRenderer>() != null) {
-            gameObject.GetComponent<MeshRenderer>().enabled = true;
+        if (gameObject.GetComponent<MeshRenderer>() != null) {
+            if (rayLib.IsPointerOverLayer(_uiLayer)) {
+                gameObject.GetComponent<MeshRenderer>().enabled = false;
+            } else {
+                gameObject.GetComponent<MeshRenderer>().enabled = true;
+            }
         }
     }
 

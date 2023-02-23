@@ -29,13 +29,6 @@ public class AssetController : MonoBehaviour {
         if (activeImage != null) {
             Destroy(activeImage);
         }
-        // Creates image that will follow mouse
-        // GameObject hoverImage = Instantiate(_editor.AssetImage[Id],
-        // 			new Vector3(worldPosition.x, worldPosition.y, 90),
-        // 			Quaternion.identity);
-        // hoverImage.transform.localScale = new Vector3(hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-        //             hoverImage.transform.localScale.z + Zoom.zoomFactor);
         DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id]);
 
         MapEditorManager.CurrentButtonPressed = Id;

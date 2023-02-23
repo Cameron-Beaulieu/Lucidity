@@ -13,7 +13,8 @@ public class MapEditorManager : MonoBehaviour {
     public List<Texture2D> CursorTextures;
     public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
     public static LinkedList<EditorAction> Actions;
-    public static Dictionary<string, Texture2D> ToolToCursorMap = new Dictionary<string, Texture2D>();
+    public static Dictionary<string, Texture2D> ToolToCursorMap =
+        new Dictionary<string, Texture2D>();
     private static LinkedListNode<EditorAction> _currentAction;
     public static GameObject Map;
     public static GameObject MapContainer;
@@ -126,52 +127,15 @@ public class MapEditorManager : MonoBehaviour {
                             >= assetHeight)) {
                 List<GameObject> newMapObjects = new List<GameObject>();
 
-                GameObject dynamicBoundingBox = (GameObject) Instantiate(
-                    AssetPrefabs[_currentButtonPressed],
-                    new Vector3(worldPosition.x, worldPosition.y, 90), // TODO: why 90 again
-                    Quaternion.identity);
-                dynamicBoundingBox.name = "DynamicBoundingBox";
-                dynamicBoundingBox.tag = "DynamicBoundingBox";
-                dynamicBoundingBox.transform.localScale = 
-                    new Vector3(dynamicBoundingBox.transform.localScale.x
-                        + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.y
-                        + Zoom.zoomFactor, dynamicBoundingBox.transform.localScale.z
-                        + Zoom.zoomFactor)
-                    * DynamicBoundingBox.DynamicSideLength * AssetOptions.BrushSize;
-                Destroy(dynamicBoundingBox.GetComponent<MeshRenderer>());
-		        Destroy(dynamicBoundingBox.GetComponent<MeshFilter>());
+                GameObject dynamicBoundingBox = DynamicBoundingBox.CreateDynamicBoundingBox(
+                    AssetPrefabs[_currentButtonPressed]);
                 if (dynamicBoundingBox != null
                         && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
-                        && dynamicBoundingBox.GetComponent<AssetCollision>().GetCollisionCount() <= 1) {
-                	foreach (KeyValuePair<int,int> coordinate
-                			in AssetOptions.RandomAssetArrangement) {
-                		float xPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                						.transform.position.x;
-                		float yPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                						.transform.position.y;
-                		float zPos = (DynamicBoundingBox.Images[coordinate.Key,coordinate.Value])
-                						.transform.position.z;
-
-                        GameObject newParent = new GameObject();
-                        newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-                        newParent.transform.SetParent(MapContainer.transform, true);
-                        newParent.transform.position = new Vector3(xPos, yPos, zPos);
-                        newParent.transform.localPosition = new Vector3(
-                            newParent.transform.localPosition.x,
-                            newParent.transform.localPosition.y, 0);
-
-                		GameObject newGameObject = Instantiate(
-                			AssetPrefabs[_currentButtonPressed],
-                			new Vector3(xPos, yPos, zPos),
-                			Quaternion.identity, newParent.transform);
-                		if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-                				.IsInvalidPlacement()) {
-                			newMapObjects.Add(newGameObject);
-                		} else {
-                			Destroy(newGameObject);
-                			Destroy(newParent);
-                		}
-                	}
+                        && dynamicBoundingBox.GetComponent<AssetCollision>()
+                            .GetCollisionCount() <= 1) {
+                    List<GameObject> newGameObjects =
+                        DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed]);
+                    newMapObjects.AddRange(newGameObjects);
                 } else {
                     Destroy(dynamicBoundingBox);
                 }
@@ -210,12 +174,7 @@ public class MapEditorManager : MonoBehaviour {
             Mouse.LastMousePosition = worldPosition;
         } else if (!Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
             && Tool.ToolStatus["Brush Tool"]) {
-            GameObject[] dynamicBoundingBoxes = GameObject.FindGameObjectsWithTag("DynamicBoundingBox");
-            if (dynamicBoundingBoxes.Length > 0) {
-                foreach (GameObject dynamicBoundingBox in dynamicBoundingBoxes) {
-                    Destroy(dynamicBoundingBox);
-                }
-            }
+            DynamicBoundingBox.DeleteDynamicBoundingBoxes();
         }
         // TODO: Implement other actions here
     }
