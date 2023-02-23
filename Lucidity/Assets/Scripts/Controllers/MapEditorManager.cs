@@ -19,7 +19,7 @@ public class MapEditorManager : MonoBehaviour {
     public static LinkedList<EditorAction> Actions;
     public static Dictionary<string, Texture2D> ToolToCursorMap = 
         new Dictionary<string, Texture2D>();
-    public static LinkedListNode<EditorAction> _currentAction;
+    private static LinkedListNode<EditorAction> _currentAction;
     public static GameObject Map;
     public static GameObject MapContainer;
     public static Vector2 SpawnPoint;
