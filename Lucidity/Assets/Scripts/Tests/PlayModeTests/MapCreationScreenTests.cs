@@ -21,4 +21,14 @@ public class MapCreationScreenTests {
         yield return null;
         Assert.AreEqual("StarterScreenUI", SceneManager.GetActiveScene().name); // TODO: change this to scene's new name
     }
+
+    [UnityTest]
+    public IEnumerator ErrorsOnEmptyFileName() {
+        Assert.AreEqual("MapCreationUI", SceneManager.GetActiveScene().name); // TODO: change this to scene's new name
+        Button button = GameObject.Find("Create Button").GetComponent<Button>();
+        button.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapCreationUI", SceneManager.GetActiveScene().name); // TODO: change this to scene's new name
+        Assert.AreEqual("You must provide a file name to create a map", GameObject.Find("ErrorMessage").GetComponent<Text>().text);
+    }
 }
