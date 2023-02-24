@@ -12,14 +12,30 @@ public class AssetCollision : MonoBehaviour {
 	private int _uiLayer = 5;
 	// Use this to ensure that the Gizmos are being drawn when in Play Mode
 	private bool _detectionStarted = true;
+	
+	private Vector3 _originalScale;
+	private Quaternion _originalRotation;
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
 		CheckAssetOnUI();
 		CheckAssetCollisions();
+		_originalScale = transform.localScale;
+		_originalRotation = transform.rotation;
 	}
 
-	void OnDrawGizmos() {
+    private void Update() {
+		if (transform.localScale != _originalScale) {
+			CheckAssetCollisions();
+			_originalScale = transform.localScale;
+		}
+		if (transform.rotation != _originalRotation) {
+			CheckAssetCollisions();
+			_originalRotation = transform.rotation;
+		}
+	}
+
+    void OnDrawGizmos() {
 		Gizmos.color = Color.red;
 		if (_detectionStarted) {
 			// Draw a cube where the OverlapBox is (positioned where the GameObject and with
@@ -49,7 +65,6 @@ public class AssetCollision : MonoBehaviour {
 		if (collisions > 1) {
 			gameObject.tag = "CollisionObject";
 			foreach (Collider collisionObject in hitColliders) {
-
 				if (collisionObject.gameObject.layer == _assetLayer
 						&& collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
 					_originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()
@@ -97,6 +112,12 @@ public class AssetCollision : MonoBehaviour {
 		if (collisionObject == gameObject) {
 			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject);
+		}
+		if (collisionObject.transform.localScale != _originalScale) {
+			CheckAssetCollisions();
+		}
+		if (collisionObject.transform.rotation != _originalRotation) {
+			CheckAssetCollisions();
 		}
 	}
 
