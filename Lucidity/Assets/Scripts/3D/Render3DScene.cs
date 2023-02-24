@@ -10,7 +10,6 @@ public class Render3DScene : MonoBehaviour {
     private GameObject _avatar;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
-    private float _assetScaleFactor;
 
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
