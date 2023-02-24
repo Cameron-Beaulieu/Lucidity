@@ -95,7 +95,7 @@ public class AssetCollision : MonoBehaviour {
     private void CheckAssetOnUI() {
         if (IsInvalidPlacement()) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
-            Destroy(gameObject.transform.parent.gameObject);
+            Destroy(gameObject.transform.parent);
             Destroy(gameObject);
         }
     }
