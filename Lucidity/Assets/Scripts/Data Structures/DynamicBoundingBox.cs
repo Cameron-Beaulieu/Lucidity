@@ -5,7 +5,7 @@ using UnityEngine;
 public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
-    private static HashSet<Vector2> _randomAssetArrangement = new HashSet<Vector2>();
+    private static HashSet<Vector2> _randomAssetArrangement;
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
@@ -183,6 +183,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// assets. These will be used in selecting the random arrangement of grouped assets.
     /// </summary>
     public static void GenerateRandomCoordinates() {
+        _randomAssetArrangement = new HashSet<Vector2>();
         do {
             _randomAssetArrangement.Add(new Vector2(
                 Random.Range(0, _dynamicSideLength),
