@@ -18,10 +18,10 @@ public class AssetCollision : MonoBehaviour {
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
-		CheckAssetOnUI();
-		CheckAssetCollisions();
 		_originalScale = transform.localScale;
 		_originalRotation = transform.rotation;
+		CheckAssetOnUI();
+		CheckAssetCollisions();
 	}
 
     private void Update() {
@@ -112,9 +112,6 @@ public class AssetCollision : MonoBehaviour {
 		if (collisionObject == gameObject) {
 			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 			Destroy(gameObject);
-		}
-		if (collisionObject.transform.localScale != _originalScale) {
-			CheckAssetCollisions();
 		}
 		if (collisionObject.transform.rotation != _originalRotation) {
 			CheckAssetCollisions();
