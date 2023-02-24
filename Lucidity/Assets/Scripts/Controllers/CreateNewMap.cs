@@ -72,13 +72,12 @@ public class CreateNewMap : MonoBehaviour {
         if (directory.Equals("")) { return false; }
 
         string fileName = _mapName.text;
-        Size = GetMapSize();
         ChosenBiome = GetBiomeFromDropdown();
         
         fileName = directory + "/" + fileName + ".json";
 
         if (!File.Exists(fileName)) {
-            MapData jsonContent = new MapData(fileName, Size, ChosenBiome);
+            MapData jsonContent = new MapData(fileName, ChosenBiome);
             File.WriteAllText(fileName, jsonContent.Serialize());
             return true;
         }

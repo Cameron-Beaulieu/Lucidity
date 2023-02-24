@@ -130,8 +130,8 @@ public class NavController : MonoBehaviour {
             MapEditorManager.Map.GetComponent<Image>().color).ToLower();
         CreateNewMap.SizeType size = CreateNewMap.Size;
 
-        MapData jsonContent = new MapData(size, new Biome(groundColour), 
-            MapEditorManager.MapObjects, MapEditorManager.SpawnPoint);
+        MapData jsonContent = new MapData(new Biome(groundColour), MapEditorManager.MapObjects, 
+            MapEditorManager.SpawnPoint);
 
         File.WriteAllText(MapData.FileName, jsonContent.Serialize());
         _savingText.text = "Saved!";
