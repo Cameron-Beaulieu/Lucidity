@@ -115,7 +115,13 @@ public class MapEditorManager : MonoBehaviour {
         Vector2 worldPosition = Mouse.GetMousePosition();
         if (Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
             && Tool.ToolStatus["Brush Tool"]) {
-            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+            PaintAtPosition(worldPosition);
+        }
+        // TODO: Implement other actions here
+    }
+
+    public void PaintAtPosition(Vector2 worldPosition) {
+        GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
             if (activeImage == null) {
                 AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
                 activeImage = GameObject.FindGameObjectWithTag("AssetImage");
@@ -195,8 +201,6 @@ public class MapEditorManager : MonoBehaviour {
                 }
             }
             Mouse.LastMousePosition = worldPosition;
-        }
-        // TODO: Implement other actions here
     }
 
     /// <summary>
