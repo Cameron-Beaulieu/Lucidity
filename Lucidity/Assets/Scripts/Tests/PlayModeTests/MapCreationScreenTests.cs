@@ -14,6 +14,13 @@ public class MapCreationScreenTests {
         yield return null;
     }
 
+    [OneTimeTearDown]
+    public void OneTimeTearDown() {
+        if (SceneManager.GetSceneByName("MapCreation").isLoaded) {
+            SceneManager.UnloadSceneAsync("MapCreation");
+        }
+    }
+
     [UnityTest]
     public IEnumerator CancelRedirectsToStartupScreen() {
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
@@ -31,5 +38,20 @@ public class MapCreationScreenTests {
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         Assert.AreEqual("You must provide a file name to create a map.", 
                         GameObject.Find("ErrorMessage").GetComponent<Text>().text);
+    }
+
+    [UnityTest]
+    public IEnumerator CreatesNewFile() {
+        CreateNewMap.IsTesting = true;
+        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
+        InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
+        nameInputField.text = "TestMap";
+        Button button = GameObject.Find("Create Button").GetComponent<Button>();
+        button.onClick.Invoke();
+
+        Assert.AreEqual(Biome.BiomeType.Forest, CreateNewMap.ChosenBiome.Name);
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        
     }
 }

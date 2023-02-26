@@ -13,6 +13,7 @@ public class CreateNewMap : MonoBehaviour {
         Medium,
         Large
     }
+    public static bool IsTesting = false;
     [SerializeField] private InputField _mapName;
     [SerializeField] private Dropdown _mapSizeDropdown;
     [SerializeField] private Dropdown _biomeDropdown;
@@ -56,7 +57,7 @@ public class CreateNewMap : MonoBehaviour {
             return;
         }
         
-        if (CreateFile()) {
+        if (IsTesting || CreateFile()) {
             _biome = GetBiomeFromDropdown();
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
         }
