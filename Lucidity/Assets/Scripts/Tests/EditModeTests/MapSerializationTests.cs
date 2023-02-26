@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class MapSerialization {
+public class MapSerializationTests {
 
     private MapData _mockMapData = new MapData(0, new Biome(0), 
                                                new Dictionary<int, MapObject> {
