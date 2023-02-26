@@ -2,19 +2,33 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-public class MapEditorTests : InputTestFixture {
+public class MapEditorTests {
 
     [UnitySetUp]
     public IEnumerator SetUp() {
+        ResetStaticVariables();
         StartupScreen.FilePath = null;
         SceneManager.LoadScene("MapEditor");
-        ResetStaticVariables();
         yield return null;
+    }
+
+    [TearDown]
+    public void TearDown() {
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        foreach (GameObject paintButton in paintButtons) {
+            paintButton.GetComponent<AssetController>().UnselectButton();
+        }
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown() {
+        if (SceneManager.GetSceneByName("MapEditor").isLoaded) {
+            SceneManager.UnloadSceneAsync("MapEditor");
+        }
     }
 
     [Test]
@@ -108,11 +122,6 @@ public class MapEditorTests : InputTestFixture {
                 }
             }
         } 
-
-        // TODO: maybe include this in teardown
-        foreach (GameObject paintButton in paintButtons) {
-            paintButton.GetComponent<AssetController>().UnselectButton();
-        }
     }
 
     [Test]
@@ -163,9 +172,7 @@ public class MapEditorTests : InputTestFixture {
 
     [Test]
     public void CanPlaceAssets() {
-
         Assert.Zero(MapEditorManager.MapObjects.Count);
-
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         fortressButton.onClick.Invoke();
@@ -182,9 +189,69 @@ public class MapEditorTests : InputTestFixture {
         Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, 0.005f);
         Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, 0.005f);
         Assert.Zero(placedParent.transform.localPosition.z);
+    }
 
-        fortressButton.GetComponent<AssetController>().UnselectButton();
+    [Test]
+    public void CanPlaceGroupsOfAssets() {
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+        countInput.text = "2";
+        countInput.onEndEdit.Invoke(countInput.text);
+        Assert.AreEqual(2, AssetOptions.AssetCount);
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
 
+        Vector2 positionToPlace = new Vector2(-100, 150);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+        List<int> keys = new List<int>(MapEditorManager.MapObjects.Keys);
+
+        // the two MapObjects should be placed at the same y position, but different x positions 
+        // because they are side by side
+        Assert.AreNotEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.x, 
+            MapEditorManager.MapObjects[keys[1]].MapOffset.x);
+        Assert.AreEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.y, 
+            MapEditorManager.MapObjects[keys[1]].MapOffset.y);
+    }
+
+    [Test]
+    public void CannotPlaceAssetOnTopOfSpawnPoint() {
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+
+        Vector2 positionToPlace = new Vector2(0,0);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+
+        Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
+    }
+
+    [Test]
+    public void CannotPlaceAssetOnTopOfAnotherAsset() {
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+
+        Vector2 positionToPlace = new Vector2(-100, 150);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+
+        // try to place another asset on top of the first one
+        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.5f, 0.5f));
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
     }
 
     // TODO: tests for nav menu
@@ -218,5 +285,6 @@ public class MapEditorTests : InputTestFixture {
         MapEditorManager.LastEncounteredObject = null;
         Tool.ToolKeys = new List<string>();
         Tool.ToolStatus = new Dictionary<string, bool>();
+        Mouse.LastMousePosition = Vector2.zero;
     }
 }
