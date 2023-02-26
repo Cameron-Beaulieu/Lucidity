@@ -89,25 +89,6 @@ public class MapEditorManager : MonoBehaviour {
             ToolToCursorMap.Add(cursor.name, cursor);
         }
 
-        CreateNewMap.SizeType mapSize = CreateNewMap.Size;
-        RectTransform mapRect = Map.GetComponent<RectTransform>();
-        Vector2 mapScale = Map.transform.localScale;
-
-        switch (mapSize) {
-          case CreateNewMap.SizeType.Small:
-            mapScale *= 1f;
-            break;
-          case CreateNewMap.SizeType.Medium:
-              mapScale *= 1.5f;
-            break;
-          case CreateNewMap.SizeType.Large:
-              mapScale *= 2f;
-            break;
-          default:
-              mapScale *= 1.5f;
-            break;
-        }
-        Map.transform.localScale = mapScale;
         Layers.Add(BaseLayer);
     }
 
@@ -357,9 +338,9 @@ public class MapEditorManager : MonoBehaviour {
                         newGameObject.transform.localPosition.y),  
             new Vector2(parentGameObject.transform.localPosition.x, 
                         parentGameObject.transform.localPosition.y),
-            new Vector3(newGameObject.transform.localScale.x - Zoom.zoomFactor, 
-                        newGameObject.transform.localScale.y - Zoom.zoomFactor, 
-                        newGameObject.transform.localScale.z - Zoom.zoomFactor), 
+            new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
+                        parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
+                        parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
             newGameObject.transform.rotation, true);
         MapObjects.Add(newMapObject.Id, newMapObject);
     }	
@@ -371,7 +352,6 @@ public class MapEditorManager : MonoBehaviour {
         MapContainer = GameObject.Find("Map Container");
         MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
         SelectedBiome = loadedMap.Biome;
-        CreateNewMap.Size = loadedMap.MapSize;
         SpawnPoint = loadedMap.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
             new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
