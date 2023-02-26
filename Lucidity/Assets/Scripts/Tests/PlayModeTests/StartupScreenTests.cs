@@ -14,6 +14,13 @@ public class StartupScreenTests {
         yield return null;
     }
 
+    [OneTimeTearDown]
+    public void OneTimeTearDown() {
+        if (SceneManager.GetSceneByName("Startup").isLoaded) {
+            SceneManager.UnloadSceneAsync("Startup");
+        }
+    }
+
     [UnityTest]
     public IEnumerator RedirectsToMapCreation() {
         Assert.AreEqual("Startup", SceneManager.GetActiveScene().name);
