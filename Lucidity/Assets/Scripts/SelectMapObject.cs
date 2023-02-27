@@ -72,6 +72,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 		Quaternion oldRotation = SelectedObject.transform.rotation;
 		// will change to 90 degrees once we have real assets
 		SelectedObject.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
+		SelectedObject.GetComponent<BoxCollider>().transform.rotation = SelectedObject.transform.rotation;
+		//SelectedObject.GetComponentInChildren<CapsuleCollider>().transform.rotation = SelectedObject.transform.rotation;
 		// for UNDO/REDO
 		List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
 		MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new RotateMapObjectAction(objectsToRotate, true));
@@ -82,6 +84,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 		Quaternion oldRotation = SelectedObject.transform.rotation;
 		// will change to 90 degrees once we have real assets
 		SelectedObject.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
+		SelectedObject.GetComponent<BoxCollider>().transform.rotation = SelectedObject.transform.rotation;
+		SelectedObject.GetComponentInChildren<BoxCollider>().transform.rotation = SelectedObject.transform.rotation;
 		// for UNDO/REDO
 		List<GameObject> objectsToRotate = new List<GameObject>() { SelectedObject };
 		MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new RotateMapObjectAction(objectsToRotate, false));

@@ -14,11 +14,13 @@ public class AssetCollision : MonoBehaviour {
 	private bool _detectionStarted = true;
 	
 	private Vector3 _originalScale;
+	private Vector3 _revertScale;
 	private Quaternion _originalRotation;
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
 		_originalScale = transform.localScale;
+		_revertScale = _originalScale;
 		_originalRotation = transform.rotation;
 		CheckAssetOnUI();
 		CheckAssetCollisions();
@@ -35,12 +37,18 @@ public class AssetCollision : MonoBehaviour {
 		}
 	}
 
-    void OnDrawGizmos() {
+	void OnDrawGizmos() {
 		Gizmos.color = Color.red;
 		if (_detectionStarted) {
 			// Draw a cube where the OverlapBox is (positioned where the GameObject and with
 			// identical size).
 			Gizmos.DrawWireCube(transform.position, transform.localScale);
+
+			//Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+			//Gizmos.matrix = rotationMatrix;
+
+			// Draw a wire cube with the transformed position and scale
+			//Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
 		}
 	}
 
@@ -110,8 +118,16 @@ public class AssetCollision : MonoBehaviour {
 			collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
 		}
 		if (collisionObject == gameObject) {
-			MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
-			Destroy(gameObject);
+			//MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+			//Destroy(gameObject);
+			if (collisionObject.transform.localScale != _revertScale) {
+				collisionObject.transform.localScale = _revertScale;
+				collisionObject.tag = "Untagged";
+			}
+			else {
+				MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+				Destroy(gameObject);
+			}
 		}
 		if (collisionObject.transform.rotation != _originalRotation) {
 			CheckAssetCollisions();
