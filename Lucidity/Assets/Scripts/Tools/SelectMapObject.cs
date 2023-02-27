@@ -6,11 +6,14 @@ using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
+    public static bool IsTesting = false;
     private static Outline _outline;
 
     public void OnPointerClick(PointerEventData eventData) {
         if (Tool.ToolStatus["Selection Tool"]) {
-            SelectedObject = eventData.pointerClick;
+            if (!IsTesting) {
+                SelectedObject = eventData.pointerClick;
+            }
             if (_outline != null) {
                 Destroy(_outline);
             }

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -254,7 +255,58 @@ public class MapEditorTests {
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
     }
 
-    // TODO: tests for nav menu
+    [Test]
+    public void CanUndoAndRedoAssetPlacement() {
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+
+        Vector2 positionToPlace = new Vector2(-100, 150);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+
+        Button undoButton = GameObject.Find("Undo").GetComponent<Button>();
+        undoButton.onClick.Invoke();
+        int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+
+        Button redoButton = GameObject.Find("Redo").GetComponent<Button>();
+        redoButton.onClick.Invoke();
+        Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+    }
+
+    [Test]
+    public void CanDeleteAsset() {
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+
+        Vector2 positionToPlace = new Vector2(-100, 150);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        Assert.IsTrue(Tool.ToolStatus["Selection Tool"]);
+
+        GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
+        SelectMapObject.IsTesting = true;
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>().OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.IsTrue(Tool.SelectionOptions.activeSelf);
+
+        Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
+        deleteButton.onClick.Invoke();
+        int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+
+        SelectMapObject.IsTesting = false;
+    }
 
     // Utility Methods
 
