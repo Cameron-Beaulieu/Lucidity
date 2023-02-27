@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using Moq;
 
 public class MapCreationScreenTests {
 
@@ -41,17 +42,16 @@ public class MapCreationScreenTests {
     }
 
     [UnityTest]
-    public IEnumerator CreatesNewFile() {
-        CreateNewMap.IsTesting = true;
+    public IEnumerator RedirectsToMapEditorWithSpecifiedMapDetails() {
+        CreateNewMap.IsTesting = true; // TODO: find a way to actually test file dialogs
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
         nameInputField.text = "TestMap";
         Button button = GameObject.Find("Create Button").GetComponent<Button>();
         button.onClick.Invoke();
-
         Assert.AreEqual(Biome.BiomeType.Forest, CreateNewMap.ChosenBiome.Name);
         yield return null;
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-        
+        CreateNewMap.IsTesting = false;
     }
 }
