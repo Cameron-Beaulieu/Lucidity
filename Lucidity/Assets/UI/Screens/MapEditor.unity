@@ -3174,7 +3174,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1403460569}
   m_HandleRect: {fileID: 1403460568}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -10006,6 +10006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
+  _scaleSizeSlider: {fileID: 1237108172}
 --- !u!114 &1053491540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10104,8 +10105,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 956387567}
   m_HandleRect: {fileID: 956387566}
   m_Direction: 2
-  m_Value: 1.0000004
-  m_Size: 0.60871285
+  m_Value: 1.0000001
+  m_Size: 0.6087128
   m_NumberOfSteps: 4
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15790,7 +15791,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226900040}
   m_HandleRect: {fileID: 1226900039}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -21206,6 +21207,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2722138775668877326, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
+      propertyPath: _scaleSizeSlider
+      value: 
+      objectReference: {fileID: 1237108172}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
 --- !u!1001 &4242923788515728599
@@ -21321,6 +21326,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1774080566}
     m_Modifications:
+    - target: {fileID: 5470440310217384789, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
+      propertyPath: _scaleSizeSlider
+      value: 
+      objectReference: {fileID: 1237108172}
     - target: {fileID: 5643009079545502601, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
       propertyPath: m_Name
       value: TempTreeObject
@@ -21522,5 +21531,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7768790466255065852, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
+      propertyPath: _scaleSizeSlider
+      value: 
+      objectReference: {fileID: 1237108172}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}

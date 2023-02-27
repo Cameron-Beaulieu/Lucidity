@@ -2,6 +2,7 @@ using RaycastingLibrary;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class AssetCollision : MonoBehaviour {
@@ -43,12 +44,6 @@ public class AssetCollision : MonoBehaviour {
 			// Draw a cube where the OverlapBox is (positioned where the GameObject and with
 			// identical size).
 			Gizmos.DrawWireCube(transform.position, transform.localScale);
-
-			//Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
-			//Gizmos.matrix = rotationMatrix;
-
-			// Draw a wire cube with the transformed position and scale
-			//Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
 		}
 	}
 
@@ -118,8 +113,6 @@ public class AssetCollision : MonoBehaviour {
 			collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
 		}
 		if (collisionObject == gameObject) {
-			//MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
-			//Destroy(gameObject);
 			if (collisionObject.transform.localScale != _revertScale) {
 				collisionObject.transform.localScale = _revertScale;
 				collisionObject.tag = "Untagged";
@@ -128,9 +121,6 @@ public class AssetCollision : MonoBehaviour {
 				MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
 				Destroy(gameObject);
 			}
-		}
-		if (collisionObject.transform.rotation != _originalRotation) {
-			CheckAssetCollisions();
 		}
 	}
 
