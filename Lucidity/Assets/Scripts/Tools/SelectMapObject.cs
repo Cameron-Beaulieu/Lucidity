@@ -10,31 +10,39 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         if (Tool.ToolStatus["Selection Tool"]) {
-            SelectedObject = eventData.pointerClick;
-            if (_outline != null) {
-                Destroy(_outline);
-            }
-            if (SelectedObject.name == "Spawn Point") {
-                Tool.SpawnPointOptions.SetActive(true);
-                Tool.SelectionOptions.SetActive(false);
-            } else {
-                MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-                    .GetComponent<MapEditorManager>();
-                int id = SelectedObject.GetInstanceID();
-                // Verify that the selected object is on the currently selected layer
-                if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)) {
+            MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+                .GetComponent<MapEditorManager>();
+            GameObject clickedObject = eventData.pointerClick;
+            int id = clickedObject.GetInstanceID();
+            // First check if the selected object is on the current layer
+            if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)) {
+                SelectedObject = clickedObject;
+                if (_outline != null) {
+                    Destroy(_outline);
+                }
+                if (SelectedObject.name == "Spawn Point") {
+                    Tool.SpawnPointOptions.SetActive(true);
+                    Tool.SelectionOptions.SetActive(false);
+                } else {
                     Tool.SpawnPointOptions.SetActive(false);
                     Tool.SelectionOptions.SetActive(true);
-                } else {
-                    return;
                 }
+                GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
+                    = "Editing " + SelectedObject.name;
+                _outline = SelectedObject.AddComponent<Outline>();
+                _outline.OutlineMode = Outline.Mode.OutlineAll;
+                _outline.OutlineColor = Color.red;
+                _outline.OutlineWidth = 2f;
             }
-            GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
-                = "Editing " + SelectedObject.name;
-            _outline = SelectedObject.AddComponent<Outline>();
-            _outline.OutlineMode = Outline.Mode.OutlineAll;
-            _outline.OutlineColor = Color.red;
-            _outline.OutlineWidth = 2f;
+        }
+    }
+
+    public static void UnselectMapObject() {
+        if (SelectedObject != null) {
+            SelectedObject = null;
+        }
+        if (_outline != null) {
+            Destroy(_outline);
         }
     }
 
