@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-using Moq;
 
 public class MapCreationScreenTests {
 
@@ -43,7 +42,7 @@ public class MapCreationScreenTests {
 
     [UnityTest]
     public IEnumerator RedirectsToMapEditorWithSpecifiedMapDetails() {
-        CreateNewMap.IsTesting = true; // TODO: find a way to actually test file dialogs
+        CreateNewMap.IsTesting = true;
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
         nameInputField.text = "TestMap";
