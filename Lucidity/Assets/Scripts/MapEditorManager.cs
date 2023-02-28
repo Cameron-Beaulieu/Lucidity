@@ -21,8 +21,6 @@ public class MapEditorManager : MonoBehaviour {
 	private static int _currentButtonPressed;
 	private static GameObject _lastEncounteredObject;
 	public static Vector2 SpawnPoint;
-	//private bool _isClockwise = false;
-	//private bool _isCClockwise = false;
 	[SerializeField] private Slider _scaleSizeSlider;
 	[SerializeField] private Slider _paintObjectScaleSlider;
 	[SerializeField] private TMP_Text _paintObjectScaleText;
@@ -279,8 +277,8 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
-							obj.transform.localScale = ((ResizeMapObjectAction)actionToRedo).NewSize;
-							_scaleSizeSlider.value = ((ResizeMapObjectAction)actionToRedo).NewSize.x;
+							obj.transform.localScale = ((ResizeMapObjectAction) actionToRedo).NewSize;
+							_scaleSizeSlider.value = ((ResizeMapObjectAction) actionToRedo).NewSize.x;
 						}
 					}
 					break;
@@ -288,7 +286,7 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					foreach (GameObject obj in actionToRedo.RelatedObjects) {
 						if (obj != null) {
-							if (((RotateMapObjectAction)actionToRedo).IsClockwise) {
+							if (((RotateMapObjectAction) actionToRedo).IsClockwise) {
 								obj.transform.Rotate(0.0f, 0.0f, -45.0f, Space.World);
 							}
 							else {
@@ -348,8 +346,8 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
-							obj.transform.localScale = ((ResizeMapObjectAction)actionToUndo).OldSize;
-							_scaleSizeSlider.value = ((ResizeMapObjectAction)actionToUndo).OldSize.x;
+							obj.transform.localScale = ((ResizeMapObjectAction) actionToUndo).OldSize;
+							_scaleSizeSlider.value = ((ResizeMapObjectAction) actionToUndo).OldSize.x;
 						}
 					}
 					break;
@@ -357,7 +355,7 @@ public class MapEditorManager : MonoBehaviour {
 					// TODO: Implement
 					foreach (GameObject obj in actionToUndo.RelatedObjects) {
 						if (obj != null) {
-							if (((RotateMapObjectAction)actionToUndo).IsClockwise) {
+							if (((RotateMapObjectAction) actionToUndo).IsClockwise) {
 								obj.transform.Rotate(0.0f, 0.0f, 45.0f, Space.World);
 							}
 							else {
@@ -453,7 +451,7 @@ public class MapEditorManager : MonoBehaviour {
 	/// <summary>
 	/// Converts from the 2D scene to the 3D scene
 	/// </summary>
-	public void ConvertTo3D(){
+	public void ConvertTo3D() {
 		SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
 		SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
 	}

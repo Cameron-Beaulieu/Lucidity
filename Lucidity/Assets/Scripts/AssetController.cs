@@ -11,7 +11,7 @@ public class AssetController : MonoBehaviour {
 	private static GameObject _prevParentContainer;
 	[SerializeField] private Slider _paintObjectScaleSlider;
 
-	void Start() {
+	private void Start() {
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 		_assetButton = gameObject.GetComponent<Button>();
