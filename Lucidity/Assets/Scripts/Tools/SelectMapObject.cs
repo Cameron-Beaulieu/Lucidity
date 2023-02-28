@@ -46,6 +46,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             Destroy(_outline);
         }
         Tool.SelectionOptions.SetActive(false);
+        Tool.SpawnPointOptions.SetActive(false);
     }
 
     /// <summary>
