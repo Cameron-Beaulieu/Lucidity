@@ -11,7 +11,7 @@ public class PaintingTests : MapEditorTests {
     [Test]
     public void DefaultsToBrushTool() {
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-        CheckAllOtherToolsAreUnselected("Brush Tool");
+        Util.CheckAllOtherToolsAreUnselected("Brush Tool");
         Assert.IsTrue(Tool.PaintingMenu.activeSelf);
     }
 
@@ -25,7 +25,7 @@ public class PaintingTests : MapEditorTests {
         Button brushToolButton = GameObject.Find("Brush Tool").GetComponent<Button>();
         brushToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-        CheckAllOtherToolsAreUnselected("Brush Tool");
+        Util.CheckAllOtherToolsAreUnselected("Brush Tool");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsTrue(Tool.PaintingMenu.activeSelf);
     }
@@ -49,11 +49,13 @@ public class PaintingTests : MapEditorTests {
     public void CanCollapseAndExpandPaintingMenu() {
         GameObject menuBody = GameObject.Find("Painting Body");
         Assert.IsTrue(menuBody.activeSelf);
-        Button collapseButton = GameObject.Find("Painting Header (Expanded)").GetComponent<Button>();
+        Button collapseButton = GameObject.Find("Painting Header (Expanded)")
+            .GetComponent<Button>();
         collapseButton.onClick.Invoke();
         Assert.IsFalse(menuBody.activeSelf);
         Assert.IsFalse(collapseButton.gameObject.activeSelf);
-        Button expandButton = GameObject.Find("Painting Header (Collapsed)").GetComponent<Button>();
+        Button expandButton = GameObject.Find("Painting Header (Collapsed)")
+            .GetComponent<Button>();
         expandButton.onClick.Invoke();
         Assert.IsTrue(menuBody.activeSelf);
         Assert.IsFalse(expandButton.gameObject.activeSelf);
@@ -68,7 +70,8 @@ public class PaintingTests : MapEditorTests {
     Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
 
     Vector2 positionToPlace = new Vector2(-100, 150);
-    MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>();
+    MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+        .GetComponent<MapEditorManager>();
     mapEditorManager.PaintAtPosition(positionToPlace);
 
     GameObject placedParent = GameObject.Find("TempFortressObject Parent");
@@ -103,9 +106,9 @@ public class PaintingTests : MapEditorTests {
         // the two MapObjects should be placed at the same y position, but different x positions 
         // because they are side by side
         Assert.AreNotEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.x, 
-            MapEditorManager.MapObjects[keys[1]].MapOffset.x);
+                           MapEditorManager.MapObjects[keys[1]].MapOffset.x);
         Assert.AreEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.y, 
-            MapEditorManager.MapObjects[keys[1]].MapOffset.y);
+                        MapEditorManager.MapObjects[keys[1]].MapOffset.y);
     }
 
     [Test]

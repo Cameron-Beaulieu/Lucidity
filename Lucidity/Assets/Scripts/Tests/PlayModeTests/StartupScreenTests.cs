@@ -29,6 +29,4 @@ public class StartupScreenTests {
         yield return null;
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
     }
-
-    // TODO: find a way to test file loading
 }

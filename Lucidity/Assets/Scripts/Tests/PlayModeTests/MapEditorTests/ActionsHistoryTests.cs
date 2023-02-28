@@ -14,7 +14,7 @@ public class ActionsHistoryTests : MapEditorTests {
     public void CanUndoAndRedoAssetPlacement() {
         // paint an asset
         Assert.Zero(MapEditorManager.MapObjects.Count);
-        PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
@@ -34,7 +34,7 @@ public class ActionsHistoryTests : MapEditorTests {
     public void CanUndoAndRedoAssetDeletion() {
         // paint an asset
         Assert.Zero(MapEditorManager.MapObjects.Count);
-        PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
@@ -93,14 +93,14 @@ public class ActionsHistoryTests : MapEditorTests {
     [Test]
     public void PermanentlyDeleteActionsThatCannotBeRedone() {
         // paint an asset
-        PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
 
         // undo the placement
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
 
         // paint another asset
-        PaintAnAsset(new Vector2(100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(100, 150), "Fortress");
 
         // check that the original asset painted is permanently deleted
         Assert.IsFalse(MapEditorManager.MapObjects.ContainsKey(placedObjectId));

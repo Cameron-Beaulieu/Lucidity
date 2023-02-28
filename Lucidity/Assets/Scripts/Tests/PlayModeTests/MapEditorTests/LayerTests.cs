@@ -20,10 +20,12 @@ public class LayerTests : MapEditorTests {
     public void CanCollapseAndExpandLayersMenu() {
         GameObject menuBody = GameObject.Find("Layers Body");
         Assert.IsTrue(menuBody.activeSelf);
+        Assert.IsNotNull(GameObject.Find("Layer Tool")); // layer tool exists only on expanded menu
         Button collapseButton = GameObject.Find("Layers Header (Expanded)").GetComponent<Button>();
         collapseButton.onClick.Invoke();
         Assert.IsFalse(menuBody.activeSelf);
         Assert.IsFalse(collapseButton.gameObject.activeSelf);
+        Assert.IsNull(GameObject.Find("Layer Tool"));
         Button expandButton = GameObject.Find("Layers Header (Collapsed)").GetComponent<Button>();
         expandButton.onClick.Invoke();
         Assert.IsTrue(menuBody.activeSelf);
@@ -33,7 +35,8 @@ public class LayerTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanAddLayers() {
         // should start with only the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>();
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
         Assert.AreEqual(1, MapEditorManager.Layers.Count);
@@ -56,8 +59,10 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void EditButtonChangesReadOnlyStatus() {
-        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0).gameObject;
-        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)").GetComponent<TMP_InputField>();
+        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
+            .gameObject;
+        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
         Assert.IsTrue(layerNameInput.readOnly);
         baseLayer.transform.Find("Edit").GetComponent<Button>().onClick.Invoke();
         Assert.IsFalse(layerNameInput.readOnly);
@@ -65,8 +70,10 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void CanRenameLayers() {
-        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0).gameObject;
-        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)").GetComponent<TMP_InputField>();
+        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
+            .gameObject;
+        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
         Assert.AreEqual(originalName, layerNameInput.GetComponent<LayerName>().CurrentText);
@@ -79,8 +86,10 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void ResetsToOriginalNameOnEmptyInput() {
-        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0).gameObject;
-        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)").GetComponent<TMP_InputField>();
+        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
+            .gameObject;
+        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
         Assert.AreNotEqual("", originalName);
@@ -90,8 +99,10 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void TruncatesLongNames() {
-        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0).gameObject;
-        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)").GetComponent<TMP_InputField>();
+        GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
+            .gameObject;
+        TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
         string longName = "This is a very long layer name that should be truncated";
@@ -100,5 +111,31 @@ public class LayerTests : MapEditorTests {
 
         Assert.AreEqual(longName, layerNameInput.GetComponent<LayerName>().CurrentText);
         Assert.AreEqual(longName.Substring(0,10) + "...", layerNameInput.text);
+    }
+
+    [UnityTest]
+    public IEnumerator CanOnlyEditAndDeleteSelectedLayer() {
+        // check edit and delete on base layer
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
+        GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.IsTrue(baseLayer.transform.Find("Edit").gameObject.activeSelf);
+        Assert.IsTrue(baseLayer.transform.Find("TrashCan").gameObject.activeSelf);
+
+        // create a new layer and switch to it
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
+        Assert.AreEqual(1, editor.CurrentLayer);
+
+        // check that you can edit and delete
+        Assert.IsTrue(newLayer.transform.Find("Edit").gameObject.activeSelf);
+        Assert.IsTrue(newLayer.transform.Find("TrashCan").gameObject.activeSelf);
+
+        // check that the other layer can't be edited or deleted
+        Assert.IsFalse(baseLayer.transform.Find("Edit").gameObject.activeSelf);
+        Assert.IsFalse(baseLayer.transform.Find("TrashCan").gameObject.activeSelf);
     }
 }

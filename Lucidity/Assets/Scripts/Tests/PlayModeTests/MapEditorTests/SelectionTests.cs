@@ -24,7 +24,7 @@ public class SelectionTests : MapEditorTests {
         Button selectionToolButton = GameObject.Find("Selection Tool").GetComponent<Button>();
         selectionToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Selection Tool"]);
-        CheckAllOtherToolsAreUnselected("Selection Tool");
+        Util.CheckAllOtherToolsAreUnselected("Selection Tool");
         Assert.IsTrue(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
@@ -32,7 +32,7 @@ public class SelectionTests : MapEditorTests {
     [Test]
     public void CanSelectAsset() {
         // paint an object to select
-        PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
 
         // select the object
@@ -97,7 +97,7 @@ public class SelectionTests : MapEditorTests {
     [Test]
     public void CanDeleteAsset() {
         // paint an object to delete
-        PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         
         // select the object
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();

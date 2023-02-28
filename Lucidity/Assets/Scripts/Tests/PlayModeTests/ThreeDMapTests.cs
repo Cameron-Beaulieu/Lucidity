@@ -11,7 +11,7 @@ public class ThreeDMapTests {
 
     [UnitySetUp]
     public IEnumerator SetUp() {
-        MapEditorTests.ResetStaticVariables();
+        Util.ResetStaticVariables();
         SceneManager.LoadScene("MapEditor");
         yield return null;
     }
@@ -23,7 +23,7 @@ public class ThreeDMapTests {
 
     [TearDown]
     public void TearDown() {
-        MapEditorTests.ResetStaticVariables();
+        Util.ResetStaticVariables();
         AvatarMovement.HorizontalTestingInput = 0f;
         AvatarMovement.VerticalTestingInput = 0f;
     }
@@ -117,8 +117,8 @@ public class ThreeDMapTests {
 
     [UnityTest]
     public IEnumerator Maps2DTo3DProperly() {
-        MapEditorTests.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        MapEditorTests.PaintAnAsset(new Vector2(100, 150), "House");
+        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Util.PaintAnAsset(new Vector2(100, 150), "House");
 
         GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
         GameObject houseParent = GameObject.Find("TempHouseObject Parent");

@@ -14,19 +14,17 @@ public class OtherToolsTests : MapEditorTests {
         Button panningToolButton = GameObject.Find("Panning Tool").GetComponent<Button>();
         panningToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
-        CheckAllOtherToolsAreUnselected("Panning Tool");
+        Util.CheckAllOtherToolsAreUnselected("Panning Tool");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
-
-    // TODO: tests for panning
 
     [Test]
     public void CanSwitchToZoomInTool() {
         Button zoomInButton = GameObject.Find("Zoom In").GetComponent<Button>();
         zoomInButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Zoom In"]);
-        CheckAllOtherToolsAreUnselected("Zoom In");
+        Util.CheckAllOtherToolsAreUnselected("Zoom In");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
@@ -38,7 +36,10 @@ public class OtherToolsTests : MapEditorTests {
         Zoom.IsTesting = true;
         GameObject.Find("Zoom In").GetComponent<Button>().onClick.Invoke();
         mapContainer.GetComponent<Zoom>().OnMouseDown();
-        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, originalScale.y + 0.5f, originalScale.z + 0.5f), mapContainer.transform.localScale);
+        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, 
+                                    originalScale.y + 0.5f, 
+                                    originalScale.z + 0.5f), 
+                        mapContainer.transform.localScale);
 
         // reset testing var
         Zoom.IsTesting = false;
@@ -49,7 +50,7 @@ public class OtherToolsTests : MapEditorTests {
         Button zoomOutButton = GameObject.Find("Zoom Out").GetComponent<Button>();
         zoomOutButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Zoom Out"]);
-        CheckAllOtherToolsAreUnselected("Zoom Out");
+        Util.CheckAllOtherToolsAreUnselected("Zoom Out");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
@@ -63,7 +64,10 @@ public class OtherToolsTests : MapEditorTests {
         // zoom in first
         GameObject.Find("Zoom In").GetComponent<Button>().onClick.Invoke();
         mapContainer.GetComponent<Zoom>().OnMouseDown();
-        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, originalScale.y + 0.5f, originalScale.z + 0.5f), mapContainer.transform.localScale);
+        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, 
+                                    originalScale.y + 0.5f, 
+                                    originalScale.z + 0.5f), 
+                        mapContainer.transform.localScale);
         
         // zoom out
         GameObject.Find("Zoom Out").GetComponent<Button>().onClick.Invoke();

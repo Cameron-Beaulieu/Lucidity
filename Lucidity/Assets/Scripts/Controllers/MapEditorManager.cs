@@ -101,6 +101,9 @@ public class MapEditorManager : MonoBehaviour {
         // TODO: Implement other actions here
     }
 
+    /// <summary>
+    /// Paints the asset at the given position.
+    /// </summary>
     public void PaintAtPosition(Vector2 worldPosition) {
         GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         if (activeImage == null) {
@@ -135,10 +138,9 @@ public class MapEditorManager : MonoBehaviour {
                                 90), // the world Z position of the UI
                     Quaternion.identity, newParent.transform);
                 newGameObject.transform.localScale = 
-                    new Vector3(newGameObject.transform.localScale.x
-                        + Zoom.zoomFactor, newGameObject.transform.localScale.y
-                        + Zoom.zoomFactor, newGameObject.transform.localScale.z
-                        + Zoom.zoomFactor);
+                    new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
+                                newGameObject.transform.localScale.y + Zoom.zoomFactor, 
+                                newGameObject.transform.localScale.z + Zoom.zoomFactor);
 
                 if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
                         .IsInvalidPlacement()) {
