@@ -15,7 +15,7 @@ public class Render3DScene : MonoBehaviour {
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
         _editor = GameObject.Find("MapEditorManager");
-                GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
 
         CreateMap();
         PlaceAssets();

@@ -42,7 +42,7 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Awake() {
-        if (StartupScreen.FilePath != null) {
+        if (StartupScreen.FilePath != null && !ReloadFlag) {
             // Static variables must be reset if a new map is loaded from another map
             Layers = new List<Dictionary<int, MapObject>>();
             MapObjects = new Dictionary<int, MapObject>();
@@ -77,7 +77,7 @@ public class MapEditorManager : MonoBehaviour {
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.AddListener(ConvertTo3D);
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
 
-        if(!ReloadFlag){
+        if(!ReloadFlag) {
         foreach (GameObject tool in selectableTools) {
             if (tool.name == "Brush Tool") {
                 Tool.ToolStatus.Add(tool.name, true);
@@ -94,8 +94,8 @@ public class MapEditorManager : MonoBehaviour {
         } 
     }
 
-    private void Start(){
-        if(!ReloadFlag){
+    private void Start() {
+        if(!ReloadFlag) {
             List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
         }
         else {
@@ -236,7 +236,6 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-
                             MapObjects[obj.GetInstanceID()].IsActive = false;
                             obj.SetActive(false);
                         }
@@ -291,6 +290,8 @@ public class MapEditorManager : MonoBehaviour {
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        Debug.Log(obj.GetInstanceID());
+                        Debug.Log(MapObjects[obj.GetInstanceID()].Name);
                         if (obj != null) {
                             MapObjects[obj.GetInstanceID()].IsActive = true;
                             obj.SetActive(true);
@@ -416,7 +417,8 @@ public class MapEditorManager : MonoBehaviour {
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
         Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
         MapContainer = GameObject.Find("Map Container");
-        foreach (KeyValuePair <int, MapObject> mapObject in MapEditorManager.MapObjects) {
+        foreach (KeyValuePair <int, MapObject> mapObject in MapObjects) {
+            Debug.Log(mapObject.Value.Id);
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
@@ -432,22 +434,28 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
+                Debug.Log(newGameObject.GetInstanceID());
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
-                                        newParent, newMapObjects);
+                                newParent, newMapObjects);
+                if(mapObject.Value.IsActive == false){
+                    newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
+                    newGameObject.SetActive(false);
+                }
         }
 
         // Swapping GameObject's in editor action linked list
-        LinkedListNode<EditorAction> pointer = Actions.First;
+        if(Actions != null){
+            LinkedListNode<EditorAction> pointer = Actions.First;
 
-        while (pointer != null){
-            if (pointer.Value.Type == EditorAction.ActionType.Paint) {
-                for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
-                    Debug.Log(pointer.Value.RelatedObjects[i].GetInstanceID());
-                    pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
-                }
+            while (pointer != null){
+                //if (pointer.Value.Type == EditorAction.ActionType.Paint) {
+                    for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
+                        pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
+                    }
+                //}
+                pointer = pointer.Next;
             }
-            pointer = pointer.Next;
         }
 
         // Resetting MapObjects Dictionary
