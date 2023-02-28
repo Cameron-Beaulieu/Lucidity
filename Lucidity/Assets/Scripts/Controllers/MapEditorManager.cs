@@ -199,12 +199,7 @@ public class MapEditorManager : MonoBehaviour {
                     int id = obj.GetInstanceID();
                     MapObjects.Remove(id);
                     // Remove the related object from whichever layer it was on
-                    foreach (Dictionary<int, MapObject> layer in Layers) {
-                        if (layer.ContainsKey(id)) {
-                            layer.Remove(id);
-                            break;
-                        }
-                    }
+                    Layers[LayerContainsMapObject(id)].Remove(id);
                     Destroy(obj);
                 }
             }
@@ -228,7 +223,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.Paint:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = true;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -236,8 +233,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-
-                            MapObjects[obj.GetInstanceID()].IsActive = false;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -356,6 +354,25 @@ public class MapEditorManager : MonoBehaviour {
             newGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
+
+    /// <summary>
+    /// Given the instance ID of a <c>MapObject</c>, returns the index corresponding to the layer
+    /// that the <c>MapObject</c> can be found.
+    /// </summary>
+    /// <param name="obj">
+    /// Instance ID of the desired <c>MapObject</c> to be located
+    /// </param>
+    /// <returns>
+    /// <c>int</c> corresponding to the layer index
+    /// </returns>
+    static public int LayerContainsMapObject(int objId) {
+        for (int i = 0; i < Layers.Count; i++) {
+            if (Layers[i].ContainsKey(objId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /// <summary>
     /// Loads a map that is stored as a MapData object.
