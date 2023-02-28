@@ -8,11 +8,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CreateNewMap : MonoBehaviour {
-    public enum SizeType {
-        Small,
-        Medium,
-        Large
-    }
     public static bool IsTesting = false;
     [SerializeField] private InputField _mapName;
     [SerializeField] private Dropdown _mapSizeDropdown;

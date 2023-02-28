@@ -23,7 +23,7 @@ public class MapCreationScreenTests {
     }
 
     [UnityTest]
-    public IEnumerator CancelRedirectsToStartupScreen() {
+    public IEnumerator CancelButtonRedirectsToStartupScreen() {
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
         Button button = GameObject.Find("Cancel Button").GetComponent<Button>();
         button.onClick.Invoke();

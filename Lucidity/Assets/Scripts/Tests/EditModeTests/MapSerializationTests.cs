@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 public class MapSerializationTests {
 
-    private MapData _mockMapData = new MapData(0, new Biome(0), 
+    private MapData _mockMapData = new MapData(new Biome(0), 
                                                new Dictionary<int, MapObject> {
                                                     {0, new MapObject(0, "Tree", 0, 
                                                                       new Vector2(0, 0), 
@@ -16,7 +16,7 @@ public class MapSerializationTests {
                                                                       new Vector3(1, 1, 1), 
                                                                       Quaternion.identity, true)}},
                                                 new Vector2(0, 0));
-    private string _mockSerializedData = "{\"MapSize\":0,\"Biome\":{\"_name\":0,\"_groundColour\":\"5d875c\"},"
+    private string _mockSerializedData = "{\"Biome\":{\"_name\":0,\"_groundColour\":\"5d875c\"},"
         + "\"MapObjects\":[{\"Id\":0,\"Name\":\"Tree\",\"PrefabIndex\":0,\"MapPosition\":"
             + "{\"x\":0.0,\"y\":0.0},\"MapOffset\":{\"x\":100.0,\"y\":100.0},\"Scale\":{\"x\":1.0,"
                 + "\"y\":1.0,\"z\":1.0},\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},"
