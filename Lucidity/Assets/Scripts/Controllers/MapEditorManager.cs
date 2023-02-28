@@ -44,6 +44,7 @@ public class MapEditorManager : MonoBehaviour {
     private void Awake() {
         if (StartupScreen.FilePath != null) {
             // Static variables must be reset if a new map is loaded from another map
+            Layers = new List<Dictionary<int, MapObject>>();
             MapObjects = new Dictionary<int, MapObject>();
             Actions = null;
             ToolToCursorMap = new Dictionary<string, Texture2D>();
@@ -148,7 +149,7 @@ public class MapEditorManager : MonoBehaviour {
                             .IsInvalidPlacement()) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                        newParent);
+                                        newParent, MapObjects);
                     } else {
                         Destroy(newParent);
                     }
@@ -204,7 +205,7 @@ public class MapEditorManager : MonoBehaviour {
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
                 foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
                     MapObjects.Remove(obj.GetInstanceID());
-                    Destroy(obj);
+                    Destroy(obj.transform.parent);
                 }
             }
             actionToDelete = actionToDelete.Next;
@@ -341,7 +342,8 @@ public class MapEditorManager : MonoBehaviour {
     /// The parent container storing the new <c>GameObject</c>
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
-                                GameObject parentGameObject) {
+                                GameObject parentGameObject, 
+                                Dictionary<int, MapObject> mapObjectDictionary) {
         MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
             _currentButtonPressed,
             new Vector2(newGameObject.transform.localPosition.x, 
@@ -352,7 +354,7 @@ public class MapEditorManager : MonoBehaviour {
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
             newGameObject.transform.rotation, true);
-        MapObjects.Add(newMapObject.Id, newMapObject);
+        mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
 
     /// <summary>
@@ -406,15 +408,15 @@ public class MapEditorManager : MonoBehaviour {
         }
         CurrentLayer = Layers.Count - 1;
 
-        Debug.Log(CurrentLayer);
         
         // TO-DO: once building with layers is done, will need to nest Reloading MapObjects
         // within Reloading Layers to rebuild each layer.
 
         // Reloading MapObjects
+        Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
+        Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
         MapContainer = GameObject.Find("Map Container");
         foreach (KeyValuePair <int, MapObject> mapObject in MapEditorManager.MapObjects) {
-            if(mapObject.Value.IsActive){
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
@@ -429,8 +431,29 @@ public class MapEditorManager : MonoBehaviour {
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                                newGameObject.transform.localScale.z + Zoom.zoomFactor);        
-            }
+                                newGameObject.transform.localScale.z + Zoom.zoomFactor);
+                Debug.Log(newGameObject.GetInstanceID());
+                mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
+                AddNewMapObject(newGameObject, mapObject.Value.Name, 
+                                        newParent, newMapObjects);
         }
+
+        // Swapping GameObject's in editor action linked list
+        LinkedListNode<EditorAction> pointer = Actions.First;
+
+        while (pointer != null){
+            if (pointer.Value.Type == EditorAction.ActionType.Paint) {
+                Debug.Log(pointer.Value.RelatedObjects.Count);
+                Debug.Log(MapObjects.Count);
+                for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
+                    Debug.Log(pointer.Value.RelatedObjects[i].GetInstanceID());
+                    pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
+                }
+            }
+            pointer = pointer.Next;
+        }
+
+        // Resetting MapObjects Dictionary
+        MapObjects = new Dictionary<int, MapObject>(newMapObjects);
     }
 }
