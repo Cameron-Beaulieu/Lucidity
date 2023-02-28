@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 [TestFixture]
 public class LayerTests : MapEditorTests {
+
     [Test]
     public void EmptyMapHasOneLayer() {
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
@@ -18,14 +19,19 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void CanCollapseAndExpandLayersMenu() {
+        // check already expanded
         GameObject menuBody = GameObject.Find("Layers Body");
         Assert.IsTrue(menuBody.activeSelf);
         Assert.IsNotNull(GameObject.Find("Layer Tool")); // layer tool exists only on expanded menu
+        
+        // collapse the menu
         Button collapseButton = GameObject.Find("Layers Header (Expanded)").GetComponent<Button>();
         collapseButton.onClick.Invoke();
         Assert.IsFalse(menuBody.activeSelf);
         Assert.IsFalse(collapseButton.gameObject.activeSelf);
         Assert.IsNull(GameObject.Find("Layer Tool"));
+        
+        // expand it again
         Button expandButton = GameObject.Find("Layers Header (Collapsed)").GetComponent<Button>();
         expandButton.onClick.Invoke();
         Assert.IsTrue(menuBody.activeSelf);
@@ -41,7 +47,6 @@ public class LayerTests : MapEditorTests {
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
         Assert.AreEqual(1, MapEditorManager.Layers.Count);
         Assert.AreEqual(layerScrollContent.transform.childCount, 1);
-
         Assert.AreEqual(0, editor.CurrentLayer);
         Assert.IsTrue(Layer.LayerStatus[baseLayer.name]);
 
@@ -58,7 +63,7 @@ public class LayerTests : MapEditorTests {
     }
 
     [Test]
-    public void EditButtonChangesReadOnlyStatus() {
+    public void EditButtonChangesReadOnlyStatusOfLayerLabel() {
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
@@ -70,6 +75,7 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void CanRenameLayers() {
+        // get the default name
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
@@ -106,9 +112,10 @@ public class LayerTests : MapEditorTests {
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
         string longName = "This is a very long layer name that should be truncated";
+        // setting .text through code alone doesn't change the rect transform's width, so we have 
+        // to set the sizeDelta manually
         layerNameInput.GetComponent<RectTransform>().sizeDelta = new Vector2(165, 0);
         layerNameInput.onSubmit.Invoke(longName);
-
         Assert.AreEqual(longName, layerNameInput.GetComponent<LayerName>().CurrentText);
         Assert.AreEqual(longName.Substring(0,10) + "...", layerNameInput.text);
     }

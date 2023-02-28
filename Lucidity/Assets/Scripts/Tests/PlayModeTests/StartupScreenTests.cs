@@ -29,4 +29,17 @@ public class StartupScreenTests {
         yield return null;
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
     }
+
+    [UnityTest]
+    public IEnumerator RedirectsToMapEditor() {
+        StartupScreen.IsTesting = true;
+        Assert.AreEqual("Startup", SceneManager.GetActiveScene().name);
+        Button button = GameObject.Find("Load Existing Map Button").GetComponent<Button>();
+        button.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name); 
+
+        // reset testing var
+        StartupScreen.IsTesting = false;
+    }
 }

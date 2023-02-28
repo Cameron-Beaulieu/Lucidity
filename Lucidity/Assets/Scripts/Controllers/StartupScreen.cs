@@ -10,6 +10,7 @@ public class StartupScreen : MonoBehaviour {
     [SerializeField] private Button loadMapButton;
     [SerializeField] private Button newMapButton;
     public static string FilePath;
+    public static bool IsTesting = false;
 
     private void Start() {
         newMapButton.onClick.AddListener(NewMapClickHandler);
@@ -20,21 +21,23 @@ public class StartupScreen : MonoBehaviour {
     /// Button handler for <c>loadMapButton</c>, selected through in the Unity editor.
     /// </summary>
     public static void LoadMapClickHandler() {
-        string path = EditorUtility.OpenFilePanel("Select File", "", "json");
-        // cancelled selecting a path
-        if (path.Equals("")) { return; }
+        if (!IsTesting) {
+            string path = EditorUtility.OpenFilePanel("Select File", "", "json");
+            // cancelled selecting a path
+            if (path.Equals("")) { return; }
 
-        // Guarantee the file is JSON
-        while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
-            bool tryAgain = EditorUtility.DisplayDialog(
-                "Invalid file selection", "You can only load a map as a JSON file.", "Try again",
-                "Cancel");
-            if (!tryAgain) {return;}
+            // Guarantee the file is JSON
+            while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
+                bool tryAgain = EditorUtility.DisplayDialog(
+                    "Invalid file selection", "You can only load a map as a JSON file.", "Try again",
+                    "Cancel");
+                if (!tryAgain) {return;}
 
-            path = EditorUtility.OpenFilePanel("Select File", "", "json");
+                path = EditorUtility.OpenFilePanel("Select File", "", "json");
+            }
+            
+            FilePath = path;
         }
-        
-        FilePath = path;
 
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
     }

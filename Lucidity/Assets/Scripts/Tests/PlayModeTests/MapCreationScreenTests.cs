@@ -42,12 +42,14 @@ public class MapCreationScreenTests {
 
     [UnityTest]
     public IEnumerator RedirectsToMapEditorWithSpecifiedMapDetails() {
+        // "create" a map
         CreateNewMap.IsTesting = true;
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
         nameInputField.text = "TestMap";
-        Button button = GameObject.Find("Create Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        GameObject.Find("Create Button").GetComponent<Button>().onClick.Invoke();
+
+        // check that the map editor has the correct details
         Assert.AreEqual(Biome.BiomeType.Forest, CreateNewMap.ChosenBiome.Name);
         yield return null;
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);

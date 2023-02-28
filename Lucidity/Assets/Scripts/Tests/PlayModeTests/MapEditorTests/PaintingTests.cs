@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -47,13 +47,18 @@ public class PaintingTests : MapEditorTests {
 
     [Test]
     public void CanCollapseAndExpandPaintingMenu() {
+        // should be expanded by default
         GameObject menuBody = GameObject.Find("Painting Body");
         Assert.IsTrue(menuBody.activeSelf);
+
+        // collapse the menu
         Button collapseButton = GameObject.Find("Painting Header (Expanded)")
             .GetComponent<Button>();
         collapseButton.onClick.Invoke();
         Assert.IsFalse(menuBody.activeSelf);
         Assert.IsFalse(collapseButton.gameObject.activeSelf);
+
+        // expand it again
         Button expandButton = GameObject.Find("Painting Header (Collapsed)")
             .GetComponent<Button>();
         expandButton.onClick.Invoke();
@@ -63,30 +68,36 @@ public class PaintingTests : MapEditorTests {
 
     [Test]
     public void CanPlaceAssets() {
-    Assert.Zero(MapEditorManager.MapObjects.Count);
-    Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-    Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-    fortressButton.onClick.Invoke();
-    Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+        // make sure map is empty and brush tool is selected
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
 
-    Vector2 positionToPlace = new Vector2(-100, 150);
-    MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
-        .GetComponent<MapEditorManager>();
-    mapEditorManager.PaintAtPosition(positionToPlace);
+        // paint the asset
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace = new Vector2(-100, 150);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
 
-    GameObject placedParent = GameObject.Find("TempFortressObject Parent");
-    Assert.IsNotNull(placedParent);
-    Assert.AreEqual(1, placedParent.transform.childCount);
-    Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-    Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, 0.005f);
-    Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, 0.005f);
-    Assert.Zero(placedParent.transform.localPosition.z);
+        // check that the asset was placed correctly
+        GameObject placedParent = GameObject.Find("TempFortressObject Parent");
+        Assert.IsNotNull(placedParent);
+        Assert.AreEqual(1, placedParent.transform.childCount);
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, Util.FloatTolerance);
+        Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, Util.FloatTolerance);
+        Assert.Zero(placedParent.transform.localPosition.z);
     }
 
     [Test]
     public void CanPlaceGroupsOfAssets() {
+        // make sure map is empty and brush tool is selected
         Assert.Zero(MapEditorManager.MapObjects.Count);
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+
+        // paint the asset group
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
         countInput.text = "2";
@@ -94,15 +105,14 @@ public class PaintingTests : MapEditorTests {
         Assert.AreEqual(2, AssetOptions.AssetCount);
         fortressButton.onClick.Invoke();
         Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
-
         Vector2 positionToPlace = new Vector2(-100, 150);
         MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         mapEditorManager.PaintAtPosition(positionToPlace);
 
+        // check that the asset group was placed correctly
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
         List<int> keys = new List<int>(MapEditorManager.MapObjects.Keys);
-
         // the two MapObjects should be placed at the same y position, but different x positions 
         // because they are side by side
         Assert.AreNotEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.x, 
@@ -113,28 +123,34 @@ public class PaintingTests : MapEditorTests {
 
     [Test]
     public void CannotPlaceAssetOnTopOfSpawnPoint() {
+        // make sure map is empty, brush tool is selected, and spawn point position is (0,0)
         Assert.Zero(MapEditorManager.MapObjects.Count);
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Assert.AreEqual(new Vector2(0,0), MapEditorManager.SpawnPoint);
+
+        // try to place it on the spawn point
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         fortressButton.onClick.Invoke();
         Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
-
         Vector2 positionToPlace = new Vector2(0,0);
         MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         mapEditorManager.PaintAtPosition(positionToPlace);
 
+        // check that the asset was not placed
         Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
     }
 
     [Test]
     public void CannotPlaceAssetOnTopOfAnotherAsset() {
+        // make sure map is empty and brush tool is selected
         Assert.Zero(MapEditorManager.MapObjects.Count);
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+
+        // place the first asset
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         fortressButton.onClick.Invoke();
         Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
-
         Vector2 positionToPlace = new Vector2(-100, 150);
         MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();

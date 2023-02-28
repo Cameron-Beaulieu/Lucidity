@@ -1,13 +1,12 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 [TestFixture] 
-[Category("Map Editor Tests")]
 public class ActionsHistoryTests : MapEditorTests {
 
     [Test]

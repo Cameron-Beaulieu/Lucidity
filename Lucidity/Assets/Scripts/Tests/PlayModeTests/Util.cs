@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Util : MonoBehaviour {
+
+    public static float FloatTolerance = 0.005f; // used for comparing floats 
     
     /// <summary>
     /// Checks that all tools are unselected except the one specified.

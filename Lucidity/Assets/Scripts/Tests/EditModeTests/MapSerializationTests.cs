@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.TestTools;
 
+[TestFixture]
 public class MapSerializationTests {
 
     private MapData _mockMapData = new MapData(new Biome(0), 
