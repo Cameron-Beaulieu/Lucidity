@@ -282,7 +282,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.Paint:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = false;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -290,7 +292,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = true;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -365,7 +369,7 @@ public class MapEditorManager : MonoBehaviour {
     /// <returns>
     /// <c>int</c> corresponding to the layer index
     /// </returns>
-    static public int LayerContainsMapObject(int objId) {
+    public static int LayerContainsMapObject(int objId) {
         for (int i = 0; i < Layers.Count; i++) {
             if (Layers[i].ContainsKey(objId)) {
                 return i;
