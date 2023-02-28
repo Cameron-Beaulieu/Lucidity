@@ -15,16 +15,12 @@ public class AssetCollision : MonoBehaviour {
 	private bool _detectionStarted = true;
 	
 	private Vector3 _originalScale;
-	private Vector3 _revertScale;
 	private Quaternion _originalRotation;
-	private Quaternion _revertRotation;
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
 		_originalScale = transform.localScale;
-		_revertScale = _originalScale;
 		_originalRotation = transform.rotation;
-		_revertRotation = _originalRotation;
 		CheckAssetOnUI();
 		CheckAssetCollisions();
 	}
@@ -32,11 +28,9 @@ public class AssetCollision : MonoBehaviour {
     private void Update() {
 		if (transform.localScale != _originalScale) {
 			CheckAssetCollisions();
-			_originalScale = transform.localScale;
 		}
 		if (transform.rotation != _originalRotation) {
 			CheckAssetCollisions();
-			_originalRotation = transform.rotation;
 		}
 	}
 
@@ -115,12 +109,12 @@ public class AssetCollision : MonoBehaviour {
 			collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
 		}
 		if (collisionObject == gameObject) {
-			if (collisionObject.transform.localScale != _revertScale) {
-				collisionObject.transform.localScale = _revertScale;
-				collisionObject.transform.rotation = _revertRotation;
+			if (collisionObject.transform.localScale != _originalScale) {
+				collisionObject.transform.localScale = _originalScale;
+				collisionObject.transform.rotation = _originalRotation;
 				collisionObject.tag = "Untagged";
-			} else if (collisionObject.transform.rotation != _revertRotation) {
-				collisionObject.transform.rotation = _revertRotation;
+			} else if (collisionObject.transform.rotation != _originalRotation) {
+				collisionObject.transform.rotation = _originalRotation;
 				collisionObject.tag = "Untagged";
 			}
 			else {
