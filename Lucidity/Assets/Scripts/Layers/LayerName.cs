@@ -7,7 +7,7 @@ using TMPro;
 
 public class LayerName : MonoBehaviour{
     private TMP_InputField _layerText;
-    private string _currentText;
+    public string CurrentText;
 
     private void Start() {
        _layerText = gameObject.GetComponent<TMP_InputField>();
@@ -23,7 +23,7 @@ public class LayerName : MonoBehaviour{
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     public void UpdateCurrentText(string newName){
-        _currentText = _layerText.text;
+        CurrentText = newName;
     }
 
     /// <summary>
@@ -33,12 +33,14 @@ public class LayerName : MonoBehaviour{
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     public void HandleSubmission(string newName){
+        _layerText.text = newName;
         if(String.IsNullOrWhiteSpace(newName)){
-            _layerText.text = _currentText;
-        }
-        if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
-            _currentText = _layerText.text;
-            _layerText.text = _currentText.Substring(0,10) + "...";
+            _layerText.text = CurrentText;
+        } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
+            CurrentText = newName;
+            _layerText.text = CurrentText.Substring(0,10) + "...";
+        } else {
+            CurrentText = newName;
         }
         _layerText.readOnly = true;
     }
