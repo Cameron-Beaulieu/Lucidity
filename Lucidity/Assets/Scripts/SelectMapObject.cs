@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -45,6 +45,17 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 			_outline.OutlineMode = Outline.Mode.OutlineAll;
 			_outline.OutlineColor = Color.red;
 			_outline.OutlineWidth = 2f;
+		}
+	}
+
+	public static void DeselectObject() {
+		if (SelectedObject != null) {
+			SelectedObject = null;
+			if (_outline != null) {
+				Destroy(_outline);
+			}
+			Tool.SelectionOptions.SetActive(false);
+			Tool.SpawnPointOptions.SetActive(false);
 		}
 	}
 

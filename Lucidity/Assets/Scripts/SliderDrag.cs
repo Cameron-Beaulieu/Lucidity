@@ -12,23 +12,18 @@ public class SliderDrag : MonoBehaviour, IPointerUpHandler
     public event EndSliderDragEventHandler EndDrag;
     private MapEditorManager _editor;
 
-    private void Start()
-    {
+    private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager").GetComponent<MapEditorManager>();
     }
 
-    private float SliderValue
-    {
-        get
-        {
+    private float SliderValue {
+        get {
             return gameObject.GetComponent<Slider>().value;
         }
     }
 
-    public void OnPointerUp(PointerEventData data)
-    {
-        if (EndDrag != null)
-        {
+    public void OnPointerUp(PointerEventData data) {
+        if (EndDrag != null) {
             EndDrag(SliderValue);
         }
         // for SelectMapObject objects

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AssetController : MonoBehaviour
-{
+public class AssetController : MonoBehaviour {
 	public int Id;
 	public bool Clicked;
 	private MapEditorManager _editor;
@@ -12,8 +11,7 @@ public class AssetController : MonoBehaviour
 	private static GameObject _prevParentContainer;
 	[SerializeField] private Slider _paintObjectScaleSlider;
 
-	void Start()
-	{
+	void Start() {
 		_editor = GameObject.FindGameObjectWithTag("MapEditorManager")
 			.GetComponent<MapEditorManager>();
 		_assetButton = gameObject.GetComponent<Button>();
@@ -25,14 +23,12 @@ public class AssetController : MonoBehaviour
 	/// <summary>
 	/// Button handler for <c>_assetButton</c>.
 	/// </summary>
-	public void SelectAssetClickHandler()
-	{
+	public void SelectAssetClickHandler() {
 		Clicked = true;
 		MapEditorManager.CurrentButtonPressed = Id;
 		GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
 		// if there is an Image being shown on hover already, destroy it
-		if (activeImage != null)
-		{
+		if (activeImage != null) {
 			Destroy(activeImage);
 		}
 		// Creates image that will follow mouse
@@ -49,8 +45,7 @@ public class AssetController : MonoBehaviour
 		GameObject parentContainer = GameObject.Find(
 			_editor.AssetPrefabs[Id].transform.parent.name);
 		// Un-highlight previously selected asset in "Sprites" pane
-		if (_prevParentContainer != null)
-		{
+		if (_prevParentContainer != null) {
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
 		}
 		// Highlight asset in "Sprites" pane
@@ -73,11 +68,9 @@ public class AssetController : MonoBehaviour
 	/// <summary>
 	/// Unselects the selected button.
 	/// </summary>
-	public void UnselectButton()
-	{
+	public void UnselectButton() {
 		Clicked = false;
-		if (_prevParentContainer != null)
-		{
+		if (_prevParentContainer != null) {
 			_prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
 		}
 	}
