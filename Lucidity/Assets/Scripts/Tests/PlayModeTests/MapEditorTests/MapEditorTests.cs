@@ -51,7 +51,7 @@ public abstract class MapEditorTests {
     /// Resets all static variables in MapEditorManager and Tool. This is necessary to avoid 
     /// interference between tests.
     /// </summary>
-    protected void ResetStaticVariables() {
+    public static void ResetStaticVariables() {
         MapEditorManager.MapObjects = new Dictionary<int, MapObject>();
         MapEditorManager.Layers = new List<Dictionary<int, MapObject>>();
         MapEditorManager.BaseLayer = new Dictionary<int, MapObject>();
@@ -73,7 +73,7 @@ public abstract class MapEditorTests {
     /// <summary>
     /// Paints an asset for testing (for tests where painting is not the thing being tested).
     /// </summary>
-    protected void PaintAnAsset(Vector2 positionToPlace, string assetName) {
+    public static void PaintAnAsset(Vector2 positionToPlace, string assetName) {
         if (!Tool.ToolStatus["Brush Tool"]) {
             GameObject.Find("Brush Tool").GetComponent<Button>().onClick.Invoke();
         }
