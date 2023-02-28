@@ -53,6 +53,8 @@ public abstract class MapEditorTests {
     /// </summary>
     protected void ResetStaticVariables() {
         MapEditorManager.MapObjects = new Dictionary<int, MapObject>();
+        MapEditorManager.Layers = new List<Dictionary<int, MapObject>>();
+        MapEditorManager.BaseLayer = new Dictionary<int, MapObject>();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
         MapEditorManager.ToolToCursorMap = new Dictionary<string, Texture2D>();
@@ -63,5 +65,20 @@ public abstract class MapEditorTests {
         Tool.ToolKeys = new List<string>();
         Tool.ToolStatus = new Dictionary<string, bool>();
         Mouse.LastMousePosition = Vector2.zero;
+        Layer.LayerStatus = new Dictionary<string, bool>();
+        Layer.LayerIndex = new Dictionary<string, int>();
+        Layer.LayerNames = new List<string>();
+    }
+
+    /// <summary>
+    /// Paints an asset for testing (for tests where painting is not the thing being tested).
+    /// </summary>
+    protected void PaintAnAsset(Vector2 positionToPlace, string assetName) {
+        if (!Tool.ToolStatus["Brush Tool"]) {
+            GameObject.Find("Brush Tool").GetComponent<Button>().onClick.Invoke();
+        }
+        GameObject.Find(assetName + "Button").GetComponent<Button>().onClick.Invoke();
+        GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>()
+            .PaintAtPosition(positionToPlace);
     }
 }

@@ -7,6 +7,29 @@ using UnityEngine.UI;
 
 [TestFixture]
 public class PaintingTests : MapEditorTests {
+
+    [Test]
+    public void DefaultsToBrushTool() {
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        CheckAllOtherToolsAreUnselected("Brush Tool");
+        Assert.IsTrue(Tool.PaintingMenu.activeSelf);
+    }
+
+    [Test]
+    public void CanSwitchToBrushTool() {
+        // switch to another tool first since brush tool is default
+        Button selectionToolButton = GameObject.Find("Selection Tool").GetComponent<Button>();
+        selectionToolButton.onClick.Invoke();
+        Assert.IsFalse(Tool.ToolStatus["Brush Tool"]);
+
+        Button brushToolButton = GameObject.Find("Brush Tool").GetComponent<Button>();
+        brushToolButton.onClick.Invoke();
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        CheckAllOtherToolsAreUnselected("Brush Tool");
+        Assert.IsFalse(Tool.SelectionMenu.activeSelf);
+        Assert.IsTrue(Tool.PaintingMenu.activeSelf);
+    }
+
     [Test]
     public void CanSwitchBetweenPaintButtons() {
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
