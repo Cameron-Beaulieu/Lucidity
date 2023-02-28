@@ -138,7 +138,10 @@ public class MapEditorManager : MonoBehaviour {
                             .IsInvalidPlacement()) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                        newParent);
+                                        newParent, MapObjects);
+                        // Add the new object onto its corresponding layer
+                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
+                                        newParent, Layers[CurrentLayer]);
                     } else {
                         Destroy(newParent);
                     }
@@ -193,7 +196,15 @@ public class MapEditorManager : MonoBehaviour {
         while (actionToDelete != null) {
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
                 foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
-                    MapObjects.Remove(obj.GetInstanceID());
+                    int id = obj.GetInstanceID();
+                    MapObjects.Remove(id);
+                    // Remove the related object from whichever layer it was on
+                    foreach (Dictionary<int, MapObject> layer in Layers) {
+                        if (layer.ContainsKey(id)) {
+                            layer.Remove(id);
+                            break;
+                        }
+                    }
                     Destroy(obj);
                 }
             }
@@ -331,7 +342,8 @@ public class MapEditorManager : MonoBehaviour {
     /// The parent container storing the new <c>GameObject</c>
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
-                                GameObject parentGameObject) {
+                                GameObject parentGameObject,
+                                Dictionary<int, MapObject> mapObjectDictionary) {
         MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
             _currentButtonPressed,
             new Vector2(newGameObject.transform.localPosition.x, 
@@ -342,7 +354,7 @@ public class MapEditorManager : MonoBehaviour {
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
             newGameObject.transform.rotation, true);
-        MapObjects.Add(newMapObject.Id, newMapObject);
+        mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
 
     /// <summary>

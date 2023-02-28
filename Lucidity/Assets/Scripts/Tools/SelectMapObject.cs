@@ -18,8 +18,16 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 Tool.SpawnPointOptions.SetActive(true);
                 Tool.SelectionOptions.SetActive(false);
             } else {
-                Tool.SpawnPointOptions.SetActive(false);
-                Tool.SelectionOptions.SetActive(true);
+                MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+                    .GetComponent<MapEditorManager>();
+                int id = SelectedObject.GetInstanceID();
+                // Verify that the selected object is on the currently selected layer
+                if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)) {
+                    Tool.SpawnPointOptions.SetActive(false);
+                    Tool.SelectionOptions.SetActive(true);
+                } else {
+                    return;
+                }
             }
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
                 = "Editing " + SelectedObject.name;
