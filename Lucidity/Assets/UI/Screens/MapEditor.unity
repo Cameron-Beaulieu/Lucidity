@@ -2443,8 +2443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae7c926ab4194342bcafc0f2244576e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scaleSliderValue: {fileID: 0}
-  _sliderText: {fileID: 0}
+  _scaleSliderValue: {fileID: 1237108172}
+  _sliderText: {fileID: 58692661}
 --- !u!33 &218240325
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -10006,7 +10006,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
-  _scaleSizeSlider: {fileID: 1237108172}
 --- !u!114 &1053491540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10019,8 +10018,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cae7c926ab4194342bcafc0f2244576e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scaleSliderValue: {fileID: 0}
-  _sliderText: {fileID: 0}
+  _scaleSliderValue: {fileID: 1237108172}
+  _sliderText: {fileID: 58692661}
 --- !u!1 &1064300308
 GameObject:
   m_ObjectHideFlags: 0
@@ -21211,6 +21210,14 @@ PrefabInstance:
       propertyPath: _scaleSizeSlider
       value: 
       objectReference: {fileID: 1237108172}
+    - target: {fileID: 6083772758324415768, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
+      propertyPath: _sliderText
+      value: 
+      objectReference: {fileID: 58692661}
+    - target: {fileID: 6083772758324415768, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
+      propertyPath: _scaleSliderValue
+      value: 
+      objectReference: {fileID: 1237108172}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41c5589ba0af1c242aeeea3ece3b28c8, type: 3}
 --- !u!1001 &4242923788515728599
@@ -21326,6 +21333,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1774080566}
     m_Modifications:
+    - target: {fileID: -3845392177966226112, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
+      propertyPath: _sliderText
+      value: 
+      objectReference: {fileID: 58692661}
+    - target: {fileID: -3845392177966226112, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
+      propertyPath: _scaleSliderValue
+      value: 
+      objectReference: {fileID: 1237108172}
     - target: {fileID: 5470440310217384789, guid: 1baf713ce9a4b4c4399e0a2032dee3de, type: 3}
       propertyPath: _scaleSizeSlider
       value: 
@@ -21435,6 +21450,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1823208463}
     m_Modifications:
+    - target: {fileID: 696143337474421554, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
+      propertyPath: _sliderText
+      value: 
+      objectReference: {fileID: 58692661}
+    - target: {fileID: 696143337474421554, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
+      propertyPath: _scaleSliderValue
+      value: 
+      objectReference: {fileID: 1237108172}
     - target: {fileID: 6237695284832058577, guid: 29f38c9e2c279194e8e80eb10c7342ee, type: 3}
       propertyPath: m_Name
       value: TempMountainObject

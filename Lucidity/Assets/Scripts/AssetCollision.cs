@@ -17,12 +17,14 @@ public class AssetCollision : MonoBehaviour {
 	private Vector3 _originalScale;
 	private Vector3 _revertScale;
 	private Quaternion _originalRotation;
+	private Quaternion _revertRotation;
 
 	void Start() {
 		_filterMask = LayerMask.GetMask("Asset");
 		_originalScale = transform.localScale;
 		_revertScale = _originalScale;
 		_originalRotation = transform.rotation;
+		_revertRotation = _originalRotation;
 		CheckAssetOnUI();
 		CheckAssetCollisions();
 	}
@@ -55,7 +57,7 @@ public class AssetCollision : MonoBehaviour {
 	/// </summary>
 	void CheckAssetCollisions() {
 		Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
-													 transform.localScale / 2, Quaternion.identity,
+													 transform.localScale / 2, transform.rotation,
 													 _filterMask);
 		int collisions = hitColliders.Length;
 		foreach (Collider collisionObject in hitColliders) {
@@ -115,6 +117,10 @@ public class AssetCollision : MonoBehaviour {
 		if (collisionObject == gameObject) {
 			if (collisionObject.transform.localScale != _revertScale) {
 				collisionObject.transform.localScale = _revertScale;
+				collisionObject.transform.rotation = _revertRotation;
+				collisionObject.tag = "Untagged";
+			} else if (collisionObject.transform.rotation != _revertRotation) {
+				collisionObject.transform.rotation = _revertRotation;
 				collisionObject.tag = "Untagged";
 			}
 			else {
