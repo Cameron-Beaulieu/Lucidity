@@ -432,7 +432,6 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
-                Debug.Log(newGameObject.GetInstanceID());
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                         newParent, newMapObjects);
@@ -443,8 +442,6 @@ public class MapEditorManager : MonoBehaviour {
 
         while (pointer != null){
             if (pointer.Value.Type == EditorAction.ActionType.Paint) {
-                Debug.Log(pointer.Value.RelatedObjects.Count);
-                Debug.Log(MapObjects.Count);
                 for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
                     Debug.Log(pointer.Value.RelatedObjects[i].GetInstanceID());
                     pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
