@@ -44,16 +44,7 @@ public class MapEditorManager : MonoBehaviour {
     private void Awake() {
         if (StartupScreen.FilePath != null) {
             // Static variables must be reset if a new map is loaded from another map
-            MapObjects = new Dictionary<int, MapObject>();
-            Actions = null;
-            ToolToCursorMap = new Dictionary<string, Texture2D>();
-            _currentAction = null;
-            Map = null;
-            MapContainer = null;
-            _currentButtonPressed = 0;
-            _lastEncounteredObject = null;
-            Tool.ToolKeys = new List<string>();
-            Tool.ToolStatus = new Dictionary<string, bool>();
+            Util.ResetStaticVariables();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
@@ -96,91 +87,96 @@ public class MapEditorManager : MonoBehaviour {
         Vector2 worldPosition = Mouse.GetMousePosition();
         if (Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
             && Tool.ToolStatus["Brush Tool"]) {
-            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
-            if (activeImage == null) {
-                AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
-                activeImage = GameObject.FindGameObjectWithTag("AssetImage");
-            }
-            float assetWidth = activeImage.transform.localScale.x;
-            float assetHeight = activeImage.transform.localScale.y;
-            // Check if mouse position relative to its last position and the previously encountered
-            // asset would allow for a legal placement. Reduces unnecessary computing
-            if (Mouse.LastMousePosition != worldPosition
-                    && (LastEncounteredObject == null
-                        || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
-                            >= assetWidth
-                        || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
-                            >= assetHeight)) {
-                List<GameObject> newMapObjects = new List<GameObject>();
-
-                for (int i = 0; i < AssetOptions.AssetCount; i++) {
-                    GameObject newParent = new GameObject();
-                    newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-                    newParent.transform.SetParent(MapContainer.transform, true);
-                    newParent.transform.position = new Vector3(worldPosition.x + i*2, 
-                                                                worldPosition.y, 0);
-                    newParent.transform.localPosition = new Vector3(
-                        newParent.transform.localPosition.x,
-                        newParent.transform.localPosition.y, 0);
-
-                    GameObject newGameObject = (GameObject) Instantiate(
-                        AssetPrefabs[_currentButtonPressed],
-                        new Vector3(worldPosition.x + i*2, worldPosition.y, 
-                                    90), // the world Z position of the UI
-                        Quaternion.identity, newParent.transform);
-                    newGameObject.transform.localScale = 
-                        new Vector3(newGameObject.transform.localScale.x
-                            + Zoom.zoomFactor, newGameObject.transform.localScale.y
-                            + Zoom.zoomFactor, newGameObject.transform.localScale.z
-                            + Zoom.zoomFactor);
-
-                    if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-                            .IsInvalidPlacement()) {
-                        newMapObjects.Add(newGameObject);
-                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                        newParent, MapObjects);
-                        // Add the new object onto its corresponding layer
-                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
-                                        newParent, Layers[CurrentLayer]);
-                    } else {
-                        Destroy(newParent);
-                    }
-                }
-                if (newMapObjects.Count == 0) {
-                    // Don't add action to history if there are no objects attached to it
-                } else if (Actions == null) {
-                    Actions = new LinkedList<EditorAction>();
-                    Actions.AddFirst(new PaintAction(newMapObjects));
-                    _currentAction = Actions.First;
-                } else {
-                    if (_currentAction != null && _currentAction.Next != null) {
-                        // These actions can no longer be redone
-                        PermanentlyDeleteActions(_currentAction.Next);
-                        LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
-                        while (actionToRemove != null) {
-                            Actions.Remove(actionToRemove);
-                            actionToRemove = actionToRemove.Next;
-                        }
-                        Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
-                        _currentAction = _currentAction.Next;
-                    } else if (_currentAction != null) {
-                        Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
-                        _currentAction = _currentAction.Next;
-                    } else if (_currentAction == null && Actions != null) {
-                        // There is only one action and it has been undone
-                        PermanentlyDeleteActions(Actions.First);
-                        Actions.Clear();
-                        Actions.AddFirst(new PaintAction(newMapObjects));
-                        _currentAction = Actions.First;
-                    }
-                }
-                if (newMapObjects.Count > 0) {
-                    _lastEncounteredObject = newMapObjects[0];
-                }
-            }
-            Mouse.LastMousePosition = worldPosition;
+            PaintAtPosition(worldPosition);
         }
         // TODO: Implement other actions here
+    }
+
+    /// <summary>
+    /// Paints the asset at the given position.
+    /// </summary>
+    public void PaintAtPosition(Vector2 worldPosition) {
+        GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+        if (activeImage == null) {
+            AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
+            activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+        }
+        float assetWidth = activeImage.transform.localScale.x;
+        float assetHeight = activeImage.transform.localScale.y;
+        // Check if mouse position relative to its last position and the previously encountered
+        // asset would allow for a legal placement. Reduces unnecessary computing
+        if (Mouse.LastMousePosition != worldPosition
+                && (LastEncounteredObject == null
+                    || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
+                        >= assetWidth
+                    || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
+                        >= assetHeight)) {
+            List<GameObject> newMapObjects = new List<GameObject>();
+
+            for (int i = 0; i < AssetOptions.AssetCount; i++) {
+                GameObject newParent = new GameObject();
+                newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
+                newParent.transform.SetParent(MapContainer.transform, true);
+                newParent.transform.position = new Vector3(worldPosition.x + i*2, 
+                                                            worldPosition.y, 0);
+                newParent.transform.localPosition = new Vector3(
+                    newParent.transform.localPosition.x,
+                    newParent.transform.localPosition.y, 0);
+
+                GameObject newGameObject = (GameObject) Instantiate(
+                    AssetPrefabs[_currentButtonPressed],
+                    new Vector3(worldPosition.x + i*2, worldPosition.y, 
+                                90), // the world Z position of the UI
+                    Quaternion.identity, newParent.transform);
+                newGameObject.transform.localScale = 
+                    new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
+                                newGameObject.transform.localScale.y + Zoom.zoomFactor, 
+                                newGameObject.transform.localScale.z + Zoom.zoomFactor);
+
+                if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
+                        .IsInvalidPlacement()) {
+                    newMapObjects.Add(newGameObject);
+                    AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
+                                    newParent, MapObjects);
+                    AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
+                                    newParent, Layers[CurrentLayer]);
+                } else {
+                    Destroy(newParent);
+                }
+            }
+            if (newMapObjects.Count == 0) {
+                // Don't add action to history if there are no objects attached to it
+            } else if (Actions == null) {
+                Actions = new LinkedList<EditorAction>();
+                Actions.AddFirst(new PaintAction(newMapObjects));
+                _currentAction = Actions.First;
+            } else {
+                if (_currentAction != null && _currentAction.Next != null) {
+                    // These actions can no longer be redone
+                    PermanentlyDeleteActions(_currentAction.Next);
+                    LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
+                    while (actionToRemove != null) {
+                        Actions.Remove(actionToRemove);
+                        actionToRemove = actionToRemove.Next;
+                    }
+                    Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
+                    _currentAction = _currentAction.Next;
+                } else if (_currentAction != null) {
+                    Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
+                    _currentAction = _currentAction.Next;
+                } else if (_currentAction == null && Actions != null) {
+                    // There is only one action and it has been undone
+                    PermanentlyDeleteActions(Actions.First);
+                    Actions.Clear();
+                    Actions.AddFirst(new PaintAction(newMapObjects));
+                    _currentAction = Actions.First;
+                }
+            }
+            if (newMapObjects.Count > 0) {
+                _lastEncounteredObject = newMapObjects[0];
+            }
+        }
+        Mouse.LastMousePosition = worldPosition;
     }
 
     /// <summary>

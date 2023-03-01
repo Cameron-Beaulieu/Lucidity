@@ -6,6 +6,9 @@ public class AvatarMovement : MonoBehaviour {
 
     public LayerMask GroundLayer;
     public Transform Orientation;
+    public static bool IsTesting = false;
+    public static float HorizontalTestingInput;
+    public static float VerticalTestingInput;
     private float _avatarHeight = 2f;
     private float _groundDrag = 5f;
     private bool _isGrounded;
@@ -42,8 +45,13 @@ public class AvatarMovement : MonoBehaviour {
     /// Gets the user's input.
     /// </summary>
     private void GetInput() {
-        _horizontalInput = Input.GetAxisRaw("Horizontal");
-        _verticalInput = Input.GetAxisRaw("Vertical");
+        if (IsTesting) {
+            _horizontalInput = HorizontalTestingInput;
+            _verticalInput = VerticalTestingInput;
+        } else {
+            _horizontalInput = Input.GetAxisRaw("Horizontal");
+            _verticalInput = Input.GetAxisRaw("Vertical");
+        }
     }
 
     /// <summary>

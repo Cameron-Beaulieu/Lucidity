@@ -6,14 +6,20 @@ using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
+    public static bool IsTesting = false;
     private static Outline _outline;
 
     public void OnPointerClick(PointerEventData eventData) {
         if (Tool.ToolStatus["Selection Tool"]) {
+            GameObject clickedObject;
+            if (IsTesting) {
+                clickedObject = SelectedObject;
+            } else {
+                clickedObject = eventData.pointerClick;
+            }
+            int id = clickedObject.GetInstanceID();
             MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
                 .GetComponent<MapEditorManager>();
-            GameObject clickedObject = eventData.pointerClick;
-            int id = clickedObject.GetInstanceID();
             // Check if the selected object is on the current layer, or if it is the spawn point
             if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
