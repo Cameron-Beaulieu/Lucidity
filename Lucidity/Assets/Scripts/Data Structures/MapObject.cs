@@ -56,6 +56,6 @@ public class MapObject {
 
     public override string ToString() {
         return $"Id: {Id}, Name: {Name}, PrefabIndex: {PrefabIndex}, MapPosition: {MapPosition}, "
-            + "MapOffset: {MapOffset}, Scale: {Scale}, Rotation: {Rotation}, IsActive: {IsActive}";
+            + $"MapOffset: {MapOffset}, Scale: {Scale}, Rotation: {Rotation}, IsActive: {IsActive}";
     }
 }

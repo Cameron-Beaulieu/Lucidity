@@ -12,13 +12,8 @@ public class StartupScreenTests {
     public IEnumerator SetUp() {
         SceneManager.LoadScene("Startup");
         yield return null;
-    }
-
-    [OneTimeTearDown]
-    public void OneTimeTearDown() {
-        if (SceneManager.GetSceneByName("Startup").isLoaded) {
-            SceneManager.UnloadSceneAsync("Startup");
-        }
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Startup"));
+        yield return null;
     }
 
     [UnityTest]

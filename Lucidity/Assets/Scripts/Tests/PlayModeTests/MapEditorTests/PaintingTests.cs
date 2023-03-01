@@ -11,7 +11,7 @@ public class PaintingTests : MapEditorTests {
     [Test]
     public void DefaultsToBrushTool() {
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-        Util.CheckAllOtherToolsAreUnselected("Brush Tool");
+        PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Brush Tool");
         Assert.IsTrue(Tool.PaintingMenu.activeSelf);
     }
 
@@ -25,7 +25,7 @@ public class PaintingTests : MapEditorTests {
         Button brushToolButton = GameObject.Find("Brush Tool").GetComponent<Button>();
         brushToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-        Util.CheckAllOtherToolsAreUnselected("Brush Tool");
+        PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Brush Tool");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsTrue(Tool.PaintingMenu.activeSelf);
     }
@@ -86,8 +86,8 @@ public class PaintingTests : MapEditorTests {
         Assert.IsNotNull(placedParent);
         Assert.AreEqual(1, placedParent.transform.childCount);
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-        Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, Util.FloatTolerance);
-        Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, Util.FloatTolerance);
+        Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.Zero(placedParent.transform.localPosition.z);
     }
 

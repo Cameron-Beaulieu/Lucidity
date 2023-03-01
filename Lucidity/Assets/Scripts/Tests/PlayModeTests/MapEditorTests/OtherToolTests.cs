@@ -13,7 +13,7 @@ public class OtherToolsTests : MapEditorTests {
         Button panningToolButton = GameObject.Find("Panning Tool").GetComponent<Button>();
         panningToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
-        Util.CheckAllOtherToolsAreUnselected("Panning Tool");
+        PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Panning Tool");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
@@ -23,7 +23,7 @@ public class OtherToolsTests : MapEditorTests {
         Button zoomInButton = GameObject.Find("Zoom In").GetComponent<Button>();
         zoomInButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Zoom In"]);
-        Util.CheckAllOtherToolsAreUnselected("Zoom In");
+        PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Zoom In");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
@@ -49,7 +49,7 @@ public class OtherToolsTests : MapEditorTests {
         Button zoomOutButton = GameObject.Find("Zoom Out").GetComponent<Button>();
         zoomOutButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Zoom Out"]);
-        Util.CheckAllOtherToolsAreUnselected("Zoom Out");
+        PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Zoom Out");
         Assert.IsFalse(Tool.SelectionMenu.activeSelf);
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }

@@ -1,11 +1,12 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
+[TestFixture]
 public class ThreeDMapTests {
 
     [UnitySetUp]
@@ -29,9 +30,6 @@ public class ThreeDMapTests {
 
     [OneTimeTearDown]
     public void OneTimeTearDown() {
-        if (SceneManager.GetSceneByName("3DMap").isLoaded) {
-            SceneManager.UnloadSceneAsync("3DMap");
-        }
         AvatarMovement.IsTesting = false;
     }
 
@@ -43,10 +41,10 @@ public class ThreeDMapTests {
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
         Assert.AreEqual(spawnPointPosition.x, GameObject.Find("Avatar").transform.position.x, 
-                        Util.FloatTolerance);
-        Assert.AreEqual(1f, GameObject.Find("Avatar").transform.position.y, Util.FloatTolerance);
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(1f, GameObject.Find("Avatar").transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(spawnPointPosition.y, GameObject.Find("Avatar").transform.position.z, 
-                        Util.FloatTolerance);
+                        PlayModeTestUtil.FloatTolerance);
     }
 
     [UnityTest]
@@ -59,8 +57,8 @@ public class ThreeDMapTests {
         Vector3 avatarPosition = avatar.transform.position;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
-        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, Util.FloatTolerance);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, Util.FloatTolerance);
+        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
     }
 
@@ -74,8 +72,8 @@ public class ThreeDMapTests {
         Vector3 avatarPosition = avatar.transform.position;
         AvatarMovement.VerticalTestingInput = -1;
         yield return new WaitForFixedUpdate();
-        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, Util.FloatTolerance);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, Util.FloatTolerance);
+        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.Less(avatar.transform.position.z, avatarPosition.z);
     }
 
@@ -93,7 +91,7 @@ public class ThreeDMapTests {
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
         Assert.Greater(avatar.transform.position.x, avatarPosition.x);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, Util.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
         Assert.Greater(movementScript.Orientation.rotation.y, avatarOrientation);
     }
@@ -112,7 +110,7 @@ public class ThreeDMapTests {
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
         Assert.Less(avatar.transform.position.x, avatarPosition.x);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, Util.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
         Assert.Less(movementScript.Orientation.rotation.y, avatarOrientation);
     }
@@ -120,8 +118,8 @@ public class ThreeDMapTests {
     [UnityTest]
     public IEnumerator Maps2DTo3DProperly() {
         // paint assets
-        Util.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        Util.PaintAnAsset(new Vector2(100, 150), "House");
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "House");
         GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
         GameObject houseParent = GameObject.Find("TempHouseObject Parent");
         Vector2 fortressPosition = fortressParent.transform.localPosition;

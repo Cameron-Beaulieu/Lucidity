@@ -71,14 +71,4 @@ public class MapData {
         string jsonContent = File.ReadAllText(filePath);
         return JsonUtility.FromJson<MapData>(jsonContent);
     }
-
-    public override string ToString() {
-        string mapObjectsString = "[";
-        foreach (MapObject mapObject in MapObjects) {
-            mapObjectsString += "{" + mapObject.ToString() + "}, ";
-        }
-        mapObjectsString += "]";
-
-        return $"Biome: {Biome.Name}, MapObjects: {mapObjectsString}, SpawnPoint: {SpawnPoint}";
-    }
 }

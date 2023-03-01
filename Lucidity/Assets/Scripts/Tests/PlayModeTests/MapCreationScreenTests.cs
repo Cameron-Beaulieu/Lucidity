@@ -12,13 +12,7 @@ public class MapCreationScreenTests {
     public IEnumerator SetUp() {
         SceneManager.LoadScene("MapCreation"); 
         yield return null;
-    }
-
-    [OneTimeTearDown]
-    public void OneTimeTearDown() {
-        if (SceneManager.GetSceneByName("MapCreation").isLoaded) {
-            SceneManager.UnloadSceneAsync("MapCreation");
-        }
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("MapCreation"));
     }
 
     [UnityTest]

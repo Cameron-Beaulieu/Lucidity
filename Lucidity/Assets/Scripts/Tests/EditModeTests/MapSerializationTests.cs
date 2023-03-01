@@ -10,7 +10,9 @@ public class MapSerializationTests {
 
     private MapData _mockMapData = new MapData(new Biome(0), 
                                                new Dictionary<int, MapObject> {
-                                                    {0, new MapObject(0, "Tree", 0, 
+                                                    {0, new MapObject(0, 
+                                                                      "Tree", 
+                                                                      0, 
                                                                       new Vector2(0, 0), 
                                                                       new Vector2(100,100), 
                                                                       new Vector3(1, 1, 1), 

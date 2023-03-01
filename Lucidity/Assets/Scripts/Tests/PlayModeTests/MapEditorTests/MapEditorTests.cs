@@ -26,9 +26,6 @@ public abstract class MapEditorTests {
 
     [OneTimeTearDown]
     public void OneTimeTearDown() {
-        if (SceneManager.GetSceneByName("MapEditor").isLoaded) {
-            SceneManager.UnloadSceneAsync("MapEditor");
-        }
         Util.ResetStaticVariables();
     }
 }
