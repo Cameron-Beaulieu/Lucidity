@@ -62,6 +62,31 @@ public class LayerTests : MapEditorTests {
         Assert.IsTrue(Layer.LayerStatus[newLayer.name]);
     }
 
+    [UnityTest]
+    public IEnumerator CanSwitchBetweenLayers() {
+        // add a layer in addition to the base layer
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
+        GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
+
+        // check that the new layer is the selected layer
+        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.IsTrue(Layer.LayerStatus[newLayer.name]);
+        Assert.IsFalse(Layer.LayerStatus[baseLayer.name]);
+
+        // switch to the base layer
+        baseLayer.GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.IsTrue(Layer.LayerStatus[baseLayer.name]);
+        Assert.IsFalse(Layer.LayerStatus[newLayer.name]);
+    }
+
     [Test]
     public void EditButtonChangesReadOnlyStatusOfLayerLabel() {
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)

@@ -44,16 +44,7 @@ public class MapEditorManager : MonoBehaviour {
     private void Awake() {
         if (StartupScreen.FilePath != null) {
             // Static variables must be reset if a new map is loaded from another map
-            MapObjects = new Dictionary<int, MapObject>();
-            Actions = null;
-            ToolToCursorMap = new Dictionary<string, Texture2D>();
-            _currentAction = null;
-            Map = null;
-            MapContainer = null;
-            _currentButtonPressed = 0;
-            _lastEncounteredObject = null;
-            Tool.ToolKeys = new List<string>();
-            Tool.ToolStatus = new Dictionary<string, bool>();
+            Util.ResetStaticVariables();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
@@ -146,7 +137,9 @@ public class MapEditorManager : MonoBehaviour {
                         .IsInvalidPlacement()) {
                     newMapObjects.Add(newGameObject);
                     AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                    newParent);
+                                    newParent, MapObjects);
+                    AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
+                                    newParent, Layers[CurrentLayer]);
                 } else {
                     Destroy(newParent);
                 }
@@ -199,7 +192,10 @@ public class MapEditorManager : MonoBehaviour {
         while (actionToDelete != null) {
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
                 foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
-                    MapObjects.Remove(obj.GetInstanceID());
+                    int id = obj.GetInstanceID();
+                    MapObjects.Remove(id);
+                    // Remove the related object from whichever layer it was on
+                    Layers[LayerContainsMapObject(id)].Remove(id);
                     Destroy(obj);
                 }
             }
@@ -223,7 +219,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.Paint:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = true;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -231,8 +229,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-
-                            MapObjects[obj.GetInstanceID()].IsActive = false;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -279,7 +278,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.Paint:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = false;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -287,7 +288,9 @@ public class MapEditorManager : MonoBehaviour {
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            MapObjects[obj.GetInstanceID()].IsActive = true;
+                            int id = obj.GetInstanceID();
+                            MapObjects[id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -337,7 +340,8 @@ public class MapEditorManager : MonoBehaviour {
     /// The parent container storing the new <c>GameObject</c>
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
-                                GameObject parentGameObject) {
+                                GameObject parentGameObject,
+                                Dictionary<int, MapObject> mapObjectDictionary) {
         MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
             _currentButtonPressed,
             new Vector2(newGameObject.transform.localPosition.x, 
@@ -348,8 +352,27 @@ public class MapEditorManager : MonoBehaviour {
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
             newGameObject.transform.rotation, true);
-        MapObjects.Add(newMapObject.Id, newMapObject);
+        mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
+
+    /// <summary>
+    /// Given the instance ID of a <c>MapObject</c>, returns the index corresponding to the layer
+    /// that the <c>MapObject</c> can be found.
+    /// </summary>
+    /// <param name="obj">
+    /// Instance ID of the desired <c>MapObject</c> to be located
+    /// </param>
+    /// <returns>
+    /// <c>int</c> corresponding to the layer index
+    /// </returns>
+    public static int LayerContainsMapObject(int objId) {
+        for (int i = 0; i < Layers.Count; i++) {
+            if (Layers[i].ContainsKey(objId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /// <summary>
     /// Loads a map that is stored as a MapData object.

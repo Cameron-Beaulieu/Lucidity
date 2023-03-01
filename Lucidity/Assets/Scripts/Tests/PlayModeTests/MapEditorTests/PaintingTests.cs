@@ -161,4 +161,34 @@ public class PaintingTests : MapEditorTests {
         mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.5f, 0.5f));
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
     }
+
+    [UnityTest]
+    public IEnumerator CanPaintOnDifferentLayers() {
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        Assert.AreEqual(0, editor.CurrentLayer);
+
+        // place an asset on base layer
+        GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
+        editor.PaintAtPosition(new Vector2(-100,150));
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        GameObject placedFortress = GameObject.Find("TempFortressObject(Clone)");
+        Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedFortress.GetInstanceID()));
+        
+        // add and switch to layer 1
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(1, editor.CurrentLayer);
+        
+        // place an asset on layer 1
+        GameObject.Find("HouseButton").GetComponent<Button>().onClick.Invoke();
+        editor.PaintAtPosition(new Vector2(100,150));
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+        GameObject placedHouse = GameObject.Find("TempHouseObject(Clone)");
+        Assert.IsTrue(MapEditorManager.Layers[1].ContainsKey(placedHouse.GetInstanceID()));
+
+        Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+    }
 }

@@ -29,32 +29,54 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
 
-    [Test]
-    public void CanSelectAsset() {
-        // paint an object to select
-        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+    [UnityTest]
+    public IEnumerator CanOnlySelectObjectsOnCurrentLayer() {
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.Zero(MapEditorManager.MapObjects.Count);
 
-        // select the object
-        Assert.IsFalse(Tool.SelectionOptions.activeSelf);
+        //  paint an object on base layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
+        Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedAsset.GetInstanceID()));
+
+        // select the object while on base layer
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
             .OnPointerClick(new PointerEventData(EventSystem.current));
-        
-        // assert selection options is active and the object has an outline
         Assert.IsTrue(Tool.SelectionOptions.activeSelf);
         Assert.AreEqual("Editing TempFortressObject(Clone)", 
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
         Assert.AreEqual(Outline.Mode.OutlineAll, 
-                        SelectMapObject.SelectedObject.GetComponent<Outline>().OutlineMode);
+                        placedAsset.GetComponent<Outline>().OutlineMode);
+
+        // create a new layer (should switch to it automatically)
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();      
+        yield return null;
+        Assert.AreEqual(1, editor.CurrentLayer);
+
+        // select the object while on a new layer
+        Assert.IsFalse(Tool.SelectionOptions.activeSelf);
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.IsFalse(Tool.SelectionOptions.activeSelf);
+        Assert.IsNull(placedAsset.GetComponent<Outline>());
     }
 
-    [Test]
-    public void CanSelectSpawnPoint() {
+    [UnityTest]
+    public IEnumerator CanSelectSpawnPointRegardlessOfLayer() {
         GameObject spawnPoint = GameObject.Find("Spawn Point");
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.IsNull(spawnPoint.GetComponent<Outline>());
 
-        // select the spawn point
+        // select the spawn point while on base layer
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
@@ -68,7 +90,24 @@ public class SelectionTests : MapEditorTests {
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
         Assert.AreEqual(Outline.Mode.OutlineAll, 
-                        SelectMapObject.SelectedObject.GetComponent<Outline>().OutlineMode);
+                        spawnPoint.GetComponent<Outline>().OutlineMode);
+        
+        // add new layer (switches to it automatically)
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
+        Assert.IsNull(spawnPoint.GetComponent<Outline>());
+
+        // select the spawn point while on a new layer
+        SelectMapObject.SelectedObject = spawnPoint;
+        spawnPoint.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
+        Assert.AreEqual("Editing Spawn Point",
+            GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
+        Assert.AreEqual(Outline.Mode.OutlineAll, 
+                        spawnPoint.GetComponent<Outline>().OutlineMode);
     }
 
     [Test]

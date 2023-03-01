@@ -8,25 +8,26 @@ public class Util {
     /// interference between tests, or when MapEditor is reloaded.
     /// </summary>
     public static void ResetStaticVariables() {
-        MapEditorManager.MapObjects = new Dictionary<int, MapObject>();
-        MapEditorManager.Layers = new List<Dictionary<int, MapObject>>();
+        MapEditorManager.MapObjects.Clear();
+        MapEditorManager.Layers.Clear();
+        MapEditorManager.BaseLayer.Clear();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
-        MapEditorManager.ToolToCursorMap = new Dictionary<string, Texture2D>();
+        MapEditorManager.ToolToCursorMap.Clear();
         MapEditorManager.Map = null;
         MapEditorManager.MapContainer = null;
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
         MapEditorManager.LastEncounteredObject = null;
-        Tool.ToolKeys = new List<string>();
-        Tool.ToolStatus = new Dictionary<string, bool>();
+        Tool.ToolKeys.Clear();
+        Tool.ToolStatus.Clear();
         Tool.PaintingMenu = null;
         Tool.SelectionMenu = null;
         Tool.SelectionOptions = null;
         Tool.SpawnPointOptions = null;
         Mouse.LastMousePosition = Vector2.zero;
-        Layer.LayerStatus = new Dictionary<string, bool>();
-        Layer.LayerIndex = new Dictionary<string, int>();
-        Layer.LayerNames = new List<string>();
+        Layer.LayerStatus.Clear();
+        Layer.LayerIndex.Clear();
+        Layer.LayerNames.Clear();
     }
 }
