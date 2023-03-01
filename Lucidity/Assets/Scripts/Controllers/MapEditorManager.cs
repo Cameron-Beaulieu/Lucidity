@@ -100,6 +100,7 @@ public class MapEditorManager : MonoBehaviour {
         }
         else {
             ReloadScene();
+            Tool.ChangeTools("Brush Tool");
         }
     }
 
@@ -290,8 +291,6 @@ public class MapEditorManager : MonoBehaviour {
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
-                        Debug.Log(obj.GetInstanceID());
-                        Debug.Log(MapObjects[obj.GetInstanceID()].Name);
                         if (obj != null) {
                             MapObjects[obj.GetInstanceID()].IsActive = true;
                             obj.SetActive(true);
@@ -418,7 +417,6 @@ public class MapEditorManager : MonoBehaviour {
         Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
         MapContainer = GameObject.Find("Map Container");
         foreach (KeyValuePair <int, MapObject> mapObject in MapObjects) {
-            Debug.Log(mapObject.Value.Id);
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
@@ -434,7 +432,6 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
-                Debug.Log(newGameObject.GetInstanceID());
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects);
