@@ -55,7 +55,6 @@ public class AssetOptions : MonoBehaviour {
                 _editor.AssetImage[MapEditorManager.CurrentButtonPressed],
                 Mouse.GetMousePosition());
         }
-        DynamicBoundingBox.GenerateRandomCoordinates();
     }
 
     /// <summary>

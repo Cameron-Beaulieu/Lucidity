@@ -6,6 +6,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
     private static HashSet<Vector2> _randomAssetArrangement;
+    private static Outline _outline;
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
@@ -37,16 +38,18 @@ public class DynamicBoundingBox : MonoBehaviour {
             Quaternion.identity);
         dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
         dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
-        Destroy(dynamicAssetImage.GetComponent<MeshRenderer>());
-        Destroy(dynamicAssetImage.GetComponent<MeshFilter>());
+        // Remove old material and attach new outline material
+        dynamicAssetImage.GetComponent<MeshRenderer>().materials = new Material[0];
+        _outline = dynamicAssetImage.AddComponent<Outline>();
+        _outline.OutlineMode = Outline.Mode.OutlineAll;
+        _outline.OutlineColor = Color.red;
+        _outline.OutlineWidth = 2f;
 
-        // Create a hovering asset image to make an n x n shaped dynamic bounding box that will
-        // follow the cursor
-        for (int i = 0; i < _dynamicSideLength; i++) {
-            for (int j = 0; j < _dynamicSideLength; j++) {
-                Vector2 offset = new Vector2(i, j);
-                CreateDynamicAssetImageChild(assetImage, offset, dynamicAssetImage.transform);
-            }
+        GenerateRandomCoordinates();
+
+        // Create a hovering asset image in each randomly assigned coordinate position
+        foreach (Vector2 coordinate in _randomAssetArrangement) {
+            CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
         }
 
         return dynamicAssetImage;
