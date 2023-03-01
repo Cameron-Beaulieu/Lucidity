@@ -57,6 +57,7 @@ public class Layer : MonoBehaviour{
     /// Changes the layer currently selected from the layer menu.
     /// </summary>
     public static void SelectedChangeSelectedLayer(string layerName){
+        SelectMapObject.UnselectMapObject();
         foreach (string layerKey in new List<string>(LayerStatus.Keys)) {
             if (layerKey != layerName) {
                 LayerStatus[layerKey] = false;
