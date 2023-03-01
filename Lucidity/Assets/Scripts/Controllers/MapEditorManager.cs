@@ -167,8 +167,9 @@ public class MapEditorManager : MonoBehaviour {
                         PermanentlyDeleteActions(_currentAction.Next);
                         LinkedListNode<EditorAction> actionToRemove = _currentAction.Next;
                         while (actionToRemove != null) {
+                            LinkedListNode<EditorAction> temp = actionToRemove.Next;
                             Actions.Remove(actionToRemove);
-                            actionToRemove = actionToRemove.Next;
+                            actionToRemove = temp;
                         }
                         Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
                         _currentAction = _currentAction.Next;
@@ -206,7 +207,7 @@ public class MapEditorManager : MonoBehaviour {
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
                 foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
                     MapObjects.Remove(obj.GetInstanceID());
-                    Destroy(obj.transform.parent);
+                    Destroy(obj.transform.parent.gameObject);
                 }
             }
             actionToDelete = actionToDelete.Next;
@@ -442,10 +443,12 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         // Swapping GameObject's in editor action linked list
+        Debug.Log(Actions);
         if(Actions != null){
             LinkedListNode<EditorAction> pointer = Actions.First;
 
             while (pointer != null){
+                Debug.Log(pointer);
                 //if (pointer.Value.Type == EditorAction.ActionType.Paint) {
                     for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
                         pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
