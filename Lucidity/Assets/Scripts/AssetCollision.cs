@@ -56,8 +56,6 @@ public class AssetCollision : MonoBehaviour {
                                                             collisionObject.gameObject));
                 }
             }
-            gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
-            StartCoroutine(RevertMaterialAndDestroy(null, gameObject));
         }
     }
 
@@ -87,6 +85,9 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public int GetCollisionCount() {
         Collider[] hitColliders = GetAssetCollisions();
+        if (GetDynamicCollision()) {
+            return hitColliders.Length - 1;
+        }
         return hitColliders.Length;
     }
 
@@ -101,7 +102,12 @@ public class AssetCollision : MonoBehaviour {
         Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
                                                      transform.localScale / 2, Quaternion.identity,
                                                      _filterMask);
-        return hitColliders;
+        Collider[] allColliders = new Collider[hitColliders.Length + 1];
+        for (int i = 0; i < hitColliders.Length; i++) {
+            allColliders[i] = hitColliders[i];
+        }
+        allColliders[hitColliders.Length] = gameObject.GetComponent<Collider>();
+        return allColliders;
     }
 
     /// <summary>
