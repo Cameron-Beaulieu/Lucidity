@@ -8,7 +8,6 @@ using UnityEngine;
 // These include Layers, Terrain, and possibly more
 [Serializable]
 public class MapData {
-    public CreateNewMap.SizeType MapSize;
     public Biome Biome;  
     [NonSerialized] public static string FileName;
     public List<MapObject> MapObjects;
@@ -20,15 +19,11 @@ public class MapData {
     /// <param name="fileName">
     /// The absolute path/filename of the map.
     /// </param>
-    /// <param name="mapSize">
-    /// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
-    /// </param>
     /// <param name="biome">
     /// The biome of the newly created map.
     /// </param>
-    public MapData(string fileName, CreateNewMap.SizeType mapSize, Biome biome) {
+    public MapData(string fileName, Biome biome) {
         FileName = fileName;
-        MapSize = mapSize;
         Biome = biome;
     }
 
@@ -37,9 +32,6 @@ public class MapData {
     /// </summary/>
     /// <param name="fileName">
     /// The absolute path/filename of the map.
-    /// </param>
-    /// <param name="mapSize">
-    /// The <c>CreateNewMap.SizeType</c> enumeration of the map size.
     /// </param>
     /// <param name="biome">
     /// The biome of the map.
@@ -50,9 +42,7 @@ public class MapData {
     /// <param name="spawnPoint">
     /// The x,z position of the player when the map is converted to 3D.
     /// </param>
-    public MapData(CreateNewMap.SizeType mapSize, Biome biome, 
-                   Dictionary<int, MapObject> mapObjects, Vector2 spawnPoint) {
-        MapSize = mapSize;
+    public MapData(Biome biome, Dictionary<int, MapObject> mapObjects, Vector2 spawnPoint) {
         Biome = biome;
         // Unity can't serialize a dictionary, so the values are converted to a list
         // Each MapObject in the list contains its ID, which will be used as the key

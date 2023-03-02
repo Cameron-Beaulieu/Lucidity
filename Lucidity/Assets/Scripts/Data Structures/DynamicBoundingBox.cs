@@ -221,11 +221,11 @@ public class DynamicBoundingBox : MonoBehaviour {
                 offset - scale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
                     * AssetOptions.BrushSize + (scale.x
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-                    / (_dynamicSideLength - 1f)) + 1e-6f) * coordinate.x,
+                    / (_dynamicSideLength - 1f))) * coordinate.x,
                 offset - scale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
                     * AssetOptions.BrushSize + (scale.y
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-                    / (_dynamicSideLength - 1f)) + 1e-6f) * coordinate.y,
+                    / (_dynamicSideLength - 1f))) * coordinate.y,
                 0);
         }
         return new Vector3(0, 0, 0);

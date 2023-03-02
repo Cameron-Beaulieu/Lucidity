@@ -10,6 +10,7 @@ public class StartupScreen : MonoBehaviour {
     [SerializeField] private Button loadMapButton;
     [SerializeField] private Button newMapButton;
     public static string FilePath;
+    public static bool IsTesting = false;
 
     private void Start() {
         newMapButton.onClick.AddListener(NewMapClickHandler);
@@ -20,6 +21,11 @@ public class StartupScreen : MonoBehaviour {
     /// Button handler for <c>loadMapButton</c>, selected through in the Unity editor.
     /// </summary>
     public static void LoadMapClickHandler() {
+        if (IsTesting) {
+            SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
+            return;
+        }
+
         string path = EditorUtility.OpenFilePanel("Select File", "", "json");
         // cancelled selecting a path
         if (path.Equals("")) { return; }
@@ -33,7 +39,7 @@ public class StartupScreen : MonoBehaviour {
 
             path = EditorUtility.OpenFilePanel("Select File", "", "json");
         }
-        
+    
         FilePath = path;
 
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);

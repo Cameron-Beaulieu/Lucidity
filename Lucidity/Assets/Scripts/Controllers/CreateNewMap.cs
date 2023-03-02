@@ -8,25 +8,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CreateNewMap : MonoBehaviour {
-    public enum SizeType {
-        Small,
-        Medium,
-        Large
-    }
+    public static bool IsTesting = false;
     [SerializeField] private InputField _mapName;
     [SerializeField] private Dropdown _mapSizeDropdown;
     [SerializeField] private Dropdown _biomeDropdown;
     [SerializeField] private Toggle _startingAssetsToggle;
     [SerializeField] private Button _cancelMapButton;
     [SerializeField] private Button _createMapButton;
-    private static SizeType _mapSize;
     private static Biome _biome;
     private Text _errorMessage;
-
-    public static SizeType Size {
-        get { return _mapSize; }
-        set { _mapSize = value; }
-    }
 
     public static Biome ChosenBiome {
         get { return _biome; }
@@ -56,7 +46,7 @@ public class CreateNewMap : MonoBehaviour {
             return;
         }
         
-        if (CreateFile()) {
+        if (IsTesting || CreateFile()) {
             _biome = GetBiomeFromDropdown();
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
         }
@@ -72,13 +62,12 @@ public class CreateNewMap : MonoBehaviour {
         if (directory.Equals("")) { return false; }
 
         string fileName = _mapName.text;
-        Size = GetMapSize();
         ChosenBiome = GetBiomeFromDropdown();
         
         fileName = directory + "/" + fileName + ".json";
 
         if (!File.Exists(fileName)) {
-            MapData jsonContent = new MapData(fileName, Size, ChosenBiome);
+            MapData jsonContent = new MapData(fileName, ChosenBiome);
             File.WriteAllText(fileName, jsonContent.Serialize());
             return true;
         }
@@ -114,25 +103,6 @@ public class CreateNewMap : MonoBehaviour {
     /// <c>string</c> of the map name.
     /// </returns>
     public string GetMapName() { return _mapName.text; }
-
-    /// <summary>
-    /// Biome size accessor.
-    /// </summary>
-    /// <returns>
-    /// Enumerated <c>SizeType</c> corresponding to the map size.
-    /// </returns>
-    public SizeType GetMapSize() {
-        switch(_mapSizeDropdown.value) {
-            case 0:
-                return SizeType.Small;
-            case 1:
-                return SizeType.Medium;
-            case 2:
-                return SizeType.Large;
-            default:
-                return SizeType.Medium;
-        }
-    }
 
     /// <summary>
     /// Starting asset toggle accessor.

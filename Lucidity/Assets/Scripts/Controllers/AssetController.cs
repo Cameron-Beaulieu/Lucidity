@@ -36,9 +36,9 @@ public class AssetController : MonoBehaviour {
 
         GameObject parentContainer = GameObject.Find(
             gameObject.transform.parent.name);
-        // Un-highlight previously selected asset in "Sprites" pane
+        // Unselect previously selected asset in "Sprites" pane
         if (_prevParentContainer != null) {
-            _prevParentContainer.GetComponent<Image>().color = new Color32(66, 71, 80, 100);
+            _prevParentContainer.GetComponentInChildren<AssetController>().UnselectButton();
         }
         // Highlight asset in "Sprites" pane
         parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
