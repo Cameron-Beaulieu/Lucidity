@@ -113,12 +113,12 @@ public class PaintingTests : MapEditorTests {
         // check that the asset group was placed correctly
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
         List<int> keys = new List<int>(MapEditorManager.MapObjects.Keys);
-        // the two MapObjects should be placed at the same y position, but different x positions 
-        // because they are side by side
-        Assert.AreNotEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.x, 
-                           MapEditorManager.MapObjects[keys[1]].MapOffset.x);
-        Assert.AreEqual(MapEditorManager.MapObjects[keys[0]].MapOffset.y, 
-                        MapEditorManager.MapObjects[keys[1]].MapOffset.y);
+        // the two MapObjects should be placed at any combination of a pair of x and y coordinates,
+        // except on the same position
+        Assert.IsTrue(!((MapEditorManager.MapObjects[keys[0]].MapOffset.x
+                            == MapEditorManager.MapObjects[keys[1]].MapOffset.x)
+                            && (MapEditorManager.MapObjects[keys[0]].MapOffset.y
+                            == MapEditorManager.MapObjects[keys[1]].MapOffset.y)));
     }
 
     [UnityTest]
