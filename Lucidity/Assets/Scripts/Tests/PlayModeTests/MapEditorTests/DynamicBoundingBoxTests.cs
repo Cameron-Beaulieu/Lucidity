@@ -34,16 +34,16 @@ public class DynamicBoundingBoxTests : MapEditorTests {
             .GetComponent<MapEditorManager>();
         Assert.AreEqual(0, GameObject.FindGameObjectsWithTag("DynamicBoundingBox").Length);
         mapEditorManager.PaintAtPosition(positionToPlace);
-        yield return null;
         Assert.AreEqual(1, GameObject.FindGameObjectsWithTag("DynamicBoundingBox").Length);
 
         // skip frame to allow for dynamic bounding boxes to be deleted
         yield return new WaitForFixedUpdate();
+        yield return null;
         Assert.AreEqual(0, GameObject.FindGameObjectsWithTag("DynamicBoundingBox").Length);
     }
 
-    [UnityTest]
-    public IEnumerator DynamicBoundingBoxPersistsOnHold() {
+    [Test]
+    public void DynamicBoundingBoxPersistsOnHold() {
         // place the first asset
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         fortressButton.onClick.Invoke();
@@ -54,7 +54,6 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         Assert.AreEqual(0, GameObject.FindGameObjectsWithTag("DynamicBoundingBox").Length);
         mapEditorManager.PaintAtPosition(positionToPlace);
         mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(100f, 100f));
-        yield return null;
         Assert.AreEqual(2, GameObject.FindGameObjectsWithTag("DynamicBoundingBox").Length);
     }
 }
