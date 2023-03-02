@@ -20,16 +20,20 @@ public class TwoDReversionTests {
     }
 
     [UnityTest]
-    public IEnumerator ProperAssetPlacementDuringReversion() {
+    public IEnumerator ReversionTo2DMapObjectAccuracy() {
         // Paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector3(-100, 150, 0), "Fortress");
         PlayModeTestUtil.PaintAnAsset(new Vector3(100, 150, 0), "House");
         GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
         GameObject houseParent = GameObject.Find("TempHouseObject Parent");
+        GameObject newFortress = GameObject.Find("TempFortressObject(Clone)");
+        GameObject newHouse = GameObject.Find("TempHouseObject(Clone)");
         Vector3 fortressPosition = fortressParent.transform.localPosition;
         Vector3 fortressScale = fortressParent.transform.localScale;
         Vector3 housePosition = houseParent.transform.localPosition;
         Vector3 houseScale = houseParent.transform.localScale;
+        int fortressId = newFortress.GetInstanceID();
+        int houseId = newHouse.GetInstanceID();
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -54,32 +58,15 @@ public class TwoDReversionTests {
         // Check that the assets have the right scale
         Assert.AreEqual(newFortressParent.transform.localScale, fortressScale);
         Assert.AreEqual(newHouseParent.transform.localScale, houseScale); 
-    }
-
-    public IEnumerator ProperMapObjectDictionaryRebuilding() {
-        // Paint assets
-        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        GameObject newFortress = GameObject.Find("TempFortressObject(Clone)");
-        int fortressId = newFortress.GetInstanceID();
-
-        // 3D-ify
-        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
-        yield return null;
-        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
-        yield return new WaitForEndOfFrame();
-
-        // Revert to 2D
-        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
-        yield return null;
-        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-        yield return new WaitForEndOfFrame();
 
         // Check MapObjects Dictionary has correct number of MapObjects in it
-        Assert.AreEqual(MapEditorManager.MapObjects.Count, 1);
+        Assert.AreEqual(MapEditorManager.MapObjects.Count, 2);
 
         // Check if the GameObjects in MapObjects have been replaced
-        GameObject revertedGameObject = GameObject.Find("TempFortressObject(Clone)");
-        Assert.AreNotEqual(fortressId, revertedGameObject.GetInstanceID());
+        GameObject revertedFortress = GameObject.Find("TempFortressObject(Clone)");
+        Assert.AreNotEqual(fortressId, revertedFortress.GetInstanceID());
+        GameObject revertedHouse = GameObject.Find("TempHouseObject(Clone)");
+        Assert.AreNotEqual(houseId, revertedHouse.GetInstanceID());
     }
 
     [UnityTest]

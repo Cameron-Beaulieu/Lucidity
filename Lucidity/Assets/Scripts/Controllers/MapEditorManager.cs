@@ -427,7 +427,7 @@ public class MapEditorManager : MonoBehaviour {
     /// <summary>
     /// Converts from the 2D scene to the 3D scene.
     /// </summary>
-    public void ConvertTo3D(){
+    public void ConvertTo3D() {
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
@@ -435,7 +435,7 @@ public class MapEditorManager : MonoBehaviour {
     /// <summary>
     /// Remakes the 2D scene upon it being reloaded from the 3D view.
     /// </summary>
-    private void ReloadScene(){
+    private void ReloadScene() {
         // Reloading Layers
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
