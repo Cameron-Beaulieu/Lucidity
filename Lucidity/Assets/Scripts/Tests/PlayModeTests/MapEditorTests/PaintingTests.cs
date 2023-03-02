@@ -121,6 +121,37 @@ public class PaintingTests : MapEditorTests {
                         MapEditorManager.MapObjects[keys[1]].MapOffset.y);
     }
 
+    [UnityTest]
+    public IEnumerator CanPlaceGroupsOfAssetsWithCollisionsHandled() {
+        // make sure map is empty and brush tool is selected
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+
+        // paint the asset group
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+        countInput.text = "4";
+        countInput.onEndEdit.Invoke(countInput.text);
+        Assert.AreEqual(4, AssetOptions.AssetCount);
+        fortressButton.onClick.Invoke();
+        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
+        Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
+        Vector2 positionToPlace = new Vector2(3f, 2.5f);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(4, MapEditorManager.MapObjects.Count);
+        yield return new WaitForFixedUpdate();
+        yield return null;
+
+        // place a group of four assets, wherein two assets overlap with the previous group;
+        // must yield for the coroutine RevertMaterialAndDestroy()
+        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0, 1.5f));
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForSeconds(0.5f);
+        Assert.AreEqual(6, MapEditorManager.MapObjects.Count);
+    }
+
     [Test]
     public void CannotPlaceAssetOnTopOfSpawnPoint() {
         // make sure map is empty, brush tool is selected, and spawn point position is (0,0)
