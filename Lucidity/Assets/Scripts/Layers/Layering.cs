@@ -33,6 +33,24 @@ public class Layering : MonoBehaviour{
     }
 
     /// <summary>
+    /// Adds a layer to the layer menu, but not to the MapEditorManager Layers list
+    /// </summary>
+    /// <param name="layerPrefab">
+    /// <c>GameObject</c> corresponding to the prefab of a layer.
+    /// </param>
+    /// <returns>
+    /// <c>GameObject List</c> containing the new layer GameObject.
+    /// </returns>
+    public static List<GameObject> RemakeLayer(GameObject layerPrefab){
+        Vector3 newPosition = new Vector3(150, 0, 0);
+        GameObject newLayer = (GameObject) Instantiate(
+            layerPrefab, _layerContainer.transform);
+        newLayer.transform.localPosition = newPosition;
+        List<GameObject> newLayerList = new List<GameObject> {newLayer};
+        return newLayerList;
+    }
+
+    /// <summary>
     /// Creates a new layer using the AddLayer method and updates the Undo/Redo linked list.
     /// </summary>
     private void CreateNewLayer(){

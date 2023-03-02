@@ -131,7 +131,6 @@ public class ThreeDMapTests {
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
-        yield return null;
         yield return new WaitForEndOfFrame();
 
         // check that the assets are in the right place

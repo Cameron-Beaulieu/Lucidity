@@ -10,7 +10,6 @@ public class Util {
     public static void ResetStaticVariables() {
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
-        MapEditorManager.BaseLayer.Clear();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
         MapEditorManager.ToolToCursorMap.Clear();

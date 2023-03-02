@@ -13,7 +13,7 @@ public class AssetCollision : MonoBehaviour {
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
 
-    private void Start() {
+    private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
         CheckAssetCollisions();

@@ -21,7 +21,10 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
                 .GetComponent<MapEditorManager>();
             // Check if the selected object is on the current layer, or if it is the spawn point
-            if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
+            // TODO: uncomment if statement and swap for other one once layer reversion complete
+            // if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
+            //         || clickedObject.name == "Spawn Point") {
+            if (MapEditorManager.MapObjects.ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
                 SelectedObject = clickedObject;
                 if (_outline != null) {
