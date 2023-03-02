@@ -20,7 +20,6 @@ public class MapEditorManager : MonoBehaviour {
     public static GameObject MapContainer;
     public static Vector2 SpawnPoint;
     private static int _currentButtonPressed;
-    private static GameObject _lastEncounteredObject;
 
     public static LinkedListNode<EditorAction> CurrentAction {
         get { return _currentAction; }
@@ -30,11 +29,6 @@ public class MapEditorManager : MonoBehaviour {
     public static int CurrentButtonPressed {
         get { return _currentButtonPressed; }
         set { _currentButtonPressed = value; }
-    }
-
-    public static GameObject LastEncounteredObject {
-        get { return _lastEncounteredObject; }
-        set { _lastEncounteredObject = value; }
     }
 
     private void Awake() {
@@ -47,7 +41,6 @@ public class MapEditorManager : MonoBehaviour {
             Map = null;
             MapContainer = null;
             _currentButtonPressed = 0;
-            _lastEncounteredObject = null;
             Tool.ToolKeys = new List<string>();
             Tool.ToolStatus = new Dictionary<string, bool>();
             LoadMap();
@@ -120,21 +113,15 @@ public class MapEditorManager : MonoBehaviour {
             float assetHeight = activeImage.transform.localScale.y;
             // Check if mouse position relative to its last position and the previously encountered
             // asset would allow for a legal placement. Reduces unnecessary computing
-            if (Mouse.LastMousePosition != worldPosition
-                    && (LastEncounteredObject == null
-                        || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
-                            >= assetWidth
-                        || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
-                            >= assetHeight)) {
+            if (Mouse.LastMousePosition != worldPosition) {
                 List<GameObject> newMapObjects = new List<GameObject>();
-
                 GameObject dynamicBoundingBox = DynamicBoundingBox.CreateDynamicBoundingBox(
                     AssetPrefabs[_currentButtonPressed],
                     worldPosition);
                 if (dynamicBoundingBox != null
                         && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
                         && dynamicBoundingBox.GetComponent<AssetCollision>()
-                            .GetCollisionCount() <= 1) {
+                            .GetDynamicCollision() == false) {
                     List<GameObject> newGameObjects =
                         DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
                                                         dynamicBoundingBox);
@@ -174,9 +161,6 @@ public class MapEditorManager : MonoBehaviour {
                         Actions.AddFirst(new PaintAction(newMapObjects));
                         _currentAction = Actions.First;
                     }
-                }
-                if (newMapObjects.Count > 0) {
-                    _lastEncounteredObject = newMapObjects[0];
                 }
             }
             Mouse.LastMousePosition = worldPosition;

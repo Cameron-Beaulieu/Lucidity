@@ -16,6 +16,9 @@ public class AssetCollision : MonoBehaviour {
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
+    }
+
+    private void Start() {
         CheckAssetCollisions();
     }
 
@@ -35,15 +38,16 @@ public class AssetCollision : MonoBehaviour {
     /// appropriate amount of time.
     /// </summary>
     public void CheckAssetCollisions() {
-        if (gameObject.tag != "DynamicBoundingBox") {
+        // All created GameObjects have a parent container except dynamic bounding boxes
+        if (gameObject.transform.parent == null) {
             return;
         }
         Collider[] hitColliders = GetAssetCollisions();
         if (GetCollisionCount() > 1) {
-            gameObject.tag = "CollisionObject";
             foreach (Collider collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
-                    && collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
+                    && collisionObject.gameObject.GetComponent<MeshRenderer>() != null
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
                     _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()
                         .material;
                     collisionObject.gameObject.GetComponent<MeshRenderer>()
@@ -52,8 +56,27 @@ public class AssetCollision : MonoBehaviour {
                                                             collisionObject.gameObject));
                 }
             }
-            MapEditorManager.LastEncounteredObject = hitColliders[0].gameObject;
+            gameObject.GetComponent<MeshRenderer>().material = _errorMaterial;
+            StartCoroutine(RevertMaterialAndDestroy(null, gameObject));
         }
+    }
+
+    /// <summary>
+    /// Determine whether the current <c>GameObject</c> is in direct collision with at least one
+    /// dynamic bounding box.
+    /// </summary>
+    /// <returns>
+    /// <c>bool</c> representing whether the <c>GameObject</c> collides with a dynamic bounding box
+    /// </returns>
+    public bool GetDynamicCollision() {
+        Collider[] hitColliders = GetAssetCollisions();
+        foreach (Collider collisionObject in hitColliders) {
+            if (collisionObject.gameObject.tag == "DynamicBoundingBox"
+                    && collisionObject.gameObject != gameObject) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -64,15 +87,7 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public int GetCollisionCount() {
         Collider[] hitColliders = GetAssetCollisions();
-        int collisions = hitColliders.Length;
-        foreach (Collider collisionObject in hitColliders) {
-            // If an object is labeled with the "CollisionObject" tag, then it can be considered as
-            // not colliding, as it will not be placed because of legality.
-            if (collisionObject.tag == "CollisionObject") {
-                collisions--;
-            }
-        }
-        return collisions;
+        return hitColliders.Length;
     }
 
     /// <summary>
@@ -116,12 +131,13 @@ public class AssetCollision : MonoBehaviour {
         if (collisionObject.gameObject.name == "Spawn Point") {
             // spawn point doesn't have material (would hide the sprite)
             collisionObject.gameObject.GetComponent<MeshRenderer>().materials = new Material[]{};
+        } else if (collisionObject == gameObject) {
+            MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+            GameObject parent = gameObject.transform.parent.gameObject;
+            Destroy(gameObject);
+            Destroy(parent);
         } else {
             collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
-        }
-        if (collisionObject == gameObject) {
-            MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
-            Destroy(gameObject);
         }
     }
 
