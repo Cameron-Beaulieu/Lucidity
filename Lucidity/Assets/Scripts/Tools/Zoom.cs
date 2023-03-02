@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Zoom : MonoBehaviour
 {
-    
     public static float zoomFactor;
+    public static bool IsTesting = false;
     private MapEditorManager _editor;
     private RayLibrary _rayLib;
     private int _uiLayer = 5;
@@ -19,8 +19,8 @@ public class Zoom : MonoBehaviour
         _rayLib = new RayLibrary();
     }
 
-    private void OnMouseDown () {
-        if (Input.GetMouseButtonDown(0) && !_rayLib.IsPointerOverLayer(_uiLayer)) {
+    public void OnMouseDown () {
+        if (IsTesting || (Input.GetMouseButtonDown(0) && !_rayLib.IsPointerOverLayer(_uiLayer))) {
             if (Tool.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
                 gameObject.transform.localScale = 
                     new Vector3(gameObject.transform.localScale.x + zoomIncrement, 

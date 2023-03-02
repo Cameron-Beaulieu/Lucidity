@@ -6,28 +6,53 @@ using UnityEngine.EventSystems;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
+    public static bool IsTesting = false;
     private static Outline _outline;
 
     public void OnPointerClick(PointerEventData eventData) {
         if (Tool.ToolStatus["Selection Tool"]) {
-            SelectedObject = eventData.pointerClick;
-            if (_outline != null) {
-                Destroy(_outline);
-            }
-            if (SelectedObject.name == "Spawn Point") {
-                Tool.SpawnPointOptions.SetActive(true);
-                Tool.SelectionOptions.SetActive(false);
+            GameObject clickedObject;
+            if (IsTesting) {
+                clickedObject = SelectedObject;
             } else {
-                Tool.SpawnPointOptions.SetActive(false);
-                Tool.SelectionOptions.SetActive(true);
+                clickedObject = eventData.pointerClick;
             }
-            GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
-                = "Editing " + SelectedObject.name;
-            _outline = SelectedObject.AddComponent<Outline>();
-            _outline.OutlineMode = Outline.Mode.OutlineAll;
-            _outline.OutlineColor = Color.red;
-            _outline.OutlineWidth = 2f;
+            int id = clickedObject.GetInstanceID();
+            MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+                .GetComponent<MapEditorManager>();
+            // Check if the selected object is on the current layer, or if it is the spawn point
+            if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
+                    || clickedObject.name == "Spawn Point") {
+                SelectedObject = clickedObject;
+                if (_outline != null) {
+                    Destroy(_outline);
+                }
+                if (SelectedObject.name == "Spawn Point") {
+                    Tool.SpawnPointOptions.SetActive(true);
+                    Tool.SelectionOptions.SetActive(false);
+                } else {
+                    Tool.SpawnPointOptions.SetActive(false);
+                    Tool.SelectionOptions.SetActive(true);
+                }
+                GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
+                    = "Editing " + SelectedObject.name;
+                _outline = SelectedObject.AddComponent<Outline>();
+                _outline.OutlineMode = Outline.Mode.OutlineAll;
+                _outline.OutlineColor = Color.red;
+                _outline.OutlineWidth = 2f;
+            }
         }
+    }
+
+    public static void UnselectMapObject() {
+        if (SelectedObject != null) {
+            SelectedObject = null;
+        }
+        if (_outline != null) {
+            Destroy(_outline);
+        }
+        Tool.SelectionOptions.SetActive(false);
+        Tool.SpawnPointOptions.SetActive(false);
     }
 
     /// <summary>
