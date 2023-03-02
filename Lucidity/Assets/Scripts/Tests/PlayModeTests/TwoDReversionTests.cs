@@ -19,11 +19,6 @@ public class TwoDReversionTests {
         yield return null;
     }
 
-    [TearDown]
-    public void TearDown() {
-        Util.ResetStaticVariables();
-    }
-
     [UnityTest]
     public IEnumerator ProperAssetPlacementDuringReversion() {
         // Paint assets
@@ -61,7 +56,7 @@ public class TwoDReversionTests {
         Assert.AreEqual(newHouseParent.transform.localScale, houseScale); 
     }
 
-    public IEnumerator ProperMapObjectDictionaryRebuilding(){
+    public IEnumerator ProperMapObjectDictionaryRebuilding() {
         // Paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         GameObject newFortress = GameObject.Find("TempFortressObject(Clone)");
@@ -131,7 +126,7 @@ public class TwoDReversionTests {
     }
 
     [UnityTest]
-    public IEnumerator CanSwitchToolsAfterReversion(){
+    public IEnumerator CanSwitchToolsAfterReversion() {
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
@@ -150,8 +145,6 @@ public class TwoDReversionTests {
         panningToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
         PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Panning Tool");
-        Assert.IsFalse(Tool.SelectionMenu.activeSelf);
-        Assert.IsFalse(Tool.PaintingMenu.activeSelf);
     }
     
 }

@@ -44,17 +44,6 @@ public class MapEditorManager : MonoBehaviour {
     private void Awake() {
         if (StartupScreen.FilePath != null && !ReloadFlag) {
             // Static variables must be reset if a new map is loaded from another map
-            Layers = new List<Dictionary<int, MapObject>>();
-            MapObjects = new Dictionary<int, MapObject>();
-            Actions = null;
-            ToolToCursorMap = new Dictionary<string, Texture2D>();
-            _currentAction = null;
-            Map = null;
-            MapContainer = null;
-            _currentButtonPressed = 0;
-            _lastEncounteredObject = null;
-            Tool.ToolKeys = new List<string>();
-            Tool.ToolStatus = new Dictionary<string, bool>();
             Util.ResetStaticVariables();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
@@ -244,8 +233,9 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
+                            // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
-                            // SLayers[LayerContainsMapObject(id)][id].IsActive = true;
+                            // Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -255,6 +245,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
+                            // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
                             // Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
@@ -305,6 +296,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
+                            // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
                             // Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
@@ -316,6 +308,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
+                            // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
                             // Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
@@ -453,7 +446,7 @@ public class MapEditorManager : MonoBehaviour {
         CurrentLayer = Layers.Count - 1;
 
         
-        // TO-DO: once building with layers is done, will need to nest Reloading MapObjects
+        // TODO: During 3D with layers, will need to nest Reloading MapObjects
         // within Reloading Layers to rebuild each layer.
 
         // Reloading MapObjects
@@ -486,7 +479,6 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         // Swapping GameObject's in editor action linked list
-        Debug.Log(Actions);
         if(Actions != null){
             LinkedListNode<EditorAction> pointer = Actions.First;
 
