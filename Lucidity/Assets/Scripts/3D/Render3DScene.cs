@@ -8,14 +8,19 @@ public class Render3DScene : MonoBehaviour {
 
     private static GameObject _map;
     private GameObject _avatar;
+    private GameObject _editor;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
+        _editor = GameObject.Find("MapEditorManager");
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
+
         CreateMap();
         PlaceAssets();
         PlaceAvatar();        
+        _editor.SetActive(false);
     }
 
     /// <summary>
@@ -121,5 +126,14 @@ public class Render3DScene : MonoBehaviour {
         float yPosition = (toBePlaced.Scale.y / 2) + _map.transform.position.y;
         Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
         return placementPosition;
+    }
+
+    /// <summary>
+    /// Reverts from the 3D scene back to the 2D scene
+    /// </summary>
+    public void RevertTo2D(){
+        _editor.SetActive(true);
+        MapEditorManager.ReloadFlag = true;
+        SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
     }
 }
