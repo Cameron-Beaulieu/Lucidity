@@ -44,6 +44,23 @@ public class AssetOptions : MonoBehaviour {
             _countInput.text = _assetCount.ToString();
         }
         DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
+        UpdateAssetImage();
+    }
+
+    /// <summary>
+    /// Updates <c>_brushSize</c> and corresponding brush size text value based on slider.
+    /// </summary>
+    public void BrushSizeSliderHandler() {
+        _brushSize = _brushSizeSlider.value;
+        string sliderMessage = _brushSize.ToString("0.0") + " x";
+        _brushSizeText.text = sliderMessage;
+        UpdateAssetImage();
+    }
+
+    /// <summary>
+    /// If an asset is selected, (re)generate an appropriate hover asset image.
+    /// </summary>
+    public void UpdateAssetImage() {
         if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
                 && _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
             GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
@@ -55,14 +72,5 @@ public class AssetOptions : MonoBehaviour {
                 _editor.AssetImage[MapEditorManager.CurrentButtonPressed],
                 Mouse.GetMousePosition());
         }
-    }
-
-    /// <summary>
-    /// Updates <c>_brushSize</c> and corresponding brush size text value based on slider.
-    /// </summary>
-    public void BrushSizeSliderHandler() {
-        _brushSize = _brushSizeSlider.value;
-        string sliderMessage = _brushSize.ToString("0.0") + " x";
-        _brushSizeText.text = sliderMessage;
     }
 }

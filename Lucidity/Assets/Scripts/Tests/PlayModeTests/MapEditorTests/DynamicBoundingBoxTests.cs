@@ -8,7 +8,6 @@ using UnityEngine.UI;
 [TestFixture]
 public class DynamicBoundingBoxTests : MapEditorTests {
 
-    // asset hover with higher count
     [Test]
     public void DynamicBoundingBoxAssetHoverHasCorrectCount() {
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
@@ -21,6 +20,22 @@ public class DynamicBoundingBoxTests : MapEditorTests {
 
         // the dynamic bounding box parent on the hovering assets is also given the tag AssetImage
         Assert.AreEqual(3, GameObject.FindGameObjectsWithTag("AssetImage").Length);
+    }
+
+    [UnityTest]
+    public IEnumerator DynamicBoundingBoxAssetHoverUpdatesOnBrushSizeChange() {
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        fortressButton.onClick.Invoke();
+        // the local scale of the hovering dynamic bounding box is equal to the slider input
+        Assert.AreEqual(Vector3.one,
+                        GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
+        // change the slider input and ensure it is reflected in the hover object scale
+        brushSizeSlider.value = 2f;
+        yield return null;
+        Assert.AreEqual(Vector3.one * 2,
+                        GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
     }
 
     [UnityTest]
