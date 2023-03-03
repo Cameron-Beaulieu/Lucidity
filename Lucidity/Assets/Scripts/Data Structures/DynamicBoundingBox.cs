@@ -42,8 +42,8 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicAssetImage.GetComponent<MeshRenderer>().materials = new Material[0];
         _outline = dynamicAssetImage.AddComponent<Outline>();
         _outline.OutlineMode = Outline.Mode.OutlineAll;
-        _outline.OutlineColor = Color.red;
-        _outline.OutlineWidth = 2f;
+        _outline.OutlineColor = Color.white;
+        _outline.OutlineWidth = 0.5f;
 
         GenerateRandomCoordinates();
 
