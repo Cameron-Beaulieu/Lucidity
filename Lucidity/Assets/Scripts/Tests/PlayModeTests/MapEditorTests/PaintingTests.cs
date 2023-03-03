@@ -189,6 +189,46 @@ public class PaintingTests : MapEditorTests {
 
         Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
         Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
-
     }
+
+    [Test]
+    public void CanPaintTheAssetBeforeAndAfterSwitchingTools() {
+        // this is a regression test; a bug was found where if a user selected an asset and painted 
+        // it, then switched tools, then switched back to paint and tried to paint the same asset,
+        // the user could not paint with that asset
+
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+
+        // place the first instance of the fortress asset
+        GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
+        editor.PaintAtPosition(new Vector2(-100,150));
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        
+        // switch to some other tool
+        GameObject.Find("Panning Tool").GetComponent<Button>().onClick.Invoke();
+        Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
+        Assert.IsFalse(Tool.ToolStatus["Brush Tool"]);
+
+        // switch back to the brush tool
+        GameObject.Find("Brush Tool").GetComponent<Button>().onClick.Invoke();
+        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
+        Assert.IsFalse(Tool.ToolStatus["Panning Tool"]);
+        
+        // all asset buttons should be unclicked
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        foreach (GameObject button in paintButtons) {
+            Assert.IsFalse(button.GetComponent<AssetController>().Clicked);
+        }
+
+        // click the fortress button again
+        GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
+        Assert.IsTrue(GameObject.Find("FortressButton").GetComponent<AssetController>().Clicked);
+
+        // try to paint
+        editor.PaintAtPosition(new Vector2(100,150));
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+    }
+
 }
