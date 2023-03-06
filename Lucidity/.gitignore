@@ -63,3 +63,10 @@ crashlytics-build.properties
 
 # Remove vsconfig file
 .vsconfig
+
+# Ignore temporaries from GameCI
+/[Aa]rtifacts/
+/[Cc]odeCoverage/
+
+# Preventing Unity Temp Test Files 
+InitTest*.unity
