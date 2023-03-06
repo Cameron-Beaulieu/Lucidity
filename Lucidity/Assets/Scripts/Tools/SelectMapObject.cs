@@ -4,19 +4,14 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
+public class SelectMapObject : MonoBehaviour {
     public static GameObject SelectedObject;
     public static bool IsTesting = false;
     private static Outline _outline;
 
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnMouseDown() {
         if (Tool.ToolStatus["Selection Tool"]) {
-            GameObject clickedObject;
-            if (IsTesting) {
-                clickedObject = SelectedObject;
-            } else {
-                clickedObject = eventData.pointerClick;
-            }
+            GameObject clickedObject = gameObject;
             int id = clickedObject.GetInstanceID();
             MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
                 .GetComponent<MapEditorManager>();
@@ -42,7 +37,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 _outline = SelectedObject.AddComponent<Outline>();
                 _outline.OutlineMode = Outline.Mode.OutlineAll;
                 _outline.OutlineColor = Color.red;
-                _outline.OutlineWidth = 2f;
+                _outline.OutlineWidth = 1f;
             }
         }
     }

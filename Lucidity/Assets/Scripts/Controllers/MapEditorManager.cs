@@ -112,9 +112,9 @@ public class MapEditorManager : MonoBehaviour {
             AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
             activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         }
-            Debug.Log(activeImage.name);
-        float assetWidth = activeImage.transform.localScale.x;
-        float assetHeight = activeImage.transform.localScale.y;
+        Collider2D collider = activeImage.GetComponent<Collider2D>();
+        float assetWidth = collider.bounds.size.x; //activeImage.transform.localScale.x;
+        float assetHeight = collider.bounds.size.y; //activeImage.transform.localScale.y;
         // Check if mouse position relative to its last position and the previously encountered
         // asset would allow for a legal placement. Reduces unnecessary computing
         if (Mouse.LastMousePosition != worldPosition
@@ -129,7 +129,7 @@ public class MapEditorManager : MonoBehaviour {
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
-                newParent.transform.position = new Vector3(worldPosition.x, 
+                newParent.transform.position = new Vector3(worldPosition.x + i*2, 
                                                             worldPosition.y, 0);
                 newParent.transform.localPosition = new Vector3(
                     newParent.transform.localPosition.x,
@@ -396,26 +396,35 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Loads a map that is stored as a MapData object.
+    /// Loads a map stored at the specified file path.
     /// </summary>
     public void LoadMap() {
         MapContainer = GameObject.Find("Map Container");
         MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
-        SelectedBiome = loadedMap.Biome;
-        SpawnPoint = loadedMap.SpawnPoint;
-        GameObject.Find("Spawn Point").transform.localPosition = 
-            new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
+        LoadMapFromMapData(loadedMap);
+    }
 
-        foreach (MapObject mapObject in loadedMap.MapObjects) {
+    /// <summary>
+    /// Loads a map from the specified <c>MapData</c> object.
+    /// </summary>
+    public void LoadMapFromMapData(MapData mapData) {
+        SelectedBiome = mapData.Biome;
+        SpawnPoint = mapData.SpawnPoint;
+        GameObject.Find("Spawn Point").transform.localPosition = 
+            new Vector3(SpawnPoint.x, SpawnPoint.y, -101);
+
+        foreach (MapObject mapObject in mapData.MapObjects) {
             GameObject newParent = new GameObject();
             newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
             newParent.transform.SetParent(MapContainer.transform, true);
             newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
                                                             mapObject.MapOffset.y, 0);
             GameObject newGameObject = (GameObject) Instantiate(
-                AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
-            newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
-                                                                mapObject.MapPosition.y, 0);
+                AssetPrefabs[mapObject.PrefabIndex], new Vector3(newParent.transform.position.x, 
+                                                                 newParent.transform.position.y, 
+                                                                 88), Quaternion.identity, newParent.transform);
+            // newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
+            //                                                     mapObject.MapPosition.y, 0);
             newGameObject.transform.rotation = mapObject.Rotation;
             newGameObject.transform.localScale = 
                 new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 

@@ -16,7 +16,9 @@ public class AssetCollision : MonoBehaviour {
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
-        CheckAssetCollisions();
+        if (!gameObject.transform.parent.name.Contains("Container")) {
+            CheckAssetCollisions();
+        }
     }
 
     private void OnDrawGizmos() {
@@ -95,12 +97,7 @@ public class AssetCollision : MonoBehaviour {
     /// </param>
     IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
-        if (collisionObject.gameObject.name == "Spawn Point") {
-            // spawn point doesn't have material (would hide the sprite)
-            collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
-        } else {
-            collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
-        }
+        collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
 
         if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());

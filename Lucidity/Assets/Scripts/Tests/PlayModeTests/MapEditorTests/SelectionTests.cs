@@ -47,7 +47,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));
+            .OnMouseDown();
         Assert.IsTrue(Tool.SelectionOptions.activeSelf);
         Assert.AreEqual("Editing TempFortressObject(Clone)", 
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
@@ -63,7 +63,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));
+            .OnMouseDown();
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.IsNull(placedAsset.GetComponent<Outline>());
     }
@@ -82,7 +82,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));
+            .OnMouseDown();
         
         // assert spawn point selection options is active and the spawn point has an outline
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
@@ -102,7 +102,7 @@ public class SelectionTests : MapEditorTests {
         // select the spawn point while on a new layer
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));
+            .OnMouseDown();
         Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
@@ -143,7 +143,7 @@ public class SelectionTests : MapEditorTests {
         GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));
+            .OnMouseDown();
 
         // delete the object
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();

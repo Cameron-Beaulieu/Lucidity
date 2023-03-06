@@ -15,13 +15,13 @@ public class Mouse : MonoBehaviour {
 
     private void Update() {
         Vector2 worldPosition = GetMousePosition();
-        transform.position = new Vector3(worldPosition.x, worldPosition.y, 90f);
+        transform.position = new Vector3(worldPosition.x, worldPosition.y, 88f);
         RayLibrary rayLib = new RayLibrary();
         if (rayLib.IsPointerOverLayer(_uiLayer)) {
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
         else {
-            gameObject.GetComponent<MeshRenderer>().enabled = true;
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 
