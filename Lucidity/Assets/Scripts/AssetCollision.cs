@@ -35,31 +35,39 @@ public class AssetCollision : MonoBehaviour {
     /// appropriate amount of time.
     /// </summary>
     private void CheckAssetCollisions() {
+        Collider2D collider2D = gameObject.GetComponent<Collider2D>();
+        List<Collider2D> hitColliders2D = new List<Collider2D>();
+        ContactFilter2D filter2D = new ContactFilter2D();
+        filter2D.SetLayerMask(_filterMask);
+        collider2D.OverlapCollider(filter2D, hitColliders2D);
         Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
                                                      transform.localScale / 2, Quaternion.identity,
                                                      _filterMask);
-        int collisions = hitColliders.Length;
-        foreach (Collider collisionObject in hitColliders) {
+        int collisions = hitColliders2D.Count;
+        foreach (Collider2D collisionObject in hitColliders2D) {
             // If an object is labeled with the "CollisionObject" tag, then it can be considered as
             // not colliding, as it will not be placed because of legality.
             if (collisionObject.tag == "CollisionObject") {
                 collisions--;
             }
         }
-        if (collisions > 1) {
+        Debug.Log("Collisions: " + collisions);
+        if (collisions > 0) {
+            hitColliders2D.Add(gameObject.GetComponent<Collider2D>());
             gameObject.tag = "CollisionObject";
-            foreach (Collider collisionObject in hitColliders) {
+            foreach (Collider2D collisionObject in hitColliders2D) {
                 if (collisionObject.gameObject.layer == _assetLayer
-                    && collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
-                    _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()
+                    && collisionObject.gameObject.GetComponent<SpriteRenderer>() != null) {
+                    Debug.Log("Collision with " + collisionObject.gameObject.name);
+                    _originalMaterial = collisionObject.gameObject.GetComponent<SpriteRenderer>()
                         .material;
-                    collisionObject.gameObject.GetComponent<MeshRenderer>().material 
+                    collisionObject.gameObject.GetComponent<SpriteRenderer>().material 
                         = _errorMaterial;
                     StartCoroutine(RevertMaterialAndDestroy(_originalMaterial,
                                                             collisionObject.gameObject));
                 }
             }
-            MapEditorManager.LastEncounteredObject = hitColliders[0].gameObject;
+            MapEditorManager.LastEncounteredObject = hitColliders2D[0].gameObject;
         }
     }
 
@@ -89,12 +97,14 @@ public class AssetCollision : MonoBehaviour {
         yield return new WaitForSecondsRealtime(0.5f);
         if (collisionObject.gameObject.name == "Spawn Point") {
             // spawn point doesn't have material (would hide the sprite)
-            collisionObject.gameObject.GetComponent<MeshRenderer>().materials = new Material[]{};
+            collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
         } else {
-            collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
+            collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
         }
-        if (collisionObject == gameObject) {
+
+        if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+            Destroy(gameObject.transform.parent.gameObject);
             Destroy(gameObject);
         }
     }

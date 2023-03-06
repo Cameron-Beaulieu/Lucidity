@@ -112,6 +112,7 @@ public class MapEditorManager : MonoBehaviour {
             AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
             activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         }
+            Debug.Log(activeImage.name);
         float assetWidth = activeImage.transform.localScale.x;
         float assetHeight = activeImage.transform.localScale.y;
         // Check if mouse position relative to its last position and the previously encountered
@@ -128,7 +129,7 @@ public class MapEditorManager : MonoBehaviour {
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
-                newParent.transform.position = new Vector3(worldPosition.x + i*2, 
+                newParent.transform.position = new Vector3(worldPosition.x, 
                                                             worldPosition.y, 0);
                 newParent.transform.localPosition = new Vector3(
                     newParent.transform.localPosition.x,
@@ -137,7 +138,7 @@ public class MapEditorManager : MonoBehaviour {
                 GameObject newGameObject = (GameObject) Instantiate(
                     AssetPrefabs[_currentButtonPressed],
                     new Vector3(worldPosition.x + i*2, worldPosition.y, 
-                                90), // the world Z position of the UI
+                                88), // the world Z position of the UI
                     Quaternion.identity, newParent.transform);
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
