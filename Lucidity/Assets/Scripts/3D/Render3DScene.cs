@@ -9,8 +9,8 @@ public class Render3DScene : MonoBehaviour {
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
-    private float _scaleUpFactor = 36f;
-    private float _mapEditorParentScaleDownFactor = 80f;
+    // private float _scaleUpFactor = 81f;
+    // private float _mapEditorParentScaleDownFactor = 81f;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
@@ -100,7 +100,9 @@ public class Render3DScene : MonoBehaviour {
                         // newGameObject.transform.localScale = kvp.Value.Scale / mapEditorParentBaseScale * map3DBaseScale;
                         break;
                 }
-                newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * (kvp.Value.Scale.x - _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.y * (kvp.Value.Scale.y - _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.z * (kvp.Value.Scale.z - _mapEditorParentScaleDownFactor)) * _scaleUpFactor;
+                Debug.Log("newGameObject.transform.localScale: " + newGameObject.transform.localScale);
+                newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+                //new Vector3(newGameObject.transform.localScale.x * (kvp.Value.Scale.x / _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.y * (kvp.Value.Scale.y / _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.z * (kvp.Value.Scale.z / _mapEditorParentScaleDownFactor)) * _scaleUpFactor;
             }
         }
     }
@@ -111,8 +113,7 @@ public class Render3DScene : MonoBehaviour {
     /// </summary>
     private void PlaceAvatar() {
         Debug.Log("placing avatar");
-        _avatar.transform.localScale = _avatar.transform.localScale * _scaleUpFactor;
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, _scaleUpFactor, 
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, _avatar.transform.position.y, 
                                                  MapEditorManager.SpawnPoint.y);
     }
 
