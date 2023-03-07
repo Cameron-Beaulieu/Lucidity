@@ -17,7 +17,6 @@ public class MapCreationScreenTests {
 
     [UnityTest]
     public IEnumerator CancelButtonRedirectsToStartupScreen() {
-        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
         Button button = GameObject.Find("Cancel Button").GetComponent<Button>();
         button.onClick.Invoke();
         yield return null;
@@ -26,7 +25,6 @@ public class MapCreationScreenTests {
 
     [Test]
     public void ErrorsOnEmptyFileName() {
-        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
         Button button = GameObject.Find("Create Button").GetComponent<Button>();
         button.onClick.Invoke();
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);

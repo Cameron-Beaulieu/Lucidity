@@ -12,7 +12,10 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void EmptyMapHasOneLayer() {
+        // Confirm scene is map editor
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+
+        // Check for starting layer
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         Assert.AreEqual(layerScrollContent.transform.childCount, 1);
     }
@@ -89,10 +92,13 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void EditButtonChangesReadOnlyStatusOfLayerLabel() {
+        // Getting layer name input
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
             .GetComponent<TMP_InputField>();
+
+        // Checking readonly status functionality
         Assert.IsTrue(layerNameInput.readOnly);
         baseLayer.transform.Find("Edit").GetComponent<Button>().onClick.Invoke();
         Assert.IsFalse(layerNameInput.readOnly);
@@ -100,16 +106,18 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void CanRenameLayers() {
-        // get the default name
+        // get the default layer name
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
             .GetComponent<TMP_InputField>();
+
+        // Setting LayerName.CurrentText to the current layer name
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
         Assert.AreEqual(originalName, layerNameInput.GetComponent<LayerName>().CurrentText);
 
-        // actually change the name
+        // change the name
         layerNameInput.onSubmit.Invoke("New Layer Name");
         Assert.AreEqual("New Layer Name", layerNameInput.text);
         Assert.AreEqual("New Layer Name", layerNameInput.GetComponent<LayerName>().CurrentText);
@@ -117,12 +125,17 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void ResetsToOriginalNameOnEmptyInput() {
+        // get the default layer name
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
             .GetComponent<TMP_InputField>();
+
+        // Setting LayerName.CurrentText to the current layer name
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
+
+        // Confirm layer name cannot be empty
         Assert.AreNotEqual("", originalName);
         layerNameInput.onSubmit.Invoke("");
         Assert.AreEqual(originalName, layerNameInput.text);
@@ -130,17 +143,22 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void TruncatesLongNames() {
+        // Get starting layer input
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)
             .gameObject;
         TMP_InputField layerNameInput = baseLayer.transform.Find("InputField (TMP)")
             .GetComponent<TMP_InputField>();
         string originalName = layerNameInput.text;
         layerNameInput.onSelect.Invoke(originalName);
+
+        // Changing layer name
         string longName = "This is a very long layer name that should be truncated";
         // setting .text through code alone doesn't change the rect transform's width, so we have 
         // to set the sizeDelta manually
         layerNameInput.GetComponent<RectTransform>().sizeDelta = new Vector2(165, 0);
         layerNameInput.onSubmit.Invoke(longName);
+        
+        // Check name is truncated properly
         Assert.AreEqual(longName, layerNameInput.GetComponent<LayerName>().CurrentText);
         Assert.AreEqual(longName.Substring(0,10) + "...", layerNameInput.text);
     }

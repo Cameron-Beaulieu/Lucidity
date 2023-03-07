@@ -31,12 +31,13 @@ public class SelectionTests : MapEditorTests {
 
     [UnityTest]
     public IEnumerator CanOnlySelectObjectsOnCurrentLayer() {
+        // Check CurrentLayer is tracking base layer and that it is empty
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         Assert.AreEqual(0, editor.CurrentLayer);
         Assert.Zero(MapEditorManager.MapObjects.Count);
 
-        //  paint an object on base layer
+        // paint an object on base layer
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedAsset.GetInstanceID()));
@@ -70,6 +71,7 @@ public class SelectionTests : MapEditorTests {
 
     [UnityTest]
     public IEnumerator CanSelectSpawnPointRegardlessOfLayer() {
+        // Check CurrentLayer is tracking base layer and that spawnSpoint is not selected
         GameObject spawnPoint = GameObject.Find("Spawn Point");
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();

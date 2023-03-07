@@ -133,5 +133,4 @@ public class TwoDReversionTests {
         Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
         PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Panning Tool");
     }
-    
 }

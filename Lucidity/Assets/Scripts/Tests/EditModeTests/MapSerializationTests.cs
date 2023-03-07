@@ -7,7 +7,6 @@ using UnityEngine.TestTools;
 
 [TestFixture]
 public class MapSerializationTests {
-
     private MapData _mockMapData = new MapData(new Biome(0), 
                                                new Dictionary<int, MapObject> {
                                                     {0, new MapObject(0, 
@@ -32,11 +31,14 @@ public class MapSerializationTests {
 
     [Test]
     public void DeserializesDataCorrectly() {
+        // Serialize and unserialized data
         File.WriteAllText("DeserializesDataCorrectly.json", _mockSerializedData);
         MapData deserializedData = MapData.Deserialize("DeserializesDataCorrectly.json");
+
+        // Confirm serialized and unserialized data are equal
         Assert.AreEqual(deserializedData.Biome.Name, _mockMapData.Biome.Name);
         int i = 0;
-        foreach(MapObject mapObject in _mockMapData.MapObjects) {
+        foreach (MapObject mapObject in _mockMapData.MapObjects) {
             Assert.True(deserializedData.MapObjects[i].Id == mapObject.Id);
             Assert.AreEqual(mapObject.Name, deserializedData.MapObjects[i].Name);
             Assert.AreEqual(deserializedData.MapObjects[i].PrefabIndex, mapObject.PrefabIndex);
@@ -56,6 +58,8 @@ public class MapSerializationTests {
         }
         Assert.True(deserializedData.SpawnPoint.x == _mockMapData.SpawnPoint.x);
         Assert.True(deserializedData.SpawnPoint.y == _mockMapData.SpawnPoint.y);
+
+        // Clean up serialized file
         File.Delete("DeserializesDataCorrectly.json");
         Assert.IsFalse(File.Exists("DeserializesDataCorrectly.json"));
     }
