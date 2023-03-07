@@ -126,7 +126,6 @@ public class TwoDReversionTests {
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
 
-
         // Check if user can change to panning tool
         Button panningToolButton = GameObject.Find("Panning Tool").GetComponent<Button>();
         panningToolButton.onClick.Invoke();
