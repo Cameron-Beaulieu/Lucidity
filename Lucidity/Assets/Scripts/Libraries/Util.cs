@@ -28,4 +28,18 @@ public class Util {
         Layer.LayerIndex.Clear();
         Layer.LayerNames.Clear();
     }
+
+    /// <summary>
+    /// Resets all asset buttons in MapEditorManager. This is necessary to avoid issues with old
+    /// buttons being referenced when MapEditor is reloaded.
+    /// </summary>
+    public static void ResetAssetButtons() {
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        editor.AssetButtons.Clear();
+        foreach (GameObject paintButton in GameObject
+                .FindGameObjectsWithTag("PaintButton")) {
+            editor.AssetButtons.Add(paintButton.GetComponent<AssetController>());
+        }
+    }
 }

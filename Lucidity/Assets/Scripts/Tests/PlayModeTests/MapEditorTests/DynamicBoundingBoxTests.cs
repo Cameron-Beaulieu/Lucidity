@@ -2,11 +2,22 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 [TestFixture]
 public class DynamicBoundingBoxTests : MapEditorTests {
+
+    [UnitySetUp]
+    public IEnumerator DynamicBoundingBoxSetUp() {
+        Util.ResetStaticVariables();
+        StartupScreen.FilePath = null;
+        MapEditorManager.ReloadFlag = false;
+        SceneManager.LoadScene("MapEditor");
+        yield return null;
+        Util.ResetAssetButtons();
+    }
 
     [Test]
     public void DynamicBoundingBoxAssetHoverHasCorrectCount() {
@@ -24,6 +35,34 @@ public class DynamicBoundingBoxTests : MapEditorTests {
 
     [UnityTest]
     public IEnumerator DynamicBoundingBoxAssetHoverUpdatesOnBrushSizeChange() {
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        fortressButton.onClick.Invoke();
+        // the local scale of the hovering dynamic bounding box is equal to the slider input
+        Assert.AreEqual(Vector3.one,
+                        GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
+        // change the slider input and ensure it is reflected in the hover object scale
+        brushSizeSlider.value = 2f;
+        yield return null;
+        Assert.AreEqual(Vector3.one * 2,
+                        GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
+    }
+
+    [UnityTest]
+    public IEnumerator DynamicBoundingBoxAssetHoverUpdatesAfterReversion() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+        
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
             .GetComponent<Slider>();

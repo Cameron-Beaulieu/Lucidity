@@ -85,10 +85,13 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public int GetCollisionCount() {
         Collider[] hitColliders = GetAssetCollisions();
-        if (GetDynamicCollision()) {
-            return hitColliders.Length - 1;
+        int numCollisions = 0;
+        foreach (Collider collider in hitColliders) {
+            if (collider.gameObject.tag != "DynamicBoundingBox") {
+                numCollisions++;
+            }
         }
-        return hitColliders.Length;
+        return numCollisions;
     }
 
     /// <summary>
@@ -102,6 +105,12 @@ public class AssetCollision : MonoBehaviour {
         Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
                                                      transform.localScale / 2, Quaternion.identity,
                                                      _filterMask);
+        foreach (Collider collider in hitColliders) {
+            if (collider.gameObject == gameObject) {
+                return hitColliders;
+            }
+        }
+        
         Collider[] allColliders = new Collider[hitColliders.Length + 1];
         for (int i = 0; i < hitColliders.Length; i++) {
             allColliders[i] = hitColliders[i];
