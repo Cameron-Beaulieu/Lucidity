@@ -148,9 +148,9 @@ public class MapEditorManager : MonoBehaviour {
                         .IsInvalidPlacement()) {
                     newMapObjects.Add(newGameObject);
                     AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                    newParent, MapObjects);
+                                    newParent, MapObjects, _currentButtonPressed);
                     AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                    newParent, Layers[CurrentLayer]);
+                                    newParent, Layers[CurrentLayer], _currentButtonPressed);
                 } else {
                     Destroy(newParent);
                 }
@@ -361,11 +361,11 @@ public class MapEditorManager : MonoBehaviour {
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
                                 GameObject parentGameObject, 
-                                Dictionary<int, MapObject> mapObjectDictionary) {
+                                Dictionary<int, MapObject> mapObjectDictionary,
+                                int assetPrefabIndex) {
         MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
-            _currentButtonPressed,
-            new Vector2(newGameObject.transform.localPosition.x, 
-                        newGameObject.transform.localPosition.y),  
+            assetPrefabIndex, new Vector2(newGameObject.transform.localPosition.x, 
+                                          newGameObject.transform.localPosition.y),  
             new Vector2(parentGameObject.transform.localPosition.x, 
                         parentGameObject.transform.localPosition.y),
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
@@ -471,7 +471,7 @@ public class MapEditorManager : MonoBehaviour {
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
-                                newParent, newMapObjects);
+                                newParent, newMapObjects, mapObject.Value.PrefabIndex);
                 if(mapObject.Value.IsActive == false){
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
