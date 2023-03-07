@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 2, y: 1.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7768790466255065852
 MonoBehaviour:
@@ -111,7 +111,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 2, y: 2}
+  m_Size: {x: 2, y: 1.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -134,16 +134,24 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 20.48, y: 20.48}
-    newSize: {x: 2, y: 2}
+    oldSize: {x: 9.56, y: 6.04}
+    newSize: {x: 2, y: 1.6}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 1}
-      - {x: -1, y: 0.11}
-      - {x: -0.62, y: -1}
-      - {x: 0.62, y: -1}
-      - {x: 1, y: 0.11}
+    - - {x: 0.93466026, y: -0.24643207}
+      - {x: 1.0230788, y: 0.4243173}
+      - {x: 0.5917527, y: 0.8037307}
+      - {x: 0.07807177, y: 0.8183478}
+      - {x: -0.3426708, y: 0.629368}
+      - {x: -0.9214386, y: 0.3924845}
+      - {x: -1.0077732, y: 0.08176844}
+      - {x: -0.9671937, y: -0.38057786}
+      - {x: -0.602818, y: -0.62133694}
+      - {x: -0.24987495, y: -0.6963616}
+      - {x: 0.26664197, y: -0.80925435}
+      - {x: 0.6520198, y: -0.69382614}
+      - {x: 0.78931224, y: -0.5706957}

@@ -9,6 +9,8 @@ public class Render3DScene : MonoBehaviour {
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
+    private float _scaleUpFactor = 36f;
+    private float _mapEditorParentScaleDownFactor = 80f;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
@@ -70,34 +72,35 @@ public class Render3DScene : MonoBehaviour {
                     case "Fortress":
                         newGameObject = Instantiate(_3DPrefabs[0], 
                         calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        // newGameObject.transform.localScale = newGameObject.transform.localScale * map3DBaseScale;
                         break;
                     
                     case "House":
                         newGameObject = Instantiate(_3DPrefabs[1], 
                         calculatePlacementPosition(kvp.Value, _3DPrefabs[1]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        // newGameObject.transform.localScale = kvp.Value.Scale / mapEditorParentBaseScale * map3DBaseScale;
                         break;
                     
                     case "Mountain":
                         newGameObject = Instantiate(_3DPrefabs[2], 
                         calculatePlacementPosition(kvp.Value, _3DPrefabs[2]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        // newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z) / 81f * map3DBaseScale;// newGameObject.transform.localScale * kvp.Value.Scale;// * map3DBaseScale;
                         break;
                     
                     case "Tree":
                         newGameObject = Instantiate(_3DPrefabs[3], 
                         calculatePlacementPosition(kvp.Value, _3DPrefabs[3]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        // newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z) / 81f * map3DBaseScale;//newGameObject.transform.localScale * kvp.Value.Scale;// * map3DBaseScale;
                         break;
                     
                     default:
                         Debug.Log("using default prefab");
                         newGameObject = Instantiate(_3DPrefabs[0], 
                         calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        // newGameObject.transform.localScale = kvp.Value.Scale / mapEditorParentBaseScale * map3DBaseScale;
                         break;
                 }
+                newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * (kvp.Value.Scale.x - _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.y * (kvp.Value.Scale.y - _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.z * (kvp.Value.Scale.z - _mapEditorParentScaleDownFactor)) * _scaleUpFactor;
             }
         }
     }
@@ -107,7 +110,9 @@ public class Render3DScene : MonoBehaviour {
     /// on the 2D map.
     /// </summary>
     private void PlaceAvatar() {
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, 1f, 
+        Debug.Log("placing avatar");
+        _avatar.transform.localScale = _avatar.transform.localScale * _scaleUpFactor;
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, _scaleUpFactor, 
                                                  MapEditorManager.SpawnPoint.y);
     }
 
@@ -123,7 +128,7 @@ public class Render3DScene : MonoBehaviour {
     private Vector3 calculatePlacementPosition(MapObject toBePlaced, GameObject prefab) {
         float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x);
         float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y);
-        float yPosition = (toBePlaced.Scale.y / 2) + _map.transform.position.y;
+        float yPosition = 0;// (prefab.transform.localScale.y * toBePlaced.Scale.y / _mapEditorParentScaleDownFactor * _scaleUpFactor / 2) + _map.transform.position.y;
         Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
         return placementPosition;
     }
