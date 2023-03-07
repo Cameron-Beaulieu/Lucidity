@@ -19,8 +19,7 @@ public class Mouse : MonoBehaviour {
         RayLibrary rayLib = new RayLibrary();
         if (rayLib.IsPointerOverLayer(_uiLayer)) {
             gameObject.GetComponent<MeshRenderer>().enabled = false;
-        }
-        else {
+        } else {
             gameObject.GetComponent<MeshRenderer>().enabled = true;
         }
     }

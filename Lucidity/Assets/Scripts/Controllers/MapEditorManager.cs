@@ -440,12 +440,11 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
-        foreach (Dictionary<int, MapObject> layer in Layers){
+        foreach (Dictionary<int, MapObject> layer in Layers) {
             List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
         }
         CurrentLayer = Layers.Count - 1;
 
-        
         // TODO: During 3D with layers, will need to nest Reloading MapObjects
         // within Reloading Layers to rebuild each layer.
 
@@ -463,7 +462,7 @@ public class MapEditorManager : MonoBehaviour {
                 GameObject newGameObject = (GameObject) Instantiate(
                     AssetPrefabs[mapObject.Value.PrefabIndex], newParent.transform);
                 newGameObject.transform.localPosition = new Vector3(mapObject.Value.MapPosition.x, 
-                                                                    mapObject.Value.MapPosition.y, 0);
+                    mapObject.Value.MapPosition.y, 0);
                 newGameObject.transform.rotation = mapObject.Value.Rotation;
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
@@ -472,18 +471,18 @@ public class MapEditorManager : MonoBehaviour {
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
-                if(mapObject.Value.IsActive == false){
+                if (mapObject.Value.IsActive == false) {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
         }
 
         // Swapping GameObject's in editor action linked list
-        if(Actions != null){
+        if (Actions != null) {
             LinkedListNode<EditorAction> pointer = Actions.First;
 
-            while (pointer != null){
-                    for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
+            while (pointer != null) {
+                    for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
                         pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }
                 pointer = pointer.Next;

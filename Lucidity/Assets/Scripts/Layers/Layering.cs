@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Layering : MonoBehaviour{
+public class Layering : MonoBehaviour {
     [SerializeField] private GameObject _layerPrefab; 
     private static GameObject _layerContainer;
 
@@ -22,7 +22,7 @@ public class Layering : MonoBehaviour{
     /// <returns>
     /// <c>GameObject List</c> containing the new layer GameObject.
     /// </returns>
-    public static List<GameObject> AddLayer(GameObject layerPrefab){
+    public static List<GameObject> AddLayer(GameObject layerPrefab) {
         MapEditorManager.Layers.Add(new Dictionary<int, MapObject>());
         Vector3 newPosition = new Vector3(150, 0, 0);
         GameObject newLayer = (GameObject) Instantiate(
@@ -41,7 +41,7 @@ public class Layering : MonoBehaviour{
     /// <returns>
     /// <c>GameObject List</c> containing the new layer GameObject.
     /// </returns>
-    public static List<GameObject> RemakeLayer(GameObject layerPrefab){
+    public static List<GameObject> RemakeLayer(GameObject layerPrefab) {
         Vector3 newPosition = new Vector3(150, 0, 0);
         GameObject newLayer = (GameObject) Instantiate(
             layerPrefab, _layerContainer.transform);
@@ -53,7 +53,7 @@ public class Layering : MonoBehaviour{
     /// <summary>
     /// Creates a new layer using the AddLayer method and updates the Undo/Redo linked list.
     /// </summary>
-    private void CreateNewLayer(){
+    private void CreateNewLayer() {
         List<GameObject> newLayerList = AddLayer(_layerPrefab);
 
         // Adding CreateLayerAction to Undo/Redo LinkedList
@@ -92,7 +92,7 @@ public class Layering : MonoBehaviour{
     /// <summary>
     /// Deletes the most recently added layer from all Lists and from the scene.
     /// </summary>
-    public static void DeleteLastLayer(){
+    public static void DeleteLastLayer() {
         Layer.LayerStatus.Remove(Layer.LayerNames.Last());
         Layer.LayerIndex.Remove(Layer.LayerNames.Last());
         MapEditorManager.Layers.RemoveAt(MapEditorManager.Layers.Count - 1);
@@ -100,7 +100,5 @@ public class Layering : MonoBehaviour{
         Destroy(layerToBeRemoved);
         Layer.LayerNames.Remove(Layer.LayerNames.Last());
         Layer.SelectedChangeSelectedLayer(Layer.LayerNames.Last());
-
     }
-
 }

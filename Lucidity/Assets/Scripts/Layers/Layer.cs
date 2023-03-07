@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Layer : MonoBehaviour{
+public class Layer : MonoBehaviour {
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
@@ -56,7 +56,7 @@ public class Layer : MonoBehaviour{
     /// <summary>
     /// Changes the layer currently selected from the layer menu.
     /// </summary>
-    public static void SelectedChangeSelectedLayer(string layerName){
+    public static void SelectedChangeSelectedLayer(string layerName) {
         SelectMapObject.UnselectMapObject();
         foreach (string layerKey in new List<string>(LayerStatus.Keys)) {
             if (layerKey != layerName) {
@@ -67,16 +67,15 @@ public class Layer : MonoBehaviour{
         }
     }
 
-    private void ChangeSelectedLayer(){
+    private void ChangeSelectedLayer() {
         SelectedChangeSelectedLayer(_name);
     }
 
     /// <summary>
     /// Reactivates the layer input field for the user to supply a new layer name.
     /// </summary>
-    private void ChangeLayerName(){
+    private void ChangeLayerName() {
         _layerText.readOnly = false;
         _layerText.ActivateInputField();
     }
-
 }

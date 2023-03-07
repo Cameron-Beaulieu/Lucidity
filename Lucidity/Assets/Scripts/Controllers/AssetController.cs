@@ -33,13 +33,13 @@ public class AssetController : MonoBehaviour {
 
         MapEditorManager.CurrentButtonPressed = Id;
 
-        GameObject parentContainer = GameObject.Find(
-            gameObject.transform.parent.name);
+        GameObject parentContainer = GameObject.Find(gameObject.transform.parent.name);
         // Unselect previously selected asset in "Sprites" panel unless it 
         // is the same asset as that that is being selected
         if (_prevParentContainer != null && _prevParentContainer != parentContainer) {
             _prevParentContainer.GetComponentInChildren<AssetController>().UnselectButton();
         }
+        
         // Highlight asset in "Sprites" pane
         parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
         _prevParentContainer = parentContainer;
