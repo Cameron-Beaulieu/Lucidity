@@ -70,41 +70,53 @@ public class Render3DScene : MonoBehaviour {
             if(kvp.Value.IsActive) {
                 switch (kvp.Value.Name) {
                     case "Fortress":
-                        newGameObject = Instantiate(_3DPrefabs[0], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
+                        // newGameObject = Instantiate(_3DPrefabs[0], 
+                        // calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
                         // newGameObject.transform.localScale = newGameObject.transform.localScale * map3DBaseScale;
+                        Place3DObject(_3DPrefabs[0], kvp);
                         break;
                     
                     case "House":
-                        newGameObject = Instantiate(_3DPrefabs[1], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[1]), kvp.Value.Rotation);
+                        // newGameObject = Instantiate(_3DPrefabs[1], 
+                        // calculatePlacementPosition(kvp.Value, _3DPrefabs[1]), kvp.Value.Rotation);
                         // newGameObject.transform.localScale = kvp.Value.Scale / mapEditorParentBaseScale * map3DBaseScale;
+                        Place3DObject(_3DPrefabs[1], kvp);
                         break;
                     
                     case "Mountain":
-                        newGameObject = Instantiate(_3DPrefabs[2], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[2]), kvp.Value.Rotation);
+                        // newGameObject = Instantiate(_3DPrefabs[2], 
+                        // calculatePlacementPosition(kvp.Value, _3DPrefabs[2]), kvp.Value.Rotation);
                         // newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z) / 81f * map3DBaseScale;// newGameObject.transform.localScale * kvp.Value.Scale;// * map3DBaseScale;
+                        Place3DObject(_3DPrefabs[2], kvp);
                         break;
                     
                     case "Tree":
-                        newGameObject = Instantiate(_3DPrefabs[3], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[3]), kvp.Value.Rotation);
+                        // newGameObject = Instantiate(_3DPrefabs[3], 
+                        // calculatePlacementPosition(kvp.Value, _3DPrefabs[3]), kvp.Value.Rotation);
                         // newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z) / 81f * map3DBaseScale;//newGameObject.transform.localScale * kvp.Value.Scale;// * map3DBaseScale;
+                        Place3DObject(_3DPrefabs[3], kvp);
                         break;
                     
                     default:
                         Debug.Log("using default prefab");
-                        newGameObject = Instantiate(_3DPrefabs[0], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
+                        // newGameObject = Instantiate(_3DPrefabs[0], 
+                        // calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
                         // newGameObject.transform.localScale = kvp.Value.Scale / mapEditorParentBaseScale * map3DBaseScale;
+                        Place3DObject(_3DPrefabs[0], kvp);
                         break;
                 }
-                Debug.Log("newGameObject.transform.localScale: " + newGameObject.transform.localScale);
-                newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+                // newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+                // newGameObject.transform.localPosition = new Vector3(newGameObject.transform.localPosition.x, (newGameObject.transform.localScale.y / 2 + _map.transform.position.y), newGameObject.transform.localPosition.z);
                 //new Vector3(newGameObject.transform.localScale.x * (kvp.Value.Scale.x / _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.y * (kvp.Value.Scale.y / _mapEditorParentScaleDownFactor), newGameObject.transform.localScale.z * (kvp.Value.Scale.z / _mapEditorParentScaleDownFactor)) * _scaleUpFactor;
             }
         }
+    }
+
+    private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
+        GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), kvp.Value.Rotation);
+        newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, newGameObject.transform.localScale.y * kvp.Value.Scale.y, newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+        newGameObject.transform.position = calculatePlacementPosition(kvp.Value, prefab);
+        Debug.Log("Placing " + kvp.Value.Name + " at " + newGameObject.transform.position);
     }
 
     /// <summary>
@@ -120,16 +132,16 @@ public class Render3DScene : MonoBehaviour {
     /// <summary>
     /// Calculates the <c>Vector3</c> position where each new asset should be placed
     /// </summary>
-    /// <param name="toBePlaced">
+    /// <param name="mapObjectData">
     /// The <c>MapObject</c> of the current 2D map object to be placed on the 3D map
     /// </param>
     /// <param name="prefab">
     /// The 3D prefab matching the 2D asset to be placed
     /// </param>
-    private Vector3 calculatePlacementPosition(MapObject toBePlaced, GameObject prefab) {
-        float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x);
-        float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y);
-        float yPosition = 0;// (prefab.transform.localScale.y * toBePlaced.Scale.y / _mapEditorParentScaleDownFactor * _scaleUpFactor / 2) + _map.transform.position.y;
+    private Vector3 calculatePlacementPosition(MapObject mapObjectData, GameObject toBePlaced) {
+        float xPosition = (mapObjectData.MapPosition.x  + mapObjectData.MapOffset.x);
+        float zPosition = (mapObjectData.MapPosition.y  + mapObjectData.MapOffset.y);
+        float yPosition = toBePlaced.GetComponent<MeshCollider>().bounds.size.y / 2 + _map.transform.position.y;
         Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
         return placementPosition;
     }
