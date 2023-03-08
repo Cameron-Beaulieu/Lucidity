@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class AssetCollision : MonoBehaviour {
     [SerializeField] private Material _errorMaterial;
@@ -58,10 +59,10 @@ public class AssetCollision : MonoBehaviour {
             gameObject.tag = "CollisionObject";
             foreach (Collider2D collisionObject in hitColliders2D) {
                 if (collisionObject.gameObject.layer == _assetLayer
-                    && collisionObject.gameObject.GetComponent<SpriteRenderer>() != null) {
-                    _originalMaterial = collisionObject.gameObject.GetComponent<SpriteRenderer>()
+                    && collisionObject.gameObject.GetComponent<Image>() != null) {
+                    _originalMaterial = collisionObject.gameObject.GetComponent<Image>()
                         .material;
-                    collisionObject.gameObject.GetComponent<SpriteRenderer>().material 
+                    collisionObject.gameObject.GetComponent<Image>().material 
                         = _errorMaterial;
                     StartCoroutine(RevertMaterialAndDestroy(_originalMaterial,
                                                             collisionObject.gameObject));
@@ -95,7 +96,7 @@ public class AssetCollision : MonoBehaviour {
     /// </param>
     IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
-        collisionObject.gameObject.GetComponent<SpriteRenderer>().material = _originalMaterial;
+        collisionObject.gameObject.GetComponent<Image>().material = _originalMaterial;
 
         if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());

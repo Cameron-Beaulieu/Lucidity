@@ -92,11 +92,21 @@ public class Render3DScene : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Places a 3D asset on the 3D map
+    /// </summary>
+    /// <param name="prefab">
+    /// The 3D prefab of the MapObject to be placed on the 3D map
+    /// </param>
+    /// <param name="kvp">
+    /// The <c>MapObject</c> data of the MapObject to be placed on the 3D map
+    /// </param>
     private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
         GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), kvp.Value.Rotation);
-        newGameObject.transform.localScale = new Vector3(newGameObject.transform.localScale.x * kvp.Value.Scale.x, 
-                                                         newGameObject.transform.localScale.y * kvp.Value.Scale.y, 
-                                                         newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+        newGameObject.transform.localScale = new Vector3(
+            newGameObject.transform.localScale.x * kvp.Value.Scale.x, 
+            newGameObject.transform.localScale.y * kvp.Value.Scale.y, 
+            newGameObject.transform.localScale.z * kvp.Value.Scale.z);
         newGameObject.transform.position = calculatePlacementPosition(kvp.Value, newGameObject);
 
         // if an asset is not a mountain and below ground, calculate the distance needed to move it
@@ -109,19 +119,20 @@ public class Render3DScene : MonoBehaviour {
             newGameObject.transform.position = new Vector3(newGameObject.transform.position.x, 
             newGameObject.GetComponent<MeshCollider>().bounds.min.y * -kvp.Value.Scale.y, 
                                                            newGameObject.transform.position.z);
-            Debug.Log(newGameObject.GetComponent<MeshCollider>().bounds.min.y);
         }
     }
 
     /// <summary>
-    /// Checks if the asset is below ground
+    /// Checks if the placed 3D asset is below the ground
     /// </summary>
     /// <param name="gameObjectToCheck">
-    /// The asset being placed on the 3D map
+    /// The asset placed on the 3D map
     /// </param>
     private bool IsBelowGround(GameObject gameObjectToCheck) {
         GameObject ground = GameObject.Find("ForestPlane(Clone)");
-        return gameObjectToCheck.GetComponent<MeshCollider>().bounds.Intersects(ground.GetComponent<MeshCollider>().bounds);
+        MeshCollider gameObjectCollider = gameObjectToCheck.GetComponent<MeshCollider>();
+        MeshCollider groundCollider = ground.GetComponent<MeshCollider>();
+        return gameObjectCollider.bounds.Intersects(groundCollider.bounds);
     }
 
     /// <summary>
@@ -129,7 +140,8 @@ public class Render3DScene : MonoBehaviour {
     /// on the 2D map.
     /// </summary>
     private void PlaceAvatar() {
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, _avatar.transform.position.y, 
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, 
+                                                 _avatar.transform.position.y, 
                                                  MapEditorManager.SpawnPoint.y);
     }
 

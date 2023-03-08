@@ -88,7 +88,7 @@ public class PaintingTests : MapEditorTests {
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
         Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, PlayModeTestUtil.FloatTolerance);
-        Assert.Zero(placedParent.transform.localPosition.z);
+        Assert.AreEqual(90, placedParent.transform.localPosition.z, PlayModeTestUtil.FloatTolerance);
     }
 
     [Test]

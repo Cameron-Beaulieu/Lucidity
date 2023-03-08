@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Mouse : MonoBehaviour {
     private static Vector2 _lastMousePosition;
@@ -15,7 +16,7 @@ public class Mouse : MonoBehaviour {
 
     private void Update() {
         Vector2 worldPosition = GetMousePosition();
-        transform.position = new Vector3(worldPosition.x, worldPosition.y, 88f);
+        transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
         RayLibrary rayLib = new RayLibrary();
         if (rayLib.IsPointerOverLayer(_uiLayer)) {
             gameObject.GetComponent<SpriteRenderer>().enabled = false;

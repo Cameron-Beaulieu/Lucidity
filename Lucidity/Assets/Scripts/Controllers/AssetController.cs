@@ -50,7 +50,7 @@ public class AssetController : MonoBehaviour {
     public static void CreateFollowingImage(GameObject prefab) {
         Vector2 worldPosition = Mouse.GetMousePosition();
         GameObject hoverImage = Instantiate(prefab,
-                                            new Vector3(worldPosition.x, worldPosition.y, 88),
+                                            new Vector3(worldPosition.x, worldPosition.y, 0),
                                             Quaternion.identity);
         hoverImage.transform.localScale = new Vector3(
             hoverImage.transform.localScale.x + Zoom.zoomFactor, 

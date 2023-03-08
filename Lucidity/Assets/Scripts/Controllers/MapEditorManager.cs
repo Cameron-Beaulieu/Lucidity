@@ -130,17 +130,21 @@ public class MapEditorManager : MonoBehaviour {
                 newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
                 newParent.transform.position = new Vector3(worldPosition.x + i*2, 
-                                                            worldPosition.y, 0);
+                                                           worldPosition.y, 
+                                                           0); 
                 newParent.transform.localPosition = new Vector3(
                     newParent.transform.localPosition.x,
-                    newParent.transform.localPosition.y, 0);
+                    newParent.transform.localPosition.y, 90); // z position of UI
                 newParent.transform.localScale = new Vector3(81f, 81f, 81f);
 
                 GameObject newGameObject = (GameObject) Instantiate(
                     AssetPrefabs[_currentButtonPressed],
                     new Vector3(worldPosition.x + i*2, worldPosition.y, 
-                                88), // the world Z position of the UI
+                                0), 
                     Quaternion.identity, newParent.transform);
+                newGameObject.transform.localPosition = new Vector3(
+                    newGameObject.transform.localPosition.x,
+                    newGameObject.transform.localPosition.y, 0);
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
@@ -412,20 +416,20 @@ public class MapEditorManager : MonoBehaviour {
         SelectedBiome = mapData.Biome;
         SpawnPoint = mapData.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
-            new Vector3(SpawnPoint.x, SpawnPoint.y, -101);
+            new Vector3(SpawnPoint.x, SpawnPoint.y, 90);
 
         foreach (MapObject mapObject in mapData.MapObjects) {
             GameObject newParent = new GameObject();
             newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
             newParent.transform.SetParent(MapContainer.transform, true);
             newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
-                                                            mapObject.MapOffset.y, 0);
+                                                            mapObject.MapOffset.y, 90);
             GameObject newGameObject = (GameObject) Instantiate(
                 AssetPrefabs[mapObject.PrefabIndex], new Vector3(newParent.transform.position.x, 
                                                                  newParent.transform.position.y, 
-                                                                 88), Quaternion.identity, newParent.transform);
-            // newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
-            //                                                     mapObject.MapPosition.y, 0);
+                                                                 0), Quaternion.identity, newParent.transform);
+            newGameObject.transform.localPosition = new Vector3(newGameObject.transform.localPosition.x, 
+                                                                newGameObject.transform.localPosition.y, 0);
             newGameObject.transform.rotation = mapObject.Rotation;
             newGameObject.transform.localScale = 
                 new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
@@ -469,12 +473,12 @@ public class MapEditorManager : MonoBehaviour {
                 newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
                 newParent.transform.localPosition = new Vector3(mapObject.Value.MapOffset.x, 
-                                                                mapObject.Value.MapOffset.y, 0);
+                                                                mapObject.Value.MapOffset.y, 90);
                 newParent.transform.localScale = mapObject.Value.Scale;
                 GameObject newGameObject = (GameObject) Instantiate(
                     AssetPrefabs[mapObject.Value.PrefabIndex], newParent.transform);
                 newGameObject.transform.localPosition = new Vector3(mapObject.Value.MapPosition.x, 
-                                                                    mapObject.Value.MapPosition.y, -2);
+                                                                    mapObject.Value.MapPosition.y, 0);
                 newGameObject.transform.rotation = mapObject.Value.Rotation;
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
