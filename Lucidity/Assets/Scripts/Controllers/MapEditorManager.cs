@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ public class MapEditorManager : MonoBehaviour {
     public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
     public int CurrentLayer = 0;
     [SerializeField] private GameObject _layerPrefab;
+    public static int LayerToBeNamed = -1;
     public static LinkedList<EditorAction> Actions;
     public static Dictionary<string, Texture2D> ToolToCursorMap = 
         new Dictionary<string, Texture2D>();
@@ -86,7 +88,9 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Start() {
         if(!ReloadFlag) {
-            List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+            if (StartupScreen.FilePath == null) {
+                List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+            }
         }
         else {
             ReloadScene();
@@ -247,7 +251,7 @@ public class MapEditorManager : MonoBehaviour {
                             MapObjects[id].IsActive = false;
                             // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
-                            // Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -310,7 +314,7 @@ public class MapEditorManager : MonoBehaviour {
                             MapObjects[id].IsActive = true;
                             // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
-                            // Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -384,7 +388,7 @@ public class MapEditorManager : MonoBehaviour {
     /// </param>
     /// <returns>
     /// <c>int</c> corresponding to the layer index
-    /// </returns>
+    /// </returns> 
     public static int LayerContainsMapObject(int objId) {
         for (int i = 0; i < Layers.Count; i++) {
             if (Layers[i].ContainsKey(objId)) {
@@ -404,6 +408,19 @@ public class MapEditorManager : MonoBehaviour {
         SpawnPoint = loadedMap.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
             new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
+        LayerToBeNamed = 0;
+
+        for (int i = 0; i < loadedMap.LayerNames.Count; i++) {
+            // Create a dictionary for each layer
+            List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+            // fill in LayerIndex and LayerStatus dictionaries
+            Layer.LayerIndex.Add(loadedMap.LayerNames[i], i);
+            Layer.LayerStatus.Add(loadedMap.LayerNames[i], false);
+            Layer.LayerNames.Add(loadedMap.LayerNames[i]);
+        }
+
+        // Select the layer with index 0
+        Layer.LayerStatus[loadedMap.LayerNames[0]] = true;
 
         foreach (MapObject mapObject in loadedMap.MapObjects) {
             GameObject newParent = new GameObject();
@@ -421,6 +438,8 @@ public class MapEditorManager : MonoBehaviour {
                             newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                             newGameObject.transform.localScale.z + Zoom.zoomFactor);
             MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
+            Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
+                newGameObject.GetInstanceID(), mapObject);
         }
     }
 
