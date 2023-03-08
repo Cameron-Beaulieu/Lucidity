@@ -63,6 +63,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     /// </summary>
     public void DeleteMapObject() {
         MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
+        int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
+        MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
         Destroy(_outline);
         List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
