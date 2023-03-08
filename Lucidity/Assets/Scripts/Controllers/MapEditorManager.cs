@@ -16,15 +16,14 @@ public class MapEditorManager : MonoBehaviour {
     public int CurrentLayer = 0;
     [SerializeField] private GameObject _layerPrefab;
     public static LinkedList<EditorAction> Actions;
-    public static Dictionary<string, Texture2D> ToolToCursorMap = 
+    public static Dictionary<string, Texture2D> ToolToCursorMap =
         new Dictionary<string, Texture2D>();
     private static LinkedListNode<EditorAction> _currentAction;
     public static GameObject Map;
     public static GameObject MapContainer;
     public static Vector2 SpawnPoint;
-    private static int _currentButtonPressed;
-    private static GameObject _lastEncounteredObject;
     public static bool ReloadFlag;
+    private static int _currentButtonPressed;
 
     public static LinkedListNode<EditorAction> CurrentAction {
         get { return _currentAction; }
@@ -36,15 +35,11 @@ public class MapEditorManager : MonoBehaviour {
         set { _currentButtonPressed = value; }
     }
 
-    public static GameObject LastEncounteredObject {
-        get { return _lastEncounteredObject; }
-        set { _lastEncounteredObject = value; }
-    }
-
     private void Awake() {
         if (StartupScreen.FilePath != null && !ReloadFlag) {
             // Static variables must be reset if a new map is loaded from another map
             Util.ResetStaticVariables();
+            Util.ResetAssetButtons();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
@@ -91,6 +86,7 @@ public class MapEditorManager : MonoBehaviour {
         else {
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
+            Util.ResetAssetButtons();
         }
     }
 
@@ -99,6 +95,9 @@ public class MapEditorManager : MonoBehaviour {
         if (Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
             && Tool.ToolStatus["Brush Tool"]) {
             PaintAtPosition(worldPosition);
+        } else if (!Input.GetMouseButton(0) && AssetButtons[_currentButtonPressed].Clicked 
+            && Tool.ToolStatus["Brush Tool"]) {
+                DynamicBoundingBox.DeleteDynamicBoundingBoxes();
         }
         // TODO: Implement other actions here
     }
@@ -109,51 +108,36 @@ public class MapEditorManager : MonoBehaviour {
     public void PaintAtPosition(Vector2 worldPosition) {
         GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         if (activeImage == null) {
-            AssetController.CreateFollowingImage(AssetImage[_currentButtonPressed]);
+            DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed],
+                                                        worldPosition);
             activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         }
-        float assetWidth = activeImage.transform.localScale.x;
-        float assetHeight = activeImage.transform.localScale.y;
-        // Check if mouse position relative to its last position and the previously encountered
-        // asset would allow for a legal placement. Reduces unnecessary computing
-        if (Mouse.LastMousePosition != worldPosition
-                && (LastEncounteredObject == null
-                    || Mathf.Abs(worldPosition.x - LastEncounteredObject.transform.position.x)
-                        >= assetWidth
-                    || Mathf.Abs(worldPosition.y - LastEncounteredObject.transform.position.y)
-                        >= assetHeight)) {
+        if (Mouse.LastMousePosition != worldPosition) {
             List<GameObject> newMapObjects = new List<GameObject>();
-
-            for (int i = 0; i < AssetOptions.AssetCount; i++) {
-                GameObject newParent = new GameObject();
-                newParent.name = AssetPrefabs[_currentButtonPressed].name + " Parent";
-                newParent.transform.SetParent(MapContainer.transform, true);
-                newParent.transform.position = new Vector3(worldPosition.x + i*2, 
-                                                            worldPosition.y, 0);
-                newParent.transform.localPosition = new Vector3(
-                    newParent.transform.localPosition.x,
-                    newParent.transform.localPosition.y, 0);
-
-                GameObject newGameObject = (GameObject) Instantiate(
-                    AssetPrefabs[_currentButtonPressed],
-                    new Vector3(worldPosition.x + i*2, worldPosition.y, 
-                                90), // the world Z position of the UI
-                    Quaternion.identity, newParent.transform);
-                newGameObject.transform.localScale = 
-                    new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
-                                newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                                newGameObject.transform.localScale.z + Zoom.zoomFactor);
-
-                if (newGameObject != null && !newGameObject.GetComponent<AssetCollision>()
-                        .IsInvalidPlacement()) {
-                    newMapObjects.Add(newGameObject);
-                    AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                    newParent, MapObjects, _currentButtonPressed);
-                    AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed], 
-                                    newParent, Layers[CurrentLayer], _currentButtonPressed);
-                } else {
-                    Destroy(newParent);
+            GameObject dynamicBoundingBox = DynamicBoundingBox.CreateDynamicBoundingBox(
+                AssetPrefabs[_currentButtonPressed],
+                worldPosition);
+            if (dynamicBoundingBox != null
+                    && !dynamicBoundingBox.GetComponent<AssetCollision>().IsInvalidPlacement()
+                    && dynamicBoundingBox.GetComponent<AssetCollision>()
+                        .GetDynamicCollision() == false) {
+                List<GameObject> newGameObjects =
+                    DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
+                                                    dynamicBoundingBox);
+                foreach (GameObject newGameObject in newGameObjects) {
+                    if (newGameObject != null) {
+                        newMapObjects.Add(newGameObject);
+                        AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
+                                        newGameObject.transform.parent.gameObject, MapObjects);
+                        AddNewMapObject(newGameObject,
+                                        AssetNames[_currentButtonPressed],
+                                        newGameObject.transform.parent.gameObject,
+                                        Layers[CurrentLayer]);
+                    }
                 }
+                newMapObjects.AddRange(newGameObjects);
+            } else {
+                Destroy(dynamicBoundingBox);
             }
             if (newMapObjects.Count == 0) {
                 // Don't add action to history if there are no objects attached to it
@@ -184,11 +168,8 @@ public class MapEditorManager : MonoBehaviour {
                     _currentAction = Actions.First;
                 }
             }
-            if (newMapObjects.Count > 0) {
-                _lastEncounteredObject = newMapObjects[0];
-            }
+            Mouse.LastMousePosition = worldPosition;
         }
-        Mouse.LastMousePosition = worldPosition;
     }
 
     /// <summary>
@@ -207,7 +188,9 @@ public class MapEditorManager : MonoBehaviour {
                     int id = obj.GetInstanceID();
                     MapObjects.Remove(id);
                     // Remove the related object from whichever layer it was on
-                    Layers[LayerContainsMapObject(id)].Remove(id);
+                    if (LayerContainsMapObject(id) >= 0) {
+                        Layers[LayerContainsMapObject(id)].Remove(id);
+                    }
                     Destroy(obj);
                 }
             }

@@ -8873,10 +8873,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1068109423}
   m_HandleRect: {fileID: 1130625685}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 999
+  m_MinValue: 1
+  m_MaxValue: 10
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9345,6 +9345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
+  Collided: 0
 --- !u!114 &1053491540
 MonoBehaviour:
   m_ObjectHideFlags: 0

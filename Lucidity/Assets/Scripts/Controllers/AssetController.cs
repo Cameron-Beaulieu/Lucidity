@@ -29,7 +29,8 @@ public class AssetController : MonoBehaviour {
         if (activeImage != null) {
             Destroy(activeImage);
         }
-        CreateFollowingImage(_editor.AssetImage[Id]);
+        DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id],
+                                                   Mouse.GetMousePosition());
 
         MapEditorManager.CurrentButtonPressed = Id;
 
@@ -45,17 +46,6 @@ public class AssetController : MonoBehaviour {
         _prevParentContainer = parentContainer;
         // set painting status
         Tool.ChangeTools("Brush Tool");
-    }
-
-    public static void CreateFollowingImage(GameObject prefab) {
-        Vector2 worldPosition = Mouse.GetMousePosition();
-        GameObject hoverImage = Instantiate(prefab,
-                                            new Vector3(worldPosition.x, worldPosition.y, 90),
-                                            Quaternion.identity);
-        hoverImage.transform.localScale = new Vector3(
-            hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-            hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-            hoverImage.transform.localScale.z + Zoom.zoomFactor);
     }
 
     /// <summary>
