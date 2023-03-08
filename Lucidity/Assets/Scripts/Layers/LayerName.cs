@@ -37,11 +37,57 @@ public class LayerName : MonoBehaviour{
         if(String.IsNullOrWhiteSpace(newName)){
             _layerText.text = CurrentText;
         } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
+            string oldName = CurrentText;
+            newName = newName.Substring(0,10) + "...";
+            // If the layer name is a duplicate, append a number before the ...
+            while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
+                if (!Layer.LayerNames.Contains(newName.Substring(0,10) + 
+                    Layer.DuplicateIndex + "...")) {
+                    newName = newName.Substring(0,10) + Layer.DuplicateIndex + "..."; 
+                } 
+                Layer.DuplicateIndex++;
+            }
+            _layerText.text = newName;
             CurrentText = newName;
-            _layerText.text = CurrentText.Substring(0,10) + "...";
+            UpdateLayerName(oldName, newName);
         } else {
+            string oldName = CurrentText;
+            // if the layer name is a duplicate, append a number to the end
+            while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
+                if (!Layer.LayerNames.Contains(newName + Layer.DuplicateIndex)) {
+                    newName += Layer.DuplicateIndex;
+                    _layerText.text = newName;
+                } 
+                Layer.DuplicateIndex++;
+            }
             CurrentText = newName;
+            UpdateLayerName(oldName, newName);
         }
         _layerText.readOnly = true;
+    }
+
+    /// <summary>
+    /// Updates the layer name in the <c>Layer</c> class fields: <c>LayerIndex</c>, 
+    /// <c>LayerStatus</c>, and <c>LayerNames</c>.
+    /// <param name="oldName">
+    /// <c>string</c> corresponding to the previous name of the layer.
+    /// </param>
+    /// <param name="newName">
+    /// <c>string</c> corresponding to the new layer name inputted by the user.
+    /// </param>
+    /// </summary>
+    private void UpdateLayerName(string oldName, string newName) {
+        if (newName.Equals(oldName)) {return;}
+        int oldIndex = Layer.LayerIndex[oldName];
+        bool oldStatus = Layer.LayerStatus[oldName];
+        // Update LayerIndex dictionary to use the newName
+        Layer.LayerIndex.Remove(oldName);
+        Layer.LayerIndex.Add(newName, oldIndex);
+        // Update LayerStatus to use the NewName
+        Layer.LayerStatus.Remove(oldName);
+        Layer.LayerStatus.Add(newName, oldStatus);
+        // Update LayerNames
+        Layer.LayerNames.Remove(oldName);
+        Layer.LayerNames.Add(newName);
     }
 }
