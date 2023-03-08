@@ -13,6 +13,7 @@ public class MapObject {
     public Vector3 Scale;
     public Quaternion Rotation;
     public bool IsActive;
+    public string LayerName;
 
     /// <summary>
     /// MapObject constructor, initializing the id, asset, mapPosition, scale, and rotation
@@ -52,5 +53,26 @@ public class MapObject {
         Scale = scale;
         Rotation = rotation;
         IsActive = isActive;
+    }
+
+    /// <summary>
+    /// Alternate constructor that adds a layer name to a previously existing <c>MapObject</c>.
+    /// <param name="obj">
+    /// A previously existing <c>MapObject</c>.
+    /// </param>
+    /// <param name="layerName">
+    /// A <c>string</c> representing the name of the layer the <c>MapObject</c> is placed on.
+    /// </param>
+    /// </summary>
+    public MapObject (MapObject obj, string layerName) {
+        Id = obj.Id;
+        Name = obj.Name;
+        PrefabIndex = obj.PrefabIndex;
+        MapPosition = obj.MapPosition;
+        MapOffset = obj.MapOffset;
+        Scale = obj.Scale;
+        Rotation = obj.Rotation;
+        IsActive = obj.IsActive;
+        LayerName = layerName;
     }
 }
