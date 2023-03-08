@@ -18,6 +18,7 @@ public class Util {
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
         MapEditorManager.LastEncounteredObject = null;
+        MapEditorManager.LayerToBeNamed = -1;
         Tool.ToolKeys.Clear();
         Tool.ToolStatus.Clear();
         Tool.PaintingMenu = null;
@@ -25,6 +26,8 @@ public class Util {
         Tool.SelectionOptions = null;
         Tool.SpawnPointOptions = null;
         Mouse.LastMousePosition = Vector2.zero;
+        Layer.DuplicateIndex = 0;
+        Layer.LayerContainer = null;
         Layer.LayerStatus.Clear();
         Layer.LayerIndex.Clear();
         Layer.LayerNames.Clear();
