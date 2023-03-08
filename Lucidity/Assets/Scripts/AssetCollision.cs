@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class AssetCollision : MonoBehaviour {
-    [SerializeField] private Material _errorMaterial;
-    private Material _originalMaterial;
     private LayerMask _filterMask;
     private int _assetLayer = 6;
     private int _uiLayer = 5;
@@ -60,12 +58,8 @@ public class AssetCollision : MonoBehaviour {
             foreach (Collider2D collisionObject in hitColliders2D) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null) {
-                    _originalMaterial = collisionObject.gameObject.GetComponent<Image>()
-                        .material;
-                    collisionObject.gameObject.GetComponent<Image>().material 
-                        = _errorMaterial;
-                    StartCoroutine(RevertMaterialAndDestroy(_originalMaterial,
-                                                            collisionObject.gameObject));
+                    collisionObject.gameObject.GetComponent<Image>().color = Color.red;
+                    StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject));
                 }
             }
             MapEditorManager.LastEncounteredObject = hitColliders2D[0].gameObject;
@@ -88,15 +82,12 @@ public class AssetCollision : MonoBehaviour {
     /// and destroys the placed asset causing the collision. This is required during collision
     /// handling.
     /// </summary>
-    /// <param name="_originalMaterial">
-    /// <c>Material</c> corresponding to the collision <c>GameObject</c>.
-    /// </param>
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision, to be highlighted briefly.
     /// </param>
-    IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
+    IEnumerator RevertMaterialAndDestroy(GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
-        collisionObject.gameObject.GetComponent<Image>().material = _originalMaterial;
+        collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 
         if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());

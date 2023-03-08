@@ -47,7 +47,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnMouseDown();
+            .OnPointerClick(new PointerEventData(EventSystem.current));
         Assert.IsTrue(Tool.SelectionOptions.activeSelf);
         Assert.AreEqual("Editing FortressObject(Clone)", 
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
@@ -63,7 +63,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnMouseDown();
+            .OnPointerClick(new PointerEventData(EventSystem.current));;
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.IsNull(placedAsset.GetComponent<Outline>());
     }
@@ -82,15 +82,15 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnMouseDown();
+            .OnPointerClick(new PointerEventData(EventSystem.current));;
         
         // assert spawn point selection options is active and the spawn point has an outline
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
-        Assert.AreEqual(Outline.Mode.OutlineAll, 
-                        spawnPoint.GetComponent<Outline>().OutlineMode);
+        Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)), 
+                         spawnPoint.GetComponent<Image>().color);
         
         // add new layer (switches to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
@@ -102,12 +102,12 @@ public class SelectionTests : MapEditorTests {
         // select the spawn point while on a new layer
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnMouseDown();
+            .OnPointerClick(new PointerEventData(EventSystem.current));;
         Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
-        Assert.AreEqual(Outline.Mode.OutlineAll, 
-                        spawnPoint.GetComponent<Outline>().OutlineMode);
+        Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)), 
+                         spawnPoint.GetComponent<Image>().color);
     }
 
     [Test]
@@ -143,7 +143,7 @@ public class SelectionTests : MapEditorTests {
         GameObject placedAsset = GameObject.Find("FortressObject(Clone)");
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnMouseDown();
+            .OnPointerClick(new PointerEventData(EventSystem.current));;
 
         // delete the object
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
