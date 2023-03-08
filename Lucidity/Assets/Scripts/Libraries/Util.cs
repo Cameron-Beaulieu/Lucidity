@@ -17,7 +17,6 @@ public class Util {
         MapEditorManager.MapContainer = null;
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
-        MapEditorManager.LastEncounteredObject = null;
         Tool.ToolKeys.Clear();
         Tool.ToolStatus.Clear();
         Tool.PaintingMenu = null;
@@ -28,5 +27,19 @@ public class Util {
         Layer.LayerStatus.Clear();
         Layer.LayerIndex.Clear();
         Layer.LayerNames.Clear();
+    }
+
+    /// <summary>
+    /// Resets all asset buttons in MapEditorManager. This is necessary to avoid issues with old
+    /// buttons being referenced when MapEditor is reloaded.
+    /// </summary>
+    public static void ResetAssetButtons() {
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        editor.AssetButtons.Clear();
+        foreach (GameObject paintButton in GameObject
+                .FindGameObjectsWithTag("PaintButton")) {
+            editor.AssetButtons.Add(paintButton.GetComponent<AssetController>());
+        }
     }
 }
