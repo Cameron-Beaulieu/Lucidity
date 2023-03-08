@@ -152,7 +152,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 0.75
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -765,7 +765,7 @@ MonoBehaviour:
   - {fileID: 7090174936922692590, guid: 12e79bd2cc2677b459e97897f6559fc0, type: 3}
   - {fileID: 7090174936922692590, guid: 9a1a9ee81d3e513448b0c58d8690a34e, type: 3}
   _3DPrefabs:
-  - {fileID: 5643009079545502601, guid: 21d49a6862b8bd2448c4c0966bbc670a, type: 3}
+  - {fileID: 2051897864753084121, guid: a2210325e600d423c92a75ce4016fdcd, type: 3}
   - {fileID: 5643009079545502601, guid: a7459563475f4e347b6708155109ce83, type: 3}
   - {fileID: 5328573226127570693, guid: e4852fc27fc2045979400138e6af0e15, type: 3}
   - {fileID: 3879435324137382503, guid: f38bfe38f41c74fa0a9c605625ddbc7b, type: 3}
