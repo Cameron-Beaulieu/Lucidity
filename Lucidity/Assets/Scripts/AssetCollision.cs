@@ -15,9 +15,6 @@ public class AssetCollision : MonoBehaviour {
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
-        if (!gameObject.transform.parent.name.Contains("Container")) {
-            CheckAssetCollisions();
-        }
     }
 
     private void OnDrawGizmos() {
