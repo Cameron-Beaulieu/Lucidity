@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Util {
+    
     /// <summary>
     /// Resets all static variables in MapEditorManager and Tool. This is necessary to avoid 
     /// interference between tests, or when MapEditor is reloaded.

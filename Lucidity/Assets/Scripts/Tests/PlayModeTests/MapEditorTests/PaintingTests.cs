@@ -22,6 +22,7 @@ public class PaintingTests : MapEditorTests {
         selectionToolButton.onClick.Invoke();
         Assert.IsFalse(Tool.ToolStatus["Brush Tool"]);
 
+        // switch back to brush tool
         Button brushToolButton = GameObject.Find("Brush Tool").GetComponent<Button>();
         brushToolButton.onClick.Invoke();
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
@@ -34,9 +35,11 @@ public class PaintingTests : MapEditorTests {
     public void CanSwitchBetweenPaintButtons() {
         Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
         GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        // Test switching to every paint button
         foreach (GameObject paintButton1 in paintButtons) {
             paintButton1.GetComponent<Button>().onClick.Invoke();
             Assert.IsTrue(paintButton1.GetComponent<AssetController>().Clicked);
+            // Check all other paintButtons are false
             foreach (GameObject paintButton2 in paintButtons) {
                 if (paintButton1 != paintButton2) {
                     Assert.IsFalse(paintButton2.GetComponent<AssetController>().Clicked);
@@ -195,6 +198,7 @@ public class PaintingTests : MapEditorTests {
 
     [UnityTest]
     public IEnumerator CanPaintOnDifferentLayers() {
+        // Check CurrentLayer is tracking base layer
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         Assert.AreEqual(0, editor.CurrentLayer);
@@ -218,6 +222,7 @@ public class PaintingTests : MapEditorTests {
         GameObject placedHouse = GameObject.Find("TempHouseObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[1].ContainsKey(placedHouse.GetInstanceID()));
 
+        // Check number of assets on each layer
         Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
         Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
     }
@@ -261,5 +266,4 @@ public class PaintingTests : MapEditorTests {
         editor.PaintAtPosition(new Vector2(100,150));
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
     }
-
 }

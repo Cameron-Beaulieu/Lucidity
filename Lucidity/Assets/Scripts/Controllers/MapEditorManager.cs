@@ -128,11 +128,12 @@ public class MapEditorManager : MonoBehaviour {
                     if (newGameObject != null) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
-                                        newGameObject.transform.parent.gameObject, MapObjects);
+                                        newGameObject.transform.parent.gameObject, MapObjects,
+                                        _currentButtonPressed);
                         AddNewMapObject(newGameObject,
                                         AssetNames[_currentButtonPressed],
                                         newGameObject.transform.parent.gameObject,
-                                        Layers[CurrentLayer]);
+                                        Layers[CurrentLayer], _currentButtonPressed);
                     }
                 }
                 newMapObjects.AddRange(newGameObjects);
@@ -344,11 +345,11 @@ public class MapEditorManager : MonoBehaviour {
     /// </param>
     public void AddNewMapObject(GameObject newGameObject, string name, 
                                 GameObject parentGameObject, 
-                                Dictionary<int, MapObject> mapObjectDictionary) {
+                                Dictionary<int, MapObject> mapObjectDictionary,
+                                int assetPrefabIndex) {
         MapObject newMapObject = new MapObject(newGameObject.GetInstanceID(), name, 
-            _currentButtonPressed,
-            new Vector2(newGameObject.transform.localPosition.x, 
-                        newGameObject.transform.localPosition.y),  
+            assetPrefabIndex, new Vector2(newGameObject.transform.localPosition.x, 
+                                          newGameObject.transform.localPosition.y),  
             new Vector2(parentGameObject.transform.localPosition.x, 
                         parentGameObject.transform.localPosition.y),
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
@@ -423,12 +424,11 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
-        foreach (Dictionary<int, MapObject> layer in Layers){
+        foreach (Dictionary<int, MapObject> layer in Layers) {
             List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
         }
         CurrentLayer = Layers.Count - 1;
 
-        
         // TODO: During 3D with layers, will need to nest Reloading MapObjects
         // within Reloading Layers to rebuild each layer.
 
@@ -446,7 +446,7 @@ public class MapEditorManager : MonoBehaviour {
                 GameObject newGameObject = (GameObject) Instantiate(
                     AssetPrefabs[mapObject.Value.PrefabIndex], newParent.transform);
                 newGameObject.transform.localPosition = new Vector3(mapObject.Value.MapPosition.x, 
-                                                                    mapObject.Value.MapPosition.y, 0);
+                    mapObject.Value.MapPosition.y, 0);
                 newGameObject.transform.rotation = mapObject.Value.Rotation;
                 newGameObject.transform.localScale = 
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
@@ -454,19 +454,19 @@ public class MapEditorManager : MonoBehaviour {
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
-                                newParent, newMapObjects);
-                if(mapObject.Value.IsActive == false){
+                                newParent, newMapObjects, mapObject.Value.PrefabIndex);
+                if (!mapObject.Value.IsActive) {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
         }
 
         // Swapping GameObject's in editor action linked list
-        if(Actions != null){
+        if (Actions != null) {
             LinkedListNode<EditorAction> pointer = Actions.First;
 
-            while (pointer != null){
-                    for(int i = 0; i < pointer.Value.RelatedObjects.Count; i ++){
+            while (pointer != null) {
+                    for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
                         pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }
                 pointer = pointer.Next;
