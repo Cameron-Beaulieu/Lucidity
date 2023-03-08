@@ -141,7 +141,7 @@ public class LayerTests : MapEditorTests {
         // to set the sizeDelta manually
         layerNameInput.GetComponent<RectTransform>().sizeDelta = new Vector2(165, 0);
         layerNameInput.onSubmit.Invoke(longName);
-        Assert.AreEqual(longName, layerNameInput.GetComponent<LayerName>().CurrentText);
+        Assert.AreEqual(longName.Substring(0,10) + "...", layerNameInput.GetComponent<LayerName>().CurrentText);
         Assert.AreEqual(longName.Substring(0,10) + "...", layerNameInput.text);
     }
 
