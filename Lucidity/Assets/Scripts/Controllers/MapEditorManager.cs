@@ -22,8 +22,8 @@ public class MapEditorManager : MonoBehaviour {
     public static GameObject Map;
     public static GameObject MapContainer;
     public static Vector2 SpawnPoint;
-    private static int _currentButtonPressed;
     public static bool ReloadFlag;
+    private static int _currentButtonPressed;
 
     public static LinkedListNode<EditorAction> CurrentAction {
         get { return _currentAction; }
