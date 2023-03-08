@@ -128,11 +128,12 @@ public class MapEditorManager : MonoBehaviour {
                     if (newGameObject != null) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
-                                        newGameObject.transform.parent.gameObject, MapObjects);
+                                        newGameObject.transform.parent.gameObject, MapObjects,
+                                        _currentButtonPressed);
                         AddNewMapObject(newGameObject,
                                         AssetNames[_currentButtonPressed],
                                         newGameObject.transform.parent.gameObject,
-                                        Layers[CurrentLayer]);
+                                        Layers[CurrentLayer], _currentButtonPressed);
                     }
                 }
                 newMapObjects.AddRange(newGameObjects);
