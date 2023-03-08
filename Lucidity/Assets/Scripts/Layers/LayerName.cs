@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class LayerName : MonoBehaviour {
     private TMP_InputField _layerText;
     public string CurrentText;

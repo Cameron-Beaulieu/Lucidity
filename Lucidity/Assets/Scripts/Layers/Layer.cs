@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Layer : MonoBehaviour {
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
