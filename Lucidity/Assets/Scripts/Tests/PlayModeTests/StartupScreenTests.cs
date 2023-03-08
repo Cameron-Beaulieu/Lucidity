@@ -18,6 +18,7 @@ public class StartupScreenTests {
 
     [UnityTest]
     public IEnumerator RedirectsToMapCreation() {
+        Assert.AreEqual("Startup", SceneManager.GetActiveScene().name); 
         Button button = GameObject.Find("Create New Map Button").GetComponent<Button>();
         button.onClick.Invoke();
         yield return null;
@@ -26,6 +27,7 @@ public class StartupScreenTests {
 
     [UnityTest]
     public IEnumerator RedirectsToMapEditor() {
+        Assert.AreEqual("Startup", SceneManager.GetActiveScene().name); 
         StartupScreen.IsTesting = true;
         Button button = GameObject.Find("Load Existing Map Button").GetComponent<Button>();
         button.onClick.Invoke();

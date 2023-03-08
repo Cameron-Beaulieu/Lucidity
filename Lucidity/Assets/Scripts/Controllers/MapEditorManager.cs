@@ -471,7 +471,7 @@ public class MapEditorManager : MonoBehaviour {
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
-                if (mapObject.Value.IsActive == false) {
+                if (!mapObject.Value.IsActive) {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }

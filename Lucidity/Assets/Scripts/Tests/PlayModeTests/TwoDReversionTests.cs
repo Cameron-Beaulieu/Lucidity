@@ -132,4 +132,46 @@ public class TwoDReversionTests {
         Assert.IsTrue(Tool.ToolStatus["Panning Tool"]);
         PlayModeTestUtil.CheckAllOtherToolsAreUnselected("Panning Tool");
     }
+
+    [UnityTest]
+    public IEnumerator CorrectMapObjectTypesAfterDoubleReversion() {
+        // This is a regression test; A bug previously existed where the AddMapObject method was
+        // based on the current asset selected in the painting menu. This resulted in reverting
+        // twice causing all MapObjects to be changed to the selected type.
+
+        // Paint assets
+        PlayModeTestUtil.PaintAnAsset(new Vector3(-100, 150, 0), "Fortress");
+        GameObject treeButton = GameObject.Find("TreeButton");
+        treeButton.GetComponent<Button>().onClick.Invoke();
+
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // Find new MapObject
+        GameObject newFortress = GameObject.Find("TempFortressObject Parent");
+
+        // Check that the correct asset type has been placed
+        Assert.IsNotNull(newFortress);
+    }
 }

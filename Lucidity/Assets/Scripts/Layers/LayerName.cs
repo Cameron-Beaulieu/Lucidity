@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
 
 public class LayerName : MonoBehaviour {
     private TMP_InputField _layerText;

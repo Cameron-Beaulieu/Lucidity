@@ -11,9 +11,6 @@ public class MiscellaneousTests : MapEditorTests {
 
     [Test]
     public void MapHasSpawnPoint() {
-        // Confirming original scene is MapEditor
-        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-
         // Checking if the map has a spawn point
         GameObject spawnPoint = GameObject.Find("Spawn Point");
         Assert.IsNotNull(spawnPoint);

@@ -12,9 +12,6 @@ public class LayerTests : MapEditorTests {
 
     [Test]
     public void EmptyMapHasOneLayer() {
-        // Confirm scene is map editor
-        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-
         // Check for starting layer
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         Assert.AreEqual(layerScrollContent.transform.childCount, 1);
