@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3707402872373652657}
   - component: {fileID: 4288193208551998055}
   m_Layer: 2
-  m_Name: HoverTempMountainObject
+  m_Name: HoverMountainObject
   m_TagString: AssetImage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

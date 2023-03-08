@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5744312339929047298}
   - component: {fileID: 2468773953187570182}
   m_Layer: 2
-  m_Name: HoverTempFortressObject
+  m_Name: HoverFortressObject
   m_TagString: AssetImage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

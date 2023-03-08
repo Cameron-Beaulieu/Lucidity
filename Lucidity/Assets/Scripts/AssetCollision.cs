@@ -53,14 +53,12 @@ public class AssetCollision : MonoBehaviour {
                 collisions--;
             }
         }
-        Debug.Log("Collisions: " + collisions);
         if (collisions > 0) {
             hitColliders2D.Add(gameObject.GetComponent<Collider2D>());
             gameObject.tag = "CollisionObject";
             foreach (Collider2D collisionObject in hitColliders2D) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<SpriteRenderer>() != null) {
-                    Debug.Log("Collision with " + collisionObject.gameObject.name);
                     _originalMaterial = collisionObject.gameObject.GetComponent<SpriteRenderer>()
                         .material;
                     collisionObject.gameObject.GetComponent<SpriteRenderer>().material 

@@ -24,10 +24,10 @@ public class TwoDReversionTests {
         // Paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector3(-100, 150, 0), "Fortress");
         PlayModeTestUtil.PaintAnAsset(new Vector3(100, 150, 0), "House");
-        GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject houseParent = GameObject.Find("TempHouseObject Parent");
-        GameObject newFortress = GameObject.Find("TempFortressObject(Clone)");
-        GameObject newHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject fortressParent = GameObject.Find("FortressObject Parent");
+        GameObject houseParent = GameObject.Find("HouseObject Parent");
+        GameObject newFortress = GameObject.Find("FortressObject(Clone)");
+        GameObject newHouse = GameObject.Find("HouseObject(Clone)");
         Vector3 fortressPosition = fortressParent.transform.localPosition;
         Vector3 fortressScale = fortressParent.transform.localScale;
         Vector3 housePosition = houseParent.transform.localPosition;
@@ -48,8 +48,8 @@ public class TwoDReversionTests {
         yield return new WaitForEndOfFrame();
 
         // Find new MapObjects
-        GameObject newFortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject newHouseParent = GameObject.Find("TempHouseObject Parent");
+        GameObject newFortressParent = GameObject.Find("FortressObject Parent");
+        GameObject newHouseParent = GameObject.Find("HouseObject Parent");
 
         // Check that the assets are in the right place
         Assert.AreEqual(newFortressParent.transform.localPosition, fortressPosition);
@@ -63,9 +63,9 @@ public class TwoDReversionTests {
         Assert.AreEqual(MapEditorManager.MapObjects.Count, 2);
 
         // Check if the GameObjects in MapObjects have been replaced
-        GameObject revertedFortress = GameObject.Find("TempFortressObject(Clone)");
+        GameObject revertedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.AreNotEqual(fortressId, revertedFortress.GetInstanceID());
-        GameObject revertedHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject revertedHouse = GameObject.Find("HouseObject(Clone)");
         Assert.AreNotEqual(houseId, revertedHouse.GetInstanceID());
     }
 

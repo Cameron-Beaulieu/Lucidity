@@ -82,7 +82,7 @@ public class PaintingTests : MapEditorTests {
         mapEditorManager.PaintAtPosition(positionToPlace);
 
         // check that the asset was placed correctly
-        GameObject placedParent = GameObject.Find("TempFortressObject Parent");
+        GameObject placedParent = GameObject.Find("FortressObject Parent");
         Assert.IsNotNull(placedParent);
         Assert.AreEqual(1, placedParent.transform.childCount);
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
@@ -172,7 +172,7 @@ public class PaintingTests : MapEditorTests {
         GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
         editor.PaintAtPosition(new Vector2(-100,150));
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-        GameObject placedFortress = GameObject.Find("TempFortressObject(Clone)");
+        GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedFortress.GetInstanceID()));
         
         // add and switch to layer 1
@@ -184,7 +184,7 @@ public class PaintingTests : MapEditorTests {
         GameObject.Find("HouseButton").GetComponent<Button>().onClick.Invoke();
         editor.PaintAtPosition(new Vector2(100,150));
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
-        GameObject placedHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject placedHouse = GameObject.Find("HouseObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[1].ContainsKey(placedHouse.GetInstanceID()));
 
         Assert.AreEqual(1, MapEditorManager.Layers[0].Count);

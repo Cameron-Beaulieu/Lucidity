@@ -113,8 +113,8 @@ public class MapEditorManager : MonoBehaviour {
             activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         }
         Collider2D collider = activeImage.GetComponent<Collider2D>();
-        float assetWidth = collider.bounds.size.x; //activeImage.transform.localScale.x;
-        float assetHeight = collider.bounds.size.y; //activeImage.transform.localScale.y;
+        float assetWidth = collider.bounds.size.x;
+        float assetHeight = collider.bounds.size.y;
         // Check if mouse position relative to its last position and the previously encountered
         // asset would allow for a legal placement. Reduces unnecessary computing
         if (Mouse.LastMousePosition != worldPosition

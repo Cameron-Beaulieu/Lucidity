@@ -766,9 +766,12 @@ MonoBehaviour:
   - {fileID: 7090174936922692590, guid: 9a1a9ee81d3e513448b0c58d8690a34e, type: 3}
   _3DPrefabs:
   - {fileID: 2051897864753084121, guid: a2210325e600d423c92a75ce4016fdcd, type: 3}
-  - {fileID: 5643009079545502601, guid: a7459563475f4e347b6708155109ce83, type: 3}
+  - {fileID: 7555297494066415410, guid: 7cf7acdbaf9cb48c488e5bfef41cb66d, type: 3}
   - {fileID: 5328573226127570693, guid: e4852fc27fc2045979400138e6af0e15, type: 3}
   - {fileID: 3879435324137382503, guid: f38bfe38f41c74fa0a9c605625ddbc7b, type: 3}
+  _groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &1469829293
 GameObject:
   m_ObjectHideFlags: 0

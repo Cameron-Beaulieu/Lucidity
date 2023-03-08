@@ -49,11 +49,16 @@ public class MiscellaneousTests : MapEditorTests {
         Assert.AreEqual(new Vector2(100,100), MapEditorManager.MapObjects[loadedAssetId].MapOffset);
 
         GameObject mapContainer = GameObject.Find("Map Container");
+        GameObject fortressParent = mapContainer.transform.GetChild(2).gameObject;
+        GameObject fortress = fortressParent.transform.GetChild(0).gameObject;
         Assert.AreEqual("Spawn Point", mapContainer.transform.GetChild(1).name);
         Assert.AreEqual(new Vector3(0,0,-101), mapContainer.transform.GetChild(1).localPosition);
-        Assert.AreEqual("TempFortressObject Parent", mapContainer.transform.GetChild(2).name);
-        Assert.AreEqual(new Vector3(100,100,0), mapContainer.transform.GetChild(2).localPosition);
-        Assert.AreEqual(new Vector3(0,0,-2), mapContainer.transform.GetChild(2).transform.GetChild(0).localPosition);
+        Assert.AreEqual("FortressObject Parent", fortressParent.name);
+        Assert.AreEqual(new Vector3(100,100,0), fortressParent.transform.localPosition);
+        Assert.AreEqual("FortressObject(Clone)", fortress.name);
+        Assert.AreEqual(0, fortress.transform.localPosition.x, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(0, fortress.transform.localPosition.y, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(-2, fortress.transform.localPosition.z, PlayModeTestUtil.FloatTolerance);
         
     }
 }

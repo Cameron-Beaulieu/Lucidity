@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4155272299220389271}
   - component: {fileID: 5233010349042393835}
   m_Layer: 6
-  m_Name: TempMountainObject
+  m_Name: MountainObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

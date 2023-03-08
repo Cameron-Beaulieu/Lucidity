@@ -38,7 +38,7 @@ public class SelectionTests : MapEditorTests {
 
         //  paint an object on base layer
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
+        GameObject placedAsset = GameObject.Find("FortressObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedAsset.GetInstanceID()));
 
         // select the object while on base layer
@@ -49,7 +49,7 @@ public class SelectionTests : MapEditorTests {
         placedAsset.GetComponent<SelectMapObject>()
             .OnMouseDown();
         Assert.IsTrue(Tool.SelectionOptions.activeSelf);
-        Assert.AreEqual("Editing TempFortressObject(Clone)", 
+        Assert.AreEqual("Editing FortressObject(Clone)", 
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
         Assert.AreEqual(Outline.Mode.OutlineAll, 
                         placedAsset.GetComponent<Outline>().OutlineMode);
@@ -140,7 +140,7 @@ public class SelectionTests : MapEditorTests {
         
         // select the object
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-        GameObject placedAsset = GameObject.Find("TempFortressObject(Clone)");
+        GameObject placedAsset = GameObject.Find("FortressObject(Clone)");
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
             .OnMouseDown();
