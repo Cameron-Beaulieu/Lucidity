@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public class Layer : MonoBehaviour{
+    public static int DuplicateIndex = 0;
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
@@ -16,6 +17,11 @@ public class Layer : MonoBehaviour{
     private string _name;
     private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
 
+    public static GameObject LayerContainer {
+        get {return _layerContainer;}
+        set {_layerContainer = value;}
+    }
+
     private void Start() {
         _layerContainer = GameObject.Find("LayerScrollContent");
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -23,20 +29,32 @@ public class Layer : MonoBehaviour{
         gameObject.name = "Layer" + (LayerStatus.Count).ToString();
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
-        _layerText.text = _name;
+        // Names are applied to the layers after they have been loaded in the MapEditorManager
+        // This ensures that layers are given the proper names if loaded from a file
+        if (MapEditorManager.LayerToBeNamed >= 0 && 
+            MapEditorManager.LayerToBeNamed < LayerNames.Count) {
+            _layerText.text = LayerNames[MapEditorManager.LayerToBeNamed];
+            MapEditorManager.LayerToBeNamed++;
+        } else {
+            _layerText.text = _name;
+        }
         _layerText.readOnly = true;
         _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
         _layerTrashCan.SetActive(false);
         _layerEdit = gameObject.transform.GetChild(3).gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
-        LayerStatus.Add(_name, false);
-        LayerIndex.Add(_name, LayerIndex.Count);
-        LayerNames.Add(_name);
+        // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
+        if (MapEditorManager.LayerToBeNamed == -1) {
+            LayerStatus.Add(_name, false);
+            LayerIndex.Add(_name, LayerIndex.Count);
+            LayerNames.Add(_name);
+        }
         ChangeSelectedLayer();
     }
 
     private void Update() {
+        _name = _layerText.text;
         if (LayerStatus.ContainsKey(_name)
             && LayerStatus[_name]
             && gameObject.GetComponent<Image>().color != Color.black) {
@@ -64,10 +82,11 @@ public class Layer : MonoBehaviour{
             } else {
                 LayerStatus[layerKey] = true;
             }
-        }
+        }  
     }
 
     private void ChangeSelectedLayer(){
+        _name = _layerText.text;
         SelectedChangeSelectedLayer(_name);
     }
 
