@@ -26,6 +26,10 @@ public class MiscellaneousTests : MapEditorTests {
 
     [Test]
     public void LoadsMapFromMapData() {
+        // check map is initially empty
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
+
         // mock map data
         MapData mapData = new MapData(new Biome(0), 
                                       new Dictionary<int, MapObject> {
@@ -39,10 +43,6 @@ public class MiscellaneousTests : MapEditorTests {
                                       new Vector2(0, 0));
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
-
-        // check map is initially empty
-        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-        Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
 
         // load a map from the mock map data
         editor.LoadMapFromMapData(mapData);

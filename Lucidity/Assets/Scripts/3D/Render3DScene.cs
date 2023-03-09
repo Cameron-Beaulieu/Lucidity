@@ -99,7 +99,7 @@ public class Render3DScene : MonoBehaviour {
     /// The 3D prefab of the MapObject to be placed on the 3D map
     /// </param>
     /// <param name="kvp">
-    /// The <c>MapObject</c> data of the MapObject to be placed on the 3D map
+    /// The data of the <c>MapObject</c> to be placed on the 3D map
     /// </param>
     private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
         GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), kvp.Value.Rotation);
@@ -117,8 +117,8 @@ public class Render3DScene : MonoBehaviour {
         // this ignores mountain assets due to the way the asset looks at the bottom
         if (IsBelowGround(newGameObject) && kvp.Value.Name != "Mountain") {
             newGameObject.transform.position = new Vector3(newGameObject.transform.position.x, 
-            newGameObject.GetComponent<MeshCollider>().bounds.min.y * -kvp.Value.Scale.y, 
-                                                           newGameObject.transform.position.z);
+                newGameObject.GetComponent<MeshCollider>().bounds.min.y * -kvp.Value.Scale.y, 
+                newGameObject.transform.position.z);
         }
     }
 
@@ -128,6 +128,9 @@ public class Render3DScene : MonoBehaviour {
     /// <param name="gameObjectToCheck">
     /// The asset placed on the 3D map
     /// </param>
+    /// <returns>
+    /// <c>true</c> if the asset is below the ground, <c>false</c> otherwise
+    /// </returns>
     private bool IsBelowGround(GameObject gameObjectToCheck) {
         GameObject ground = GameObject.Find("ForestPlane(Clone)");
         MeshCollider gameObjectCollider = gameObjectToCheck.GetComponent<MeshCollider>();

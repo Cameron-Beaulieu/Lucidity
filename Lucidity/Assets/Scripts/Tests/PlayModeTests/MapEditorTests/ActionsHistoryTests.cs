@@ -29,37 +29,37 @@ public class ActionsHistoryTests : MapEditorTests {
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
     }
 
-    // [Test]
-    // public void CanUndoAndRedoAssetDeletion() {
-    //     // paint an asset
-    //     Assert.Zero(MapEditorManager.MapObjects.Count);
-    //     PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-    //     Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-    //     int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
-    //     Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+    [Test]
+    public void CanUndoAndRedoAssetDeletion() {
+        // paint an asset
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
-    //     // select the asset and delete it
-    //     GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-    //     GameObject assetToDelete = GameObject.Find("TempFortressObject(Clone)");
-    //     SelectMapObject.SelectedObject = assetToDelete;
-    //     SelectMapObject.IsTesting = true;
-    //     assetToDelete.GetComponent<SelectMapObject>()
-    //         .OnPointerClick(new PointerEventData(EventSystem.current));
-    //     Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
-    //     deleteButton.onClick.Invoke();
-    //     Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        // select the asset and delete it
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject assetToDelete = GameObject.Find("FortressObject(Clone)");
+        SelectMapObject.SelectedObject = assetToDelete;
+        SelectMapObject.IsTesting = true;
+        assetToDelete.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
+        deleteButton.onClick.Invoke();
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
-    //     // undo the deletion
-    //     GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
-    //     Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        // undo the deletion
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
-    //     // redo the deletion
-    //     GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
-    //     Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        // redo the deletion
+        GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
-    //     // reset testing var
-    //     SelectMapObject.IsTesting = false;
-    // }
+        // reset testing var
+        SelectMapObject.IsTesting = false;
+    }
 
     [UnityTest]
     public IEnumerator CanUndoAndRedoLayerCreation() {
