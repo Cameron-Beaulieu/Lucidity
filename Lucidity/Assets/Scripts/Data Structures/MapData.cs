@@ -43,6 +43,13 @@ public class MapData {
     /// <param name="spawnPoint">
     /// The x,z position of the player when the map is converted to 3D.
     /// </param>
+    /// <param name="layers">
+    /// A list of dictionaries where each dictionary represents a layer and stores the
+    /// <c>MapObjects</c> along with their IDs that belong to that layer.
+    /// </param>
+    /// <param name="layerIndex">
+    /// A dictionary containing the name of each layer with their associated indices.
+    /// </param>
     public MapData(Biome biome, Vector2 spawnPoint, List<Dictionary<int, MapObject>> layers, 
                    Dictionary<string, int> layerIndex) {
         Biome = biome;
