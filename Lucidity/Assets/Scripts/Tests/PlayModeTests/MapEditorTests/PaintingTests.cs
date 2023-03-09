@@ -163,6 +163,43 @@ public class PaintingTests : MapEditorTests {
     }
 
     [UnityTest]
+    public IEnumerator PaintedAssetIsDeletedIfCollisionWithAnotherAssetOccurs() {
+        // place the first asset
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
+        GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+
+        // place another asset far away (shouldn't touch the first one)
+        // this is done so that the third placement can cause a collision
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        mapEditorManager.PaintAtPosition(new Vector2(100, -150));
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+
+        // place another asset, but this time it should collide with the first one 
+        mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
+        
+        // check collision handling is done (colliding assets turn red and the asset causing the 
+        // collision should be destroyed)
+        GameObject collidingTree = GameObject.Find("TreeObject(Clone)");
+        Assert.AreEqual(Color.red, collidingTree.GetComponent<Image>().color);
+        Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
+        yield return new WaitForSecondsRealtime(0.5f);
+        Assert.AreEqual(Color.white, collidingTree.GetComponent<Image>().color);
+        Assert.AreEqual(Color.white, placedFortress.GetComponent<Image>().color);
+        yield return new WaitForEndOfFrame();
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+        Assert.IsTrue(collidingTree == null);
+
+        // check that the first asset placed (the one that was collided with) is still there
+        Assert.IsNotNull(placedFortress);
+    }
+
+    [UnityTest]
     public IEnumerator CanPaintOnDifferentLayers() {
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();

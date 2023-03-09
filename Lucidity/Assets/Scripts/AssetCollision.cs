@@ -15,6 +15,7 @@ public class AssetCollision : MonoBehaviour {
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
+        CheckAssetCollisions();
     }
 
     private void OnDrawGizmos() {
@@ -37,11 +38,8 @@ public class AssetCollision : MonoBehaviour {
         List<Collider2D> hitColliders2D = new List<Collider2D>();
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
-        collider2D.OverlapCollider(filter2D, hitColliders2D);
-        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
-                                                     transform.localScale / 2, Quaternion.identity,
-                                                     _filterMask);
-        int collisions = hitColliders2D.Count;
+        int collisions = collider2D.OverlapCollider(filter2D, hitColliders2D);
+        
         foreach (Collider2D collisionObject in hitColliders2D) {
             // If an object is labeled with the "CollisionObject" tag, then it can be considered as
             // not colliding, as it will not be placed because of legality.
