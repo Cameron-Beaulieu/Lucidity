@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AssetOptions : MonoBehaviour {
+    private MapEditorManager _editor;
     [SerializeField] private Slider _brushSizeSlider;
     [SerializeField] private Text _brushSizeText;
     private static float _brushSize;
@@ -20,10 +21,12 @@ public class AssetOptions : MonoBehaviour {
         set { _brushSize = value; }
     }
 
-    private void Start() {
-        _countInput.onEndEdit.AddListener(delegate{AssetCountInputHandler(_countInput.text);});
-        _brushSizeSlider.onValueChanged.AddListener(delegate{BrushSizeSliderHandler();});
-        _assetCount = 1;
+    void Start() {
+        _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        _countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
+        _brushSizeSlider.onValueChanged.AddListener(delegate{ BrushSizeSliderHandler(); });
+        AssetCountInputHandler(_countInput.text);
         BrushSizeSliderHandler();
     }
 
@@ -40,6 +43,8 @@ public class AssetOptions : MonoBehaviour {
             _assetCount *= -1;
             _countInput.text = _assetCount.ToString();
         }
+        DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
+        UpdateAssetImage();
     }
 
     /// <summary>
@@ -47,7 +52,25 @@ public class AssetOptions : MonoBehaviour {
     /// </summary>
     public void BrushSizeSliderHandler() {
         _brushSize = _brushSizeSlider.value;
-        string sliderMessage = _brushSize + " px";
+        string sliderMessage = _brushSize.ToString("0.0") + " x";
         _brushSizeText.text = sliderMessage;
+        UpdateAssetImage();
+    }
+
+    /// <summary>
+    /// If an asset is selected, (re)generate an appropriate hover asset image.
+    /// </summary>
+    public void UpdateAssetImage() {
+        if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
+                && _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
+            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+            // if there is an Image being shown on hover already, destroy it
+            if (activeImage != null) {
+                Destroy(activeImage);
+            }
+            DynamicBoundingBox.CreateDynamicAssetImage(
+                _editor.AssetImage[MapEditorManager.CurrentButtonPressed],
+                Mouse.GetMousePosition());
+        }
     }
 }

@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-public class LayerName : MonoBehaviour{
+public class LayerName : MonoBehaviour {
     private TMP_InputField _layerText;
     public string CurrentText;
 
@@ -22,7 +22,7 @@ public class LayerName : MonoBehaviour{
     /// <param name="newName">
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
-    public void UpdateCurrentText(string newName){
+    public void UpdateCurrentText(string newName) {
         CurrentText = newName;
     }
 
@@ -32,11 +32,11 @@ public class LayerName : MonoBehaviour{
     /// <param name="newName">
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
-    public void HandleSubmission(string newName){
+    public void HandleSubmission(string newName) {
         _layerText.text = newName;
-        if(String.IsNullOrWhiteSpace(newName)){
+        if (String.IsNullOrWhiteSpace(newName)) {
             _layerText.text = CurrentText;
-        } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
+        } else if (_layerText.GetComponent<RectTransform>().rect.width >= 165) {
             CurrentText = newName;
             _layerText.text = CurrentText.Substring(0,10) + "...";
         } else {

@@ -63,6 +63,7 @@ public class ActionsHistoryTests : MapEditorTests {
 
     [UnityTest]
     public IEnumerator CanUndoAndRedoLayerCreation() {
+        // Confirm current layer is tracking the base layer
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         Assert.AreEqual(0, editor.CurrentLayer);
@@ -104,6 +105,4 @@ public class ActionsHistoryTests : MapEditorTests {
         // check that the original asset painted is permanently deleted
         Assert.IsFalse(MapEditorManager.MapObjects.ContainsKey(placedObjectId));
     }
-
-
 }

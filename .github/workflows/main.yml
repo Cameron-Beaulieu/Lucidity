@@ -1,9 +1,9 @@
-name: Test project
+name: Lucidity Test Runner Workflow
 
 on: 
   push:
     branches:
-      - master
+      - main
 
 jobs:
   testAllModes:
@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - test-project
+          - Lucidity
         testMode:
           - playmode
           - editmode

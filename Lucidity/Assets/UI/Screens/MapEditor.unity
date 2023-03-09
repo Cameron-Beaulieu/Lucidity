@@ -2108,7 +2108,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 218240319}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8979,10 +8979,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1068109423}
   m_HandleRect: {fileID: 1130625685}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 999
+  m_MinValue: 1
+  m_MaxValue: 10
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9450,7 +9450,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c073312a2ce1ab049ac7756b6a299819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _errorMaterial: {fileID: 2100000, guid: 543dde175e7b936498e0b0ae44f02c01, type: 2}
 --- !u!114 &1053491540
 MonoBehaviour:
   m_ObjectHideFlags: 0

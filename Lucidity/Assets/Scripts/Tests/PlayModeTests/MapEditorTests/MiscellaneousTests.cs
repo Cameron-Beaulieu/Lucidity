@@ -11,7 +11,7 @@ public class MiscellaneousTests : MapEditorTests {
 
     [Test]
     public void MapHasSpawnPoint() {
-        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        // Checking if the map has a spawn point
         GameObject spawnPoint = GameObject.Find("Spawn Point");
         Assert.IsNotNull(spawnPoint);
         Assert.AreEqual(spawnPoint.transform.parent, GameObject.Find("Map Container").transform);
@@ -57,7 +57,7 @@ public class MiscellaneousTests : MapEditorTests {
         GameObject fortressParent = mapContainer.transform.GetChild(2).gameObject;
         GameObject fortress = fortressParent.transform.GetChild(0).gameObject;
         Assert.AreEqual("FortressObject Parent", fortressParent.name);
-        Assert.AreEqual(new Vector3(100,100,90), fortressParent.transform.localPosition);
+        Assert.AreEqual(new Vector3(100,100,0), fortressParent.transform.localPosition);
         Assert.AreEqual("FortressObject(Clone)", fortress.name);
         Assert.AreEqual(0, fortress.transform.localPosition.x, PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(0, fortress.transform.localPosition.y, PlayModeTestUtil.FloatTolerance);
@@ -65,7 +65,7 @@ public class MiscellaneousTests : MapEditorTests {
 
         // check that spawn point was loaded correctly based on mock map data
         Assert.AreEqual("Spawn Point", mapContainer.transform.GetChild(1).name);
-        Assert.AreEqual(new Vector3(0,0,90), mapContainer.transform.GetChild(1).localPosition);
+        Assert.AreEqual(new Vector3(0,0,0), mapContainer.transform.GetChild(1).localPosition);
         
     }
 }

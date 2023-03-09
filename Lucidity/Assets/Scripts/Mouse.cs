@@ -18,11 +18,12 @@ public class Mouse : MonoBehaviour {
         Vector2 worldPosition = GetMousePosition();
         transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
         RayLibrary rayLib = new RayLibrary();
-        if (rayLib.IsPointerOverLayer(_uiLayer)) {
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        }
-        else {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        if (gameObject.GetComponent<SpriteRenderer>() != null) {
+            if (rayLib.IsPointerOverLayer(_uiLayer)) {
+                gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            } else {
+                gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            }
         }
     }
 
