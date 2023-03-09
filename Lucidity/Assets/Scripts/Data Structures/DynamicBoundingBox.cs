@@ -6,7 +6,6 @@ public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
     private static HashSet<Vector2> _randomAssetArrangement;
-    private static Outline _outline;
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
@@ -38,12 +37,8 @@ public class DynamicBoundingBox : MonoBehaviour {
             Quaternion.identity);
         dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
         dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
-        // Remove old material and attach new outline material
+        // Remove old material 
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
-        _outline = dynamicAssetImage.AddComponent<Outline>();
-        _outline.OutlineMode = Outline.Mode.OutlineAll;
-        _outline.OutlineColor = Color.white;
-        _outline.OutlineWidth = 0.5f;
 
         GenerateRandomCoordinates();
 

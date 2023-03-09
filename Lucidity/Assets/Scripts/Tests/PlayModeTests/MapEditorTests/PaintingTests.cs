@@ -163,27 +163,28 @@ public class PaintingTests : MapEditorTests {
         MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
+        yield return null;
         GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
 
-        // place another asset, but this time it should collide with the first one 
+        // place another asset far away so the LastMousePosition is different from the position 
+        // of the later asset causing the collision
+        mapEditorManager.PaintAtPosition(new Vector2(100, -150));
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+
         Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
         treeButton.onClick.Invoke();
+        // place another asset but this time it should collide with the first one 
         mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
-        
-        // check collision handling is done (colliding assets turn red and the asset causing the 
-        // collision should be destroyed)
+        yield return null;
         GameObject collidingTree = GameObject.Find("TreeObject(Clone)");
-        // Assert.AreEqual(Color.red, collidingTree.GetComponent<Image>().color);
-        // Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
-        yield return new WaitForSecondsRealtime(0.5f);
-        Assert.AreEqual(Color.white, collidingTree.GetComponent<Image>().color);
+        Assert.AreEqual(Color.red, collidingTree.GetComponent<Image>().color);
+        Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
+        yield return new WaitForSeconds(0.5f);
         Assert.AreEqual(Color.white, placedFortress.GetComponent<Image>().color);
-        yield return new WaitForEndOfFrame();
+        yield return null;
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
-        Assert.IsTrue(collidingTree == null);
-
-        // check that the first asset placed (the one that was collided with) is still there
+        Assert.IsNull(GameObject.Find("TreeObject(Clone)"));
         Assert.IsNotNull(placedFortress);
     }
 

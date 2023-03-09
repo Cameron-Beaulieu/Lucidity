@@ -52,8 +52,8 @@ public class SelectionTests : MapEditorTests {
         Assert.IsTrue(Tool.SelectionOptions.activeSelf);
         Assert.AreEqual("Editing FortressObject(Clone)", 
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
-        Assert.AreEqual(Outline.Mode.OutlineAll, 
-                        placedAsset.GetComponent<Outline>().OutlineMode);
+        Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)), 
+                         placedAsset.GetComponent<Image>().color);
 
         // create a new layer (should switch to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();      
@@ -66,7 +66,7 @@ public class SelectionTests : MapEditorTests {
         placedAsset.GetComponent<SelectMapObject>()
             .OnPointerClick(new PointerEventData(EventSystem.current));;
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
-        Assert.IsNull(placedAsset.GetComponent<Outline>());
+        Assert.AreEqual(Color.white, placedAsset.GetComponent<Image>().color);
     }
 
     [UnityTest]
@@ -76,7 +76,7 @@ public class SelectionTests : MapEditorTests {
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         Assert.AreEqual(0, editor.CurrentLayer);
-        Assert.IsNull(spawnPoint.GetComponent<Outline>());
+        Assert.AreEqual(Color.white, spawnPoint.GetComponent<Image>().color);
 
         // select the spawn point while on base layer
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
@@ -86,20 +86,21 @@ public class SelectionTests : MapEditorTests {
         spawnPoint.GetComponent<SelectMapObject>()
             .OnPointerClick(new PointerEventData(EventSystem.current));;
         
-        // assert spawn point selection options is active and the spawn point has an outline
+        // assert spawn point selection options is active and the spawn point is colored purple
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
-        Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)), 
-                         spawnPoint.GetComponent<Image>().color);
+        Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)),
+                        spawnPoint.GetComponent<Image>().color);
         
         // add new layer (switches to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual(1, editor.CurrentLayer);
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
-        Assert.IsNull(spawnPoint.GetComponent<Outline>());
+        Assert.AreEqual(Color.white, 
+                         spawnPoint.GetComponent<Image>().color);
 
         // select the spawn point while on a new layer
         SelectMapObject.SelectedObject = spawnPoint;
@@ -109,7 +110,7 @@ public class SelectionTests : MapEditorTests {
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
         Assert.AreEqual(((Color) new Color32(73, 48, 150, 255)), 
-                         spawnPoint.GetComponent<Image>().color);
+                        spawnPoint.GetComponent<Image>().color);
     }
 
     [Test]
