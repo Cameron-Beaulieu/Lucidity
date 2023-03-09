@@ -16,7 +16,6 @@ public class MapEditorManager : MonoBehaviour {
     public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
     public int CurrentLayer = 0;
     [SerializeField] private GameObject _layerPrefab;
-    public static int LayerToBeNamed = -1;
     public static LinkedList<EditorAction> Actions;
     public static Dictionary<string, Texture2D> ToolToCursorMap = 
         new Dictionary<string, Texture2D>();
@@ -87,12 +86,9 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Start() {
-        if(!ReloadFlag) {
-            if (StartupScreen.FilePath == null) {
-                List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
-            }
-        }
-        else {
+        if (!ReloadFlag && StartupScreen.FilePath == null) {
+            List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+        } else if (ReloadFlag) {
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
         }
@@ -249,8 +245,6 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
-                            // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
                             Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
@@ -312,8 +306,6 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
-                            // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
                             Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
@@ -408,7 +400,7 @@ public class MapEditorManager : MonoBehaviour {
         SpawnPoint = loadedMap.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
             new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
-        LayerToBeNamed = 0;
+        Layer.LayerToBeNamed = 0;
 
         for (int i = 0; i < loadedMap.LayerNames.Count; i++) {
             // Create a dictionary for each layer

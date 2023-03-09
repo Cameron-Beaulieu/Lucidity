@@ -9,6 +9,7 @@ public class Layer : MonoBehaviour{
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
+    public static int LayerToBeNamed = -1;
     private static GameObject _layerContainer;
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
@@ -31,10 +32,10 @@ public class Layer : MonoBehaviour{
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
         // Names are applied to the layers after they have been loaded in the MapEditorManager
         // This ensures that layers are given the proper names if loaded from a file
-        if (MapEditorManager.LayerToBeNamed >= 0 && 
-            MapEditorManager.LayerToBeNamed < LayerNames.Count) {
-            _layerText.text = LayerNames[MapEditorManager.LayerToBeNamed];
-            MapEditorManager.LayerToBeNamed++;
+        if (LayerToBeNamed >= 0 && 
+            LayerToBeNamed < LayerNames.Count) {
+            _layerText.text = LayerNames[LayerToBeNamed];
+            LayerToBeNamed++;
         } else {
             _layerText.text = _name;
         }
@@ -45,7 +46,7 @@ public class Layer : MonoBehaviour{
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
-        if (MapEditorManager.LayerToBeNamed == -1) {
+        if (LayerToBeNamed == -1) {
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
