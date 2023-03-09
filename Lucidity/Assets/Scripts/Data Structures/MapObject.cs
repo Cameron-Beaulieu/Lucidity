@@ -57,13 +57,13 @@ public class MapObject {
 
     /// <summary>
     /// Alternate constructor that adds a layer name to a previously existing <c>MapObject</c>.
+    /// </summary>
     /// <param name="obj">
     /// A previously existing <c>MapObject</c>.
     /// </param>
     /// <param name="layerName">
     /// A <c>string</c> representing the name of the layer the <c>MapObject</c> is placed on.
     /// </param>
-    /// </summary>
     public MapObject (MapObject obj, string layerName) {
         Id = obj.Id;
         Name = obj.Name;
