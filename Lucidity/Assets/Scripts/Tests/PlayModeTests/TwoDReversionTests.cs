@@ -69,48 +69,49 @@ public class TwoDReversionTests {
         Assert.AreNotEqual(houseId, revertedHouse.GetInstanceID());
     }
 
-    // [UnityTest]
-    // public IEnumerator CanUndoAndRedoAssetDeletionPostReversion() {
-    //     // Paint an asset
-    //     PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+    [UnityTest]
+    public IEnumerator CanUndoAndRedoAssetDeletionPostReversion() {
+        // Paint an asset
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        yield return null;
 
-    //     // Select the asset and delete it
-    //     GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-    //     GameObject assetToDelete = GameObject.Find("TempFortressObject(Clone)");
-    //     SelectMapObject.SelectedObject = assetToDelete;
-    //     SelectMapObject.IsTesting = true;
-    //     assetToDelete.GetComponent<SelectMapObject>()
-    //         .OnPointerClick(new PointerEventData(EventSystem.current));
-    //     Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
-    //     deleteButton.onClick.Invoke();
+        // Select the asset and delete it
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject assetToDelete = GameObject.Find("FortressObject(Clone)");
+        SelectMapObject.SelectedObject = assetToDelete;
+        SelectMapObject.IsTesting = true;
+        assetToDelete.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
+        deleteButton.onClick.Invoke();
 
-    //     // 3D-ify
-    //     GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
-    //     yield return null;
-    //     Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
-    //     yield return new WaitForEndOfFrame();
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
 
-    //     // Revert to 2D
-    //     GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
-    //     yield return null;
-    //     Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
-    //     yield return new WaitForEndOfFrame();
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
 
-    //     // Undo the deletion
-    //     GameObject revertedGameObject = GameObject.Find("TempFortressObject(Clone)");
-    //     Assert.Null(revertedGameObject);
-    //     GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
-    //     revertedGameObject = GameObject.Find("TempFortressObject(Clone)");
-    //     int revertedGameObjectId = revertedGameObject.GetInstanceID();
-    //     Assert.IsTrue(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
+        // Undo the deletion
+        GameObject revertedGameObject = GameObject.Find("ortressObject(Clone)");
+        Assert.Null(revertedGameObject);
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        revertedGameObject = GameObject.Find("FortressObject(Clone)");
+        int revertedGameObjectId = revertedGameObject.GetInstanceID();
+        Assert.IsTrue(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
 
-    //     // Redo the deletion
-    //     GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
-    //     Assert.IsFalse(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
+        // Redo the deletion
+        GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
+        Assert.IsFalse(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
 
-    //     // Reset testing var
-    //     SelectMapObject.IsTesting = false;
-    // }
+        // Reset testing var
+        SelectMapObject.IsTesting = false;
+    }
 
     [UnityTest]
     public IEnumerator CanSwitchToolsAfterReversion() {

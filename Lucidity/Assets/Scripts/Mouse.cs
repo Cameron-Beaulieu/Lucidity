@@ -21,8 +21,14 @@ public class Mouse : MonoBehaviour {
         if (gameObject.GetComponent<SpriteRenderer>() != null) {
             if (rayLib.IsPointerOverLayer(_uiLayer)) {
                 gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                foreach (Transform child in transform) {
+                    child.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                }
             } else {
                 gameObject.GetComponent<SpriteRenderer>().enabled = true;
+                foreach (Transform child in transform) {
+                    child.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+                }
             }
         }
     }
