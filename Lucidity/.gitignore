@@ -74,3 +74,6 @@ InitTest*.unity*
 # Hide 3D Assets
 3D Assets/
 3D Assets.meta
+
+# MacOS stuff
+.DS_Store
