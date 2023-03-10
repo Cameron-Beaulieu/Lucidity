@@ -34,7 +34,11 @@ public class Layer : MonoBehaviour{
         if (LayerToBeNamed >= 0 && 
             LayerToBeNamed < LayerNames.Count) {
             _layerText.text = LayerNames[LayerToBeNamed];
-            LayerToBeNamed++;
+            if (LayerToBeNamed + 1 == LayerNames.Count) {
+                LayerToBeNamed = -1;
+            } else {
+                LayerToBeNamed++;
+            }
         } else {
             _layerText.text = _name;
         }
