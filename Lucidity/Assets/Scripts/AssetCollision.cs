@@ -106,6 +106,11 @@ public class AssetCollision : MonoBehaviour {
             if (collider.gameObject == gameObject) {
                 return hitColliders;
             }
+
+            if (CheckPlacementLayerValidity(collider.gameObject) && collider.gameObject != gameObject) { 
+                Debug.Log("Removing collision");
+                hitColliders.Remove(collider);
+            }
         }
 
         List<Collider2D> allColliders = new List<Collider2D>();
@@ -156,4 +161,31 @@ public class AssetCollision : MonoBehaviour {
         RayLibrary rayLib = new RayLibrary();
         return (rayLib.IsPointerOverLayer(_uiLayer));
     }
+
+    private bool CheckPlacementLayerValidity(GameObject collisionObject) {
+        int newObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+        int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(collisionObject.GetInstanceID());
+
+        // Debug.Log(newObjectLayer);
+        // Debug.Log(collisionObjectLayer);
+
+        if (newObjectLayer == -1 || collisionObjectLayer == -1) {
+            return false;
+        }
+
+        MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][gameObject.GetInstanceID()];
+        MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
+
+        Debug.Log(newMapObject.Name);
+        Debug.Log(collisionMapObject.Name);
+
+        if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || collisionMapObject.Name != "Mountain") { 
+            return false;
+        }
+        return true;
+    }
+
+    // private bool FullyEncomppased(GameObject collisionObject) {
+
+    // }
 }
