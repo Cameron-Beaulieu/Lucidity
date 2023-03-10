@@ -25,7 +25,6 @@ public class Util {
         Tool.SelectionOptions = null;
         Tool.SpawnPointOptions = null;
         Mouse.LastMousePosition = Vector2.zero;
-        Layer.DuplicateIndex = 0;
         Layer.LayerContainer = null;
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();

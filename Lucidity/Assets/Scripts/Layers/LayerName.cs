@@ -8,6 +8,7 @@ using TMPro;
 public class LayerName : MonoBehaviour{
     private TMP_InputField _layerText;
     public string CurrentText;
+    public static bool IsTesting = false;
 
     private void Start() {
        _layerText = gameObject.GetComponent<TMP_InputField>();
@@ -33,36 +34,41 @@ public class LayerName : MonoBehaviour{
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     public void HandleSubmission(string newName){
+        if (IsTesting) { CurrentText = _layerText.text; }
         _layerText.text = newName;
+        string oldName = CurrentText;
+        int duplicateIndex = 2;
         if(String.IsNullOrWhiteSpace(newName)){
             _layerText.text = CurrentText;
+            _layerText.readOnly = true;
+            return;
         } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
-            string oldName = CurrentText;
             newName = newName.Substring(0,10) + "...";
-            // If the layer name is a duplicate, append a number before the ...
             while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
-                if (!Layer.LayerNames.Contains(newName.Substring(0,10) + 
-                    Layer.DuplicateIndex + "...")) {
-                    newName = newName.Substring(0,10) + Layer.DuplicateIndex + "..."; 
-                } 
-                Layer.DuplicateIndex++;
+                if (duplicateIndex == 2) {
+                    newName = newName.Substring(0, newName.Length - 4) + duplicateIndex + "...";
+                } else {
+                    newName = newName.Substring(0, newName.Length - (int) Math.Floor(
+                        Math.Log10(duplicateIndex - 1) + 4)) + duplicateIndex + "...";
+                }
+                duplicateIndex++;
             }
-            _layerText.text = newName;
-            CurrentText = newName;
-            UpdateLayerName(oldName, newName);
         } else {
-            string oldName = CurrentText;
             // if the layer name is a duplicate, append a number to the end
             while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
-                if (!Layer.LayerNames.Contains(newName + Layer.DuplicateIndex)) {
-                    newName += Layer.DuplicateIndex;
-                    _layerText.text = newName;
-                } 
-                Layer.DuplicateIndex++;
+                if (duplicateIndex == 2) {
+                    newName += duplicateIndex;
+                } else {
+                    // The math part is to handle the case where duplicateIndex is >1 digit
+                    newName = newName.Substring(0, newName.Length - 
+                        (int) Math.Floor(Math.Log10(duplicateIndex - 1) + 1)) + duplicateIndex;
+                }
+                duplicateIndex++;
             }
-            CurrentText = newName;
-            UpdateLayerName(oldName, newName);
         }
+        _layerText.text = newName;
+        CurrentText = newName;
+        UpdateLayerName(oldName, newName);
         _layerText.readOnly = true;
     }
 

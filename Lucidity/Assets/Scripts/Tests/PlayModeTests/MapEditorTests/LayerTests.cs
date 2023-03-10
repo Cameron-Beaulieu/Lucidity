@@ -170,4 +170,66 @@ public class LayerTests : MapEditorTests {
         Assert.IsFalse(baseLayer.transform.Find("Edit").gameObject.activeSelf);
         Assert.IsFalse(baseLayer.transform.Find("TrashCan").gameObject.activeSelf);
     }
+
+    [UnityTest]
+    public IEnumerator LayerNamesCannotBeTheSame() {
+        LayerName.IsTesting = true;
+        // Get the base layer
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
+        GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
+
+        // Rename base layer
+        TMP_InputField baseLayerInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
+        baseLayerInput.onSubmit.Invoke("abc");
+
+        // Create a new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
+
+        // Give the new layer the same name
+        TMP_InputField newLayerInput = newLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
+        newLayerInput.onSubmit.Invoke("abc");
+
+        Assert.AreEqual("abc", baseLayerInput.text);
+        Assert.AreEqual("abc2", newLayerInput.text);
+    }
+
+    [UnityTest]
+    public IEnumerator LayerNamesWithTruncationCannotBeTheSame() {
+        LayerName.IsTesting = true;
+        // Get the base layer
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
+        GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
+
+        string longText = "A really cool long name";
+
+        // Rename base layer
+        TMP_InputField baseLayerInput = baseLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
+        baseLayerInput.GetComponent<RectTransform>().sizeDelta = new Vector2(165, 0);
+        baseLayerInput.onSubmit.Invoke(longText);
+
+        // Create a new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
+
+        // Give the new layer the same name
+        TMP_InputField newLayerInput = newLayer.transform.Find("InputField (TMP)")
+            .GetComponent<TMP_InputField>();
+        newLayerInput.GetComponent<RectTransform>().sizeDelta = new Vector2(165, 0);
+        newLayerInput.onSubmit.Invoke(longText);
+
+        Assert.AreEqual(longText.Substring(0, 10) + "...", baseLayerInput.text);
+        Assert.AreEqual(longText.Substring(0, 9) + "2...", newLayerInput.text);
+    }
 }

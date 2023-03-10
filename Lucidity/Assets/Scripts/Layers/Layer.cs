@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 
 public class Layer : MonoBehaviour{
-    public static int DuplicateIndex = 0;
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
