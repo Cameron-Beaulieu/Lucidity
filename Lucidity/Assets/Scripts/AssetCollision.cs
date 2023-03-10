@@ -141,6 +141,8 @@ public class AssetCollision : MonoBehaviour {
 
         if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+            MapEditorManager.Layers[MapEditorManager.LayerContainsMapObject(
+                gameObject.GetInstanceID())].Remove(gameObject.GetInstanceID());
             GameObject parent = gameObject.transform.parent.gameObject;
             Destroy(gameObject);
             Destroy(parent);

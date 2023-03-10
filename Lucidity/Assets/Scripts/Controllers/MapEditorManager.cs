@@ -394,6 +394,7 @@ public class MapEditorManager : MonoBehaviour {
         SpawnPoint = mapData.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
             new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
+        GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = false;
         Layer.LayerToBeNamed = 0;
 
         Layer.LayerIndex.Clear();
@@ -436,6 +437,7 @@ public class MapEditorManager : MonoBehaviour {
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
                 newGameObject.GetInstanceID(), mapObject);
         }
+        GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;
     }
 
     /// <summary>
