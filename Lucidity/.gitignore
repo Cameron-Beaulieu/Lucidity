@@ -70,3 +70,7 @@ crashlytics-build.properties
 
 # Preventing Unity Temp Test Files 
 InitTest*.unity*
+
+# Hide 3D Assets
+3D Assets/
+3D Assets.meta
