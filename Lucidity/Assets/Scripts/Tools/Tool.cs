@@ -60,6 +60,9 @@ public class Tool : MonoBehaviour {
     /// <c>string</c> corresponding to the newly selected tool.
     /// </param>
     public static void ChangeTools(string toolSelected) {
+        if (toolSelected != "Selection Tool" && SelectMapObject.SelectedObject != null) {
+            SelectMapObject.UnselectMapObject();
+        }
         switch (toolSelected) {
             case "Brush Tool":
                 _paintingMenu.SetActive(true);

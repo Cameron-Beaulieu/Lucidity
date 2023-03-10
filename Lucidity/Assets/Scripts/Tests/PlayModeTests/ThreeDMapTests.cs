@@ -47,7 +47,7 @@ public class ThreeDMapTests {
         // Check if SpawnPoint is at the correct location and the Avatar spawned correctly 
         Assert.AreEqual(spawnPointPosition.x, GameObject.Find("Avatar").transform.position.x, 
                         PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(1f, GameObject.Find("Avatar").transform.position.y, 
+        Assert.AreEqual(6f, GameObject.Find("Avatar").transform.position.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(spawnPointPosition.y, GameObject.Find("Avatar").transform.position.z, 
                         PlayModeTestUtil.FloatTolerance);
@@ -159,13 +159,13 @@ public class ThreeDMapTests {
     public IEnumerator Maps2DTo3DProperly() {
         // paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "House");
-        GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject houseParent = GameObject.Find("TempHouseObject Parent");
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Mountain");
+        GameObject fortressParent = GameObject.Find("FortressObject Parent");
+        GameObject mountainParent = GameObject.Find("MountainObject Parent");
         Vector2 fortressPosition = fortressParent.transform.localPosition;
         Vector3 fortressScale = fortressParent.transform.localScale;
-        Vector2 housePosition = houseParent.transform.localPosition;
-        Vector3 houseScale = houseParent.transform.localScale;
+        Vector2 mountainPosition = mountainParent.transform.localPosition;
+        Vector3 mountainScale = mountainParent.transform.localScale;
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -174,18 +174,21 @@ public class ThreeDMapTests {
         yield return new WaitForEndOfFrame();
 
         // check that the assets are in the right place
-        GameObject fortress3D = GameObject.Find("TempOceanMap(Clone)");
+        GameObject fortress3D = GameObject.Find("LucidityFortress(Clone)");
         Assert.IsNotNull(fortress3D);
-        GameObject house3D = GameObject.Find("TempDesertMap(Clone)");
-        Assert.IsNotNull(house3D);
+        GameObject mountain3D = GameObject.Find("LucidityMountain(Clone)");
+        Assert.IsNotNull(mountain3D);
         GameObject map = GameObject.Find("ForestPlane(Clone)");
-        Assert.AreEqual(new Vector3(fortressPosition.x, 
-                                    fortressScale.y / 2 + map.transform.position.y, 
-                                    fortressPosition.y), 
-                        fortress3D.transform.position);
-        Assert.AreEqual(new Vector3(housePosition.x, 
-                                    houseScale.y / 2 + map.transform.position.y, 
-                                    housePosition.y),
-                        house3D.transform.position);
+        Assert.AreEqual(fortressPosition.x, fortress3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(fortressPosition.y, fortress3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Greater(fortress3D.transform.position.y, 0);
+        Assert.AreEqual(mountainPosition.x, mountain3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainPosition.y, mountain3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
+        // mountain has special positioning for the y due to the way the asset was modelled
+        Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
     }
 }

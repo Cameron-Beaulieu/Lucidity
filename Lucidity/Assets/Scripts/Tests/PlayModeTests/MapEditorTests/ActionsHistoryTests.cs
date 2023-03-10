@@ -40,7 +40,7 @@ public class ActionsHistoryTests : MapEditorTests {
 
         // select the asset and delete it
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-        GameObject assetToDelete = GameObject.Find("TempFortressObject(Clone)");
+        GameObject assetToDelete = GameObject.Find("FortressObject(Clone)");
         SelectMapObject.SelectedObject = assetToDelete;
         SelectMapObject.IsTesting = true;
         assetToDelete.GetComponent<SelectMapObject>()

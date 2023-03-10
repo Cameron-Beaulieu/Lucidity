@@ -379,26 +379,41 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Loads a map that is stored as a MapData object.
+    /// Loads a map stored at the specified file path.
     /// </summary>
     public void LoadMap() {
         MapContainer = GameObject.Find("Map Container");
         MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
-        SelectedBiome = loadedMap.Biome;
-        SpawnPoint = loadedMap.SpawnPoint;
+        LoadMapFromMapData(loadedMap);
+    }
+
+    /// <summary>
+    /// Loads a map from the specified <c>MapData</c> object.
+    /// </summary>
+    /// <param name="mapData">
+    /// The <c>MapData</c> object to load the map from.
+    /// </param>
+    public void LoadMapFromMapData(MapData mapData) {
+        SelectedBiome = mapData.Biome;
+        SpawnPoint = mapData.SpawnPoint;
         GameObject.Find("Spawn Point").transform.localPosition = 
             new Vector3(SpawnPoint.x, SpawnPoint.y, 0);
 
-        foreach (MapObject mapObject in loadedMap.MapObjects) {
+        foreach (MapObject mapObject in mapData.MapObjects) {
             GameObject newParent = new GameObject();
             newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
             newParent.transform.SetParent(MapContainer.transform, true);
             newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
                                                             mapObject.MapOffset.y, 0);
             GameObject newGameObject = (GameObject) Instantiate(
-                AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
-            newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
-                                                                mapObject.MapPosition.y, 0);
+                AssetPrefabs[mapObject.PrefabIndex], 
+                new Vector3(newParent.transform.position.x, 
+                            newParent.transform.position.y, 
+                            0), 
+                Quaternion.identity, newParent.transform);
+            newGameObject.transform.localPosition = new Vector3(
+                newGameObject.transform.localPosition.x, 
+                newGameObject.transform.localPosition.y, 0);
             newGameObject.transform.rotation = mapObject.Rotation;
             newGameObject.transform.localScale = 
                 new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
@@ -467,7 +482,8 @@ public class MapEditorManager : MonoBehaviour {
 
             while (pointer != null) {
                     for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
-                        pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
+                        pointer.Value.RelatedObjects[i] = 
+                            mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }
                 pointer = pointer.Next;
             }

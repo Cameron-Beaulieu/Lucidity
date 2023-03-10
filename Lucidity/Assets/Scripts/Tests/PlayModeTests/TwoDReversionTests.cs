@@ -24,10 +24,10 @@ public class TwoDReversionTests {
         // Paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector3(-100, 150, 0), "Fortress");
         PlayModeTestUtil.PaintAnAsset(new Vector3(100, 150, 0), "House");
-        GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject houseParent = GameObject.Find("TempHouseObject Parent");
-        GameObject newFortress = GameObject.Find("TempFortressObject(Clone)");
-        GameObject newHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject fortressParent = GameObject.Find("FortressObject Parent");
+        GameObject houseParent = GameObject.Find("HouseObject Parent");
+        GameObject newFortress = GameObject.Find("FortressObject(Clone)");
+        GameObject newHouse = GameObject.Find("HouseObject(Clone)");
         Vector3 fortressPosition = fortressParent.transform.localPosition;
         Vector3 fortressScale = fortressParent.transform.localScale;
         Vector3 housePosition = houseParent.transform.localPosition;
@@ -48,8 +48,8 @@ public class TwoDReversionTests {
         yield return new WaitForEndOfFrame();
 
         // Find new MapObjects
-        GameObject newFortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject newHouseParent = GameObject.Find("TempHouseObject Parent");
+        GameObject newFortressParent = GameObject.Find("FortressObject Parent");
+        GameObject newHouseParent = GameObject.Find("HouseObject Parent");
 
         // Check that the assets are in the right place
         Assert.AreEqual(newFortressParent.transform.localPosition, fortressPosition);
@@ -63,9 +63,9 @@ public class TwoDReversionTests {
         Assert.AreEqual(MapEditorManager.MapObjects.Count, 2);
 
         // Check if the GameObjects in MapObjects have been replaced
-        GameObject revertedFortress = GameObject.Find("TempFortressObject(Clone)");
+        GameObject revertedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.AreNotEqual(fortressId, revertedFortress.GetInstanceID());
-        GameObject revertedHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject revertedHouse = GameObject.Find("HouseObject(Clone)");
         Assert.AreNotEqual(houseId, revertedHouse.GetInstanceID());
     }
 
@@ -73,10 +73,11 @@ public class TwoDReversionTests {
     public IEnumerator CanUndoAndRedoAssetDeletionPostReversion() {
         // Paint an asset
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        yield return null;
 
         // Select the asset and delete it
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-        GameObject assetToDelete = GameObject.Find("TempFortressObject(Clone)");
+        GameObject assetToDelete = GameObject.Find("FortressObject(Clone)");
         SelectMapObject.SelectedObject = assetToDelete;
         SelectMapObject.IsTesting = true;
         assetToDelete.GetComponent<SelectMapObject>()
@@ -97,10 +98,10 @@ public class TwoDReversionTests {
         yield return new WaitForEndOfFrame();
 
         // Undo the deletion
-        GameObject revertedGameObject = GameObject.Find("TempFortressObject(Clone)");
+        GameObject revertedGameObject = GameObject.Find("FortressObject(Clone)");
         Assert.Null(revertedGameObject);
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
-        revertedGameObject = GameObject.Find("TempFortressObject(Clone)");
+        revertedGameObject = GameObject.Find("FortressObject(Clone)");
         int revertedGameObjectId = revertedGameObject.GetInstanceID();
         Assert.IsTrue(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
 
@@ -169,7 +170,7 @@ public class TwoDReversionTests {
         yield return new WaitForEndOfFrame();
 
         // Find new MapObject
-        GameObject newFortress = GameObject.Find("TempFortressObject Parent");
+        GameObject newFortress = GameObject.Find("FortressObject Parent");
 
         // Check that the correct asset type has been placed
         Assert.IsNotNull(newFortress);

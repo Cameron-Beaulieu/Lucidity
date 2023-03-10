@@ -85,13 +85,19 @@ public class PaintingTests : MapEditorTests {
         mapEditorManager.PaintAtPosition(positionToPlace);
 
         // check that the asset was placed correctly
-        GameObject placedParent = GameObject.Find("TempFortressObject Parent");
+        GameObject placedParent = GameObject.Find("FortressObject Parent");
         Assert.IsNotNull(placedParent);
         Assert.AreEqual(1, placedParent.transform.childCount);
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-        Assert.AreEqual(positionToPlace.x, placedParent.transform.position.x, PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(positionToPlace.y, placedParent.transform.position.y, PlayModeTestUtil.FloatTolerance);
-        Assert.Zero(placedParent.transform.localPosition.z);
+        Assert.AreEqual(positionToPlace.x, 
+                        placedParent.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(positionToPlace.y, 
+                        placedParent.transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(0, 
+                        placedParent.transform.localPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
     }
 
     [Test]
@@ -155,45 +161,37 @@ public class PaintingTests : MapEditorTests {
         Assert.AreEqual(6, MapEditorManager.MapObjects.Count);
     }
 
-    [Test]
-    public void CannotPlaceAssetOnTopOfSpawnPoint() {
-        // make sure map is empty, brush tool is selected, and spawn point position is (0,0)
-        Assert.Zero(MapEditorManager.MapObjects.Count);
-        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-        Assert.AreEqual(new Vector2(0,0), MapEditorManager.SpawnPoint);
-
-        // try to place it on the spawn point
-        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        fortressButton.onClick.Invoke();
-        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
-        Vector2 positionToPlace = new Vector2(0,0);
-        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        mapEditorManager.PaintAtPosition(positionToPlace);
-
-        // check that the asset was not placed
-        Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
-    }
-
-    [Test]
-    public void CannotPlaceAssetOnTopOfAnotherAsset() {
-        // make sure map is empty and brush tool is selected
-        Assert.Zero(MapEditorManager.MapObjects.Count);
-        Assert.IsTrue(Tool.ToolStatus["Brush Tool"]);
-
+    [UnityTest]
+    public IEnumerator DestroysPaintedAssetIfItCausesCollision() {
         // place the first asset
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
         fortressButton.onClick.Invoke();
-        Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
-        Vector2 positionToPlace = new Vector2(-100, 150);
         MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
-        mapEditorManager.PaintAtPosition(positionToPlace);
+        mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
+        yield return null;
+        GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
 
-        // try to place another asset on top of the first one
-        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.5f, 0.5f));
-        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        // place another asset far away so the LastMousePosition is different from the position 
+        // of the later asset causing the collision
+        mapEditorManager.PaintAtPosition(new Vector2(100, -150));
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        // place another asset but this time it should collide with the first one 
+        mapEditorManager.PaintAtPosition(new Vector2(-100, 150));
+        yield return null;
+        GameObject collidingTree = GameObject.Find("TreeObject(Clone)");
+        Assert.AreEqual(Color.red, collidingTree.GetComponent<Image>().color);
+        Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
+        yield return new WaitForSeconds(0.5f);
+        Assert.AreEqual(Color.white, placedFortress.GetComponent<Image>().color);
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
+        Assert.IsNull(GameObject.Find("TreeObject(Clone)"));
+        Assert.IsNotNull(placedFortress);
     }
 
     [UnityTest]
@@ -207,7 +205,7 @@ public class PaintingTests : MapEditorTests {
         GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
         editor.PaintAtPosition(new Vector2(-100,150));
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
-        GameObject placedFortress = GameObject.Find("TempFortressObject(Clone)");
+        GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[0].ContainsKey(placedFortress.GetInstanceID()));
         
         // add and switch to layer 1
@@ -219,7 +217,7 @@ public class PaintingTests : MapEditorTests {
         GameObject.Find("HouseButton").GetComponent<Button>().onClick.Invoke();
         editor.PaintAtPosition(new Vector2(100,150));
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
-        GameObject placedHouse = GameObject.Find("TempHouseObject(Clone)");
+        GameObject placedHouse = GameObject.Find("HouseObject(Clone)");
         Assert.IsTrue(MapEditorManager.Layers[1].ContainsKey(placedHouse.GetInstanceID()));
 
         // Check number of assets on each layer
