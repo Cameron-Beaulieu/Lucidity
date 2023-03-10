@@ -112,6 +112,11 @@ public class AssetCollision : MonoBehaviour {
                 collider.gameObject != gameObject) { 
                 hitCollidersClone.Remove(collider);
             }
+
+            if (CheckPlacementLayerValidity(collider.gameObject) && collider.gameObject != gameObject) { 
+                Debug.Log("Removing collision");
+                hitColliders.Remove(collider);
+            }
         }
 
         if (!hitCollidersClone.Contains(gameObject.GetComponent<Collider2D>())) {
