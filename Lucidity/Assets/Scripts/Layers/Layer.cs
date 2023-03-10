@@ -47,6 +47,7 @@ public class Layer : MonoBehaviour{
         _layerTrashCan.SetActive(false);
         _layerEdit = gameObject.transform.GetChild(3).gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
+        _layerEdit.SetActive(false);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
         if (LayerToBeNamed == -1) {
