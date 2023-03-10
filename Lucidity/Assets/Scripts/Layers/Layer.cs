@@ -31,9 +31,9 @@ public class Layer : MonoBehaviour{
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
         // Names are applied to the layers after they have been loaded in the MapEditorManager
         // This ensures that layers are given the proper names if loaded from a file
-        if (LayerToBeNamed >= 0 && 
-            LayerToBeNamed < LayerNames.Count) {
+        if (LayerToBeNamed >= 0 && LayerToBeNamed < LayerNames.Count) {
             _layerText.text = LayerNames[LayerToBeNamed];
+            // this is the case where the last layer has been named, so LayerToBeNamed is reset
             if (LayerToBeNamed + 1 == LayerNames.Count) {
                 LayerToBeNamed = -1;
             } else {
