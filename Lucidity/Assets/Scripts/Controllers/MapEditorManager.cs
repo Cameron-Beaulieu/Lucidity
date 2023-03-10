@@ -410,7 +410,6 @@ public class MapEditorManager : MonoBehaviour {
             Layer.LayerStatus.Add(loadedMap.LayerNames[i], false);
             Layer.LayerNames.Add(loadedMap.LayerNames[i]);
         }
-        CurrentLayer = Layers.Count - 1;
 
         // Select the layer with index 0
         Layer.LayerStatus[loadedMap.LayerNames[0]] = true;
