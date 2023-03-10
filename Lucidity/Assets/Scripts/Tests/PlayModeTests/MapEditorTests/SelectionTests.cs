@@ -64,7 +64,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));;
+            .OnPointerClick(new PointerEventData(EventSystem.current));
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         Assert.AreEqual(Color.white, placedAsset.GetComponent<Image>().color);
     }
@@ -84,7 +84,7 @@ public class SelectionTests : MapEditorTests {
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));;
+            .OnPointerClick(new PointerEventData(EventSystem.current));
         
         // assert spawn point selection options is active and the spawn point is colored purple
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
@@ -105,7 +105,7 @@ public class SelectionTests : MapEditorTests {
         // select the spawn point while on a new layer
         SelectMapObject.SelectedObject = spawnPoint;
         spawnPoint.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));;
+            .OnPointerClick(new PointerEventData(EventSystem.current));
         Assert.IsTrue(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual("Editing Spawn Point",
             GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text);
@@ -146,7 +146,7 @@ public class SelectionTests : MapEditorTests {
         GameObject placedAsset = GameObject.Find("FortressObject(Clone)");
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
-            .OnPointerClick(new PointerEventData(EventSystem.current));;
+            .OnPointerClick(new PointerEventData(EventSystem.current));
 
         // delete the object
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();

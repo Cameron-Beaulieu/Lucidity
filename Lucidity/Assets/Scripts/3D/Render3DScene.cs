@@ -96,7 +96,7 @@ public class Render3DScene : MonoBehaviour {
     /// Places a 3D asset on the 3D map
     /// </summary>
     /// <param name="prefab">
-    /// The 3D prefab of the MapObject to be placed on the 3D map
+    /// The 3D prefab of the <c>MapObject</c> to be placed on the 3D map
     /// </param>
     /// <param name="kvp">
     /// The data of the <c>MapObject</c> to be placed on the 3D map
@@ -149,14 +149,17 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
-    /// Calculates the <c>Vector3</c> position where each new asset should be placed
+    /// Calculates the <c>Vector3</c> position of the asset based on its <c>MapObject</c> data
     /// </summary>
     /// <param name="mapObjectData">
-    /// The <c>MapObject</c> of the current 2D map object to be placed on the 3D map
+    /// The data of the current 2D <c>MapObject</c> to be placed on the 3D map
     /// </param>
-    /// <param name="prefab">
-    /// The 3D prefab matching the 2D asset to be placed
+    /// <param name="toBePlaced">
+    /// The 3D <c>GameObject</c> on the map that is being placed
     /// </param>
+    /// <returns>
+    /// The <c>Vector3</c> position where the new asset should be placed
+    /// </returns>
     private Vector3 calculatePlacementPosition(MapObject mapObjectData, GameObject toBePlaced) {
         float xPosition = (mapObjectData.MapPosition.x  + mapObjectData.MapOffset.x);
         float zPosition = (mapObjectData.MapPosition.y  + mapObjectData.MapOffset.y);

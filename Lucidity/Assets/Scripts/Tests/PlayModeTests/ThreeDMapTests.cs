@@ -47,7 +47,8 @@ public class ThreeDMapTests {
         // Check if SpawnPoint is at the correct location and the Avatar spawned correctly 
         Assert.AreEqual(spawnPointPosition.x, GameObject.Find("Avatar").transform.position.x, 
                         PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(6f, GameObject.Find("Avatar").transform.position.y, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(6f, GameObject.Find("Avatar").transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(spawnPointPosition.y, GameObject.Find("Avatar").transform.position.z, 
                         PlayModeTestUtil.FloatTolerance);
     }
@@ -178,11 +179,15 @@ public class ThreeDMapTests {
         GameObject mountain3D = GameObject.Find("LucidityMountain(Clone)");
         Assert.IsNotNull(mountain3D);
         GameObject map = GameObject.Find("ForestPlane(Clone)");
-        Assert.AreEqual(fortressPosition.x, fortress3D.transform.position.x, PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(fortressPosition.y, fortress3D.transform.position.z, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(fortressPosition.x, fortress3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(fortressPosition.y, fortress3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.Greater(fortress3D.transform.position.y, 0);
-        Assert.AreEqual(mountainPosition.x, mountain3D.transform.position.x, PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(mountainPosition.y, mountain3D.transform.position.z, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainPosition.x, mountain3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainPosition.y, mountain3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
         // mountain has special positioning for the y due to the way the asset was modelled
         Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
     }

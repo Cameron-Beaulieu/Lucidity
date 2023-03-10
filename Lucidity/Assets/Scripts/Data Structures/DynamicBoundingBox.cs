@@ -101,7 +101,6 @@ public class DynamicBoundingBox : MonoBehaviour {
                         dynamicBoundingBox.transform.localScale.z + Zoom.zoomFactor)
                 * _dynamicSideLength * AssetOptions.BrushSize;
         Destroy(dynamicBoundingBox.GetComponent<SpriteRenderer>());
-        // Destroy(dynamicBoundingBox.GetComponent<MeshFilter>());
         return dynamicBoundingBox;
     }
 

@@ -52,7 +52,8 @@ public class MiscellaneousTests : MapEditorTests {
         Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
         int loadedAssetId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
         Assert.AreEqual("Fortress", MapEditorManager.MapObjects[loadedAssetId].Name);
-        Assert.AreEqual(new Vector2(100,100), MapEditorManager.MapObjects[loadedAssetId].MapOffset);
+        Assert.AreEqual(new Vector2(100,100), 
+                        MapEditorManager.MapObjects[loadedAssetId].MapOffset);
         GameObject mapContainer = GameObject.Find("Map Container");
         GameObject fortressParent = mapContainer.transform.GetChild(2).gameObject;
         GameObject fortress = fortressParent.transform.GetChild(0).gameObject;
@@ -66,6 +67,5 @@ public class MiscellaneousTests : MapEditorTests {
         // check that spawn point was loaded correctly based on mock map data
         Assert.AreEqual("Spawn Point", mapContainer.transform.GetChild(1).name);
         Assert.AreEqual(new Vector3(0,0,0), mapContainer.transform.GetChild(1).localPosition);
-        
     }
 }

@@ -98,7 +98,7 @@ public class TwoDReversionTests {
         yield return new WaitForEndOfFrame();
 
         // Undo the deletion
-        GameObject revertedGameObject = GameObject.Find("ortressObject(Clone)");
+        GameObject revertedGameObject = GameObject.Find("FortressObject(Clone)");
         Assert.Null(revertedGameObject);
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
         revertedGameObject = GameObject.Find("FortressObject(Clone)");

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayModeTestUtil {
-    public static float FloatTolerance = 0.01f; // used for comparing floats 
+    public static float FloatTolerance = 0.005f; // used for comparing floats 
     
     /// <summary>
     /// Checks that all tools are unselected except the one specified.
