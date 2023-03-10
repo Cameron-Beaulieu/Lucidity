@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class AssetCollision : MonoBehaviour {
-    [SerializeField] private Material _errorMaterial;
-    private Material _originalMaterial;
     private LayerMask _filterMask;
     private int _assetLayer = 6;
     private int _uiLayer = 5;
@@ -16,6 +15,9 @@ public class AssetCollision : MonoBehaviour {
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
         CheckAssetOnUI();
+    }
+
+    private void Start() {
         CheckAssetCollisions();
     }
 
@@ -34,33 +36,84 @@ public class AssetCollision : MonoBehaviour {
     /// calling a corountine to revert the materials and destroy the map object after an
     /// appropriate amount of time.
     /// </summary>
-    private void CheckAssetCollisions() {
-        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position,
-                                                     transform.localScale / 2, Quaternion.identity,
-                                                     _filterMask);
-        int collisions = hitColliders.Length;
-        foreach (Collider collisionObject in hitColliders) {
-            // If an object is labeled with the "CollisionObject" tag, then it can be considered as
-            // not colliding, as it will not be placed because of legality.
-            if (collisionObject.tag == "CollisionObject") {
-                collisions--;
-            }
+    public void CheckAssetCollisions() {
+        // All created GameObjects have a parent container except dynamic bounding boxes
+        if (gameObject.transform.parent == null) {
+            return;
         }
-        if (collisions > 1) {
-            gameObject.tag = "CollisionObject";
-            foreach (Collider collisionObject in hitColliders) {
+        List<Collider2D> hitColliders = GetAssetCollisions();
+        if (GetCollisionCount() > 1) {
+            foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
-                    && collisionObject.gameObject.GetComponent<MeshRenderer>() != null) {
-                    _originalMaterial = collisionObject.gameObject.GetComponent<MeshRenderer>()
-                        .material;
-                    collisionObject.gameObject.GetComponent<MeshRenderer>().material 
-                        = _errorMaterial;
-                    StartCoroutine(RevertMaterialAndDestroy(_originalMaterial,
-                                                            collisionObject.gameObject));
+                    && collisionObject.gameObject.GetComponent<Image>() != null
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
+                    collisionObject.gameObject.GetComponent<Image>()
+                        .color = Color.red;
+                    StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject));
                 }
             }
-            MapEditorManager.LastEncounteredObject = hitColliders[0].gameObject;
         }
+    }
+
+    /// <summary>
+    /// Determine whether the current <c>GameObject</c> is in direct collision with at least one
+    /// dynamic bounding box.
+    /// </summary>
+    /// <returns>
+    /// <c>bool</c> representing whether the <c>GameObject</c> collides with a dynamic bounding box
+    /// </returns>
+    public bool GetDynamicCollision() {
+        List<Collider2D> hitColliders = GetAssetCollisions();
+        foreach (Collider2D collisionObject in hitColliders) {
+            if (collisionObject.gameObject.tag == "DynamicBoundingBox"
+                    && collisionObject.gameObject != gameObject) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Retrieve the number of collisions that the <c>GameObject</c> is in direct collision with.
+    /// </summary>
+    /// <returns>
+    /// <c>int</c> corresponding to the number of collisions that occur with the <c>GameObject</c>
+    /// </returns>
+    public int GetCollisionCount() {
+        List<Collider2D> hitColliders = GetAssetCollisions();
+        int numCollisions = 0;
+        foreach (Collider2D collider in hitColliders) {
+            if (collider.gameObject.tag != "DynamicBoundingBox") {
+                numCollisions++;
+            }
+        }
+        return numCollisions;
+    }
+
+    /// <summary>
+    /// Retrieve an array of Collider2D that the <c>GameObject</c> is in direct collision with.
+    /// </summary>
+    /// <returns>
+    /// Array of <c>Collider2D</c> corresponding to the collisions that occur with the
+    /// <c>GameObject</c>
+    /// </returns>
+    public List<Collider2D> GetAssetCollisions() {
+        List<Collider2D> hitColliders = new List<Collider2D>();
+        ContactFilter2D filter2D = new ContactFilter2D();
+        filter2D.SetLayerMask(_filterMask);
+        int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
+        foreach (Collider2D collider in hitColliders) {
+            if (collider.gameObject == gameObject) {
+                return hitColliders;
+            }
+        }
+
+        List<Collider2D> allColliders = new List<Collider2D>();
+        for (int i = 0; i < hitColliders.Count; i++) {
+            allColliders.Add(hitColliders[i]);
+        }
+        allColliders.Add(gameObject.GetComponent<Collider2D>());
+        return allColliders;
     }
 
     /// <summary>
@@ -69,7 +122,7 @@ public class AssetCollision : MonoBehaviour {
     private void CheckAssetOnUI() {
         if (IsInvalidPlacement()) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
-            Destroy(gameObject.transform.parent.gameObject);
+            Destroy(gameObject.transform.parent);
             Destroy(gameObject);
         }
     }
@@ -79,23 +132,18 @@ public class AssetCollision : MonoBehaviour {
     /// and destroys the placed asset causing the collision. This is required during collision
     /// handling.
     /// </summary>
-    /// <param name="_originalMaterial">
-    /// <c>Material</c> corresponding to the collision <c>GameObject</c>.
-    /// </param>
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision, to be highlighted briefly.
     /// </param>
-    IEnumerator RevertMaterialAndDestroy(Material _originalMaterial, GameObject collisionObject) {
+    IEnumerator RevertMaterialAndDestroy(GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
-        if (collisionObject.gameObject.name == "Spawn Point") {
-            // spawn point doesn't have material (would hide the sprite)
-            collisionObject.gameObject.GetComponent<MeshRenderer>().materials = new Material[]{};
-        } else {
-            collisionObject.gameObject.GetComponent<MeshRenderer>().material = _originalMaterial;
-        }
-        if (collisionObject == gameObject) {
+        collisionObject.gameObject.GetComponent<Image>().color = Color.white;
+
+        if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
+            GameObject parent = gameObject.transform.parent.gameObject;
             Destroy(gameObject);
+            Destroy(parent);
         }
     }
 

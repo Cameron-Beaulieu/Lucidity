@@ -63,39 +63,28 @@ public class Render3DScene : MonoBehaviour {
     /// Places each asset from the 2D map on the 3D map
     /// </summary>
     private void PlaceAssets() {
-        GameObject newGameObject; 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
             if(kvp.Value.IsActive) {
                 switch (kvp.Value.Name) {
                     case "Fortress":
-                        newGameObject = Instantiate(_3DPrefabs[0], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        Place3DObject(_3DPrefabs[0], kvp);
                         break;
                     
                     case "House":
-                        newGameObject = Instantiate(_3DPrefabs[1], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[1]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        Place3DObject(_3DPrefabs[1], kvp);
                         break;
                     
                     case "Mountain":
-                        newGameObject = Instantiate(_3DPrefabs[2], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[2]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        Place3DObject(_3DPrefabs[2], kvp);
                         break;
                     
                     case "Tree":
-                        newGameObject = Instantiate(_3DPrefabs[3], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[3]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        Place3DObject(_3DPrefabs[3], kvp);
                         break;
                     
                     default:
                         Debug.Log("using default prefab");
-                        newGameObject = Instantiate(_3DPrefabs[0], 
-                        calculatePlacementPosition(kvp.Value, _3DPrefabs[0]), kvp.Value.Rotation);
-                        newGameObject.transform.localScale = kvp.Value.Scale;
+                        Place3DObject(_3DPrefabs[0], kvp);
                         break;
                 }
             }
@@ -103,35 +92,84 @@ public class Render3DScene : MonoBehaviour {
     }
 
     /// <summary>
+    /// Places a 3D asset on the 3D map
+    /// </summary>
+    /// <param name="prefab">
+    /// The 3D prefab of the <c>MapObject</c> to be placed on the 3D map
+    /// </param>
+    /// <param name="kvp">
+    /// The data of the <c>MapObject</c> to be placed on the 3D map
+    /// </param>
+    private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
+        GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), kvp.Value.Rotation);
+        newGameObject.transform.localScale = new Vector3(
+            newGameObject.transform.localScale.x * kvp.Value.Scale.x, 
+            newGameObject.transform.localScale.y * kvp.Value.Scale.y, 
+            newGameObject.transform.localScale.z * kvp.Value.Scale.z);
+        newGameObject.transform.position = calculatePlacementPosition(kvp.Value, newGameObject);
+
+        // if an asset is not a mountain and below ground, calculate the distance needed to move it
+        // up to the surface of the terrain; this is done by calculating the distance between the
+        // bottom-most point of the asset and the surface of the terrain (the lowest bounds of the
+        // mesh collider multipled by the negative of the scale of the object since the lowest
+        // bounds will be negative due to being below ground)
+        // this ignores mountain assets due to the way the asset looks at the bottom
+        if (IsBelowGround(newGameObject) && kvp.Value.Name != "Mountain") {
+            newGameObject.transform.position = new Vector3(newGameObject.transform.position.x, 
+                newGameObject.GetComponent<MeshCollider>().bounds.min.y * -kvp.Value.Scale.y, 
+                newGameObject.transform.position.z);
+        }
+    }
+
+    /// <summary>
+    /// Checks if the placed 3D asset is below the ground
+    /// </summary>
+    /// <param name="gameObjectToCheck">
+    /// The asset placed on the 3D map
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the asset is below the ground, <c>false</c> otherwise
+    /// </returns>
+    private bool IsBelowGround(GameObject gameObjectToCheck) {
+        GameObject ground = GameObject.Find("ForestPlane(Clone)");
+        MeshCollider gameObjectCollider = gameObjectToCheck.GetComponent<MeshCollider>();
+        MeshCollider groundCollider = ground.GetComponent<MeshCollider>();
+        return gameObjectCollider.bounds.Intersects(groundCollider.bounds);
+    }
+
+    /// <summary>
     /// Places <c>_avatar</c> on the 3D map in accordance with the placement of the spawn point 
     /// on the 2D map.
     /// </summary>
     private void PlaceAvatar() {
-        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, 1f, 
+        _avatar.transform.position = new Vector3(MapEditorManager.SpawnPoint.x, 
+                                                 _avatar.transform.position.y, 
                                                  MapEditorManager.SpawnPoint.y);
     }
 
     /// <summary>
-    /// Calculates the <c>Vector3</c> position where each new asset should be placed
+    /// Calculates the <c>Vector3</c> position of the asset based on its <c>MapObject</c> data
     /// </summary>
+    /// <param name="mapObjectData">
+    /// The data of the current 2D <c>MapObject</c> to be placed on the 3D map
+    /// </param>
     /// <param name="toBePlaced">
-    /// The <c>MapObject</c> of the current 2D map object to be placed on the 3D map
+    /// The 3D <c>GameObject</c> on the map that is being placed
     /// </param>
-    /// <param name="prefab">
-    /// The 3D prefab matching the 2D asset to be placed
-    /// </param>
-    private Vector3 calculatePlacementPosition(MapObject toBePlaced, GameObject prefab) {
-        float xPosition = (toBePlaced.MapPosition.x  + toBePlaced.MapOffset.x);
-        float zPosition = (toBePlaced.MapPosition.y  + toBePlaced.MapOffset.y);
-        float yPosition = (toBePlaced.Scale.y / 2) + _map.transform.position.y;
-        Vector3 placementPosition = new Vector3(xPosition, yPosition, zPosition);
+    /// <returns>
+    /// The <c>Vector3</c> position where the new asset should be placed
+    /// </returns>
+    private Vector3 calculatePlacementPosition(MapObject mapObjectData, GameObject toBePlaced) {
+        float xPosition = (mapObjectData.MapPosition.x  + mapObjectData.MapOffset.x);
+        float zPosition = (mapObjectData.MapPosition.y  + mapObjectData.MapOffset.y);
+        Vector3 placementPosition = new Vector3(xPosition, 0, zPosition);
         return placementPosition;
     }
 
     /// <summary>
     /// Reverts from the 3D scene back to the 2D scene
     /// </summary>
-    public void RevertTo2D(){
+    public void RevertTo2D() {
         _editor.SetActive(true);
         MapEditorManager.ReloadFlag = true;
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);

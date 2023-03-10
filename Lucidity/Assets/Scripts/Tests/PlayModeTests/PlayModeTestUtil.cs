@@ -5,13 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayModeTestUtil {
-
     public static float FloatTolerance = 0.005f; // used for comparing floats 
     
     /// <summary>
     /// Checks that all tools are unselected except the one specified.
     /// </summary>
-    /// <param name="toolSelected">The name of the tool that should be selected.</param>
+    /// <param name="toolSelected">
+    /// The name of the tool that should be selected.
+    /// </param>
     public static void CheckAllOtherToolsAreUnselected(string toolSelected) {
         foreach (string tool in Tool.ToolKeys) {
             if (tool != toolSelected) {
@@ -31,5 +32,4 @@ public class PlayModeTestUtil {
         GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>()
             .PaintAtPosition(positionToPlace);
     }
-
 }

@@ -35,82 +35,122 @@ public class ThreeDMapTests {
 
     [UnityTest]
     public IEnumerator PlacesAvatarCorrectly() {
+        // Get SpawnPoint location on 2D Map
         Vector2 spawnPointPosition = GameObject.Find("Spawn Point").transform.localPosition;
+
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // Check if SpawnPoint is at the correct location and the Avatar spawned correctly 
         Assert.AreEqual(spawnPointPosition.x, GameObject.Find("Avatar").transform.position.x, 
                         PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(1f, GameObject.Find("Avatar").transform.position.y, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(6f, GameObject.Find("Avatar").transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(spawnPointPosition.y, GameObject.Find("Avatar").transform.position.z, 
                         PlayModeTestUtil.FloatTolerance);
     }
 
     [UnityTest]
     public IEnumerator AvatarCanMoveForward() {
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+        
+        // Get current Avatar position
         GameObject avatar = GameObject.Find("Avatar");
         Vector3 avatarPosition = avatar.transform.position;
+        
+        // Move Avatar forward
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
-        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
     }
 
     [UnityTest]
     public IEnumerator AvatarCanMoveBackward() {
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // Get current Avatar position
         GameObject avatar = GameObject.Find("Avatar");
         Vector3 avatarPosition = avatar.transform.position;
+
+        // Move Avatar backwards
         AvatarMovement.VerticalTestingInput = -1;
         yield return new WaitForFixedUpdate();
-        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, PlayModeTestUtil.FloatTolerance);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatarPosition.x, avatar.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.Less(avatar.transform.position.z, avatarPosition.z);
     }
 
     [UnityTest]
     public IEnumerator AvatarCanMoveRight() {
+        // 3D0ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // Get current Avatar position
         GameObject avatar = GameObject.Find("Avatar");
         Vector3 avatarPosition = avatar.transform.position;
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
+
+        // Move Avatar right
         float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = 1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
         Assert.Greater(avatar.transform.position.x, avatarPosition.x);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
         Assert.Greater(movementScript.Orientation.rotation.y, avatarOrientation);
     }
 
     [UnityTest]
     public IEnumerator AvatarCanMoveLeft() {
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+        
+        // Get current Avatar position
         GameObject avatar = GameObject.Find("Avatar");
         Vector3 avatarPosition = avatar.transform.position;
+
+        // Move Avatar left
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
         float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = -1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
+
+        // Check Avatar position udpated properly
         Assert.Less(avatar.transform.position.x, avatarPosition.x);
-        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
+                        PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
         Assert.Less(movementScript.Orientation.rotation.y, avatarOrientation);
     }
@@ -119,13 +159,13 @@ public class ThreeDMapTests {
     public IEnumerator Maps2DTo3DProperly() {
         // paint assets
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "House");
-        GameObject fortressParent = GameObject.Find("TempFortressObject Parent");
-        GameObject houseParent = GameObject.Find("TempHouseObject Parent");
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Mountain");
+        GameObject fortressParent = GameObject.Find("FortressObject Parent");
+        GameObject mountainParent = GameObject.Find("MountainObject Parent");
         Vector2 fortressPosition = fortressParent.transform.localPosition;
         Vector3 fortressScale = fortressParent.transform.localScale;
-        Vector2 housePosition = houseParent.transform.localPosition;
-        Vector3 houseScale = houseParent.transform.localScale;
+        Vector2 mountainPosition = mountainParent.transform.localPosition;
+        Vector3 mountainScale = mountainParent.transform.localScale;
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -134,20 +174,21 @@ public class ThreeDMapTests {
         yield return new WaitForEndOfFrame();
 
         // check that the assets are in the right place
-        GameObject fortress3D = GameObject.Find("TempOceanMap(Clone)");
+        GameObject fortress3D = GameObject.Find("LucidityFortress(Clone)");
         Assert.IsNotNull(fortress3D);
-        GameObject house3D = GameObject.Find("TempDesertMap(Clone)");
-        Assert.IsNotNull(house3D);
+        GameObject mountain3D = GameObject.Find("LucidityMountain(Clone)");
+        Assert.IsNotNull(mountain3D);
         GameObject map = GameObject.Find("ForestPlane(Clone)");
-        Assert.AreEqual(new Vector3(fortressPosition.x, 
-                                    fortressScale.y / 2 + map.transform.position.y, 
-                                    fortressPosition.y), 
-                        fortress3D.transform.position);
-        Assert.AreEqual(new Vector3(housePosition.x, 
-                                    houseScale.y / 2 + map.transform.position.y, 
-                                    housePosition.y),
-                        house3D.transform.position);
-
+        Assert.AreEqual(fortressPosition.x, fortress3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(fortressPosition.y, fortress3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Greater(fortress3D.transform.position.y, 0);
+        Assert.AreEqual(mountainPosition.x, mountain3D.transform.position.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainPosition.y, mountain3D.transform.position.z, 
+                        PlayModeTestUtil.FloatTolerance);
+        // mountain has special positioning for the y due to the way the asset was modelled
+        Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
     }
-    
 }

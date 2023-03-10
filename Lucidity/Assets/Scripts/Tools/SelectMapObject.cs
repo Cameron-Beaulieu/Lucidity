@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static GameObject SelectedObject;
     public static bool IsTesting = false;
-    private static Outline _outline;
 
     public void OnPointerClick(PointerEventData eventData) {
         if (Tool.ToolStatus["Selection Tool"]) {
             GameObject clickedObject;
             if (IsTesting) {
-                clickedObject = SelectedObject;
+                clickedObject = gameObject;
             } else {
                 clickedObject = eventData.pointerClick;
             }
@@ -26,10 +26,10 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             //         || clickedObject.name == "Spawn Point") {
             if (MapEditorManager.MapObjects.ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
-                SelectedObject = clickedObject;
-                if (_outline != null) {
-                    Destroy(_outline);
+                if (SelectedObject != null) {
+                    UnselectMapObject();
                 }
+                SelectedObject = clickedObject;
                 if (SelectedObject.name == "Spawn Point") {
                     Tool.SpawnPointOptions.SetActive(true);
                     Tool.SelectionOptions.SetActive(false);
@@ -39,23 +39,18 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 }
                 GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
                     = "Editing " + SelectedObject.name;
-                _outline = SelectedObject.AddComponent<Outline>();
-                _outline.OutlineMode = Outline.Mode.OutlineAll;
-                _outline.OutlineColor = Color.red;
-                _outline.OutlineWidth = 2f;
+                SelectedObject.GetComponent<Image>().color = new Color32(73, 48, 150, 255);
             }
         }
     }
 
     public static void UnselectMapObject() {
         if (SelectedObject != null) {
+            SelectedObject.GetComponent<Image>().color = Color.white;
             SelectedObject = null;
+            Tool.SelectionOptions.SetActive(false);
+            Tool.SpawnPointOptions.SetActive(false);
         }
-        if (_outline != null) {
-            Destroy(_outline);
-        }
-        Tool.SelectionOptions.SetActive(false);
-        Tool.SpawnPointOptions.SetActive(false);
     }
 
     /// <summary>
@@ -66,7 +61,6 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
         MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
-        Destroy(_outline);
         List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
         // If a map was just loaded, deleting could be the first Action
         if (MapEditorManager.Actions != null) {

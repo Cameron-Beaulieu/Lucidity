@@ -29,33 +29,23 @@ public class AssetController : MonoBehaviour {
         if (activeImage != null) {
             Destroy(activeImage);
         }
-        CreateFollowingImage(_editor.AssetImage[Id]);
+        DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id],
+                                                   Mouse.GetMousePosition());
 
         MapEditorManager.CurrentButtonPressed = Id;
 
-        GameObject parentContainer = GameObject.Find(
-            gameObject.transform.parent.name);
+        GameObject parentContainer = GameObject.Find(gameObject.transform.parent.name);
         // Unselect previously selected asset in "Sprites" panel unless it 
         // is the same asset as that that is being selected
         if (_prevParentContainer != null && _prevParentContainer != parentContainer) {
             _prevParentContainer.GetComponentInChildren<AssetController>().UnselectButton();
         }
+        
         // Highlight asset in "Sprites" pane
         parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
         _prevParentContainer = parentContainer;
         // set painting status
         Tool.ChangeTools("Brush Tool");
-    }
-
-    public static void CreateFollowingImage(GameObject prefab) {
-        Vector2 worldPosition = Mouse.GetMousePosition();
-        GameObject hoverImage = Instantiate(prefab,
-                                            new Vector3(worldPosition.x, worldPosition.y, 90),
-                                            Quaternion.identity);
-        hoverImage.transform.localScale = new Vector3(
-            hoverImage.transform.localScale.x + Zoom.zoomFactor, 
-            hoverImage.transform.localScale.y + Zoom.zoomFactor, 
-            hoverImage.transform.localScale.z + Zoom.zoomFactor);
     }
 
     /// <summary>
