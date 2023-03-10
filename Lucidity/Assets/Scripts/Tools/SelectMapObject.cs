@@ -48,9 +48,9 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         if (SelectedObject != null) {
             SelectedObject.GetComponent<Image>().color = Color.white;
             SelectedObject = null;
+            Tool.SelectionOptions.SetActive(false);
+            Tool.SpawnPointOptions.SetActive(false);
         }
-        Tool.SelectionOptions.SetActive(false);
-        Tool.SpawnPointOptions.SetActive(false);
     }
 
     /// <summary>
@@ -58,6 +58,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     /// </summary>
     public void DeleteMapObject() {
         MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
+        int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
+        MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
         List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
         // If a map was just loaded, deleting could be the first Action

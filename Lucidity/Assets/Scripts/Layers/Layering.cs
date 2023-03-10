@@ -8,7 +8,7 @@ public class Layering : MonoBehaviour {
     [SerializeField] private GameObject _layerPrefab; 
     private static GameObject _layerContainer;
 
-    private void Start() {
+    private void Awake() {
         _layerContainer = GameObject.Find("LayerScrollContent");
         gameObject.GetComponent<Button>().onClick.AddListener(CreateNewLayer);
     }

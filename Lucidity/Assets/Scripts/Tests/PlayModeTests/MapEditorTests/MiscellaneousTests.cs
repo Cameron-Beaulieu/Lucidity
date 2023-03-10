@@ -31,16 +31,19 @@ public class MiscellaneousTests : MapEditorTests {
         Assert.AreEqual(0, MapEditorManager.MapObjects.Count);
 
         // mock map data
-        MapData mapData = new MapData(new Biome(0), 
-                                      new Dictionary<int, MapObject> {
-                                        {0, new MapObject(0, 
-                                                          "Fortress", 
-                                                          0, 
-                                                          new Vector2(0, 0), 
-                                                          new Vector2(100,100), 
-                                                          new Vector3(1, 1, 1), 
-                                                          Quaternion.identity, true)}},
-                                      new Vector2(0, 0));
+        MapData mapData = new MapData(new Biome(0),
+                                      new Vector2(0, 0),
+                                      new List<Dictionary<int, MapObject>> {
+                                          new Dictionary<int, MapObject> {
+                                              {0, new MapObject(new MapObject(0, 
+                                                                "Fortress", 
+                                                                0, 
+                                                                new Vector2(0, 0), 
+                                                                new Vector2(100,100), 
+                                                                new Vector3(1, 1, 1), 
+                                                                Quaternion.identity, true),
+                                                                "Layer0")}}},
+                                      new Dictionary<string, int> {{"Layer0", 0}});
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
 

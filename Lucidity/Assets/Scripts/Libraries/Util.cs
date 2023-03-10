@@ -25,8 +25,10 @@ public class Util {
         Tool.SelectionOptions = null;
         Tool.SpawnPointOptions = null;
         Mouse.LastMousePosition = Vector2.zero;
-        Layer.LayerStatus.Clear();
+        Layer.LayerContainer = null;
         Layer.LayerIndex.Clear();
+        Layer.LayerStatus.Clear();
+        Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
     }
 
