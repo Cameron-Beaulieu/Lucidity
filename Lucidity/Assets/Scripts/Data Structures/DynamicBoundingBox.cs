@@ -104,16 +104,19 @@ public class DynamicBoundingBox : MonoBehaviour {
         Destroy(dynamicBoundingBox.GetComponent<SpriteRenderer>());
 
         // Change the collider of the dynamic bounding box to a consistent rectangle
-        Vector2 size = new Vector2(dynamicBoundingBox.GetComponent<RectTransform>().rect.width,
-                                   dynamicBoundingBox.GetComponent<RectTransform>().rect.height);
-        size = Vector2.Scale(size, new Vector2(0.5f, 0.5f));
-        Vector2[] points = {
-            Vector2.Scale(size, Vector2.one),
-            Vector2.Scale(size, new Vector2(-1, 1)),
-            Vector2.Scale(size, new Vector2(-1, -1)),
-            Vector2.Scale(size, new Vector2(1, -1))
-        };
-        dynamicBoundingBox.GetComponent<PolygonCollider2D>().SetPath(0, points);
+        if (dynamicBoundingBox.GetComponent<PolygonCollider2D>()) {
+            Vector2 size =
+                new Vector2(dynamicBoundingBox.GetComponent<RectTransform>().rect.width,
+                            dynamicBoundingBox.GetComponent<RectTransform>().rect.height);
+            size = Vector2.Scale(size, new Vector2(0.5f, 0.5f));
+            Vector2[] points = {
+                Vector2.Scale(size, Vector2.one),
+                Vector2.Scale(size, new Vector2(-1, 1)),
+                Vector2.Scale(size, new Vector2(-1, -1)),
+                Vector2.Scale(size, new Vector2(1, -1))
+            };
+            dynamicBoundingBox.GetComponent<PolygonCollider2D>().SetPath(0, points);
+        }
 
         return dynamicBoundingBox;
     }
