@@ -51,7 +51,7 @@ public class AssetOptions : MonoBehaviour {
     /// Updates <c>_brushSize</c> and corresponding brush size text value based on slider.
     /// </summary>
     public void BrushSizeSliderHandler() {
-        _brushSize = _brushSizeSlider.value;
+        _brushSize = 1 + (_brushSizeSlider.value) / 10;
         string sliderMessage = _brushSize.ToString("0.0") + " x";
         _brushSizeText.text = sliderMessage;
         UpdateAssetImage();
