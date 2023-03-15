@@ -36,7 +36,7 @@ public class DynamicBoundingBox : MonoBehaviour {
             new Vector3(position.x, position.y, 90),
             Quaternion.identity);
         dynamicAssetImage.name = "HoverDynamicBoundingBoxObject";
-        dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.BrushSize;
+        dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.Spread;
         // Remove old material 
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
 
@@ -68,7 +68,7 @@ public class DynamicBoundingBox : MonoBehaviour {
                                                     Transform parentTransform) {
         GameObject obj = Instantiate(assetImage, parentTransform, false);
         obj.GetComponent<Mouse>().enabled = false;
-        obj.transform.localScale /= _dynamicSideLength * AssetOptions.BrushSize;
+        obj.transform.localScale /= _dynamicSideLength * AssetOptions.Spread;
         Vector3 offsetPosition = GetOffsetPosition(coordinate, obj.transform.localScale,
                                                    obj.GetComponent<SpriteRenderer>().size);
         obj.transform.SetLocalPositionAndRotation(offsetPosition, Quaternion.identity);
@@ -100,7 +100,7 @@ public class DynamicBoundingBox : MonoBehaviour {
             new Vector3(dynamicBoundingBox.transform.localScale.x + Zoom.zoomFactor,
                         dynamicBoundingBox.transform.localScale.y + Zoom.zoomFactor,
                         dynamicBoundingBox.transform.localScale.z + Zoom.zoomFactor)
-                * _dynamicSideLength * AssetOptions.BrushSize;
+                * _dynamicSideLength * AssetOptions.Spread;
         Destroy(dynamicBoundingBox.GetComponent<SpriteRenderer>());
 
         // Change the collider of the dynamic bounding box to a consistent rectangle
@@ -175,7 +175,7 @@ public class DynamicBoundingBox : MonoBehaviour {
                         parent.transform.localScale.y * (Zoom.zoomFactor + 1),
                         parent.transform.localScale.z * (Zoom.zoomFactor + 1));
 
-        Vector3 scale = Vector3.one / (_dynamicSideLength * AssetOptions.BrushSize);
+        Vector3 scale = Vector3.one / (_dynamicSideLength * AssetOptions.Spread);
         Vector3 relativePosition =
             dynamicBoundingBox.transform.TransformPoint(GetOffsetPosition(
                 coordinate,
@@ -233,16 +233,16 @@ public class DynamicBoundingBox : MonoBehaviour {
             if (_dynamicSideLength % 2 == 0) {
                 offset = scale.x * 0.5f;
             } else {
-                offset = scale.x * -0.5f * (AssetOptions.BrushSize - 1);
+                offset = scale.x * -0.5f * (AssetOptions.Spread - 1);
             }
             return new Vector3(
                 (offset - scale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-                    * AssetOptions.BrushSize + (scale.x
-                    * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
+                    * AssetOptions.Spread + (scale.x
+                    * (((AssetOptions.Spread * _dynamicSideLength) - 1f)
                     / (_dynamicSideLength - 1f))) * coordinate.x) * size.x,
                 (offset - scale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
-                    * AssetOptions.BrushSize + (scale.y
-                    * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
+                    * AssetOptions.Spread + (scale.y
+                    * (((AssetOptions.Spread * _dynamicSideLength) - 1f)
                     / (_dynamicSideLength - 1f))) * coordinate.y) * size.y);
         }
         return Vector2.zero;

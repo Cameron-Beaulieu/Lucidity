@@ -36,7 +36,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
     [UnityTest]
     public IEnumerator DynamicBoundingBoxAssetHoverUpdatesOnBrushSizeChange() {
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+        Slider brushSizeSlider = GameObject.Find("SpreadContainer").transform.Find("Slider")
             .GetComponent<Slider>();
         fortressButton.onClick.Invoke();
         // the local scale of the hovering dynamic bounding box is equal to the slider input
@@ -64,7 +64,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         yield return new WaitForEndOfFrame();
         
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+        Slider brushSizeSlider = GameObject.Find("SpreadContainer").transform.Find("Slider")
             .GetComponent<Slider>();
         fortressButton.onClick.Invoke();
         // the local scale of the hovering dynamic bounding box is equal to the slider input

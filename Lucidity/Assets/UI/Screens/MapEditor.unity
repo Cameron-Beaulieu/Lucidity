@@ -6673,7 +6673,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Brush Size:'
+  m_text: 'Asset Spread:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
   m_sharedMaterial: {fileID: 5577767176045332392, guid: 5827b4e26025e40ee90596abd5a41b92, type: 2}
@@ -13188,7 +13188,7 @@ GameObject:
   - component: {fileID: 1431803177}
   - component: {fileID: 1431803178}
   m_Layer: 5
-  m_Name: BrushSizeText
+  m_Name: SpreadText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13255,7 +13255,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: px
+  m_Text: x
 --- !u!1 &1440528911
 GameObject:
   m_ObjectHideFlags: 0
@@ -13404,7 +13404,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1446977983}
   m_Layer: 5
-  m_Name: BrushSizeContainer
+  m_Name: SpreadContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15571,8 +15571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0190867fac9915a42a65a44408d53b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _brushSizeSlider: {fileID: 979449212}
-  _brushSizeText: {fileID: 1431803178}
+  _spreadSlider: {fileID: 979449212}
+  _spreadText: {fileID: 1431803178}
   _countInput: {fileID: 885781265}
 --- !u!1 &1659620801
 GameObject:
