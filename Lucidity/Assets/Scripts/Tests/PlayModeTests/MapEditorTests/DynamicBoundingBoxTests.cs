@@ -43,7 +43,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         Assert.AreEqual(Vector3.one,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
         // change the slider input and ensure it is reflected in the hover object scale
-        brushSizeSlider.value = 2f;
+        brushSizeSlider.value = 10f;
         yield return null;
         Assert.AreEqual(Vector3.one * 2,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
@@ -71,7 +71,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         Assert.AreEqual(Vector3.one,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
         // change the slider input and ensure it is reflected in the hover object scale
-        brushSizeSlider.value = 2f;
+        brushSizeSlider.value = 10f;
         yield return null;
         Assert.AreEqual(Vector3.one * 2,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
