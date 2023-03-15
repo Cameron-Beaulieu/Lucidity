@@ -69,7 +69,8 @@ public class DynamicBoundingBox : MonoBehaviour {
         GameObject obj = Instantiate(assetImage, parentTransform, false);
         obj.GetComponent<Mouse>().enabled = false;
         obj.transform.localScale /= _dynamicSideLength * AssetOptions.BrushSize;
-        Vector3 offsetPosition = GetOffsetPosition(coordinate, obj.transform.localScale);
+        Vector3 offsetPosition = GetOffsetPosition(coordinate, obj.transform.localScale,
+                                                   obj.GetComponent<SpriteRenderer>().size);
         obj.transform.SetLocalPositionAndRotation(offsetPosition, Quaternion.identity);
         obj.transform.localScale = new Vector3(obj.transform.localScale.x + Zoom.zoomFactor,
                                                obj.transform.localScale.y + Zoom.zoomFactor,
@@ -101,6 +102,22 @@ public class DynamicBoundingBox : MonoBehaviour {
                         dynamicBoundingBox.transform.localScale.z + Zoom.zoomFactor)
                 * _dynamicSideLength * AssetOptions.BrushSize;
         Destroy(dynamicBoundingBox.GetComponent<SpriteRenderer>());
+
+        // Change the collider of the dynamic bounding box to a consistent rectangle
+        if (dynamicBoundingBox.GetComponent<PolygonCollider2D>()) {
+            Vector2 size =
+                new Vector2(dynamicBoundingBox.GetComponent<RectTransform>().rect.width,
+                            dynamicBoundingBox.GetComponent<RectTransform>().rect.height);
+            size = Vector2.Scale(size, new Vector2(0.5f, 0.5f));
+            Vector2[] points = {
+                Vector2.Scale(size, Vector2.one),
+                Vector2.Scale(size, new Vector2(-1, 1)),
+                Vector2.Scale(size, new Vector2(-1, -1)),
+                Vector2.Scale(size, new Vector2(1, -1))
+            };
+            dynamicBoundingBox.GetComponent<PolygonCollider2D>().SetPath(0, points);
+        }
+
         return dynamicBoundingBox;
     }
 
@@ -160,7 +177,11 @@ public class DynamicBoundingBox : MonoBehaviour {
 
         Vector3 scale = Vector3.one / (_dynamicSideLength * AssetOptions.BrushSize);
         Vector3 relativePosition =
-            dynamicBoundingBox.transform.TransformPoint(GetOffsetPosition(coordinate, scale));
+            dynamicBoundingBox.transform.TransformPoint(GetOffsetPosition(
+                coordinate,
+                scale,
+                new Vector2(dynamicBoundingBox.GetComponent<RectTransform>().rect.width,
+                            dynamicBoundingBox.GetComponent<RectTransform>().rect.height)));
         parent.transform.position = relativePosition;
 
         GameObject newGameObject = Instantiate(assetPrefab, parent.transform);
@@ -197,13 +218,16 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// dynamic bounding box were represented as a grid
     /// </param>
     /// <param name="scale">
-    /// <c>Vector3</c> corresponding to the relative scales of new <c>GameObject</c> inside the
+    /// <c>Vector2</c> corresponding to the relative scales of new <c>GameObject</c> inside the
     /// bounding box
     /// </param>
+    /// <param name="size">
+    /// <c>Vector2</c> corresponds to the size of the new <c>GameObject</c> inside the bounding box
+    /// </param>
     /// <returns>
-    /// <c>Vector3<c> corresponding to the appropriate local position of the <c>GameObject</c>
+    /// <c>Vector2<c> corresponding to the appropriate local position of the <c>GameObject</c>
     /// </returns>
-    public static Vector3 GetOffsetPosition(Vector2 coordinate, Vector3 scale) {
+    public static Vector2 GetOffsetPosition(Vector2 coordinate, Vector2 scale, Vector2 size) {
         if (_dynamicSideLength > 1) {
             float offset;
             if (_dynamicSideLength % 2 == 0) {
@@ -212,17 +236,16 @@ public class DynamicBoundingBox : MonoBehaviour {
                 offset = scale.x * -0.5f * (AssetOptions.BrushSize - 1);
             }
             return new Vector3(
-                offset - scale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
+                (offset - scale.x * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
                     * AssetOptions.BrushSize + (scale.x
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-                    / (_dynamicSideLength - 1f))) * coordinate.x,
-                offset - scale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
+                    / (_dynamicSideLength - 1f))) * coordinate.x) * size.x,
+                (offset - scale.y * Mathf.Ceil((_dynamicSideLength - 1f) / 2f)
                     * AssetOptions.BrushSize + (scale.y
                     * (((AssetOptions.BrushSize * _dynamicSideLength) - 1f)
-                    / (_dynamicSideLength - 1f))) * coordinate.y,
-                0);
+                    / (_dynamicSideLength - 1f))) * coordinate.y) * size.y);
         }
-        return new Vector3(0, 0, 0);
+        return Vector2.zero;
     }
 
     /// <summary>
