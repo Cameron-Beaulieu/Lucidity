@@ -34,16 +34,16 @@ public class DynamicBoundingBoxTests : MapEditorTests {
     }
 
     [UnityTest]
-    public IEnumerator DynamicBoundingBoxAssetHoverUpdatesOnBrushSizeChange() {
+    public IEnumerator DynamicBoundingBoxAssetHoverUpdatesOnSpreadChange() {
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+        Slider spreadSlider = GameObject.Find("SpreadContainer").transform.Find("Slider")
             .GetComponent<Slider>();
         fortressButton.onClick.Invoke();
         // the local scale of the hovering dynamic bounding box is equal to the slider input
         Assert.AreEqual(Vector3.one,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
         // change the slider input and ensure it is reflected in the hover object scale
-        brushSizeSlider.value = 2f;
+        spreadSlider.value = 10f;
         yield return null;
         Assert.AreEqual(Vector3.one * 2,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
@@ -64,14 +64,14 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         yield return new WaitForEndOfFrame();
         
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        Slider brushSizeSlider = GameObject.Find("BrushSizeContainer").transform.Find("Slider")
+        Slider spreadSlider = GameObject.Find("SpreadContainer").transform.Find("Slider")
             .GetComponent<Slider>();
         fortressButton.onClick.Invoke();
         // the local scale of the hovering dynamic bounding box is equal to the slider input
         Assert.AreEqual(Vector3.one,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
         // change the slider input and ensure it is reflected in the hover object scale
-        brushSizeSlider.value = 2f;
+        spreadSlider.value = 10f;
         yield return null;
         Assert.AreEqual(Vector3.one * 2,
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);

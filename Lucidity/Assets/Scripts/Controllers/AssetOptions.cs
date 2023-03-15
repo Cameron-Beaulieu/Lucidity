@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class AssetOptions : MonoBehaviour {
     private MapEditorManager _editor;
-    [SerializeField] private Slider _brushSizeSlider;
-    [SerializeField] private Text _brushSizeText;
-    private static float _brushSize;
+    [SerializeField] private Slider _spreadSlider;
+    [SerializeField] private Text _spreadText;
+    private static float _spread;
     [SerializeField] private InputField _countInput;
     private static int _assetCount;
 
@@ -16,18 +16,18 @@ public class AssetOptions : MonoBehaviour {
         set { _assetCount = value; }
     }
 
-    public static float BrushSize {
-        get { return _brushSize; }
-        set { _brushSize = value; }
+    public static float Spread {
+        get { return _spread; }
+        set { _spread = value; }
     }
 
     void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
         _countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
-        _brushSizeSlider.onValueChanged.AddListener(delegate{ BrushSizeSliderHandler(); });
+        _spreadSlider.onValueChanged.AddListener(delegate{ SpreadSliderHandler(); });
         AssetCountInputHandler(_countInput.text);
-        BrushSizeSliderHandler();
+        SpreadSliderHandler();
     }
 
     /// <summary>
@@ -48,12 +48,12 @@ public class AssetOptions : MonoBehaviour {
     }
 
     /// <summary>
-    /// Updates <c>_brushSize</c> and corresponding brush size text value based on slider.
+    /// Updates <c>_spread</c> and corresponding spread text value based on slider.
     /// </summary>
-    public void BrushSizeSliderHandler() {
-        _brushSize = 1 + (_brushSizeSlider.value) / 10;
-        string sliderMessage = _brushSize.ToString("0.0") + " x";
-        _brushSizeText.text = sliderMessage;
+    public void SpreadSliderHandler() {
+        _spread = 1 + (_spreadSlider.value) / 10;
+        string sliderMessage = _spread.ToString("0.0") + " x";
+        _spreadText.text = sliderMessage;
         UpdateAssetImage();
     }
 
