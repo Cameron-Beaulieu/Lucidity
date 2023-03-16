@@ -195,6 +195,37 @@ public class PaintingTests : MapEditorTests {
     }
 
     [UnityTest]
+    public IEnumerator RevertsPlacedAssetColouringWhenExperiencesMoreThanOneCollision() {
+        // place the first asset
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(new Vector2(3f, 3f));
+        yield return null;
+        GameObject placedFortress = GameObject.Find("FortressObject(Clone)");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.AreEqual(Color.white, placedFortress.GetComponent<Image>().color);
+
+        // place an asset that should collide with the original fortress
+        mapEditorManager.PaintAtPosition(new Vector2(3f, 2.5f));
+        yield return null;
+        Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
+
+        // place another asset that should collide with the original fortress
+        mapEditorManager.PaintAtPosition(new Vector2(3f, 3.5f));
+        yield return null;
+        Assert.AreEqual(Color.red, placedFortress.GetComponent<Image>().color);
+
+        // after 0.5 seconds, verify that the original fortress colour reverts
+        yield return new WaitForSeconds(0.5f);
+        Assert.AreEqual(Color.white, placedFortress.GetComponent<Image>().color);
+        yield return null;
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.IsNotNull(placedFortress);
+    }
+
+    [UnityTest]
     public IEnumerator CanPaintOnDifferentLayers() {
         // Check CurrentLayer is tracking base layer
         MapEditorManager editor = GameObject.Find("MapEditorManager")
