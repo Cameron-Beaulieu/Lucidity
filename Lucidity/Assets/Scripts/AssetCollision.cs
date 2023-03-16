@@ -193,7 +193,7 @@ public class AssetCollision : MonoBehaviour {
 
     /// <summary>
     /// Checks to see if the current gameObject is fully incompased by the colliding objects
-    /// collider or only partially incompased.
+    /// collider or only partially encompassed.
     /// </summary>
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision.
