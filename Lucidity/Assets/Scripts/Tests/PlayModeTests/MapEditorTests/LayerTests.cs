@@ -246,4 +246,60 @@ public class LayerTests : MapEditorTests {
         Assert.AreEqual(longText.Substring(0, 10) + "...", baseLayerInput.text);
         Assert.AreEqual(longText.Substring(0, 9) + "2...", newLayerInput.text);
     }
+
+    [UnityTest]
+    public IEnumerator CanStackTreeOnMountain() {
+        // paint the mountain on base layer
+        Button mountainButton = GameObject.Find("MountainButton").GetComponent<Button>();
+        mountainButton.onClick.Invoke();
+        Assert.IsTrue(mountainButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace = new Vector2(3, 3);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
+
+        // add new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+
+        // paint the tree on mountain
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        Assert.IsTrue(treeButton.GetComponent<AssetController>().Clicked);
+        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.2f,0.2f));
+        Debug.Break();
+        yield return null;
+        yield return new WaitForSeconds(0.5f);
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+    }
+
+    [UnityTest]
+    public IEnumerator CannotStackTreePartiallyOnMountain() {
+        // paint the mountain on base layer
+        Button mountainButton = GameObject.Find("MountainButton").GetComponent<Button>();
+        mountainButton.onClick.Invoke();
+        Assert.IsTrue(mountainButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace = new Vector2(3, 3);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
+
+        // add new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(1, mapEditorManager.CurrentLayer);
+
+        // paint the tree partially on mountain
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        Assert.IsTrue(treeButton.GetComponent<AssetController>().Clicked);
+        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.7f,0.7f));
+        yield return null;
+        yield return new WaitForSeconds(0.5f);
+        Assert.AreEqual(0, MapEditorManager.Layers[1].Count);
+    }
 }

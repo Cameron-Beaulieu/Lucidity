@@ -102,20 +102,21 @@ public class AssetCollision : MonoBehaviour {
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
         int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
+        List<Collider2D> hitCollidersClone = new List<Collider2D>(hitColliders);
         foreach (Collider2D collider in hitColliders) {
             if (collider.gameObject == gameObject) {
-                return hitColliders;
+                return hitCollidersClone;
             }
 
-            if (CheckPlacementLayerValidity(collider.gameObject) && collider.gameObject != gameObject) { 
-                Debug.Log("Removing collision");
-                hitColliders.Remove(collider);
+            if (CheckPlacementLayerValidity(collider.gameObject) && 
+                collider.gameObject != gameObject) { 
+                hitCollidersClone.Remove(collider);
             }
         }
 
         List<Collider2D> allColliders = new List<Collider2D>();
-        for (int i = 0; i < hitColliders.Count; i++) {
-            allColliders.Add(hitColliders[i]);
+        for (int i = 0; i < hitCollidersClone.Count; i++) {
+            allColliders.Add(hitCollidersClone[i]);
         }
         allColliders.Add(gameObject.GetComponent<Collider2D>());
         return allColliders;
@@ -176,16 +177,28 @@ public class AssetCollision : MonoBehaviour {
         MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][gameObject.GetInstanceID()];
         MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
 
-        Debug.Log(newMapObject.Name);
-        Debug.Log(collisionMapObject.Name);
-
         if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || collisionMapObject.Name != "Mountain") { 
             return false;
         }
+
+        if (!FullyEncomppased(collisionObject)) {
+            Debug.Log("Failing");
+            return false;
+        }
+
         return true;
     }
 
-    // private bool FullyEncomppased(GameObject collisionObject) {
+    private bool FullyEncomppased(GameObject collisionObject) {
+        foreach (Vector2 point in gameObject.GetComponent<PolygonCollider2D>().points) {
+            Vector3 newPoint = gameObject.GetComponent<PolygonCollider2D>().bounds.center + 
+                new Vector3(point.x, point.y, 0);
+            if (!collisionObject.GetComponent<PolygonCollider2D>().bounds.IntersectRay(new Ray(
+                    newPoint, new Vector3(0,0, 1)))) {
+                return false;
+            }
+        }
 
-    // }
+        return true;
+    }
 }
