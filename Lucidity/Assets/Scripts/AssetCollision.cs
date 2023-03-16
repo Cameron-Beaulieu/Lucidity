@@ -187,7 +187,7 @@ public class AssetCollision : MonoBehaviour {
                 collisionObject.GetInstanceID()];
 
         if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || 
-            collisionMapObject.Name != "Mountain" || !FullyEncompassed(collisionObject)) { 
+            collisionMapObject.Name != "Mountain" || !IsFullyEncompassed(collisionObject)) { 
             return false;
         }
 
@@ -204,7 +204,7 @@ public class AssetCollision : MonoBehaviour {
     /// <returns>
     /// <c>true</c> if the gameObject is fully encompassed, <c>false</c> otherwise
     /// </returns>
-    private bool FullyEncompassed(GameObject collisionObject) {
+    private bool IsFullyEncompassed(GameObject collisionObject) {
         foreach (Vector2 point in gameObject.GetComponent<PolygonCollider2D>().points) {
             Vector3 newPoint = gameObject.GetComponent<PolygonCollider2D>().bounds.center + 
                 new Vector3(point.x, point.y, 0);
