@@ -33,16 +33,16 @@ public class LayerName : MonoBehaviour {
     /// <param name="newName">
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
-    public void HandleSubmission(string newName){
+    public void HandleSubmission(string newName) {
         if (IsTesting) { CurrentText = _layerText.text; }
         _layerText.text = newName;
         string oldName = CurrentText;
         int duplicateIndex = 2;
-        if(String.IsNullOrWhiteSpace(newName)){
+        if(String.IsNullOrWhiteSpace(newName)) {
             _layerText.text = CurrentText;
             _layerText.readOnly = true;
             return;
-        } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165){
+        } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165) {
             newName = newName.Substring(0,10) + "...";
             while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
                 if (duplicateIndex == 2) {
