@@ -114,7 +114,10 @@ public class AssetCollision : MonoBehaviour {
             }
         }
 
-        hitCollidersClone.Add(gameObject.GetComponent<Collider2D>());
+        if (!hitCollidersClone.Contains(gameObject.GetComponent<Collider2D>())) {
+            hitCollidersClone.Add(gameObject.GetComponent<Collider2D>());
+        }
+        
         return hitCollidersClone;
     }
 
