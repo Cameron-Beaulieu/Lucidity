@@ -117,7 +117,7 @@ public class AssetCollision : MonoBehaviour {
         if (!hitCollidersClone.Contains(gameObject.GetComponent<Collider2D>())) {
             hitCollidersClone.Add(gameObject.GetComponent<Collider2D>());
         }
-        
+
         return hitCollidersClone;
     }
 
@@ -170,7 +170,7 @@ public class AssetCollision : MonoBehaviour {
     /// <c>GameObject</c> that is experiencing collision.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the gameObject is stacked elgally, <c>false</c> otherwise
+    /// <c>true</c> if the gameObject is stacked legally, <c>false</c> otherwise
     /// </returns>
     private bool CheckMapObjectStackingValidity(GameObject collisionObject) {
         int newObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
@@ -195,14 +195,14 @@ public class AssetCollision : MonoBehaviour {
     }
 
     /// <summary>
-    /// Checks to see if the current gameObject is fully incompased by the colliding objects
+    /// Checks to see if the current gameObject is fully encompassed by the colliding objects
     /// collider or only partially encompassed.
     /// </summary>
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the gameObject is fully incompased, <c>false</c> otherwise
+    /// <c>true</c> if the gameObject is fully encompassed, <c>false</c> otherwise
     /// </returns>
     private bool FullyEncompassed(GameObject collisionObject) {
         foreach (Vector2 point in gameObject.GetComponent<PolygonCollider2D>().points) {
