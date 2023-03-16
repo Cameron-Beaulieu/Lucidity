@@ -264,4 +264,27 @@ public class PaintingTests : MapEditorTests {
         editor.PaintAtPosition(new Vector2(100,150));
         Assert.AreEqual(2, MapEditorManager.MapObjects.Count);
     }
+
+    [UnityTest]
+    public IEnumerator CanPaintAssetOnSamePositionAfterUndo() {
+        // paint an asset
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        PlayModeTestUtil.PaintAnAsset(new Vector2(3f, 2f), "Fortress");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+
+        // undo the placement
+        Button undoButton = GameObject.Find("Undo").GetComponent<Button>();
+        undoButton.onClick.Invoke();
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        yield return null;
+
+        // paint an asset at that collides with the position of the original asset
+        PlayModeTestUtil.PaintAnAsset(new Vector2(3f, 2.5f), "Tree");
+        yield return new WaitForEndOfFrame();
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.IsNull(GameObject.Find("FortressObject(Clone)"));
+        Assert.IsNotNull(GameObject.Find("TreeObject(Clone)"));
+    }
 }
