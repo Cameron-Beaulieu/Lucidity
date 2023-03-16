@@ -269,7 +269,6 @@ public class LayerTests : MapEditorTests {
         treeButton.onClick.Invoke();
         Assert.IsTrue(treeButton.GetComponent<AssetController>().Clicked);
         mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.2f,0.2f));
-        Debug.Break();
         yield return null;
         yield return new WaitForSeconds(0.5f);
         Assert.AreEqual(1, MapEditorManager.Layers[1].Count);

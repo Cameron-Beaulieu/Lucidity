@@ -108,18 +108,14 @@ public class AssetCollision : MonoBehaviour {
                 return hitCollidersClone;
             }
 
-            if (CheckPlacementLayerValidity(collider.gameObject) && 
+            if (CheckMapObjectStackingValidity(collider.gameObject) && 
                 collider.gameObject != gameObject) { 
                 hitCollidersClone.Remove(collider);
             }
         }
 
-        List<Collider2D> allColliders = new List<Collider2D>();
-        for (int i = 0; i < hitCollidersClone.Count; i++) {
-            allColliders.Add(hitCollidersClone[i]);
-        }
-        allColliders.Add(gameObject.GetComponent<Collider2D>());
-        return allColliders;
+        hitCollidersClone.Add(gameObject.GetComponent<Collider2D>());
+        return hitCollidersClone;
     }
 
     /// <summary>
@@ -163,33 +159,49 @@ public class AssetCollision : MonoBehaviour {
         return (rayLib.IsPointerOverLayer(_uiLayer));
     }
 
-    private bool CheckPlacementLayerValidity(GameObject collisionObject) {
+    /// <summary>
+    /// Checks to see if the collision between two <c>MapObjects</c> is a legal stacking
+    /// interaction or not
+    /// </summary>
+    /// <param name="collisionObject">
+    /// <c>GameObject</c> that is experiencing collision.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the gameObject is stacked elgally, <c>false</c> otherwise
+    /// </returns>
+    private bool CheckMapObjectStackingValidity(GameObject collisionObject) {
         int newObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
-        int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(collisionObject.GetInstanceID());
-
-        // Debug.Log(newObjectLayer);
-        // Debug.Log(collisionObjectLayer);
+        int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(
+                collisionObject.GetInstanceID());
 
         if (newObjectLayer == -1 || collisionObjectLayer == -1) {
             return false;
         }
 
-        MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][gameObject.GetInstanceID()];
-        MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
+        MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][
+            gameObject.GetInstanceID()];
+        MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
+                collisionObject.GetInstanceID()];
 
-        if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || collisionMapObject.Name != "Mountain") { 
-            return false;
-        }
-
-        if (!FullyEncomppased(collisionObject)) {
-            Debug.Log("Failing");
+        if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || 
+            collisionMapObject.Name != "Mountain" || !FullyEncompassed(collisionObject)) { 
             return false;
         }
 
         return true;
     }
 
-    private bool FullyEncomppased(GameObject collisionObject) {
+    /// <summary>
+    /// Checks to see if the current gameObject is fully incompased by the colliding objects
+    /// collider or only partially incompased.
+    /// </summary>
+    /// <param name="collisionObject">
+    /// <c>GameObject</c> that is experiencing collision.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the gameObject is fully incompased, <c>false</c> otherwise
+    /// </returns>
+    private bool FullyEncompassed(GameObject collisionObject) {
         foreach (Vector2 point in gameObject.GetComponent<PolygonCollider2D>().points) {
             Vector3 newPoint = gameObject.GetComponent<PolygonCollider2D>().bounds.center + 
                 new Vector3(point.x, point.y, 0);
@@ -198,7 +210,6 @@ public class AssetCollision : MonoBehaviour {
                 return false;
             }
         }
-
         return true;
     }
 }
