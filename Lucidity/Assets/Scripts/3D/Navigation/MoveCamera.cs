@@ -13,8 +13,14 @@ public class MoveCamera : MonoBehaviour {
     [SerializeField] private Slider _sensitivitySlider;
     [SerializeField] private Text _sensitivityText;
 
+    public float Sensitivity {
+        get { return _sensitivity; }
+        set { _sensitivity = value; }
+    }
+
     private void Start() {
         _sensitivitySlider.onValueChanged.AddListener(delegate{ SensitivitySliderHandler(); });
+        _sensitivitySlider.value = PlayerPrefs.GetFloat("sensitivity", 10f) * 10;
         SensitivitySliderHandler();
     }
 
@@ -47,7 +53,7 @@ public class MoveCamera : MonoBehaviour {
     /// Updates <c>_sensitivity</c> and corresponding sensitivity text value based on slider.
     /// </summary>
     public void SensitivitySliderHandler() {
-        _sensitivity = (_sensitivitySlider.value / 10) * 100;
+        _sensitivity = _sensitivitySlider.value * 10;
         string sliderMessage = (_sensitivity / 100f).ToString("0.0") + " x";
         _sensitivityText.text = sliderMessage;
     }

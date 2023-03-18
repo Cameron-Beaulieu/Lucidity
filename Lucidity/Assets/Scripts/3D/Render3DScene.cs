@@ -188,6 +188,9 @@ public class Render3DScene : MonoBehaviour {
     /// Reverts from the 3D scene back to the 2D scene
     /// </summary>
     public void RevertTo2D() {
+        PlayerPrefs.SetFloat("sensitivity", _camera.Sensitivity / 100);
+        PlayerPrefs.SetFloat("speed", _movement.Speed / 100);
+        PlayerPrefs.Save();
         _editor.SetActive(true);
         MapEditorManager.ReloadFlag = true;
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
