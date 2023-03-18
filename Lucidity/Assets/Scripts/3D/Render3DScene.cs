@@ -9,18 +9,36 @@ public class Render3DScene : MonoBehaviour {
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
+    private GameObject _optionsPanel;
+    private GameObject _messagePanel;
+    private MoveCamera _camera;
+    private AvatarMovement _movement;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
 
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
         _editor = GameObject.Find("MapEditorManager");
+        _optionsPanel = GameObject.Find("OptionsPanel");
+        _messagePanel = GameObject.Find("MessagePanel");
+        _camera = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
+        _movement = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
         GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
 
         CreateMap();
         PlaceAssets();
         PlaceAvatar();        
         _editor.SetActive(false);
+        _optionsPanel.SetActive(false);
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown("escape")) {
+            _optionsPanel.SetActive(!_optionsPanel.activeSelf);
+            _messagePanel.SetActive(!_messagePanel.activeSelf);
+            _camera.enabled = _messagePanel.activeSelf;
+            _movement.enabled = _messagePanel.activeSelf;
+        }
     }
 
     /// <summary>

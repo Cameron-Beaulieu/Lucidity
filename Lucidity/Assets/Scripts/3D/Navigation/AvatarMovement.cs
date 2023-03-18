@@ -60,7 +60,7 @@ public class AvatarMovement : MonoBehaviour {
     private void MoveAvatar() {
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed * Time.fixedDeltaTime);
-        _rb.velocity = Orientation.forward * direction.z * _speed;
+        _rb.velocity = (Orientation.forward * direction.z + Orientation.right * direction.x) * _speed;
     }
 
     private void OnCollisionEnter() {
