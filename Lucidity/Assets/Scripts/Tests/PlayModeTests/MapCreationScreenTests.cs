@@ -25,6 +25,30 @@ public class MapCreationScreenTests {
     }
 
     [Test]
+    public void CreateButtonOpensFileBrowser() {
+        // give map name
+        InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
+        nameInputField.text = "TestMap";
+
+        // click button create a new map
+        Button button = GameObject.Find("Create Button").GetComponent<Button>();
+        button.onClick.Invoke();
+
+        // check that file browser appears
+        GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
+        Assert.IsNotNull(browser);
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
+        GameObject titleText = browser.transform.Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        Assert.AreEqual("Select Save Location", titleText.GetComponent<Text>().text);
+
+        // close file browser
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/CancelButton").gameObject;
+        cancelButton.GetComponent<Button>().onClick.Invoke();
+        Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [Test]
     public void ErrorsOnEmptyFileName() {
         Button button = GameObject.Find("Create Button").GetComponent<Button>();
         button.onClick.Invoke();
