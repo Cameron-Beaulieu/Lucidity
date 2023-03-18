@@ -47,13 +47,16 @@ public class StartupScreenTests {
         // check that file browser appears
         GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
         Assert.IsNotNull(browser);
-        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
         Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
-        GameObject titleText = browser.transform.Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
         Assert.AreEqual("Select File", titleText.GetComponent<Text>().text);
 
         // close file browser
-        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/CancelButton").gameObject;
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
         cancelButton.GetComponent<Button>().onClick.Invoke();
         Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
     }

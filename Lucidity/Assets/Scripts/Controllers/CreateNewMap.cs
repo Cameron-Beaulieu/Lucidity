@@ -58,14 +58,18 @@ public class CreateNewMap : MonoBehaviour {
     /// Opens a file browser to allow the user to select a directory to save the map file.
     /// </summary>
     private void ChooseDirectory() {
-        FileBrowser.ShowLoadDialog( (paths) => { CreateFileAtLocation(paths[0]); }, null, FileBrowser.PickMode.Folders, false, null,
-            null, "Select Save Location", "Select" );
+        FileBrowser.ShowLoadDialog((paths) => { CreateFileAtLocation(paths[0]); }, null, 
+                                   FileBrowser.PickMode.Folders, false, null, null, 
+                                   "Select Save Location", "Select");
     }
 
     /// <summary>
     /// Creates a json file at a location specified by the user. Returns true if the file creation
     /// is successful. Otherwise an error message is displayed on the UI and false is returned.
     /// </summary>
+    /// <param name="directory">
+    /// <c>string</c> of the directory to save the file to.
+    /// </param>
     private void CreateFileAtLocation(string directory) {
         if (directory.Equals("")) { return; }
 

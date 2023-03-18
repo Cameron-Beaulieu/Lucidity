@@ -80,7 +80,8 @@ public class MiscellaneousTests : MapEditorTests {
         Assert.IsNull(modal);
 
         // try to load a new map
-        GameObject.Find("File Button").GetComponent<EventTrigger>().OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
         
         // check that modal appears
@@ -92,7 +93,8 @@ public class MiscellaneousTests : MapEditorTests {
     [Test]
     public void LoadMapInEditorOpensFileBrowser() {
         // click button to load a map
-        GameObject.Find("File Button").GetComponent<EventTrigger>().OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
 
         // decline to save current map
@@ -101,13 +103,16 @@ public class MiscellaneousTests : MapEditorTests {
         // check that file browser appears
         GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
         Assert.IsNotNull(browser);
-        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
         Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
-        GameObject titleText = browser.transform.Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
         Assert.AreEqual("Select File", titleText.GetComponent<Text>().text);
 
         // close file browser
-        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/CancelButton").gameObject;
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
         cancelButton.GetComponent<Button>().onClick.Invoke();
         Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
     }
@@ -115,19 +120,23 @@ public class MiscellaneousTests : MapEditorTests {
     [Test]
     public void SaveAsOpensFileBrowser() {
         // click button to save map
-        GameObject.Find("File Button").GetComponent<EventTrigger>().OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
         GameObject.Find("Save As Button").GetComponent<Button>().onClick.Invoke();
 
         // check that file browser appears
         GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
         Assert.IsNotNull(browser);
-        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
         Assert.AreEqual("Save", submitButtonText.GetComponent<Text>().text);
-        GameObject titleText = browser.transform.Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
         Assert.AreEqual("Save Map", titleText.GetComponent<Text>().text);
 
         // close file browser
-        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/BottomView/Padding/BottomRow/CancelButton").gameObject;
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
         cancelButton.GetComponent<Button>().onClick.Invoke();
         Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
     }

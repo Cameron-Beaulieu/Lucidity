@@ -30,12 +30,13 @@ public class StartupScreen : MonoBehaviour {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
         FileBrowser.SetDefaultFilter( ".json" );
 
-        FileBrowser.ShowLoadDialog( (paths) => { ValidatePath(paths[0]); }, null, FileBrowser.PickMode.Files, false, null,
-            null, "Select File", "Select" );
+        FileBrowser.ShowLoadDialog((paths) => { ValidatePath(paths[0]); }, null, 
+                                   FileBrowser.PickMode.Files, false, null, null, "Select File", 
+                                   "Select");
     }
 
     /// <summary>
-    /// Checks that the file path passed in is valid and loads the map editor scene if so.
+    /// Checks that the file path passed in is valid and loads the <c>MapEditor</c> scene if so.
     /// </summary>
     /// <param name="path">The path to the file to load.</param>
     private static void ValidatePath(string path) {
@@ -44,7 +45,8 @@ public class StartupScreen : MonoBehaviour {
 
         // Guarantee the file is JSON
         if (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
-            GameObject.Find("ErrorMessage").GetComponent<TMP_Text>().text = "You can only load a map as a JSON file.";
+            GameObject.Find("ErrorMessage").GetComponent<TMP_Text>()
+                .text = "You can only load a map as a JSON file.";
             return;
         }
     

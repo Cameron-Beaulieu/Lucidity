@@ -21,18 +21,21 @@ public class NavController : MonoBehaviour {
         _modal = GameObject.Find("SaveModal");
         _modalButtons = _modal.transform.GetChild(0).gameObject;
         // yes button
-        _modalButtons.transform.GetChild(0).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+        _modalButtons.transform.GetChild(0).gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
             _modal.SetActive(false);
             SaveButtonClickHandler();
             StartupScreen.LoadMapClickHandler();
         });
         // no button
-        _modalButtons.transform.GetChild(1).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+        _modalButtons.transform.GetChild(1).gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
             _modal.SetActive(false);
             StartupScreen.LoadMapClickHandler();
         });
         // cancel button
-        _modalButtons.transform.GetChild(2).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+        _modalButtons.transform.GetChild(2).gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
             _modal.SetActive(false);
         });
         _modal.SetActive(false); // hide modal by default
@@ -84,7 +87,9 @@ public class NavController : MonoBehaviour {
         // map file location
         FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
         FileBrowser.SetDefaultFilter(".json");
-        FileBrowser.ShowSaveDialog( (paths) => { ValidateSave(paths[0]); }, null, FileBrowser.PickMode.Files, false, null, "Untitled.json", "Save Map", "Save" );
+        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, null, 
+                                   FileBrowser.PickMode.Files, false, null, "Untitled.json", 
+                                   "Save Map", "Save");
     }
 
     private static void ValidateSave(string path) {
