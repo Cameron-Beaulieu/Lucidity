@@ -9,6 +9,7 @@ public class Util {
     /// interference between tests, or when MapEditor is reloaded.
     /// </summary>
     public static void ResetStaticVariables() {
+        AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
         MapEditorManager.Actions = null;

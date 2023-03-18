@@ -11,6 +11,7 @@ public class AssetCollision : MonoBehaviour {
     private int _uiLayer = 5;
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
+    public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>(); 
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
@@ -107,8 +108,20 @@ public class AssetCollision : MonoBehaviour {
                 return hitColliders;
             }
 
-            if (CheckPlacementLayerValidity(collider.gameObject) && collider.gameObject != gameObject) { 
-                Debug.Log("Removing collision");
+            if (CheckPlacementLayerValidity(collider.gameObject) 
+                 && collider.gameObject != gameObject) {
+                // Both objects are added to LayerCollisions as a list
+                // The first element in the list is on the layer with the lower index
+                int layerIndex1 = MapEditorManager.LayerContainsMapObject(
+                    collider.gameObject.GetInstanceID());
+                int layerIndex2 = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+                MapObject obj1 = MapEditorManager.MapObjects[collider.gameObject.GetInstanceID()];
+                MapObject obj2 = MapEditorManager.MapObjects[gameObject.GetInstanceID()];
+                if (layerIndex1 < layerIndex2) {
+                    LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                } else {
+                    LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                }
                 hitColliders.Remove(collider);
             }
         }
@@ -166,18 +179,12 @@ public class AssetCollision : MonoBehaviour {
         int newObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
         int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(collisionObject.GetInstanceID());
 
-        // Debug.Log(newObjectLayer);
-        // Debug.Log(collisionObjectLayer);
-
         if (newObjectLayer == -1 || collisionObjectLayer == -1) {
             return false;
         }
 
         MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][gameObject.GetInstanceID()];
         MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
-
-        Debug.Log(newMapObject.Name);
-        Debug.Log(collisionMapObject.Name);
 
         if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || collisionMapObject.Name != "Mountain") { 
             return false;
