@@ -178,7 +178,13 @@ public class Render3DScene : MonoBehaviour {
     /// </summary>
     private void FixObjectHeights() {
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
-            GameObject mountain = _sceneObjects[mapObjects[0].Id];
+            // sometimes mapObjects are in the list that shouldn't be
+            if (!_sceneObjects.ContainsKey(mapObjects[0].Id) || 
+                !_sceneObjects.ContainsKey(mapObjects[1].Id)) {
+                return;
+            }
+
+            GameObject mountain = _sceneObjects[mapObjects[0].Id];  
             GameObject tree = _sceneObjects[mapObjects[1].Id];
             Vector3 treePos = tree.transform.position;
             MeshCollider mountainCollider = mountain.GetComponent<MeshCollider>();

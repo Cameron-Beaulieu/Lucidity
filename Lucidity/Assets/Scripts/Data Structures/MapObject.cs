@@ -86,18 +86,18 @@ public class MapObject {
     /// <param name="layerName">
     /// A <c>string</c> representing the name of the layer the <c>MapObject</c> is placed on.
     /// </param>
-    public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
-                      Vector3 scale, Quaternion rotation, bool isActive, string layerName) {
-        Id = id;
-        Name = name;
-        PrefabIndex = prefabIndex;
-        MapPosition = mapPosition;
-        MapOffset = mapOffset;
-        Scale = scale;
-        Rotation = rotation;
-        IsActive = isActive;
-        LayerName = layerName;
-    }
+    // public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
+    //                   Vector3 scale, Quaternion rotation, bool isActive, string layerName) {
+    //     Id = id;
+    //     Name = name;
+    //     PrefabIndex = prefabIndex;
+    //     MapPosition = mapPosition;
+    //     MapOffset = mapOffset;
+    //     Scale = scale;
+    //     Rotation = rotation;
+    //     IsActive = isActive;
+    //     LayerName = layerName;
+    // }
 
     /// <summary>
     /// Alternate constructor that adds a layer name to a previously existing <c>MapObject</c>.

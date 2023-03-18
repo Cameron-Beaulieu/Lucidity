@@ -110,16 +110,28 @@ public class AssetCollision : MonoBehaviour {
             }
 
             if (CheckMapObjectStackingValidity(collider.gameObject) && 
-                collider.gameObject != gameObject) {
+                collider.gameObject != gameObject && hitColliders.Count == 2) {
+
                 int layerIndex1 = MapEditorManager.LayerContainsMapObject(
                     collider.gameObject.GetInstanceID());
-                int layerIndex2 = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+                int layerIndex2 = MapEditorManager.LayerContainsMapObject(
+                    gameObject.GetInstanceID());
+
                 MapObject obj1 = MapEditorManager.MapObjects[collider.gameObject.GetInstanceID()];
                 MapObject obj2 = MapEditorManager.MapObjects[gameObject.GetInstanceID()];
+
+                int last = LayerCollisions.Count - 1;
+
                 if (layerIndex1 < layerIndex2) {
-                    LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                    if (LayerCollisions.Count == 0 || LayerCollisions[last][0] != obj1 || 
+                        LayerCollisions[last][1] != obj2) {
+                        LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                    }
                 } else {
-                    LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                    if (LayerCollisions.Count == 0 || LayerCollisions[last][0] != obj2 || 
+                        LayerCollisions[last][1] != obj1) {
+                        LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                    }
                 }
                 hitCollidersClone.Remove(collider);
             }

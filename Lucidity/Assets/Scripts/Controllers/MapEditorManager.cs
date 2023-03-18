@@ -351,7 +351,7 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-            newGameObject.transform.rotation, true, Layer.LayerNames[CurrentLayer]);
+                        newGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
 
@@ -455,12 +455,19 @@ public class MapEditorManager : MonoBehaviour {
         // Reloading Layers
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
-        Layer.LayerNames.Clear();
+        // Layer.LayerNames.Clear();
         // TODO: Add the layer names back to the three lists/dicts 
-        foreach (Dictionary<int, MapObject> layer in Layers) {
-            List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+        // foreach (Dictionary<int, MapObject> layer in Layers) {
+        //     List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+        //     Layer.LayerIndex.Add(mapData.LayerNames[i], i);
+        //     Layer.LayerStatus.Add(mapData.LayerNames[i], false);
+        //     Layer.LayerNames.Add(mapData.LayerNames[i]);
+        // }
+        // CurrentLayer = Layers.Count - 1;
+
+        foreach (string name in Layer.LayerNames) {
+            Debug.Log("Layer: " + name);
         }
-        CurrentLayer = Layers.Count - 1;
 
         // TODO: During 3D with layers, will need to nest Reloading MapObjects
         // within Reloading Layers to rebuild each layer.
