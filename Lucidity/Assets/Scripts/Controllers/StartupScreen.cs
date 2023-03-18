@@ -1,7 +1,8 @@
+using SimpleFileBrowser;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,22 +27,28 @@ public class StartupScreen : MonoBehaviour {
             return;
         }
 
-        string path = EditorUtility.OpenFilePanel("Select File", "", "json");
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
+        FileBrowser.SetDefaultFilter( ".json" );
+
+        FileBrowser.ShowLoadDialog( (paths) => { ValidatePath(paths[0]); }, null, FileBrowser.PickMode.Files, false, null,
+            null, "Select File", "Select" );
+    }
+
+    /// <summary>
+    /// Checks that the file path passed in is valid and loads the map editor scene if so.
+    /// </summary>
+    /// <param name="path">The path to the file to load.</param>
+    private static void ValidatePath(string path) {
         // cancelled selecting a path
         if (path.Equals("")) { return; }
 
         // Guarantee the file is JSON
-        while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
-            bool tryAgain = EditorUtility.DisplayDialog(
-                "Invalid file selection", "You can only load a map as a JSON file.", "Try again",
-                "Cancel");
-            if (!tryAgain) {return;}
-
-            path = EditorUtility.OpenFilePanel("Select File", "", "json");
+        if (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
+            GameObject.Find("ErrorMessage").GetComponent<TMP_Text>().text = "You can only load a map as a JSON file.";
+            return;
         }
     
         FilePath = path;
-
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
     }
 
