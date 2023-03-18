@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AvatarMovement : MonoBehaviour {
 
@@ -12,15 +13,20 @@ public class AvatarMovement : MonoBehaviour {
     private float _avatarHeight = 2f;
     private float _groundDrag = 5f;
     private bool _isGrounded;
-    private float _speed = 100f;
+    private float _speed;
     private float _rotationSpeed = 40f;
     private float _horizontalInput;
     private float _verticalInput;
     private Rigidbody _rb;
+    [SerializeField] private Slider _speedSlider;
+    [SerializeField] private Text _speedText;
 
     private void Start() {
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
+
+        _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
+        SpeedSliderHandler();
     }
 
     private void Update() {
@@ -42,6 +48,15 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     /// <summary>
+    /// Updates <c>_speed</c> and corresponding speed text value based on slider.
+    /// </summary>
+    public void SpeedSliderHandler() {
+        _speed = (_speedSlider.value / 10) * 100;
+        string sliderMessage = (_speed / 100f).ToString("0.0") + " x";
+        _speedText.text = sliderMessage;
+    }
+
+    /// <summary>
     /// Gets the user's input.
     /// </summary>
     private void GetInput() {
@@ -60,7 +75,8 @@ public class AvatarMovement : MonoBehaviour {
     private void MoveAvatar() {
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         Orientation.Rotate(Vector3.up * direction.x * _rotationSpeed * Time.fixedDeltaTime);
-        _rb.velocity = (Orientation.forward * direction.z + Orientation.right * direction.x) * _speed;
+        _rb.velocity = (Orientation.forward * direction.z + Orientation.right * direction.x)
+                        * _speed;
     }
 
     private void OnCollisionEnter() {
