@@ -9,24 +9,30 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class NavController : MonoBehaviour {
-    [SerializeField] private TMP_Text _newKeybind;
-    [SerializeField] private TMP_Text _openKeybind;
-    [SerializeField] private TMP_Text _saveKeybind;
-    [SerializeField] private TMP_Text _saveAsKeybind;
-    [SerializeField] private TMP_Text _exportKeybind;
     private static TMP_Text _savingText;
     private static float _hideTextTimer = 0f;
+    private static GameObject _modal;
+    private static GameObject _modalButtons;
 
     private void Start() {
-        if (Application.platform == RuntimePlatform.OSXPlayer || 
-            Application.platform == RuntimePlatform.OSXEditor) {
-            _newKeybind.text = "Cmd + Opt + N";
-            _openKeybind.text = "Cmd + Opt + O";
-            _saveKeybind.text = "Cmd + Opt + S";
-            _saveAsKeybind.text = "Cmd + Shift + Opt + S";
-            _exportKeybind.text = "Cmd + Opt + E";
-        }
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
+
+        // add listeners to save modal option buttons
+        _modal = GameObject.Find("SaveModal");
+        _modalButtons = _modal.transform.GetChild(0).gameObject;
+        _modalButtons.transform.GetChild(0).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+            _modal.SetActive(false);
+            SaveButtonClickHandler();
+            StartupScreen.LoadMapClickHandler();
+        });
+        _modalButtons.transform.GetChild(1).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+            _modal.SetActive(false);
+            StartupScreen.LoadMapClickHandler();
+        });
+        _modalButtons.transform.GetChild(2).gameObject.GetComponent<Button>().onClick.AddListener(() => {
+            _modal.SetActive(false);
+        });
+        _modal.SetActive(false); // hide modal by default
     }
 
     private void Update() {
@@ -49,24 +55,7 @@ public class NavController : MonoBehaviour {
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + O
     /// </summary>
     public static void OpenButtonClickHandler() {
-        // Yes = 0, Cancel = 1, No = 2
-        // int savePrev = EditorUtility.DisplayDialogComplex(
-        //     "Save current map?", 
-        //     "Would you like to save your current map before opening a new one?", "Yes", 
-        //     "Cancel", "No");
-
-        // switch (savePrev) {
-        //     case 0:
-        //         SaveButtonClickHandler();
-        //         StartupScreen.LoadMapClickHandler();
-        //         break;
-        //     case 1:
-        //         return;
-        //     case 2:
-        //         StartupScreen.LoadMapClickHandler();
-        //         break;
-        // }
-        StartupScreen.LoadMapClickHandler();
+        _modal.SetActive(true);
     }
 
     /// <summary>
