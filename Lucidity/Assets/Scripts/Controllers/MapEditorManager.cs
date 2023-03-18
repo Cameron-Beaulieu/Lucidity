@@ -64,19 +64,20 @@ public class MapEditorManager : MonoBehaviour {
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
 
         if(!ReloadFlag) {
-        foreach (GameObject tool in selectableTools) {
-            if (tool.name == "Brush Tool") {
-                Tool.ToolStatus.Add(tool.name, true);
-            } else {
-                Tool.ToolStatus.Add(tool.name, false);
+            foreach (GameObject tool in selectableTools) {
+                if (tool.name == "Brush Tool") {
+                    Tool.ToolStatus.Add(tool.name, true);
+                } else {
+                    Tool.ToolStatus.Add(tool.name, false);
+                }
+                Tool.ToolKeys.Add(tool.name);
             }
-            Tool.ToolKeys.Add(tool.name);
-        }
 
-        foreach (Texture2D cursor in CursorTextures) {
-            ToolToCursorMap.Add(cursor.name, cursor);
-        }
-        DontDestroyOnLoad(this.gameObject);
+            foreach (Texture2D cursor in CursorTextures) {
+                ToolToCursorMap.Add(cursor.name, cursor);
+            }
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            DontDestroyOnLoad(this.gameObject);
         } 
     }
 
