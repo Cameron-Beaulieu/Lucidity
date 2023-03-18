@@ -35,16 +35,6 @@ public class Render3DScene : MonoBehaviour {
                                                     Quaternion.identity);
                     break;
             
-                case Biome.BiomeType.Desert:
-                    _map = (GameObject) Instantiate(_mapTypes[1], new Vector3(0f, 0f, 0f), 
-                                                    Quaternion.identity);
-                    break;
-            
-                case Biome.BiomeType.Ocean:
-                    _map = (GameObject) Instantiate(_mapTypes[2], new Vector3(0f, 0f, 0f), 
-                                                    Quaternion.identity);
-                    break;
-            
                 default:
                     Debug.Log("Using Default");
                     _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
