@@ -11,6 +11,7 @@ public class AssetCollision : MonoBehaviour {
     private int _uiLayer = 5;
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
+    public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>(); 
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
@@ -109,13 +110,18 @@ public class AssetCollision : MonoBehaviour {
             }
 
             if (CheckMapObjectStackingValidity(collider.gameObject) && 
-                collider.gameObject != gameObject) { 
+                collider.gameObject != gameObject) {
+                int layerIndex1 = MapEditorManager.LayerContainsMapObject(
+                    collider.gameObject.GetInstanceID());
+                int layerIndex2 = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+                MapObject obj1 = MapEditorManager.MapObjects[collider.gameObject.GetInstanceID()];
+                MapObject obj2 = MapEditorManager.MapObjects[gameObject.GetInstanceID()];
+                if (layerIndex1 < layerIndex2) {
+                    LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                } else {
+                    LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                }
                 hitCollidersClone.Remove(collider);
-            }
-
-            if (CheckPlacementLayerValidity(collider.gameObject) && collider.gameObject != gameObject) { 
-                Debug.Log("Removing collision");
-                hitColliders.Remove(collider);
             }
         }
 

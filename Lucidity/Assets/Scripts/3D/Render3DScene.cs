@@ -11,6 +11,7 @@ public class Render3DScene : MonoBehaviour {
     private GameObject _editor;
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
+    private Dictionary<int, GameObject> _sceneObjects = new Dictionary<int, GameObject>();
 
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
@@ -19,7 +20,8 @@ public class Render3DScene : MonoBehaviour {
 
         CreateMap();
         PlaceAssets();
-        PlaceAvatar();        
+        PlaceAvatar();
+        FixObjectHeights();        
         _editor.SetActive(false);
     }
 
@@ -63,29 +65,31 @@ public class Render3DScene : MonoBehaviour {
     /// Places each asset from the 2D map on the 3D map
     /// </summary>
     private void PlaceAssets() {
-        foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.MapObjects) {
-            if(kvp.Value.IsActive) {
-                switch (kvp.Value.Name) {
-                    case "Fortress":
-                        Place3DObject(_3DPrefabs[0], kvp);
-                        break;
-                    
-                    case "House":
-                        Place3DObject(_3DPrefabs[1], kvp);
-                        break;
-                    
-                    case "Mountain":
-                        Place3DObject(_3DPrefabs[2], kvp);
-                        break;
-                    
-                    case "Tree":
-                        Place3DObject(_3DPrefabs[3], kvp);
-                        break;
-                    
-                    default:
-                        Debug.Log("using default prefab");
-                        Place3DObject(_3DPrefabs[0], kvp);
-                        break;
+        foreach (Dictionary<int, MapObject> layer in MapEditorManager.Layers) {
+            foreach (KeyValuePair <int, MapObject> kvp in layer) {
+                if(kvp.Value.IsActive) {
+                    switch (kvp.Value.Name) {
+                        case "Fortress":
+                            Place3DObject(_3DPrefabs[0], kvp);
+                            break;
+                        
+                        case "House":
+                            Place3DObject(_3DPrefabs[1], kvp);
+                            break;
+                        
+                        case "Mountain":
+                            Place3DObject(_3DPrefabs[2], kvp);
+                            break;
+                        
+                        case "Tree":
+                            Place3DObject(_3DPrefabs[3], kvp);
+                            break;
+                        
+                        default:
+                            Debug.Log("using default prefab");
+                            Place3DObject(_3DPrefabs[0], kvp);
+                            break;
+                    }
                 }
             }
         }
@@ -119,6 +123,7 @@ public class Render3DScene : MonoBehaviour {
                 newGameObject.GetComponent<MeshCollider>().bounds.min.y * -kvp.Value.Scale.y, 
                 newGameObject.transform.position.z);
         }
+        _sceneObjects[kvp.Value.Id] = newGameObject;
     }
 
     /// <summary>
@@ -164,6 +169,45 @@ public class Render3DScene : MonoBehaviour {
         float zPosition = (mapObjectData.MapPosition.y  + mapObjectData.MapOffset.y);
         Vector3 placementPosition = new Vector3(xPosition, 0, zPosition);
         return placementPosition;
+    }
+
+    /// <summary>
+    /// After all objects have been placed, this method will fix the heights of objects
+    /// that were stacked on top of each other on separate layers.
+    /// Currently this only applies to trees stacked on mountains.
+    /// </summary>
+    private void FixObjectHeights() {
+        foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
+            GameObject mountain = _sceneObjects[mapObjects[0].Id];
+            GameObject tree = _sceneObjects[mapObjects[1].Id];
+            Vector3 treePos = tree.transform.position;
+            MeshCollider mountainCollider = mountain.GetComponent<MeshCollider>();
+            float mountainHeight = mountainCollider.bounds.size.y * 
+                mountain.transform.localScale.y;
+            // both colliders need to be convex for raycasting
+            mountainCollider.convex = true;
+            tree.GetComponent<MeshCollider>().convex = true;    
+            // move tree above mountain
+            tree.transform.position = new Vector3(treePos.x,
+                                                  mountainHeight,
+                                                  treePos.z);
+            // update the tree position
+            treePos = tree.transform.position;
+            // Ray pointing down from tree                       
+            Ray ray = new Ray(treePos, new Vector3(0, -1f, 0));
+            RaycastHit hit;
+            // if hit: move the tree down to that point (and a little more the 15f is arbitrary)
+            // else: move the tree to the ground
+            if (mountainCollider.Raycast(ray, out hit, mountainHeight)) {
+                tree.transform.position = new Vector3(treePos.x,
+                                                      mountainHeight - hit.distance - 15f,
+                                                      treePos.z);
+            } else {
+                tree.transform.position = new Vector3(treePos.x,
+                                                      0f,
+                                                      treePos.z);
+            }
+        }
     }
 
     /// <summary>

@@ -351,7 +351,7 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-            newGameObject.transform.rotation, true);
+            newGameObject.transform.rotation, true, Layer.LayerNames[CurrentLayer]);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
 
@@ -456,6 +456,7 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
+        // TODO: Add the layer names back to the three lists/dicts 
         foreach (Dictionary<int, MapObject> layer in Layers) {
             List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
         }
@@ -491,6 +492,10 @@ public class MapEditorManager : MonoBehaviour {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
+                Debug.Log("MapObject: " + mapObject.Value.Name + " on layer: " + mapObject.Value.LayerName);
+                // layer name doesn't exist
+                Layers[Layer.LayerIndex[mapObject.Value.LayerName]].Add(
+                newGameObject.GetInstanceID(), mapObject.Value);
         }
 
         // Swapping GameObject's in editor action linked list
@@ -498,7 +503,8 @@ public class MapEditorManager : MonoBehaviour {
             LinkedListNode<EditorAction> pointer = Actions.First;
 
             while (pointer != null) {
-                    for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
+                    for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
+                        // Key not found in dictionary error
                         pointer.Value.RelatedObjects[i] = 
                             mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }
