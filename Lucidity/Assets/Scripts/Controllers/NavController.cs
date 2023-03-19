@@ -19,22 +19,22 @@ public class NavController : MonoBehaviour {
 
         // add listeners to save modal option buttons
         _modal = GameObject.Find("SaveModal");
-        _modalButtons = _modal.transform.GetChild(0).gameObject;
+        _modalButtons = _modal.transform.Find("Button Group").gameObject;
         // yes button
-        _modalButtons.transform.GetChild(0).gameObject.GetComponent<Button>().onClick
+        _modalButtons.transform.Find("Yes Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
             SaveButtonClickHandler();
             StartupScreen.LoadMapClickHandler();
         });
         // no button
-        _modalButtons.transform.GetChild(1).gameObject.GetComponent<Button>().onClick
+        _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
             StartupScreen.LoadMapClickHandler();
         });
         // cancel button
-        _modalButtons.transform.GetChild(2).gameObject.GetComponent<Button>().onClick
+        _modalButtons.transform.Find("Cancel Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
         });
