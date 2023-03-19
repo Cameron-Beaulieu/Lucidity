@@ -16,13 +16,20 @@ public class AvatarMovement : MonoBehaviour {
     private float _speed;
     private float _horizontalInput;
     private float _verticalInput;
+    private bool _noclip;
     private Rigidbody _rb;
     [SerializeField] private Slider _speedSlider;
     [SerializeField] private Text _speedText;
+    [SerializeField] private Toggle _noclipToggle;
 
     public float Speed {
         get { return _speed; }
         set { _speed = value; }
+    }
+
+    public bool Noclip {
+        get { return _noclip; }
+        set { _noclip = value; }
     }
 
     private void Start() {
@@ -32,6 +39,10 @@ public class AvatarMovement : MonoBehaviour {
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
         _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f) * 10;
         SpeedSliderHandler();
+
+        _noclipToggle.onValueChanged.AddListener(delegate{ NoclipToggleHandler(); });
+        _noclipToggle.isOn = PlayerPrefs.GetInt("noclip", 0) == 1;
+        NoclipToggleHandler();
     }
 
     private void Update() {
@@ -59,6 +70,13 @@ public class AvatarMovement : MonoBehaviour {
         _speed = _speedSlider.value * 10;
         string sliderMessage = (_speed / 100f).ToString("0.0") + " x";
         _speedText.text = sliderMessage;
+    }
+
+    /// <summary>
+    /// Updates <c>_noclip</c> based on toggle.
+    /// </summary>
+    public void NoclipToggleHandler() {
+        _noclip = _noclipToggle.isOn;
     }
 
     /// <summary>
