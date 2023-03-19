@@ -18,8 +18,8 @@ public class MapCreationScreenTests {
     [UnityTest]
     public IEnumerator CancelButtonRedirectsToStartupScreen() {
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
-        Button button = GameObject.Find("Cancel Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        Button cancelButton = GameObject.Find("Cancel Button").GetComponent<Button>();
+        cancelButton.onClick.Invoke();
         yield return null;
         Assert.AreEqual("Startup", SceneManager.GetActiveScene().name); 
     }
@@ -30,9 +30,9 @@ public class MapCreationScreenTests {
         InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
         nameInputField.text = "TestMap";
 
-        // click button create a new map
-        Button button = GameObject.Find("Create Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        // click create button to create a new map
+        Button createButton = GameObject.Find("Create Button").GetComponent<Button>();
+        createButton.onClick.Invoke();
 
         // check that file browser appears
         GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
@@ -53,8 +53,8 @@ public class MapCreationScreenTests {
 
     [Test]
     public void ErrorsOnEmptyFileName() {
-        Button button = GameObject.Find("Create Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        Button createButton = GameObject.Find("Create Button").GetComponent<Button>();
+        createButton.onClick.Invoke();
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         Assert.AreEqual("You must provide a file name to create a map.", 
                         GameObject.Find("ErrorMessage").GetComponent<Text>().text);
