@@ -23,6 +23,7 @@ public class MapEditorManager : MonoBehaviour {
     public static GameObject Map;
     public static GameObject MapContainer;
     public static Vector2 SpawnPoint;
+    public static bool Reversion;
     public static bool ReloadFlag;
     private static int _currentButtonPressed;
 
@@ -41,12 +42,12 @@ public class MapEditorManager : MonoBehaviour {
             // Static variables must be reset if a new map is loaded from another map
             Util.ResetStaticVariables();
             Util.ResetAssetButtons();
+            Reversion = true;
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
             SelectedBiome = CreateNewMap.ChosenBiome;
         }
-
         Map = GameObject.Find("Map");
         MapContainer = GameObject.Find("Map Container");
         // below is a temp fix while moving objects is not implemented; allows for testing
@@ -106,6 +107,7 @@ public class MapEditorManager : MonoBehaviour {
     /// Paints the asset at the given position.
     /// </summary>
     public void PaintAtPosition(Vector2 worldPosition) {
+        Reversion = false;
         GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         if (activeImage == null) {
             DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed],
@@ -217,9 +219,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
-                            // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
-                            // Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -278,9 +278,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
-                            // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
-                            // Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -444,6 +442,7 @@ public class MapEditorManager : MonoBehaviour {
     /// Converts from the 2D scene to the 3D scene.
     /// </summary>
     public void ConvertTo3D() {
+        Reversion = false;
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
@@ -452,31 +451,23 @@ public class MapEditorManager : MonoBehaviour {
     /// Remakes the 2D scene upon it being reloaded from the 3D view.
     /// </summary>
     private void ReloadScene() {
+        Reversion = true;
         // Reloading Layers
-        Layer.LayerIndex.Clear();
-        Layer.LayerStatus.Clear();
-        // Layer.LayerNames.Clear();
-        // TODO: Add the layer names back to the three lists/dicts 
-        // foreach (Dictionary<int, MapObject> layer in Layers) {
-        //     List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
-        //     Layer.LayerIndex.Add(mapData.LayerNames[i], i);
-        //     Layer.LayerStatus.Add(mapData.LayerNames[i], false);
-        //     Layer.LayerNames.Add(mapData.LayerNames[i]);
-        // }
-        // CurrentLayer = Layers.Count - 1;
-
-        foreach (string name in Layer.LayerNames) {
-            Debug.Log("Layer: " + name);
+        Layer.LayerToBeNamed = 0;
+        foreach (Dictionary<int, MapObject> layer in Layers) {
+            List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
         }
-
-        // TODO: During 3D with layers, will need to nest Reloading MapObjects
-        // within Reloading Layers to rebuild each layer.
+        CurrentLayer = Layers.Count - 1;
 
         // Reloading MapObjects
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
         Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
+        List<Dictionary<int, MapObject>> newLayers = new List<Dictionary<int, MapObject>>();
+
         MapContainer = GameObject.Find("Map Container");
-        foreach (KeyValuePair <int, MapObject> mapObject in MapObjects) {
+        foreach (Dictionary<int, MapObject> layer in Layers) {
+            Dictionary<int, MapObject> currentLayer = new Dictionary<int, MapObject>();
+            foreach (KeyValuePair <int, MapObject> mapObject in layer) {
                 GameObject newParent = new GameObject();
                 newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
                 newParent.transform.SetParent(MapContainer.transform, true);
@@ -495,14 +486,15 @@ public class MapEditorManager : MonoBehaviour {
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
+                currentLayer.Add(newGameObject.GetInstanceID(), 
+                                 newMapObjects[newGameObject.GetInstanceID()]);
                 if (!mapObject.Value.IsActive) {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
+                    currentLayer[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
-                Debug.Log("MapObject: " + mapObject.Value.Name + " on layer: " + mapObject.Value.LayerName);
-                // layer name doesn't exist
-                Layers[Layer.LayerIndex[mapObject.Value.LayerName]].Add(
-                newGameObject.GetInstanceID(), mapObject.Value);
+            }
+            newLayers.Add(currentLayer);
         }
 
         // Swapping GameObject's in editor action linked list
@@ -510,16 +502,25 @@ public class MapEditorManager : MonoBehaviour {
             LinkedListNode<EditorAction> pointer = Actions.First;
 
             while (pointer != null) {
-                    for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
-                        // Key not found in dictionary error
-                        pointer.Value.RelatedObjects[i] = 
-                            mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
+                for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
+                    int pointerId = pointer.Value.RelatedObjects[i].GetInstanceID();
+                    // ensure the object is a MapObject
+                    if (mapObjectsMapping.ContainsKey(pointerId)) {
+                        pointer.Value.RelatedObjects[i] = mapObjectsMapping[pointerId];
                     }
+                }
                 pointer = pointer.Next;
             }
         }
 
-        // Resetting MapObjects Dictionary
+        // // Resetting MapObjects  and Layers Dictionaries
         MapObjects = new Dictionary<int, MapObject>(newMapObjects);
+        Layers = new List<Dictionary<int, MapObject>>(newLayers);
+
+        // Swapping MapObjects in LayerCollisions List
+        foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
+            mapObjects[0] = MapObjects[mapObjectsMapping[mapObjects[0].Id].GetInstanceID()];
+            mapObjects[1] = MapObjects[mapObjectsMapping[mapObjects[1].Id].GetInstanceID()];
+        }
     }
 }
