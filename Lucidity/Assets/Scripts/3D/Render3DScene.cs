@@ -194,9 +194,7 @@ public class Render3DScene : MonoBehaviour {
             mountainCollider.convex = true;
             tree.GetComponent<MeshCollider>().convex = true;    
             // move tree above mountain
-            tree.transform.position = new Vector3(treePos.x,
-                                                  mountainHeight,
-                                                  treePos.z);
+            tree.transform.position = new Vector3(treePos.x, mountainHeight, treePos.z);
             // update the tree position
             treePos = tree.transform.position;
             // Ray pointing down from tree                       
@@ -209,9 +207,7 @@ public class Render3DScene : MonoBehaviour {
                                                       mountainHeight - hit.distance - 15f,
                                                       treePos.z);
             } else {
-                tree.transform.position = new Vector3(treePos.x,
-                                                      0f,
-                                                      treePos.z);
+                tree.transform.position = new Vector3(treePos.x, 0f, treePos.z);
             }
         }
     }
