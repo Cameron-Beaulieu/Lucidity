@@ -10,6 +10,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public static bool IsTesting = false;
 
     public void OnPointerClick(PointerEventData eventData) {
+        MapEditorManager.Reversion = false;
         if (Tool.ToolStatus["Selection Tool"]) {
             GameObject clickedObject;
             if (IsTesting) {
@@ -20,11 +21,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             int id = clickedObject.GetInstanceID();
             MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
                 .GetComponent<MapEditorManager>();
-            // Check if the selected object is on the current layer, or if it is the spawn point
-            // TODO: uncomment if statement and swap for other one once layer reversion complete
-            // if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
-            //         || clickedObject.name == "Spawn Point") {
-            if (MapEditorManager.MapObjects.ContainsKey(id)
+            if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
                 if (SelectedObject != null) {
                     UnselectMapObject();
