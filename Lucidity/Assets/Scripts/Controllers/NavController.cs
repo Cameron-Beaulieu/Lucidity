@@ -13,7 +13,6 @@ public class NavController : MonoBehaviour {
     [SerializeField] private TMP_Text _openKeybind;
     [SerializeField] private TMP_Text _saveKeybind;
     [SerializeField] private TMP_Text _saveAsKeybind;
-    [SerializeField] private TMP_Text _exportKeybind;
     private static TMP_Text _savingText;
     private static float _hideTextTimer = 0f;
 
@@ -24,7 +23,6 @@ public class NavController : MonoBehaviour {
             _openKeybind.text = "Cmd + Opt + O";
             _saveKeybind.text = "Cmd + Opt + S";
             _saveAsKeybind.text = "Cmd + Shift + Opt + S";
-            _exportKeybind.text = "Cmd + Opt + E";
         }
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
     }
@@ -43,6 +41,22 @@ public class NavController : MonoBehaviour {
     public static void NewButtonClickHandler() {
         Debug.Log("New button clicked");
         // TODO: Navigate to the MapCreation scene
+        int newPrev = EditorUtility.DisplayDialogComplex(
+            "Save current map?", 
+            "Would you like to save your current map before creating a new one?", "Yes", 
+            "Cancel", "No");
+        
+        switch (newPrev) {
+            case 0:
+                SaveButtonClickHandler();
+                // Load MapCreation scene
+                SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
+                break;
+            case 1:
+                return;
+            case 2:
+                break;
+        }
     }
 
     /// <summary>
