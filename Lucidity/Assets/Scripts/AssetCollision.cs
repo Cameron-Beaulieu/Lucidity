@@ -11,7 +11,7 @@ public class AssetCollision : MonoBehaviour {
     private int _uiLayer = 5;
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
-    public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>(); 
+    public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>();
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
@@ -110,7 +110,8 @@ public class AssetCollision : MonoBehaviour {
             }
 
             if (CheckMapObjectStackingValidity(collider.gameObject) && 
-                collider.gameObject != gameObject && hitColliders.Count == 2) {
+                collider.gameObject != gameObject && hitColliders.Count == 2 || 
+                MapEditorManager.Reversion) {
 
                 int layerIndex1 = MapEditorManager.LayerContainsMapObject(
                     collider.gameObject.GetInstanceID());
