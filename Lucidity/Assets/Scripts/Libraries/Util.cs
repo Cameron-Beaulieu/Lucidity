@@ -17,6 +17,7 @@ public class Util {
         MapEditorManager.ToolToCursorMap.Clear();
         MapEditorManager.Map = null;
         MapEditorManager.MapContainer = null;
+        MapEditorManager.Reversion = false;
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
         Tool.ToolKeys.Clear();
