@@ -10,7 +10,7 @@ public class AvatarMovement : MonoBehaviour {
     public static bool IsTesting = false;
     public static float HorizontalTestingInput;
     public static float VerticalTestingInput;
-    private float _avatarHeight = 2f;
+    private float _avatarHeight;
     private float _groundDrag = 5f;
     private bool _isGrounded;
     private float _speed;
@@ -36,6 +36,8 @@ public class AvatarMovement : MonoBehaviour {
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
 
+        _avatarHeight = transform.localScale.y;
+
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
         _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f) * 10;
         SpeedSliderHandler();
@@ -48,7 +50,7 @@ public class AvatarMovement : MonoBehaviour {
     private void Update() {
         // check if object is grounded
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, 
-                                    _avatarHeight * 0.5f + 0.2f, GroundLayer);
+                                    _avatarHeight + 0.2f, GroundLayer);
         GetInput();
 
         // prevents the avatar from slipping around
