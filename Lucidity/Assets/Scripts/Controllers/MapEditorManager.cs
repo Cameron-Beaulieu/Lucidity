@@ -452,12 +452,22 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     private void ReloadScene() {
         Reversion = true;
-        // Reloading Layers
+
         Layer.LayerToBeNamed = 0;
-        foreach (Dictionary<int, MapObject> layer in Layers) {
+        List<string> tempLayerNames = new List<string>(Layer.LayerNames);
+
+        Layer.LayerIndex.Clear();
+        Layer.LayerStatus.Clear();
+        Layer.LayerNames.Clear();
+
+        for (int i = 0; i < tempLayerNames.Count; i++) {
+            // Create a dictionary for each layer
             List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+            // fill in LayerIndex and LayerStatus dictionaries
+            Layer.LayerIndex.Add(tempLayerNames[i], i);
+            Layer.LayerStatus.Add(tempLayerNames[i], false);
+            Layer.LayerNames.Add(tempLayerNames[i]);
         }
-        CurrentLayer = Layers.Count - 1;
 
         // Reloading MapObjects
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
