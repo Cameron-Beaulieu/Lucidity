@@ -191,4 +191,51 @@ public class ThreeDMapTests {
         // mountain has special positioning for the y due to the way the asset was modelled
         Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
     }
+
+    [UnityTest]
+    public IEnumerator TreeSpawnsCorrectlyAboveMountain() {
+        // paint the mountain on base layer
+        Button mountainButton = GameObject.Find("MountainButton").GetComponent<Button>();
+        mountainButton.onClick.Invoke();
+        Assert.IsTrue(mountainButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace = new Vector2(3, 3);
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
+
+        // add new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+
+        // paint the tree on mountain
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        Assert.IsTrue(treeButton.GetComponent<AssetController>().Clicked);
+        mapEditorManager.PaintAtPosition(positionToPlace + new Vector2(0.2f,0.2f));
+        yield return null;
+        yield return new WaitForSeconds(0.5f);
+
+        GameObject treeParent = GameObject.Find("TreeObject Parent");
+        Vector2 treePosition = treeParent.transform.localPosition;
+
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        GameObject tree3D = GameObject.Find("LucidityTree(Clone)");
+        Assert.IsNotNull(tree3D);
+        GameObject mountain3D = GameObject.Find("LucidityMountain(Clone)");
+        Assert.IsNotNull(mountain3D);
+        MeshCollider mountainCollider = mountain3D.GetComponent<MeshCollider>();
+        float mountainHeight = mountainCollider.bounds.size.y * 
+            mountain3D.transform.localScale.y;
+
+        // Make sure the tree is off the ground, but not above the mountain
+        Assert.Greater(tree3D.transform.position.y, 100f);
+        Assert.Less(tree3D.transform.position.y, mountainHeight);
+    }
 }
