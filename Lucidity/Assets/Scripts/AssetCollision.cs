@@ -47,7 +47,9 @@ public class AssetCollision : MonoBehaviour {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
-                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
+                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
                     StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject));
