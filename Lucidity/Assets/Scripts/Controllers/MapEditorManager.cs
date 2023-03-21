@@ -523,7 +523,7 @@ public class MapEditorManager : MonoBehaviour {
             }
         }
 
-        // // Resetting MapObjects  and Layers Dictionaries
+        // Resetting MapObjects  and Layers Dictionaries
         MapObjects = new Dictionary<int, MapObject>(newMapObjects);
         Layers = new List<Dictionary<int, MapObject>>(newLayers);
 
