@@ -40,8 +40,6 @@ public class AvatarMovement : MonoBehaviour {
 
         _avatarHeight = transform.localScale.y;
 
-        Physics.gravity = new Vector3(0, -1500f, 0);
-
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
         _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f) * 10;
         SpeedSliderHandler();
@@ -58,7 +56,7 @@ public class AvatarMovement : MonoBehaviour {
         GetInput();
 
         // prevents the avatar from slipping around
-        if (_isGrounded) {
+        if (_isGrounded && !_noclip) {
             _rb.drag = _groundDrag;
         } else {
             _rb.drag = _airDrag;
@@ -83,6 +81,13 @@ public class AvatarMovement : MonoBehaviour {
     /// </summary>
     public void NoclipToggleHandler() {
         _noclip = _noclipToggle.isOn;
+        if (_noclip) {
+            GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = false;
+            Physics.gravity = Vector3.zero;
+        } else {
+            GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = true;
+            Physics.gravity = new Vector3(0, -1500f, 0);
+        }
     }
 
     /// <summary>
@@ -96,8 +101,10 @@ public class AvatarMovement : MonoBehaviour {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
             _verticalInput = Input.GetAxisRaw("Vertical");
 
-            if (Input.GetKey(KeyCode.Space) && _isGrounded) {
+            if (Input.GetKey(KeyCode.Space) && (_isGrounded || _noclip)) {
                 Jump();
+            } else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _noclip) {
+                Descend();
             }
         }
     }
@@ -112,7 +119,13 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     private void Jump() {
+        _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(Orientation.up * _jumpForce, ForceMode.Impulse);
+    }
+
+    private void Descend() {
+        _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+        _rb.AddForce(-1f * Orientation.up * _jumpForce, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter() {
