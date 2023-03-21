@@ -191,6 +191,8 @@ public class Render3DScene : MonoBehaviour {
             MeshCollider mountainCollider = mountain.GetComponent<MeshCollider>();
             float mountainHeight = mountainCollider.bounds.size.y * 
                 mountain.transform.localScale.y;
+            float treeHeight = tree.GetComponent<MeshCollider>().bounds.size.y * 
+                tree.transform.localScale.y;
             // both colliders need to be convex for raycasting
             mountainCollider.convex = true;
             tree.GetComponent<MeshCollider>().convex = true;    
@@ -201,12 +203,11 @@ public class Render3DScene : MonoBehaviour {
             // Ray pointing down from tree                       
             Ray ray = new Ray(treePos, new Vector3(0, -1f, 0));
             RaycastHit hit;
-            // if hit: move the tree down to that point (and a little more the 15f is arbitrary)
+            // if hit: move the tree down to that point (and a little more)
             // else: move the tree to the ground
             if (mountainCollider.Raycast(ray, out hit, mountainHeight)) {
-                tree.transform.position = new Vector3(treePos.x,
-                                                      mountainHeight - hit.distance - 15f,
-                                                      treePos.z);
+                tree.transform.position = new Vector3(
+                    treePos.x, mountainHeight - hit.distance - 0.25f * treeHeight, treePos.z);
             } else {
                 tree.transform.position = new Vector3(treePos.x, 0f, treePos.z);
             }
