@@ -9,9 +9,9 @@ public class Render3DScene : MonoBehaviour {
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
+    private Dictionary<int, GameObject> _sceneObjects = new Dictionary<int, GameObject>();
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
-    private Dictionary<int, GameObject> _sceneObjects = new Dictionary<int, GameObject>();
 
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
@@ -183,7 +183,8 @@ public class Render3DScene : MonoBehaviour {
                 !_sceneObjects.ContainsKey(mapObjects[1].Id)) {
                 return;
             }
-
+            // mountain will always be at index 0, tree will always be index 1
+            // the List is created in AssetCollisions.GetAssetCollisions
             GameObject mountain = _sceneObjects[mapObjects[0].Id];  
             GameObject tree = _sceneObjects[mapObjects[1].Id];
             Vector3 treePos = tree.transform.position;
