@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -195,6 +196,20 @@ public class MapEditorManager : MonoBehaviour {
                     Destroy(obj);
                 }
             }
+            else if (actionToDelete.Value.Type == EditorAction.ActionType.DeleteLayer) {
+                foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
+                    if (obj != actionToDelete.Value.RelatedObjects.Last()) {
+                       int id = obj.GetInstanceID();
+                        MapObjects.Remove(id);
+                        Layers[LayerContainsMapObject(id)].Remove(id);
+                        Destroy(obj);
+                    }
+                    else {
+                        obj.GetComponent<Layer>().PermanentlyDeleteLayer();
+                    }
+                }
+
+            }
             actionToDelete = actionToDelete.Next;
         }
     }
@@ -247,7 +262,15 @@ public class MapEditorManager : MonoBehaviour {
                     List<GameObject> newLayerList = Layering.AddLayer(_layerPrefab);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
-                    // TODO: Implement
+                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                        if (obj != null && obj != actionToRedo.RelatedObjects.Last()) {
+                            int id = obj.GetInstanceID();
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            obj.SetActive(false);
+                        } else if (obj == actionToRedo.RelatedObjects.Last()) {
+                            obj.SetActive(false);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
@@ -308,7 +331,16 @@ public class MapEditorManager : MonoBehaviour {
                     Layering.DeleteLastLayer();
                     break;
                 case EditorAction.ActionType.DeleteLayer:
-                    // TODO: Implement
+                Debug.Log(actionToUndo.RelatedObjects.Count);
+                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                        if (obj != null && obj != actionToUndo.RelatedObjects.Last()) {
+                            int id = obj.GetInstanceID();
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            obj.SetActive(true);
+                        } else if (obj == actionToUndo.RelatedObjects.Last()) {
+                            obj.SetActive(true);
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
