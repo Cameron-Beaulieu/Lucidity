@@ -12,7 +12,9 @@ public class AvatarMovement : MonoBehaviour {
     public static float VerticalTestingInput;
     private float _avatarHeight;
     private float _groundDrag = 5f;
+    private float _airDrag = 0.5f;
     private bool _isGrounded;
+    private float _jumpForce = 250f;
     private float _speed;
     private float _horizontalInput;
     private float _verticalInput;
@@ -38,6 +40,8 @@ public class AvatarMovement : MonoBehaviour {
 
         _avatarHeight = transform.localScale.y;
 
+        Physics.gravity = new Vector3(0, -1500f, 0);
+
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
         _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f) * 10;
         SpeedSliderHandler();
@@ -57,7 +61,7 @@ public class AvatarMovement : MonoBehaviour {
         if (_isGrounded) {
             _rb.drag = _groundDrag;
         } else {
-            _rb.drag = 0f;
+            _rb.drag = _airDrag;
         }
     }
 
@@ -91,6 +95,10 @@ public class AvatarMovement : MonoBehaviour {
         } else {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
             _verticalInput = Input.GetAxisRaw("Vertical");
+
+            if (Input.GetKey(KeyCode.Space) && _isGrounded) {
+                Jump();
+            }
         }
     }
 
@@ -101,6 +109,10 @@ public class AvatarMovement : MonoBehaviour {
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         _rb.velocity = (Orientation.forward * direction.z + Orientation.right * direction.x)
                         * _speed;
+    }
+
+    private void Jump() {
+        _rb.AddForce(Orientation.up * _jumpForce, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter() {
