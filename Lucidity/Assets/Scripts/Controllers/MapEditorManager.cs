@@ -38,14 +38,12 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Awake() {
         if (StartupScreen.FilePath != null && MapData.FileName != null && !ReloadFlag) {
-            Debug.Log("filename not null");
             // Static variables must be reset if a new map is loaded from another map
             Util.ResetStaticVariables();
             Util.ResetAssetButtons();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else if (StartupScreen.FilePath != null && !ReloadFlag) {
-            Debug.Log("filename null");
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
@@ -93,6 +91,7 @@ public class MapEditorManager : MonoBehaviour {
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
             Util.ResetAssetButtons();
+            ReloadFlag = false;
         }
     }
 
