@@ -94,6 +94,9 @@ public class LayerName : MonoBehaviour {
         Layer.LayerStatus.Add(newName, oldStatus);
         // Update LayerNames
         Layer.LayerNames.Remove(oldName);
-        Layer.LayerNames.Add(newName);
+        Layer.LayerNames.Insert(oldIndex, newName);
+
+        GameObject layer = GameObject.Find(oldName);
+        layer.name = newName;
     }
 }

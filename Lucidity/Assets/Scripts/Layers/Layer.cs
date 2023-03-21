@@ -44,6 +44,7 @@ public class Layer : MonoBehaviour {
         }
         _layerText.readOnly = true;
         _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
+        _layerTrashCan.GetComponent<Button>().onClick.AddListener(DeleteLayer);
         _layerTrashCan.SetActive(false);
         _layerEdit = gameObject.transform.GetChild(3).gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
@@ -102,5 +103,53 @@ public class Layer : MonoBehaviour {
     private void ChangeLayerName() {
         _layerText.readOnly = false;
         _layerText.ActivateInputField();
+    }
+
+    private void DeleteLayer() {
+        List<MapObject> deletedMapObjects = new List<MapObject>{};
+
+        foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
+            deletedMapObjects.Add(kvp.Value);
+            Destroy(kvp.Value.RelatedObject);
+        }
+
+        // Adding CreateLayerAction to Undo/Redo LinkedList
+        if (MapEditorManager.Actions == null) {
+            MapEditorManager.Actions = new LinkedList<EditorAction>();
+            MapEditorManager.Actions.AddFirst(new DeleteLayerAction(_name, LayerIndex[_name], deletedMapObjects));
+            MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+        } else {
+            if (MapEditorManager.CurrentAction != null && 
+                MapEditorManager.CurrentAction.Next != null) {
+                // These actions can no longer be redone
+                MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);
+                LinkedListNode<EditorAction> actionToRemove = MapEditorManager.CurrentAction.Next;
+                while (actionToRemove != null) {
+                    MapEditorManager.Actions.Remove(actionToRemove);
+                    actionToRemove = actionToRemove.Next;
+                }
+                MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+                    new DeleteLayerAction(_name, LayerIndex[_name], deletedMapObjects));
+                MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+            } else if (MapEditorManager.CurrentAction != null) {
+                MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+                    new DeleteLayerAction(_name, LayerIndex[_name], deletedMapObjects));
+                MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+            } else if (MapEditorManager.CurrentAction == null && 
+                MapEditorManager.Actions != null) {
+                // There is only one action and it has been undone
+                MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
+                MapEditorManager.Actions.Clear();
+                MapEditorManager.Actions.AddFirst(new DeleteLayerAction(_name, LayerIndex[_name], deletedMapObjects));
+                MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+            }
+       }
+       
+       SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
+       LayerNames.RemoveAt(LayerIndex[_name]);
+       LayerStatus.Remove(_name);
+       LayerIndex.Remove(_name);
+
+       Destroy(gameObject);
     }
 }
