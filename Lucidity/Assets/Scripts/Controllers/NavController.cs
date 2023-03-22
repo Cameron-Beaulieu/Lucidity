@@ -13,25 +13,37 @@ public class NavController : MonoBehaviour {
     private static float _hideTextTimer = 0f;
     private static GameObject _modal;
     private static GameObject _modalButtons;
+    private static TMP_Text _modalText;
+    private static string _saveBeforeLoadPrompt = "Would you like to save your current map before opening a new one?";
+    private static string _saveBeforeNewPrompt = "Would you like to save your current map before creating a new one?";
 
     private void Start() {
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
 
         // add listeners to save modal option buttons
         _modal = GameObject.Find("SaveModal");
+        _modalText = _modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
         _modalButtons = _modal.transform.Find("Button Group").gameObject;
         // yes button
         _modalButtons.transform.Find("Yes Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
             SaveButtonClickHandler();
-            StartupScreen.LoadMapClickHandler();
+            if (_modalText.text == _saveBeforeLoadPrompt) {
+                StartupScreen.LoadMapClickHandler();
+            } else if (_modalText.text == _saveBeforeNewPrompt) {
+                SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
+            }
         });
         // no button
         _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
-            StartupScreen.LoadMapClickHandler();
+            if (_modalText.text == _saveBeforeLoadPrompt) {
+                StartupScreen.LoadMapClickHandler();
+            } else if (_modalText.text == _saveBeforeNewPrompt) {
+                SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
+            }
         });
         // cancel button
         _modalButtons.transform.Find("Cancel Button").gameObject.GetComponent<Button>().onClick
@@ -52,8 +64,9 @@ public class NavController : MonoBehaviour {
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + N
     /// </summary>
     public static void NewButtonClickHandler() {
-        Debug.Log("New button clicked");
-        // TODO: Navigate to the MapCreation scene
+        _modalText.text = _saveBeforeNewPrompt;
+        _modal.SetActive(true);
+        
     }
 
     /// <summary>
@@ -61,6 +74,7 @@ public class NavController : MonoBehaviour {
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + O
     /// </summary>
     public static void OpenButtonClickHandler() {
+        _modalText.text = _saveBeforeLoadPrompt;
         _modal.SetActive(true);
     }
 
@@ -105,14 +119,6 @@ public class NavController : MonoBehaviour {
         MapData.FileName = path;
 
         SaveFile();
-    }
-
-    /// <summary>
-    /// Click handler for the Export button in the File menu
-    /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + E
-    /// </summary>
-    public static void ExportButtonClickHandler() {
-        Debug.Log("Export button clicked");
     }
 
     /// <summary>
