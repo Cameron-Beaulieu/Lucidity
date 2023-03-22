@@ -39,9 +39,8 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Awake() {
-        if (StartupScreen.FilePath != null && !ReloadFlag || LoadFlag) {
+        if (StartupScreen.FilePath != null && (!ReloadFlag || LoadFlag)) {
             // Static variables must be reset if a new map is loaded from another map
-            Debug.Log("This should happen right?");
             Util.ResetStaticVariables();
             Util.ResetAssetButtons();
             LoadMap();
