@@ -193,6 +193,7 @@ public class Render3DScene : MonoBehaviour {
         PlayerPrefs.SetFloat("speed", _movement.Speed / 100);
         PlayerPrefs.SetInt("noclip", _movement.Noclip ? 1 : 0);
         PlayerPrefs.Save();
+        EscapeTestingInput = false;
         _editor.SetActive(true);
         MapEditorManager.ReloadFlag = true;
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);

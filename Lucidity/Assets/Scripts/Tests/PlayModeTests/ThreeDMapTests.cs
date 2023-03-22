@@ -24,11 +24,6 @@ public class ThreeDMapTests {
     [TearDown]
     public void TearDown() {
         Util.ResetStaticVariables();
-        AvatarMovement.HorizontalTestingInput = 0f;
-        AvatarMovement.VerticalTestingInput = 0f;
-        AvatarMovement.JumpTestingInput = false;
-        AvatarMovement.DescendTestingInput = false;
-        Render3DScene.EscapeTestingInput = false;
     }
 
     [OneTimeTearDown]
