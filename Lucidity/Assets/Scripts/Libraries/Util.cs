@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Util {
@@ -40,8 +41,10 @@ public class Util {
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         editor.AssetButtons.Clear();
-        foreach (GameObject paintButton in GameObject
-                .FindGameObjectsWithTag("PaintButton")) {
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        paintButtons = paintButtons.OrderBy(x => x.name.ToLower()).ToArray();
+        foreach (GameObject paintButton in paintButtons) {
+            paintButton.GetComponent<AssetController>().GetInstanceID();
             editor.AssetButtons.Add(paintButton.GetComponent<AssetController>());
         }
     }

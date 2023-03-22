@@ -37,6 +37,14 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Awake() {
+        GameObject[] instances = GameObject.FindGameObjectsWithTag("MapEditorManager");
+        if (instances.Length > 1) {
+            foreach (GameObject instance in instances) {
+                if (instance != this.gameObject) {
+                    Destroy(instance);
+                }
+            }
+        }
         if (StartupScreen.FilePath != null && MapData.FileName != null && !ReloadFlag) {
             // Static variables must be reset if a new map is loaded from another map
             Util.ResetStaticVariables();
@@ -80,14 +88,15 @@ public class MapEditorManager : MonoBehaviour {
                 ToolToCursorMap.Add(cursor.name, cursor);
             }
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            DontDestroyOnLoad(this.gameObject);
         } 
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start() {
         if (!ReloadFlag && StartupScreen.FilePath == null) {
             List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
         } else if (ReloadFlag) {
+            Debug.Log("Reloading scene");
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
             Util.ResetAssetButtons();

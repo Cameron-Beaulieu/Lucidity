@@ -170,8 +170,8 @@ public class Render3DScene : MonoBehaviour {
     /// Reverts from the 3D scene back to the 2D scene
     /// </summary>
     public void RevertTo2D() {
-        _editor.SetActive(true);
         MapEditorManager.ReloadFlag = true;
+        _editor.SetActive(true);
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
     }
 }

@@ -32,8 +32,6 @@ public class AssetController : MonoBehaviour {
         DynamicBoundingBox.CreateDynamicAssetImage(_editor.AssetImage[Id],
                                                    Mouse.GetMousePosition());
 
-        MapEditorManager.CurrentButtonPressed = Id;
-
         GameObject parentContainer = GameObject.Find(gameObject.transform.parent.name);
         // Unselect previously selected asset in "Sprites" panel unless it 
         // is the same asset as that that is being selected
@@ -44,8 +42,6 @@ public class AssetController : MonoBehaviour {
         // Highlight asset in "Sprites" pane
         parentContainer.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
         _prevParentContainer = parentContainer;
-        // set painting status
-        Tool.ChangeTools("Brush Tool");
     }
 
     /// <summary>
