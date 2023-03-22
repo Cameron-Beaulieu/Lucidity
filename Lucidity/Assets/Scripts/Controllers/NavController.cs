@@ -1,32 +1,46 @@
+using SimpleFileBrowser;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class NavController : MonoBehaviour {
-    [SerializeField] private TMP_Text _newKeybind;
-    [SerializeField] private TMP_Text _openKeybind;
-    [SerializeField] private TMP_Text _saveKeybind;
-    [SerializeField] private TMP_Text _saveAsKeybind;
-    [SerializeField] private TMP_Text _exportKeybind;
     private static TMP_Text _savingText;
     private static float _hideTextTimer = 0f;
+    private static GameObject _modal;
+    private static GameObject _modalButtons;
 
     private void Start() {
-        if (Application.platform == RuntimePlatform.OSXPlayer || 
-            Application.platform == RuntimePlatform.OSXEditor) {
-            _newKeybind.text = "Cmd + Opt + N";
-            _openKeybind.text = "Cmd + Opt + O";
-            _saveKeybind.text = "Cmd + Opt + S";
-            _saveAsKeybind.text = "Cmd + Shift + Opt + S";
-            _exportKeybind.text = "Cmd + Opt + E";
-        }
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
+
+        // add listeners to save modal option buttons
+        _modal = GameObject.Find("SaveModal");
+        _modalButtons = _modal.transform.Find("Button Group").gameObject;
+        // yes button
+        _modalButtons.transform.Find("Yes Button").gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
+            _modal.SetActive(false);
+            SaveButtonClickHandler();
+            MapEditorManager.LoadFlag = true;
+            StartupScreen.LoadMapClickHandler();
+        });
+        // no button
+        _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
+            _modal.SetActive(false);
+            MapEditorManager.LoadFlag = true;
+            StartupScreen.LoadMapClickHandler();
+        });
+        // cancel button
+        _modalButtons.transform.Find("Cancel Button").gameObject.GetComponent<Button>().onClick
+            .AddListener(() => {
+            _modal.SetActive(false);
+        });
+        _modal.SetActive(false); // hide modal by default
     }
 
     private void Update() {
@@ -39,7 +53,6 @@ public class NavController : MonoBehaviour {
     /// Click handler for the New button in the file menu.
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + N
     /// </summary>
-    [MenuItem("NavMenu/New %&n")]
     public static void NewButtonClickHandler() {
         Debug.Log("New button clicked");
         // TODO: Navigate to the MapCreation scene
@@ -49,34 +62,14 @@ public class NavController : MonoBehaviour {
     /// Click handler for the Open button in the file menu.
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + O
     /// </summary>
-    [MenuItem("NavMenu/Open %&o")]
     public static void OpenButtonClickHandler() {
-        // Yes = 0, Cancel = 1, No = 2
-        int savePrev = EditorUtility.DisplayDialogComplex(
-            "Save current map?", 
-            "Would you like to save your current map before opening a new one?", "Yes", 
-            "Cancel", "No");
-
-        switch (savePrev) {
-            case 0:
-                MapEditorManager.LoadFlag = true;
-                SaveButtonClickHandler();
-                StartupScreen.LoadMapClickHandler();
-                break;
-            case 1:
-                return;
-            case 2:
-                MapEditorManager.LoadFlag = true;
-                StartupScreen.LoadMapClickHandler();
-                break;
-        }
+        _modal.SetActive(true);
     }
 
     /// <summary>
     /// Click handler for the Save button in the file menu.
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + S
     /// </summary>
-    [MenuItem("NavMenu/Save %&s")]
     public static void SaveButtonClickHandler() {
         // This case should only really be possible in development, not in production
         if (MapData.FileName == null) {
@@ -91,23 +84,24 @@ public class NavController : MonoBehaviour {
     /// Click handler for the Save As button in the File menu.
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + SHIFT + ALT + S
     /// </summary>
-    [MenuItem("NavMenu/SaveAs %#&s")]
     public static void SaveAsButtonClickHandler() {
         // The second argument to SaveFilePanel can eventually be replaced with the user's default
         // map file location
-        string path = EditorUtility.SaveFilePanel("Select Directory", "", "Untitled.json", "json");
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
+        FileBrowser.SetDefaultFilter(".json");
+        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, null, 
+                                   FileBrowser.PickMode.Files, false, null, "Untitled.json", 
+                                   "Save Map", "Save");
+    }
+
+    private static void ValidateSave(string path) {
         // cancelled selecting a path
         if (path.Equals("")) { return; }
         _savingText.text = "Saving...";
 
         // Guarantee the file is JSON
-        while (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
-            bool tryAgain = EditorUtility.DisplayDialog(
-                "Invalid file name", "Your map can only be saved as a JSON file.", "Try again", 
-                "Cancel");
-            if (!tryAgain) {return;}
-
-            path = EditorUtility.SaveFilePanel("Select Directory", "", "Untitled.json", "json");
+        if (!path.Substring(Math.Max(0, path.Length - 5)).Equals(".json")) {
+            return;
         }
 
         MapData.FileName = path;
@@ -119,7 +113,6 @@ public class NavController : MonoBehaviour {
     /// Click handler for the Export button in the File menu
     /// This method can be triggered by the keyboard shortcut CTRL/CMD + ALT + E
     /// </summary>
-    [MenuItem("NavMenu/Export %&e")]
     public static void ExportButtonClickHandler() {
         Debug.Log("Export button clicked");
     }
