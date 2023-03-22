@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -48,7 +49,6 @@ public class Render3DScene : MonoBehaviour {
                     break;
             
                 default:
-                    Debug.Log("Using Default");
                     _map = (GameObject) Instantiate(_mapTypes[0], new Vector3(0f, 0f, 0f), 
                                                     Quaternion.identity);
                     break;
@@ -86,7 +86,6 @@ public class Render3DScene : MonoBehaviour {
                             break;
                         
                         default:
-                            Debug.Log("using default prefab");
                             Place3DObject(_3DPrefabs[0], kvp);
                             break;
                     }

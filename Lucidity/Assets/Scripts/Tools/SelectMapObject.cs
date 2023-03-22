@@ -11,6 +11,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         MapEditorManager.Reversion = false;
+        MapEditorManager.LoadFlag = false;
         if (Tool.ToolStatus["Selection Tool"]) {
             GameObject clickedObject;
             if (IsTesting) {

@@ -110,10 +110,9 @@ public class AssetCollision : MonoBehaviour {
             if (collider.gameObject == gameObject) {
                 return hitCollidersClone;
             }
-
             if (CheckMapObjectStackingValidity(collider.gameObject) && 
                 collider.gameObject != gameObject && hitColliders.Count == 2 || 
-                MapEditorManager.Reversion) {
+                MapEditorManager.Reversion || MapEditorManager.LoadFlag) {
 
                 int layerIndex1 = MapEditorManager.LayerContainsMapObject(
                     collider.gameObject.GetInstanceID());
@@ -124,17 +123,19 @@ public class AssetCollision : MonoBehaviour {
                 MapObject obj2 = MapEditorManager.MapObjects[gameObject.GetInstanceID()];
 
                 int last = LayerCollisions.Count - 1;
+                if (!MapEditorManager.Reversion) {
+                    if (layerIndex1 < layerIndex2) {
+                        if (LayerCollisions.Count == 0 || 
+                            !LayerCollisionsContainsList(obj1.Id, obj2.Id)) {
+                            LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                        }
+                    } else {
+                        if (LayerCollisions.Count == 0 || 
+                            !LayerCollisionsContainsList(obj2.Id, obj1.Id)) {
+                            LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                        }
+                    }
 
-                if (layerIndex1 < layerIndex2) {
-                    if (LayerCollisions.Count == 0 || LayerCollisions[last][0] != obj1 || 
-                        LayerCollisions[last][1] != obj2) {
-                        LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
-                    }
-                } else {
-                    if (LayerCollisions.Count == 0 || LayerCollisions[last][0] != obj2 || 
-                        LayerCollisions[last][1] != obj1) {
-                        LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
-                    }
                 }
                 hitCollidersClone.Remove(collider);
             }
@@ -240,5 +241,14 @@ public class AssetCollision : MonoBehaviour {
             }
         }
         return true;
+    }
+
+    private bool LayerCollisionsContainsList(int id1, int id2) {
+        foreach (List<MapObject> mapObjects in LayerCollisions) {
+            if (mapObjects[0].Id == id1 && mapObjects[1].Id == id2) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -59,12 +59,14 @@ public class NavController : MonoBehaviour {
 
         switch (savePrev) {
             case 0:
+                MapEditorManager.LoadFlag = true;
                 SaveButtonClickHandler();
                 StartupScreen.LoadMapClickHandler();
                 break;
             case 1:
                 return;
             case 2:
+                MapEditorManager.LoadFlag = true;
                 StartupScreen.LoadMapClickHandler();
                 break;
         }

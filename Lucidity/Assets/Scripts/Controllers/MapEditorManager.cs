@@ -25,6 +25,7 @@ public class MapEditorManager : MonoBehaviour {
     public static Vector2 SpawnPoint;
     public static bool Reversion;
     public static bool ReloadFlag;
+    public static bool LoadFlag = false;
     private static int _currentButtonPressed;
 
     public static LinkedListNode<EditorAction> CurrentAction {
@@ -38,11 +39,11 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Awake() {
-        if (StartupScreen.FilePath != null && !ReloadFlag) {
+        if (StartupScreen.FilePath != null && !ReloadFlag || LoadFlag) {
             // Static variables must be reset if a new map is loaded from another map
+            Debug.Log("This should happen right?");
             Util.ResetStaticVariables();
             Util.ResetAssetButtons();
-            Reversion = true;
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
@@ -64,7 +65,7 @@ public class MapEditorManager : MonoBehaviour {
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.AddListener(ConvertTo3D);
         GameObject[] selectableTools = GameObject.FindGameObjectsWithTag("SelectableTool");
 
-        if(!ReloadFlag) {
+        if(!ReloadFlag || LoadFlag) {
         foreach (GameObject tool in selectableTools) {
             if (tool.name == "Brush Tool") {
                 Tool.ToolStatus.Add(tool.name, true);
@@ -84,7 +85,7 @@ public class MapEditorManager : MonoBehaviour {
     private void Start() {
         if (!ReloadFlag && StartupScreen.FilePath == null) {
             List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
-        } else if (ReloadFlag) {
+        } else if (ReloadFlag && !LoadFlag) {
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
             Util.ResetAssetButtons();
@@ -108,6 +109,7 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     public void PaintAtPosition(Vector2 worldPosition) {
         Reversion = false;
+        LoadFlag = false;
         GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
         if (activeImage == null) {
             DynamicBoundingBox.CreateDynamicAssetImage(AssetImage[_currentButtonPressed],
@@ -376,6 +378,8 @@ public class MapEditorManager : MonoBehaviour {
     /// Loads a map stored at the specified file path.
     /// </summary>
     public void LoadMap() {
+        LoadFlag = true;
+        AssetCollision.LayerCollisions.Clear();
         MapContainer = GameObject.Find("Map Container");
         MapData loadedMap = MapData.Deserialize(StartupScreen.FilePath);
         LoadMapFromMapData(loadedMap);
@@ -411,6 +415,8 @@ public class MapEditorManager : MonoBehaviour {
         // Select the layer with index 0
         Layer.LayerStatus[mapData.LayerNames[0]] = true;
 
+        Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
+
         foreach (MapObject mapObject in mapData.MapObjects) {
             GameObject newParent = new GameObject();
             newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
@@ -443,6 +449,7 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     public void ConvertTo3D() {
         Reversion = false;
+        LoadFlag = false;
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
@@ -452,6 +459,7 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     private void ReloadScene() {
         Reversion = true;
+        LoadFlag = false;
 
         Layer.LayerToBeNamed = 0;
         List<string> tempLayerNames = new List<string>(Layer.LayerNames);
