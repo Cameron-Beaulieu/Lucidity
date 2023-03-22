@@ -195,20 +195,9 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     Destroy(obj);
                 }
-            }
-            else if (actionToDelete.Value.Type == EditorAction.ActionType.DeleteLayer) {
-                foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
-                    if (obj != actionToDelete.Value.RelatedObjects.Last()) {
-                       int id = obj.GetInstanceID();
-                        MapObjects.Remove(id);
-                        Layers[LayerContainsMapObject(id)].Remove(id);
-                        Destroy(obj);
-                    }
-                    else {
-                        obj.GetComponent<Layer>().PermanentlyDeleteLayer();
-                    }
-                }
-
+            } else if (actionToDelete.Value.Type == EditorAction.ActionType.CreateLayer) {
+                actionToDelete.Value.RelatedObjects[0].GetComponent<Layer>()
+                    .PermanentlyDeleteLayer();
             }
             actionToDelete = actionToDelete.Next;
         }
@@ -259,7 +248,10 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
-                    List<GameObject> newLayerList = Layering.AddLayer(_layerPrefab);
+                    actionToRedo.RelatedObjects[0].SetActive(true);
+                    CurrentLayer = Layer.LayerIndex[actionToRedo.RelatedObjects[0].name];
+                    Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex[
+                            actionToRedo.RelatedObjects[0].name]]);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
                     foreach (GameObject obj in actionToRedo.RelatedObjects) {
@@ -268,6 +260,10 @@ public class MapEditorManager : MonoBehaviour {
                             Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         } else if (obj == actionToRedo.RelatedObjects.Last()) {
+                            Debug.Log("Fixing layer");
+                            CurrentLayer = Layer.LayerIndex[obj.name] - 1;
+                            Layer.SelectedChangeSelectedLayer(Layer.LayerNames[
+                                    Layer.LayerIndex[obj.name] - 1]);
                             obj.SetActive(false);
                         }
                     }
@@ -328,7 +324,9 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
-                    Layering.DeleteLastLayer();
+                CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].name] - 1;
+                Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex[actionToUndo.RelatedObjects[0].name] - 1]);
+                    actionToUndo.RelatedObjects[0].SetActive(false);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
                 Debug.Log(actionToUndo.RelatedObjects.Count);
@@ -339,6 +337,8 @@ public class MapEditorManager : MonoBehaviour {
                             obj.SetActive(true);
                         } else if (obj == actionToUndo.RelatedObjects.Last()) {
                             obj.SetActive(true);
+                            CurrentLayer = Layer.LayerIndex[obj.name];
+                            Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex[obj.name]]);
                         }
                     }
                     break;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -300,5 +301,44 @@ public class LayerTests : MapEditorTests {
         yield return null;
         yield return new WaitForSeconds(0.5f);
         Assert.AreEqual(0, MapEditorManager.Layers[1].Count);
+    }
+
+
+    [UnityTest]
+    public IEnumerator CanDeleteLayers() {
+        // Confirm current layer is tracking the base layer
+        MapEditorManager editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+        Assert.AreEqual(0, editor.CurrentLayer);
+
+        // create a layer
+        Assert.AreEqual(1, MapEditorManager.Layers.Count);
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject layer = GameObject.Find("Layer1");
+        Assert.IsTrue(layer.activeSelf);
+        yield return null;
+        
+        // assert that the new layer is selected
+        Assert.AreEqual(1, editor.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        int placedObjectId = new List<int>(MapEditorManager.Layers[1].Keys)[0];
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+        // delete layer
+        layer.transform.GetChild(2).gameObject.GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // assert layer and asset still exist and CurrentLayer has been changed
+        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+        // assert layer and MapObjects on layer have been set inactive
+        Assert.IsFalse(MapEditorManager.Layers[1][placedObjectId].IsActive);
+        Assert.IsFalse(layer.activeSelf);
     }
 }

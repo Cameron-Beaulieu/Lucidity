@@ -87,6 +87,8 @@ public class Layer : MonoBehaviour {
                 LayerStatus[layerKey] = false;
             } else {
                 LayerStatus[layerKey] = true;
+                GameObject.Find("MapEditorManager")
+                    .GetComponent<MapEditorManager>().CurrentLayer = LayerIndex[layerKey];
             }
         }  
     }
@@ -147,13 +149,17 @@ public class Layer : MonoBehaviour {
                 MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
             }
        }
-       
+       Debug.Log(LayerNames[LayerIndex[_name]]);
        SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
+       Debug.Log(GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>().CurrentLayer);
        gameObject.SetActive(false);
     }
 
     public void PermanentlyDeleteLayer() {
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
+            MapEditorManager.Layers[LayerIndex[_name]].Remove(kvp.Value.Id);
+            MapEditorManager.MapObjects.Remove(kvp.Value.Id);
             Destroy(kvp.Value.RelatedObject);
         }
 
