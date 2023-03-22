@@ -19,6 +19,7 @@ public class AvatarMovement : MonoBehaviour {
     private float _horizontalInput;
     private float _verticalInput;
     private bool _noclip;
+    private GameObject _map;
     private Rigidbody _rb;
     [SerializeField] private Slider _speedSlider;
     [SerializeField] private Text _speedText;
@@ -35,6 +36,8 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     private void Start() {
+        _map = GameObject.FindGameObjectWithTag("3DMap");
+        
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
 
@@ -50,6 +53,18 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     private void Update() {
+        // verify that the avatar is in bounds; if it is out of bounds, force its position to stay
+        // within the bounds of the map
+        Vector3 positionInsideBounds = transform.position;
+        Vector3 mapSize = new Vector3(_map.transform.localScale.x, 0, _map.transform.localScale.z);
+        if (Mathf.Abs(transform.position.x) > (5 * mapSize.x)) {
+            positionInsideBounds.x = Mathf.Sign(transform.position.x) * (5 * mapSize.x);
+        }
+        if (Mathf.Abs(transform.position.z) > (5 * mapSize.z)) {
+            positionInsideBounds.z = Mathf.Sign(transform.position.z) * (5 * mapSize.z);
+        }
+        transform.SetPositionAndRotation(positionInsideBounds, Quaternion.identity);
+
         // check if object is grounded
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, 
                                     _avatarHeight + 0.2f, GroundLayer);
