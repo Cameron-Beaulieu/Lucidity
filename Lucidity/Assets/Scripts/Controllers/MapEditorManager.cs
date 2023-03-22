@@ -96,7 +96,6 @@ public class MapEditorManager : MonoBehaviour {
         if (!ReloadFlag && StartupScreen.FilePath == null) {
             List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
         } else if (ReloadFlag) {
-            Debug.Log("Reloading scene");
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
             Util.ResetAssetButtons();
@@ -498,8 +497,6 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
-                Debug.Log(newGameObject.GetInstanceID());
-                Debug.Log(mapObject.Value.Id);
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
@@ -507,7 +504,6 @@ public class MapEditorManager : MonoBehaviour {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
-                //Debug.Log(newGameObject.GetInstanceID());
         }
 
         // Swapping GameObject's in editor action linked list
@@ -516,7 +512,6 @@ public class MapEditorManager : MonoBehaviour {
 
             while (pointer != null) {
                     for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
-                        //Debug.Log(pointer.Value.RelatedObjects[i].GetInstanceID());
                         pointer.Value.RelatedObjects[i] = 
                             mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }

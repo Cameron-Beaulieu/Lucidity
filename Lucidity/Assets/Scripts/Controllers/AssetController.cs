@@ -6,16 +6,19 @@ using UnityEngine.UI;
 public class AssetController : MonoBehaviour {
     public int Id;
     public bool Clicked;
-    private MapEditorManager _editor;
+    private static MapEditorManager _editor;
     private Button _assetButton;
     private static GameObject _prevParentContainer;
 
-    private void Start() {
+    private void Awake() {
+        Clicked = false;
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
+    }
+
+    private void Start() {
         _assetButton = gameObject.GetComponent<Button>();
         _assetButton.onClick.AddListener(SelectAssetClickHandler);
-        Clicked = false;
     }
 
     /// <summary>

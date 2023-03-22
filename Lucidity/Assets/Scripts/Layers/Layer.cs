@@ -70,7 +70,6 @@ public class Layer : MonoBehaviour {
             _layerTrashCan.SetActive(true);
             _layerEdit.SetActive(true);
             _editor.CurrentLayer = LayerIndex[_name];
-            Debug.Log(_editor.GetInstanceID() + " in Layer.cs for " + _name);
         } else if (LayerStatus.ContainsKey(_name)
             && !LayerStatus[_name]
             && gameObject.GetComponent<Image>().color != _unselected) {
