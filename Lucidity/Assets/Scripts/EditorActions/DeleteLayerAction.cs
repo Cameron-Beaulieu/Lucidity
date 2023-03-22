@@ -33,7 +33,7 @@ public class DeleteLayerAction : EditorAction {
     /// List of <c>GameObject</c> that are related to the layer to be created.
     /// </param>
     public DeleteLayerAction(List<GameObject> relatedObjects) {
-        base.Type = ActionType.CreateLayer;
+        base.Type = ActionType.DeleteLayer;
         base.RelatedObjects = relatedObjects;
     }
 }
