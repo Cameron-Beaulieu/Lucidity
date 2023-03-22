@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: Lucidity
   productName: Lucidity
-  defaultCursor: {fileID: 0}
+  defaultCursor: {fileID: 2800000, guid: 525830b3fc0c1473390e4bae3695f0b0, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.09019608, g: 0.09019608, b: 0.09019608, a: 1}
   m_ShowUnitySplashScreen: 1
@@ -276,7 +276,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 0d3397bb6f47c4b58a1c21a767e320b3, type: 3}
+      m_Icon: {fileID: 2800000, guid: 355ffbefc8af14931a35d2dcb7cccda5, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
