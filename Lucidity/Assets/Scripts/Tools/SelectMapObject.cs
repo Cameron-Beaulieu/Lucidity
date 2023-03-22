@@ -56,21 +56,43 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     /// Deletes the selected map object.
     /// </summary>
     public void DeleteMapObject() {
+        //Debug.Log(SelectedObject.GetInstanceID());
         MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
         int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
-        MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
+        //MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
         List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
         // If a map was just loaded, deleting could be the first Action
-        if (MapEditorManager.Actions != null) {
-            MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                                              new DeleteMapObjectAction(objectsToDelete));
-            MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
-        } else {
-            MapEditorManager.Actions = new LinkedList<EditorAction>();
-            MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete));
-            MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
-        }
+        // if (MapEditorManager.Actions != null) {
+        //     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+        //                                       new DeleteMapObjectAction(objectsToDelete));
+        //     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+        // } else {
+        //     MapEditorManager.Actions = new LinkedList<EditorAction>();
+        //     MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete));
+        //     MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+        // }
+        if (MapEditorManager.CurrentAction != null && MapEditorManager.CurrentAction.Next != null) {
+                    // These actions can no longer be redone
+                    MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);
+                    LinkedListNode<EditorAction> actionToRemove = MapEditorManager.CurrentAction.Next;
+                    while (actionToRemove != null) {
+                        LinkedListNode<EditorAction> temp = actionToRemove.Next;
+                        MapEditorManager.Actions.Remove(actionToRemove);
+                        actionToRemove = temp;
+                    }
+                    MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+                    MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+                } else if (MapEditorManager.CurrentAction != null) {
+                    MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, new DeleteMapObjectAction(objectsToDelete));
+                    MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+                } else if (MapEditorManager.CurrentAction == null && MapEditorManager.Actions != null) {
+                    // There is only one action and it has been undone
+                    MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
+                    MapEditorManager.Actions.Clear();
+                    MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete));
+                    MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+                }
         SelectedObject = null;
         Tool.SelectionOptions.SetActive(false);
     }

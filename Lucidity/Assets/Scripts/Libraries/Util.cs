@@ -18,7 +18,10 @@ public class Util {
         MapEditorManager.Map = null;
         MapEditorManager.MapContainer = null;
         MapEditorManager.SpawnPoint = Vector2.zero;
+        MapEditorManager.ReloadFlag = false;
         MapEditorManager.CurrentButtonPressed = 0;
+        AssetOptions.AssetCount = 1;
+        AssetOptions.Spread = 1;
         Tool.ToolKeys.Clear();
         Tool.ToolStatus.Clear();
         Tool.PaintingMenu = null;
@@ -31,6 +34,8 @@ public class Util {
         Layer.LayerStatus.Clear();
         Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
+        StartupScreen.FilePath = null;
+        SelectMapObject.SelectedObject = null;
     }
 
     /// <summary>

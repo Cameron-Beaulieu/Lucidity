@@ -243,7 +243,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
-                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            //Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -304,7 +304,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
-                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            //Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
@@ -498,6 +498,8 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
+                Debug.Log(newGameObject.GetInstanceID());
+                Debug.Log(mapObject.Value.Id);
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
@@ -505,6 +507,7 @@ public class MapEditorManager : MonoBehaviour {
                     newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
+                //Debug.Log(newGameObject.GetInstanceID());
         }
 
         // Swapping GameObject's in editor action linked list
@@ -513,6 +516,7 @@ public class MapEditorManager : MonoBehaviour {
 
             while (pointer != null) {
                     for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
+                        //Debug.Log(pointer.Value.RelatedObjects[i].GetInstanceID());
                         pointer.Value.RelatedObjects[i] = 
                             mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
                     }
