@@ -15,6 +15,8 @@ public class AvatarMovement : MonoBehaviour {
     private float _airDrag = 0.5f;
     private bool _isGrounded;
     private float _jumpForce = 250f;
+    private float _jumpCooldown = 0.25f;
+    private bool _readyToJump = true;
     private float _speed;
     private float _horizontalInput;
     private float _verticalInput;
@@ -116,8 +118,10 @@ public class AvatarMovement : MonoBehaviour {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
             _verticalInput = Input.GetAxisRaw("Vertical");
 
-            if (Input.GetKey(KeyCode.Space) && (_isGrounded || _noclip)) {
+            if (Input.GetKey(KeyCode.Space) && (_isGrounded || _noclip) && _readyToJump) {
+                _readyToJump = false;
                 Jump();
+                Invoke(nameof(ResetJump), _jumpCooldown);
             } else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _noclip) {
                 Descend();
             }
@@ -136,6 +140,10 @@ public class AvatarMovement : MonoBehaviour {
     private void Jump() {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(Orientation.up * _jumpForce, ForceMode.Impulse);
+    }
+
+    private void ResetJump() {
+        _readyToJump = true;
     }
 
     private void Descend() {
