@@ -93,7 +93,7 @@ public class LayerName : MonoBehaviour {
         Layer.LayerStatus.Remove(oldName);
         Layer.LayerStatus.Add(newName, oldStatus);
         // Update LayerNames
-        Layer.LayerNames.Remove(oldName);
-        Layer.LayerNames.Add(newName);
+        int index = Layer.LayerNames.FindIndex(s => s == oldName);
+        Layer.LayerNames[index] = newName;
     }
 }

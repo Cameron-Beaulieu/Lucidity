@@ -25,12 +25,14 @@ public class NavController : MonoBehaviour {
             .AddListener(() => {
             _modal.SetActive(false);
             SaveButtonClickHandler();
+            MapEditorManager.LoadFlag = true;
             StartupScreen.LoadMapClickHandler();
         });
         // no button
         _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
+            MapEditorManager.LoadFlag = true;
             StartupScreen.LoadMapClickHandler();
         });
         // cancel button
