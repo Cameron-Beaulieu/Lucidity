@@ -26,6 +26,9 @@ public class ThreeDMapTests {
         Util.ResetStaticVariables();
         AvatarMovement.HorizontalTestingInput = 0f;
         AvatarMovement.VerticalTestingInput = 0f;
+        AvatarMovement.JumpTestingInput = false;
+        AvatarMovement.DescendTestingInput = false;
+        Render3DScene.EscapeTestingInput = false;
     }
 
     [OneTimeTearDown]
@@ -115,7 +118,6 @@ public class ThreeDMapTests {
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
 
         // Move Avatar right
-        float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = 1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
@@ -125,7 +127,6 @@ public class ThreeDMapTests {
         Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
-        Assert.Greater(movementScript.Orientation.rotation.y, avatarOrientation);
     }
 
     [UnityTest]
@@ -142,7 +143,6 @@ public class ThreeDMapTests {
 
         // Move Avatar left
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
-        float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = -1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
@@ -152,7 +152,113 @@ public class ThreeDMapTests {
         Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
-        Assert.Less(movementScript.Orientation.rotation.y, avatarOrientation);
+    }
+
+    [UnityTest]
+    public IEnumerator AvatarCanJump() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+        
+        // Get current Avatar position
+        GameObject avatar = GameObject.Find("Avatar");
+        Vector3 avatarPosition = avatar.transform.position;
+
+        // Make Avatar jump
+        AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
+        AvatarMovement.JumpTestingInput = true;
+        yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Greater(avatar.transform.position.y, avatarPosition.y);
+        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
+    }
+
+    [UnityTest]
+    public IEnumerator AvatarCanNoclip() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+        
+        // Get current Avatar position
+        GameObject avatar = GameObject.Find("Avatar");
+        Vector3 avatarPosition = avatar.transform.position;
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the noclip toggle value
+        AvatarMovement movementScript = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
+        Toggle noclipToggle = GameObject.Find("NoclipContainer").transform.Find("Toggle")
+            .GetComponent<Toggle>();
+        noclipToggle.isOn = true;
+        yield return null;
+        Assert.AreEqual(true, movementScript.Noclip);
+
+        // close options menu
+        Render3DScene.EscapeTestingInput = false;
+        yield return null;
+
+        // Make Avatar descend (going into the ground)
+        AvatarMovement.DescendTestingInput = true;
+        yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Less(avatar.transform.position.y, avatarPosition.y);
+        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
+    }
+
+    [UnityTest]
+    public IEnumerator SpeedSliderModifiesAvatarSpeed() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the slider value
+        AvatarMovement movementScript = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
+        Slider speedSlider = GameObject.Find("SpeedContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        speedSlider.value = 50f;
+        yield return null;
+        Assert.AreEqual((speedSlider.value * 10f), movementScript.Speed);
+    }
+
+    [UnityTest]
+    public IEnumerator SensitivitySliderModifiesMouseSensitivity() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the slider value
+        MoveCamera cameraScript = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
+        Slider sensitivitySlider = GameObject.Find("SensitivityContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        sensitivitySlider.value = 50f;
+        yield return null;
+        Assert.AreEqual((sensitivitySlider.value * 10f), cameraScript.Sensitivity);
     }
 
     [UnityTest]

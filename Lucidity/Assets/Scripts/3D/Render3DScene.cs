@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Render3DScene : MonoBehaviour {
 
+    public static bool EscapeTestingInput;
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
@@ -33,7 +34,7 @@ public class Render3DScene : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown("escape")) {
+        if (Input.GetKeyDown("escape") || EscapeTestingInput) {
             _optionsPanel.SetActive(!_optionsPanel.activeSelf);
             _messagePanel.SetActive(!_messagePanel.activeSelf);
             _camera.enabled = _messagePanel.activeSelf;

@@ -10,16 +10,20 @@ public class AvatarMovement : MonoBehaviour {
     public static bool IsTesting = false;
     public static float HorizontalTestingInput;
     public static float VerticalTestingInput;
+    public static bool JumpTestingInput;
+    public static bool DescendTestingInput;
     private float _avatarHeight;
     private float _groundDrag = 5f;
     private float _airDrag = 0.5f;
     private bool _isGrounded;
     private float _jumpForce = 250f;
-    private float _jumpCooldown = 0.25f;
+    private float _jumpCooldown;
     private bool _readyToJump = true;
     private float _speed;
     private float _horizontalInput;
     private float _verticalInput;
+    private bool _jumpInput;
+    private bool _descendInput;
     private bool _noclip;
     private GameObject _map;
     private Rigidbody _rb;
@@ -101,9 +105,11 @@ public class AvatarMovement : MonoBehaviour {
         if (_noclip) {
             GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = false;
             Physics.gravity = Vector3.zero;
+            _jumpCooldown = 0f;
         } else {
             GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = true;
             Physics.gravity = new Vector3(0, -1500f, 0);
+            _jumpCooldown = 0.25f;
         }
     }
 
@@ -114,18 +120,13 @@ public class AvatarMovement : MonoBehaviour {
         if (IsTesting) {
             _horizontalInput = HorizontalTestingInput;
             _verticalInput = VerticalTestingInput;
+            _jumpInput = JumpTestingInput;
+            _descendInput = DescendTestingInput;
         } else {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
             _verticalInput = Input.GetAxisRaw("Vertical");
-
-            if (Input.GetKey(KeyCode.Space) && (_isGrounded || _noclip) && _readyToJump) {
-                _readyToJump = false;
-                Jump();
-                Invoke(nameof(ResetJump), _jumpCooldown);
-            } else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-                       && _noclip) {
-                Descend();
-            }
+            _jumpInput = Input.GetKey(KeyCode.Space);
+            _descendInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         }
     }
 
@@ -133,6 +134,14 @@ public class AvatarMovement : MonoBehaviour {
     /// Moves and rotates the Avatar in the direction of the user's input.
     /// </summary>
     private void MoveAvatar() {
+        if (_jumpInput && (_isGrounded || _noclip) && _readyToJump) {
+            _readyToJump = false;
+            Jump();
+            Invoke(nameof(ResetJump), _jumpCooldown);
+        } else if (_descendInput && _noclip) {
+            Descend();
+        }
+
         Vector3 direction = new Vector3(_horizontalInput, 0f, _verticalInput).normalized;
         _rb.velocity = (Orientation.forward * direction.z + Orientation.right * direction.x)
                         * _speed;
