@@ -122,7 +122,8 @@ public class AvatarMovement : MonoBehaviour {
                 _readyToJump = false;
                 Jump();
                 Invoke(nameof(ResetJump), _jumpCooldown);
-            } else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _noclip) {
+            } else if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                       && _noclip) {
                 Descend();
             }
         }
@@ -137,15 +138,24 @@ public class AvatarMovement : MonoBehaviour {
                         * _speed;
     }
 
+    /// <summary>
+    /// Applies a force upwards to simulate a jump.
+    /// </summary>
     private void Jump() {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(Orientation.up * _jumpForce, ForceMode.Impulse);
     }
 
+    /// <summary>
+    /// Reset the boolean jump flag, invoked after a certain amount of time after a jump.
+    /// </summary>
     private void ResetJump() {
         _readyToJump = true;
     }
 
+    /// <summary>
+    /// Applies a force downwards, allowing the player to descend.
+    /// </summary>
     private void Descend() {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(-1f * Orientation.up * _jumpForce, ForceMode.Impulse);
