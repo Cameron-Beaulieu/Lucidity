@@ -16,7 +16,7 @@ public class AvatarMovement : MonoBehaviour {
     private float _groundDrag = 5f;
     private float _airDrag = 0.5f;
     private bool _isGrounded;
-    private float _jumpForce = 250f;
+    private float _jumpForce = 1250f;
     private float _jumpCooldown;
     private bool _readyToJump = true;
     private float _speed;
@@ -50,7 +50,7 @@ public class AvatarMovement : MonoBehaviour {
         _avatarHeight = transform.localScale.y;
 
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
-        _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f);
+        _speedSlider.value = PlayerPrefs.GetFloat("speed", 1f) * 10f;
         SpeedSliderHandler();
 
         _noclipToggle.onValueChanged.AddListener(delegate{ NoclipToggleHandler(); });
@@ -111,8 +111,8 @@ public class AvatarMovement : MonoBehaviour {
             _jumpCooldown = 0f;
         } else {
             GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = true;
-            Physics.gravity = new Vector3(0, -1500f, 0);
-            _jumpCooldown = 0.25f;
+            Physics.gravity = new Vector3(0, -5f * _jumpForce, 0);
+            _jumpCooldown = 0.4f;
         }
     }
 
