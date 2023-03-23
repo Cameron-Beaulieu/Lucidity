@@ -19,8 +19,9 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 clickedObject = eventData.pointerClick;
             }
             int id = clickedObject.GetInstanceID();
-            MapEditorManager editor = GameObject.FindGameObjectWithTag("MapEditorManager")
+            MapEditorManager editor = GameObject.Find("MapEditorManager")
                 .GetComponent<MapEditorManager>();
+            Debug.Log("Clicked on " + clickedObject.name + " in layer " + editor.CurrentLayer + ".");
             if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
                 if (SelectedObject != null) {
@@ -56,8 +57,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     public void DeleteMapObject() {
         MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
         int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
-        // TODO: uncomment when 2D reversion with layers is complete
-        // MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
+        MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
         List<(int, GameObject)> objectsToDelete = 
             new List<(int, GameObject)>(){(SelectedObject.GetInstanceID(), SelectedObject)};

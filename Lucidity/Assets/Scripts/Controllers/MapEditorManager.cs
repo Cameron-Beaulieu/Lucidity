@@ -40,17 +40,22 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Awake() {
         if (StartupScreen.FilePath != null && MapData.FileName != null && !ReloadFlag) {
-            // Static variables must be reset if a new map is loaded from another map
+            // Case 1: Map loaded from Map Editor via "Open File"
             Util.ResetStaticVariables();
             Util.ResetAssetButtons();
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else if (StartupScreen.FilePath != null && !ReloadFlag) {
-            // Map loaded from Startup Screen
+            // Case 2: Map loaded from Startup Screen via "Load existing map"
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
+        } else if (MapData.FileName != null && !ReloadFlag) {
+            // Case 3: Map created from MapEditor via "New File"
+            Util.ResetStaticVariables();
+            Util.ResetAssetButtons();
+            SelectedBiome = CreateNewMap.ChosenBiome;
         } else {
-            // Map created from MapCreation
+            // Case 4: Map created from Startup Screen via "Create new map"
             SelectedBiome = CreateNewMap.ChosenBiome;
         }
         Map = GameObject.Find("Map");
@@ -107,6 +112,7 @@ public class MapEditorManager : MonoBehaviour {
             foreach (GameObject instance in instances) {
                 if (instance != gameObject) {
                     Destroy(instance);
+                    Debug.Log("destroyed instance " + instance.GetInstanceID());
                 }
             }
         }
@@ -456,10 +462,12 @@ public class MapEditorManager : MonoBehaviour {
                 new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                             newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                             newGameObject.transform.localScale.z + Zoom.zoomFactor);
-            MapObjects.Add(newGameObject.GetInstanceID(), mapObject);
+            AddNewMapObject(newGameObject, mapObject.Name, newParent, 
+                            newMapObjects, mapObject.PrefabIndex);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
                 newGameObject.GetInstanceID(), mapObject);
         }
+        MapObjects = newMapObjects;
         GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;
     }
 
@@ -493,8 +501,13 @@ public class MapEditorManager : MonoBehaviour {
             List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(tempLayerNames[i], i);
-            Layer.LayerStatus.Add(tempLayerNames[i], false);
+            if (i == CurrentLayer) {
+                Layer.LayerStatus.Add(tempLayerNames[i], true);
+            } else {
+                Layer.LayerStatus.Add(tempLayerNames[i], false);
+            }
             Layer.LayerNames.Add(tempLayerNames[i]);
+            Debug.Log("Layer " + tempLayerNames[i] + " added" + " with index " + i + " and status " + Layer.LayerStatus[tempLayerNames[i]]);
         }
 
         // Reloading MapObjects
@@ -542,6 +555,7 @@ public class MapEditorManager : MonoBehaviour {
             while (pointer != null) {
                 for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
                     int pointerId = pointer.Value.RelatedObjects[i].Item1;
+                        Debug.Log("accounted for mapobject with old id " + pointerId + ", not " + pointer.Value.RelatedObjects[i].Item2.GetInstanceID());
                     // ensure the object is a MapObject
                     if (mapObjectsMapping.ContainsKey(pointerId)) {
                         pointer.Value.RelatedObjects[i] = (
@@ -560,6 +574,7 @@ public class MapEditorManager : MonoBehaviour {
         Layers = new List<Dictionary<int, MapObject>>(newLayers);
 
         // Swapping MapObjects in LayerCollisions List
+        Debug.Log(GetInstanceID());
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
             mapObjects[0] = MapObjects[mapObjectsMapping[mapObjects[0].Id].GetInstanceID()];
             mapObjects[1] = MapObjects[mapObjectsMapping[mapObjects[1].Id].GetInstanceID()];
