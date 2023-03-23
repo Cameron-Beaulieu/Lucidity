@@ -87,7 +87,11 @@ public class MapEditorManager : MonoBehaviour {
             foreach (Texture2D cursor in CursorTextures) {
                 ToolToCursorMap.Add(cursor.name, cursor);
             }
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            if (ToolToCursorMap["Brush Tool"]) {
+                Cursor.SetCursor(ToolToCursorMap["Brush Tool"], new Vector2(16f, 16f), CursorMode.Auto);
+            } else {
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            }
         } 
         DontDestroyOnLoad(this.gameObject);
     }
@@ -458,6 +462,7 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     public void ConvertTo3D() {
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
+        Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
 

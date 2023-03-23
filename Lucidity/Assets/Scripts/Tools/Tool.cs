@@ -90,7 +90,7 @@ public class Tool : MonoBehaviour {
         }
 
         if (MapEditorManager.ToolToCursorMap.ContainsKey(toolSelected)) {
-            Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], Vector2.zero, 
+            Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], new Vector2(16f,16f), 
                              CursorMode.Auto);
         } else {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
