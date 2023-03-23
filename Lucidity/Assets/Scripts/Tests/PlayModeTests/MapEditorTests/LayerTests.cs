@@ -62,7 +62,7 @@ public class LayerTests : MapEditorTests {
         Assert.IsTrue(Layer.LayerStatus[newLayer.name]);
     }
 
-    [UnityTest] 
+    [UnityTest]
     public IEnumerator CanSwitchBetweenLayers() {
         // add a layer in addition to the base layer
         MapEditorManager editor = GameObject.Find("MapEditorManager")
