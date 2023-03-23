@@ -26,7 +26,7 @@ public class RenameLayerAction : EditorAction {
     /// <param name="newName">
     /// <c>string</c> corresponding to the new name for the layer to be renamed to.
     /// </param>
-    public RenameLayerAction(List<GameObject> relatedObjects, string oldName, string newName) {
+    public RenameLayerAction(List<(int, GameObject)> relatedObjects, string oldName, string newName) {
         base.Type = ActionType.RenameLayer;
         base.RelatedObjects = relatedObjects;
         _oldName = oldName;

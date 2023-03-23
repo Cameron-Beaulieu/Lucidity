@@ -37,14 +37,15 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     private void Awake() {
-        GameObject[] instances = GameObject.FindGameObjectsWithTag("MapEditorManager");
-        if (instances.Length > 1) {
-            foreach (GameObject instance in instances) {
-                if (instance != this.gameObject) {
-                    Destroy(instance);
-                }
-            }
-        }
+        // GameObject[] instances = GameObject.FindGameObjectsWithTag("MapEditorManager");
+        // if (instances.Length > 1) {
+        //     foreach (GameObject instance in instances) {
+        //         if (instance != gameObject) {
+        //             Debug.LogError("Destroying duplicate MapEditorManager");
+        //             Destroy(instance);
+        //         }
+        //     }
+        // }
         if (StartupScreen.FilePath != null && MapData.FileName != null && !ReloadFlag) {
             // Static variables must be reset if a new map is loaded from another map
             Util.ResetStaticVariables();
@@ -100,12 +101,20 @@ public class MapEditorManager : MonoBehaviour {
 
     private void Start() {
         if (!ReloadFlag && StartupScreen.FilePath == null) {
-            List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
         } else if (ReloadFlag) {
             ReloadScene();
             Tool.ChangeTools("Brush Tool");
             Util.ResetAssetButtons();
             ReloadFlag = false;
+        }
+        GameObject[] instances = GameObject.FindGameObjectsWithTag("MapEditorManager");
+        if (instances.Length > 1) {
+            foreach (GameObject instance in instances) {
+                if (instance != gameObject) {
+                    Destroy(instance);
+                }
+            }
         }
     }
 
@@ -144,7 +153,7 @@ public class MapEditorManager : MonoBehaviour {
                     DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
                                                     dynamicBoundingBox);
                 foreach (GameObject newGameObject in newGameObjects) {
-                    if (newGameObject != null) {
+                    if (newGameObject != null && !MapObjects.ContainsKey(newGameObject.GetInstanceID())) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
                                         newGameObject.transform.parent.gameObject, MapObjects,
@@ -155,15 +164,19 @@ public class MapEditorManager : MonoBehaviour {
                                         Layers[CurrentLayer], _currentButtonPressed);
                     }
                 }
-                newMapObjects.AddRange(newGameObjects);
+                // newMapObjects.AddRange(newGameObjects);
             } else {
                 Destroy(dynamicBoundingBox);
+            }
+            List<(int, GameObject)> actionRelatedObjects = new List<(int, GameObject)>();
+            foreach (GameObject newMapObject in newMapObjects) {
+                actionRelatedObjects.Add((newMapObject.GetInstanceID(), newMapObject));
             }
             if (newMapObjects.Count == 0) {
                 // Don't add action to history if there are no objects attached to it
             } else if (Actions == null) {
                 Actions = new LinkedList<EditorAction>();
-                Actions.AddFirst(new PaintAction(newMapObjects));
+                Actions.AddFirst(new PaintAction(actionRelatedObjects));
                 _currentAction = Actions.First;
             } else {
                 if (_currentAction != null && _currentAction.Next != null) {
@@ -175,16 +188,16 @@ public class MapEditorManager : MonoBehaviour {
                         Actions.Remove(actionToRemove);
                         actionToRemove = temp;
                     }
-                    Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
+                    Actions.AddAfter(_currentAction, new PaintAction(actionRelatedObjects));
                     _currentAction = _currentAction.Next;
                 } else if (_currentAction != null) {
-                    Actions.AddAfter(_currentAction, new PaintAction(newMapObjects));
+                    Actions.AddAfter(_currentAction, new PaintAction(actionRelatedObjects));
                     _currentAction = _currentAction.Next;
                 } else if (_currentAction == null && Actions != null) {
                     // There is only one action and it has been undone
                     PermanentlyDeleteActions(Actions.First);
                     Actions.Clear();
-                    Actions.AddFirst(new PaintAction(newMapObjects));
+                    Actions.AddFirst(new PaintAction(actionRelatedObjects));
                     _currentAction = Actions.First;
                 }
             }
@@ -204,8 +217,8 @@ public class MapEditorManager : MonoBehaviour {
     public static void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
         while (actionToDelete != null) {
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
-                foreach (GameObject obj in actionToDelete.Value.RelatedObjects) {
-                    int id = obj.GetInstanceID();
+                foreach ((int id, GameObject obj) in actionToDelete.Value.RelatedObjects) {
+                    // int id = obj.GetInstanceID();
                     MapObjects.Remove(id);
                     // Remove the related object from whichever layer it was on
                     if (LayerContainsMapObject(id) >= 0) {
@@ -232,9 +245,9 @@ public class MapEditorManager : MonoBehaviour {
 
             switch(actionToRedo.Type) {
                 case EditorAction.ActionType.Paint:
-                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-                            int id = obj.GetInstanceID();
+                            // int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
                             // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
@@ -244,9 +257,9 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
-                    foreach (GameObject obj in actionToRedo.RelatedObjects) {
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
                         if (obj != null) {
-                            int id = obj.GetInstanceID();
+                            // int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
                             //Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
@@ -263,7 +276,7 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
-                    List<GameObject> newLayerList = Layering.AddLayer(_layerPrefab);
+                    List<(int, GameObject)> newLayerList = Layering.AddLayer(_layerPrefab);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
                     // TODO: Implement
@@ -293,9 +306,9 @@ public class MapEditorManager : MonoBehaviour {
 
             switch (actionToUndo.Type) {
                 case EditorAction.ActionType.Paint:
-                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            int id = obj.GetInstanceID();
+                            // int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = false;
                             // TODO: uncomment during 3D layers ticket
                             // Commented out until 2D reversion with layers is complete
@@ -305,9 +318,9 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.DeleteMapObject:
-                    foreach (GameObject obj in actionToUndo.RelatedObjects) {
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                         if (obj != null) {
-                            int id = obj.GetInstanceID();
+                            // int id = obj.GetInstanceID();
                             MapObjects[id].IsActive = true;
                             //Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
@@ -422,7 +435,7 @@ public class MapEditorManager : MonoBehaviour {
 
         for (int i = 0; i < mapData.LayerNames.Count; i++) {
             // Create a dictionary for each layer
-            List<GameObject> tempLayerList = Layering.AddLayer(_layerPrefab);
+            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(mapData.LayerNames[i], i);
             Layer.LayerStatus.Add(mapData.LayerNames[i], false);
@@ -477,7 +490,7 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
         foreach (Dictionary<int, MapObject> layer in Layers) {
-            List<GameObject> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+            List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
         }
         CurrentLayer = Layers.Count - 1;
 
@@ -504,7 +517,8 @@ public class MapEditorManager : MonoBehaviour {
                     new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                                 newGameObject.transform.localScale.z + Zoom.zoomFactor);
-                mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
+                // mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
+                mapObjectsMapping.Add(mapObject.Key, newGameObject);
                 AddNewMapObject(newGameObject, mapObject.Value.Name, 
                                 newParent, newMapObjects, mapObject.Value.PrefabIndex);
                 if (!mapObject.Value.IsActive) {
@@ -519,8 +533,8 @@ public class MapEditorManager : MonoBehaviour {
 
             while (pointer != null) {
                     for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
-                        pointer.Value.RelatedObjects[i] = 
-                            mapObjectsMapping[pointer.Value.RelatedObjects[i].GetInstanceID()];
+                        pointer.Value.RelatedObjects[i] = (mapObjectsMapping[pointer.Value.RelatedObjects[i].Item1].GetInstanceID(), 
+                            mapObjectsMapping[pointer.Value.RelatedObjects[i].Item1]);
                     }
                 pointer = pointer.Next;
             }

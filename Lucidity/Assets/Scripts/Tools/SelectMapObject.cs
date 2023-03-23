@@ -60,7 +60,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
         //MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
         SelectedObject.SetActive(false);
-        List<GameObject> objectsToDelete = new List<GameObject>(){SelectedObject};
+        List<(int, GameObject)> objectsToDelete = new List<(int, GameObject)>(){(SelectedObject.GetInstanceID(), SelectedObject)};
         if (MapEditorManager.CurrentAction != null && MapEditorManager.CurrentAction.Next != null) {
                     // These actions can no longer be redone
                     MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);

@@ -15,15 +15,24 @@ public abstract class EditorAction {
         RenameLayer
     }
     private ActionType _type;
-    private List<GameObject> _relatedObjects = new List<GameObject>();
+    private List<(int, GameObject)> _relatedObjects = new List<(int, GameObject)>();
 
     public ActionType Type {
         get { return _type; }
         set { _type = value; }
     }
 
-    public List<GameObject> RelatedObjects {
+    public List<(int, GameObject)> RelatedObjects {
         get { return _relatedObjects; }
         set { _relatedObjects = value; }
+    }
+
+    public override string ToString() {
+        string result = "Action Type: " + Type + "\n";
+        result += "Related Objects: \n";
+        foreach ((int, GameObject) obj in RelatedObjects) {
+            result += "ID: " + obj.Item1 + "\n";
+        }
+        return result;
     }
 }
