@@ -14,8 +14,10 @@ public class NavController : MonoBehaviour {
     private static GameObject _modal;
     private static GameObject _modalButtons;
     private static TMP_Text _modalText;
-    private static string _saveBeforeLoadPrompt = "Would you like to save your current map before opening a new one?";
-    private static string _saveBeforeNewPrompt = "Would you like to save your current map before creating a new one?";
+    private static string _saveBeforeLoadPrompt 
+        = "Would you like to save your current map before opening a new one?";
+    private static string _saveBeforeNewPrompt 
+        = "Would you like to save your current map before creating a new one?";
 
     private void Start() {
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
@@ -27,25 +29,13 @@ public class NavController : MonoBehaviour {
         // yes button
         _modalButtons.transform.Find("Yes Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
-            _modal.SetActive(false);
             SaveButtonClickHandler();
-            Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
-            if (_modalText.text == _saveBeforeLoadPrompt) {
-                StartupScreen.LoadMapClickHandler();
-            } else if (_modalText.text == _saveBeforeNewPrompt) {
-                SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
-            }
+            OpenNewMapAfterModalDialog();
         });
         // no button
         _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
-            _modal.SetActive(false);
-            Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
-            if (_modalText.text == _saveBeforeLoadPrompt) {
-                StartupScreen.LoadMapClickHandler();
-            } else if (_modalText.text == _saveBeforeNewPrompt) {
-                SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
-            }
+            OpenNewMapAfterModalDialog();
         });
         // cancel button
         _modalButtons.transform.Find("Cancel Button").gameObject.GetComponent<Button>().onClick
@@ -68,7 +58,6 @@ public class NavController : MonoBehaviour {
     public static void NewButtonClickHandler() {
         _modalText.text = _saveBeforeNewPrompt;
         _modal.SetActive(true);
-        
     }
 
     /// <summary>
@@ -136,5 +125,15 @@ public class NavController : MonoBehaviour {
         File.WriteAllText(MapData.FileName, jsonContent.Serialize());
         _savingText.text = "Saved!";
         _hideTextTimer = Time.time + 3;
+    }
+
+    private void OpenNewMapAfterModalDialog() {
+        _modal.SetActive(false);
+        Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
+        if (_modalText.text == _saveBeforeLoadPrompt) {
+            StartupScreen.LoadMapClickHandler();
+        } else if (_modalText.text == _saveBeforeNewPrompt) {
+            SceneManager.LoadScene("MapCreation", LoadSceneMode.Single);
+        }
     }
 }

@@ -82,7 +82,8 @@ public class MapEditorManager : MonoBehaviour {
                 ToolToCursorMap.Add(cursor.name, cursor);
             }
             if (ToolToCursorMap["Brush Tool"]) {
-                Cursor.SetCursor(ToolToCursorMap["Brush Tool"], new Vector2(16f, 16f), CursorMode.Auto);
+                Cursor.SetCursor(ToolToCursorMap["Brush Tool"], new Vector2(16f, 16f), 
+                                 CursorMode.Auto);
             } else {
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
@@ -99,6 +100,7 @@ public class MapEditorManager : MonoBehaviour {
             Util.ResetAssetButtons();
             ReloadFlag = false;
         }
+        // destroy all other instances of MapEditorManager (keeps the newest one)
         GameObject[] instances = GameObject.FindGameObjectsWithTag("MapEditorManager");
         if (instances.Length > 1) {
             foreach (GameObject instance in instances) {
@@ -144,7 +146,8 @@ public class MapEditorManager : MonoBehaviour {
                     DynamicBoundingBox.CreateAssets(AssetPrefabs[_currentButtonPressed],
                                                     dynamicBoundingBox);
                 foreach (GameObject newGameObject in newGameObjects) {
-                    if (newGameObject != null && !MapObjects.ContainsKey(newGameObject.GetInstanceID())) {
+                    if (newGameObject != null 
+                        && !MapObjects.ContainsKey(newGameObject.GetInstanceID())) {
                         newMapObjects.Add(newGameObject);
                         AddNewMapObject(newGameObject, AssetNames[_currentButtonPressed],
                                         newGameObject.transform.parent.gameObject, MapObjects,
@@ -238,7 +241,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             MapObjects[id].IsActive = true;
                             // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
+                            // TODO: uncomment when 2D reversion with layers is complete
                             // Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
@@ -248,7 +251,8 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
                         if (obj != null) {
                             MapObjects[id].IsActive = false;
-                            //Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            // TODO: uncomment when 2D reversion with layers is complete
+                            // Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
                     }
@@ -297,7 +301,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             MapObjects[id].IsActive = false;
                             // TODO: uncomment during 3D layers ticket
-                            // Commented out until 2D reversion with layers is complete
+                            // TODO: uncomment when 2D reversion with layers is complete
                             // Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         }
@@ -307,7 +311,8 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                         if (obj != null) {
                             MapObjects[id].IsActive = true;
-                            //Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            // TODO: uncomment when 2D reversion with layers is complete
+                            // Layers[LayerContainsMapObject(id)][id].IsActive = true;
                             obj.SetActive(true);
                         }
                     }
