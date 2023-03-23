@@ -29,6 +29,7 @@ public class NavController : MonoBehaviour {
             .AddListener(() => {
             _modal.SetActive(false);
             SaveButtonClickHandler();
+            Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
             if (_modalText.text == _saveBeforeLoadPrompt) {
                 StartupScreen.LoadMapClickHandler();
             } else if (_modalText.text == _saveBeforeNewPrompt) {
@@ -39,6 +40,7 @@ public class NavController : MonoBehaviour {
         _modalButtons.transform.Find("No Button").gameObject.GetComponent<Button>().onClick
             .AddListener(() => {
             _modal.SetActive(false);
+            Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
             if (_modalText.text == _saveBeforeLoadPrompt) {
                 StartupScreen.LoadMapClickHandler();
             } else if (_modalText.text == _saveBeforeNewPrompt) {
