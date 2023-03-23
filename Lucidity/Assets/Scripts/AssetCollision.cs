@@ -11,6 +11,7 @@ public class AssetCollision : MonoBehaviour {
     private int _uiLayer = 5;
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
+    public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>();
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
@@ -46,7 +47,9 @@ public class AssetCollision : MonoBehaviour {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
-                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
+                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
                     StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject));
@@ -107,9 +110,33 @@ public class AssetCollision : MonoBehaviour {
             if (collider.gameObject == gameObject) {
                 return hitCollidersClone;
             }
-
             if (CheckMapObjectStackingValidity(collider.gameObject) && 
-                collider.gameObject != gameObject) { 
+                collider.gameObject != gameObject && hitColliders.Count == 2 || 
+                MapEditorManager.Reversion || MapEditorManager.LoadFlag) {
+
+                int layerIndex1 = MapEditorManager.LayerContainsMapObject(
+                    collider.gameObject.GetInstanceID());
+                int layerIndex2 = MapEditorManager.LayerContainsMapObject(
+                    gameObject.GetInstanceID());
+
+                MapObject obj1 = MapEditorManager.MapObjects[collider.gameObject.GetInstanceID()];
+                MapObject obj2 = MapEditorManager.MapObjects[gameObject.GetInstanceID()];
+
+                int last = LayerCollisions.Count - 1;
+                if (!MapEditorManager.Reversion) {
+                    if (layerIndex1 < layerIndex2) {
+                        if (LayerCollisions.Count == 0 || 
+                            !LayerCollisionsContainsList(obj1.Id, obj2.Id)) {
+                            LayerCollisions.Add(new List<MapObject>() {obj1, obj2});
+                        }
+                    } else {
+                        if (LayerCollisions.Count == 0 || 
+                            !LayerCollisionsContainsList(obj2.Id, obj1.Id)) {
+                            LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
+                        }
+                    }
+
+                }
                 hitCollidersClone.Remove(collider);
             }
         }
@@ -214,5 +241,14 @@ public class AssetCollision : MonoBehaviour {
             }
         }
         return true;
+    }
+
+    private bool LayerCollisionsContainsList(int id1, int id2) {
+        foreach (List<MapObject> mapObjects in LayerCollisions) {
+            if (mapObjects[0].Id == id1 && mapObjects[1].Id == id2) {
+                return true;
+            }
+        }
+        return false;
     }
 }

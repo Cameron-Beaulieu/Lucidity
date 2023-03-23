@@ -10,6 +10,7 @@ public class Util {
     /// interference between tests, or when MapEditor is reloaded.
     /// </summary>
     public static void ResetStaticVariables() {
+        AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
         MapEditorManager.Actions = null;
@@ -17,6 +18,7 @@ public class Util {
         MapEditorManager.ToolToCursorMap.Clear();
         MapEditorManager.Map = null;
         MapEditorManager.MapContainer = null;
+        MapEditorManager.Reversion = false;
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
         Tool.ToolKeys.Clear();
