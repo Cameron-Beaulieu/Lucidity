@@ -9,13 +9,8 @@ using UnityEngine.UI;
 [TestFixture]
 public class DynamicBoundingBoxTests : MapEditorTests {
 
-    [UnitySetUp]
-    public IEnumerator DynamicBoundingBoxSetUp() {
-        Util.ResetStaticVariables();
-        StartupScreen.FilePath = null;
-        MapEditorManager.ReloadFlag = false;
-        SceneManager.LoadScene("MapEditor");
-        yield return null;
+    [SetUp]
+    public void SetUp() {
         Util.ResetAssetButtons();
     }
 
