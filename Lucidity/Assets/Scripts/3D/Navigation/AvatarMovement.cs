@@ -66,6 +66,9 @@ public class AvatarMovement : MonoBehaviour {
         if (Mathf.Abs(transform.position.x) > (5 * mapSize.x)) {
             positionInsideBounds.x = Mathf.Sign(transform.position.x) * (5 * mapSize.x);
         }
+        if (transform.position.y < _avatarHeight) {
+            positionInsideBounds.y = _avatarHeight;
+        }
         if (Mathf.Abs(transform.position.z) > (5 * mapSize.z)) {
             positionInsideBounds.z = Mathf.Sign(transform.position.z) * (5 * mapSize.z);
         }
