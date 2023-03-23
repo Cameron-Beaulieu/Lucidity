@@ -52,9 +52,11 @@ public class MapEditorManager : MonoBehaviour {
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else if (StartupScreen.FilePath != null && !ReloadFlag) {
+            // Map loaded from Startup Screen
             LoadMap();
             MapData.FileName = StartupScreen.FilePath;
         } else {
+            // Map created from MapCreation
             SelectedBiome = CreateNewMap.ChosenBiome;
         }
 
