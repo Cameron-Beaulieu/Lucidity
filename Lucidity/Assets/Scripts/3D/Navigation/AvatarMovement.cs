@@ -50,7 +50,7 @@ public class AvatarMovement : MonoBehaviour {
         _avatarHeight = transform.localScale.y;
 
         _speedSlider.onValueChanged.AddListener(delegate{ SpeedSliderHandler(); });
-        _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f) * 10;
+        _speedSlider.value = PlayerPrefs.GetFloat("speed", 10f);
         SpeedSliderHandler();
 
         _noclipToggle.onValueChanged.AddListener(delegate{ NoclipToggleHandler(); });

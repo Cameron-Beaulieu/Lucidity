@@ -20,7 +20,7 @@ public class MoveCamera : MonoBehaviour {
 
     private void Start() {
         _sensitivitySlider.onValueChanged.AddListener(delegate{ SensitivitySliderHandler(); });
-        _sensitivitySlider.value = PlayerPrefs.GetFloat("sensitivity", 10f) * 10;
+        _sensitivitySlider.value = PlayerPrefs.GetFloat("sensitivity", 10f);
         SensitivitySliderHandler();
     }
 
