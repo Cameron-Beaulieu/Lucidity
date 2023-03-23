@@ -93,7 +93,9 @@ public class Layer : MonoBehaviour {
         }  
     }
 
-        
+    /// <summary>
+    /// The function called when clicking on a layer, changing to the selected layer.
+    /// </summary>
     private void ChangeSelectedLayer() {
         _name = _layerText.text;
         SelectedChangeSelectedLayer(_name);
@@ -107,7 +109,11 @@ public class Layer : MonoBehaviour {
         _layerText.ActivateInputField();
     }
 
-     public void DeleteLayer() {
+    /// <summary>
+    /// The function called when clicking on the trash can of a layer. Sets the layer and all
+    /// <c>MapObjects</c> in the layer inactive, changing the selected layer to the next lowest layer.
+    /// </summary>
+    public void DeleteLayer() {
         List<GameObject> relatedObjects = new List<GameObject>{};
 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
@@ -149,13 +155,14 @@ public class Layer : MonoBehaviour {
                 MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
             }
        }
-       Debug.Log(LayerNames[LayerIndex[_name]]);
        SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
-       Debug.Log(GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>().CurrentLayer);
        gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Permantently deletes the layer from all lists, dicitonaries, from the scene, and 
+    /// deletes all <c>MapObjects</c> on the layer.
+    /// </summary>
     public void PermanentlyDeleteLayer() {
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
             MapEditorManager.Layers[LayerIndex[_name]].Remove(kvp.Value.Id);

@@ -260,7 +260,6 @@ public class MapEditorManager : MonoBehaviour {
                             Layers[LayerContainsMapObject(id)][id].IsActive = false;
                             obj.SetActive(false);
                         } else if (obj == actionToRedo.RelatedObjects.Last()) {
-                            Debug.Log("Fixing layer");
                             CurrentLayer = Layer.LayerIndex[obj.name] - 1;
                             Layer.SelectedChangeSelectedLayer(Layer.LayerNames[
                                     Layer.LayerIndex[obj.name] - 1]);
@@ -329,7 +328,6 @@ public class MapEditorManager : MonoBehaviour {
                     actionToUndo.RelatedObjects[0].SetActive(false);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
-                Debug.Log(actionToUndo.RelatedObjects.Count);
                     foreach (GameObject obj in actionToUndo.RelatedObjects) {
                         if (obj != null && obj != actionToUndo.RelatedObjects.Last()) {
                             int id = obj.GetInstanceID();
