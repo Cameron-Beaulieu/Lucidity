@@ -112,7 +112,6 @@ public class MapEditorManager : MonoBehaviour {
             foreach (GameObject instance in instances) {
                 if (instance != gameObject) {
                     Destroy(instance);
-                    Debug.Log("destroyed instance " + instance.GetInstanceID());
                 }
             }
         }
@@ -507,7 +506,6 @@ public class MapEditorManager : MonoBehaviour {
                 Layer.LayerStatus.Add(tempLayerNames[i], false);
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
-            Debug.Log("Layer " + tempLayerNames[i] + " added" + " with index " + i + " and status " + Layer.LayerStatus[tempLayerNames[i]]);
         }
 
         // Reloading MapObjects
@@ -555,7 +553,6 @@ public class MapEditorManager : MonoBehaviour {
             while (pointer != null) {
                 for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
                     int pointerId = pointer.Value.RelatedObjects[i].Item1;
-                        Debug.Log("accounted for mapobject with old id " + pointerId + ", not " + pointer.Value.RelatedObjects[i].Item2.GetInstanceID());
                     // ensure the object is a MapObject
                     if (mapObjectsMapping.ContainsKey(pointerId)) {
                         pointer.Value.RelatedObjects[i] = (
@@ -574,7 +571,6 @@ public class MapEditorManager : MonoBehaviour {
         Layers = new List<Dictionary<int, MapObject>>(newLayers);
 
         // Swapping MapObjects in LayerCollisions List
-        Debug.Log(GetInstanceID());
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
             mapObjects[0] = MapObjects[mapObjectsMapping[mapObjects[0].Id].GetInstanceID()];
             mapObjects[1] = MapObjects[mapObjectsMapping[mapObjects[1].Id].GetInstanceID()];

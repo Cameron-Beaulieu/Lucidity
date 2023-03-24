@@ -21,7 +21,6 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             int id = clickedObject.GetInstanceID();
             MapEditorManager editor = GameObject.Find("MapEditorManager")
                 .GetComponent<MapEditorManager>();
-            Debug.Log("Clicked on " + clickedObject.name + " in layer " + editor.CurrentLayer + ".");
             if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
                 if (SelectedObject != null) {

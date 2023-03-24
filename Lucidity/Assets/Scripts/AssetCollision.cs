@@ -135,7 +135,6 @@ public class AssetCollision : MonoBehaviour {
                             LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
                         }
                     }
-                    Debug.Log("added " + obj1.Name + obj1.Id + " instance " + collider.gameObject.GetInstanceID() + " and " + obj2.Name + obj2.Id + " instance " + gameObject.GetInstanceID());
                 }
                 hitCollidersClone.Remove(collider);
             }
