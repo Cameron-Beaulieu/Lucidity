@@ -6,6 +6,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
     private static HashSet<Vector2> _assetArrangement;
+    private static HashSet<Vector2> _invalidArrangement;
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
@@ -15,6 +16,11 @@ public class DynamicBoundingBox : MonoBehaviour {
     public static HashSet<Vector2> AssetArrangement {
         get { return _assetArrangement; }
         set { _assetArrangement = value; }
+    }
+
+    public static HashSet<Vector2> InvalidArrangement {
+        get { return _invalidArrangement; }
+        set { _invalidArrangement = value; }
     }
 
     private void Start() {
@@ -49,10 +55,17 @@ public class DynamicBoundingBox : MonoBehaviour {
         } else {
             GenerateUniformCoordinates();
         }
+        GenerateInvalidCoordinates();
 
         // Create a hovering asset image in each randomly assigned coordinate position
         foreach (Vector2 coordinate in _assetArrangement) {
             CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
+        }
+
+        foreach (Vector2 coordinate in _invalidArrangement) {
+            GameObject obj = CreateDynamicAssetImageChild(assetImage, coordinate,
+                                                          dynamicAssetImage.transform);
+            obj.GetComponent<SpriteRenderer>().color = Color.grey;
         }
 
         return dynamicAssetImage;
@@ -71,7 +84,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <param name="parentTransform">
     /// <c>Transform</c> corresponding to the parent <c>GameObject</c>
     /// </param>
-    public static void CreateDynamicAssetImageChild(GameObject assetImage,
+    public static GameObject CreateDynamicAssetImageChild(GameObject assetImage,
                                                     Vector2 coordinate,
                                                     Transform parentTransform) {
         GameObject obj = Instantiate(assetImage, parentTransform, false);
@@ -83,6 +96,7 @@ public class DynamicBoundingBox : MonoBehaviour {
         obj.transform.localScale = new Vector3(obj.transform.localScale.x + Zoom.zoomFactor,
                                                obj.transform.localScale.y + Zoom.zoomFactor,
                                                obj.transform.localScale.z + Zoom.zoomFactor);
+        return obj;
     }
 
     /// <summary>
@@ -207,9 +221,10 @@ public class DynamicBoundingBox : MonoBehaviour {
     /// <summary>
     /// Generate coordinate pairs (with no repeating pair) up to the desired number of assets.
     /// Generated in a uniform manner, with population of assets going top-down, left-right.
-    /// these will be used in selecting the random arrangement of grouped assets
+    /// these will be used in selecting the random arrangement of grouped assets.
+    ///
     /// </summary>
-    public static void GenerateUniformCoordinates() {
+    private static void GenerateUniformCoordinates() {
         _assetArrangement = new HashSet<Vector2>();
         int row = 0;
         int col = _dynamicSideLength - 1;
@@ -227,13 +242,27 @@ public class DynamicBoundingBox : MonoBehaviour {
     ///	Generate random coordinate pairs (with no repeating pair) up to the desired number of
     /// assets. These will be used in selecting the random arrangement of grouped assets.
     /// </summary>
-    public static void GenerateRandomCoordinates() {
+    private static void GenerateRandomCoordinates() {
         _assetArrangement = new HashSet<Vector2>();
         do {
             _assetArrangement.Add(new Vector2(
                 Random.Range(0, _dynamicSideLength),
                 Random.Range(0, _dynamicSideLength)));
         } while (_assetArrangement.Count < AssetOptions.AssetCount);
+    }
+
+    /// <summary>
+    /// Generate all remaining possible coordinate positions, that are not used for asset
+    /// placement.
+    /// </summary>
+    private static void GenerateInvalidCoordinates() {
+        _invalidArrangement = new HashSet<Vector2>();
+        for (int row = 0; row < _dynamicSideLength; row++) {
+            for (int col = 0; col < _dynamicSideLength; col++) {
+                _invalidArrangement.Add(new Vector2(row, col));
+            }
+        }
+        _invalidArrangement.ExceptWith(_assetArrangement);
     }
 
     /// <summary>
