@@ -11,6 +11,7 @@ public class Render3DScene : MonoBehaviour {
     private GameObject _avatar;
     private GameObject _editor;
     private GameObject _optionsPanel;
+    private GameObject _controlPanel;
     private GameObject _messagePanel;
     private MoveCamera _camera;
     private AvatarMovement _movement;
@@ -21,6 +22,7 @@ public class Render3DScene : MonoBehaviour {
         _avatar = GameObject.Find("Avatar");
         _editor = GameObject.Find("MapEditorManager");
         _optionsPanel = GameObject.Find("OptionsPanel");
+        _controlPanel = GameObject.Find("ControlPanel");
         _messagePanel = GameObject.Find("MessagePanel");
         _camera = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
         _movement = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
@@ -33,6 +35,8 @@ public class Render3DScene : MonoBehaviour {
         PlaceAvatar();        
         _editor.SetActive(false);
         _optionsPanel.SetActive(false);
+        _controlPanel.SetActive(false);
+        _messagePanel.SetActive(true);
     }
 
     private void Update() {        
@@ -46,6 +50,7 @@ public class Render3DScene : MonoBehaviour {
     /// </summary>
     private void SwitchFocus() {
         _optionsPanel.SetActive(!_optionsPanel.activeSelf);
+        _controlPanel.SetActive(!_controlPanel.activeSelf);
         _messagePanel.SetActive(!_messagePanel.activeSelf);
         _camera.enabled = _messagePanel.activeSelf;
         _movement.enabled = _messagePanel.activeSelf;
