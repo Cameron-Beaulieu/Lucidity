@@ -25,6 +25,8 @@ public class Render3DScene : MonoBehaviour {
         _camera = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
         _movement = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
         GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
+        GameObject.Find("ExitOptionsButton").GetComponent<Button>().onClick
+            .AddListener(SwitchFocus);
 
         CreateMap();
         PlaceAssets();
@@ -33,14 +35,21 @@ public class Render3DScene : MonoBehaviour {
         _optionsPanel.SetActive(false);
     }
 
-    private void Update() {
+    private void Update() {        
         if (Input.GetKeyDown("escape") || EscapeTestingInput) {
-            _optionsPanel.SetActive(!_optionsPanel.activeSelf);
-            _messagePanel.SetActive(!_messagePanel.activeSelf);
-            _camera.enabled = _messagePanel.activeSelf;
-            _movement.enabled = _messagePanel.activeSelf;
-            _movement.NoclipToggleHandler();
+            SwitchFocus();
         }
+    }
+
+    /// <summary>
+    /// Switches focus between in the 3D navigation mode, and with the 3D options menu.
+    /// </summary>
+    private void SwitchFocus() {
+        _optionsPanel.SetActive(!_optionsPanel.activeSelf);
+        _messagePanel.SetActive(!_messagePanel.activeSelf);
+        _camera.enabled = _messagePanel.activeSelf;
+        _movement.enabled = _messagePanel.activeSelf;
+        _movement.NoclipToggleHandler();
     }
 
     /// <summary>
