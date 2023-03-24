@@ -39,6 +39,7 @@ public class Render3DScene : MonoBehaviour {
             _messagePanel.SetActive(!_messagePanel.activeSelf);
             _camera.enabled = _messagePanel.activeSelf;
             _movement.enabled = _messagePanel.activeSelf;
+            _movement.NoclipToggleHandler();
         }
     }
 

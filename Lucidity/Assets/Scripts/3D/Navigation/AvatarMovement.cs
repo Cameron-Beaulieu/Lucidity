@@ -53,7 +53,6 @@ public class AvatarMovement : MonoBehaviour {
         _speedSlider.value = PlayerPrefs.GetFloat("speed", 1f) * 10f;
         SpeedSliderHandler();
 
-        _noclipToggle.onValueChanged.AddListener(delegate{ NoclipToggleHandler(); });
         _noclipToggle.isOn = PlayerPrefs.GetInt("noclip", 0) == 1;
         NoclipToggleHandler();
     }
