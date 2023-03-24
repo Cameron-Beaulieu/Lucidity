@@ -97,6 +97,10 @@ public class NavController : MonoBehaviour {
                                    "Save Map", "Save");
     }
 
+    /// <summary>
+    /// Validates the path chosen by the user to save their file as, then saves the file.
+    /// </summary>
+    /// <param name="path">The path chosen by the user to save their file as.</param>
     private static void ValidateSave(string path) {
         // cancelled selecting a path
         if (path.Equals("")) { return; }
@@ -127,6 +131,11 @@ public class NavController : MonoBehaviour {
         _hideTextTimer = Time.time + 3;
     }
 
+    /// <summary>
+    /// Executes the appropriate method of opening a new map (either loading an existing map or 
+    /// creating a new map based on the user's input) after the modal dialogue is closed without the 
+    /// action being cancelled (i.e. the user clicks Yes or No in the modal dialogue).
+    /// </summary>
     private void OpenNewMapAfterModalDialog() {
         _modal.SetActive(false);
         Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
