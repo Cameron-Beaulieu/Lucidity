@@ -10,19 +10,16 @@ public class AvatarMovement : MonoBehaviour {
     public static bool IsTesting = false;
     public static float HorizontalTestingInput;
     public static float VerticalTestingInput;
-    public static bool JumpTestingInput;
+    public static bool AscendTestingInput;
     public static bool DescendTestingInput;
     private float _avatarHeight;
     private float _groundDrag = 5f;
     private float _airDrag = 0.5f;
     private bool _isGrounded;
-    private float _jumpForce = 1250f;
-    private float _jumpCooldown;
-    private bool _readyToJump = true;
     private float _speed;
     private float _horizontalInput;
     private float _verticalInput;
-    private bool _jumpInput;
+    private bool _ascendInput;
     private bool _descendInput;
     private bool _noclip;
     private GameObject _map;
@@ -107,11 +104,9 @@ public class AvatarMovement : MonoBehaviour {
         if (_noclip) {
             GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = false;
             Physics.gravity = Vector3.zero;
-            _jumpCooldown = 0f;
         } else {
             GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = true;
-            Physics.gravity = new Vector3(0, -5f * _jumpForce, 0);
-            _jumpCooldown = 0.4f;
+            Physics.gravity = new Vector3(0, -1000f, 0);
         }
     }
 
@@ -122,12 +117,12 @@ public class AvatarMovement : MonoBehaviour {
         if (IsTesting) {
             _horizontalInput = HorizontalTestingInput;
             _verticalInput = VerticalTestingInput;
-            _jumpInput = JumpTestingInput;
+            _ascendInput = AscendTestingInput;
             _descendInput = DescendTestingInput;
         } else {
             _horizontalInput = Input.GetAxisRaw("Horizontal");
             _verticalInput = Input.GetAxisRaw("Vertical");
-            _jumpInput = Input.GetKey(KeyCode.Space);
+            _ascendInput = Input.GetKey(KeyCode.Space);
             _descendInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         }
     }
@@ -136,10 +131,8 @@ public class AvatarMovement : MonoBehaviour {
     /// Moves and rotates the Avatar in the direction of the user's input.
     /// </summary>
     private void MoveAvatar() {
-        if (_jumpInput && (_isGrounded || _noclip) && _readyToJump) {
-            _readyToJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), _jumpCooldown);
+        if (_ascendInput && _noclip) {
+            Ascend();
         } else if (_descendInput && _noclip) {
             Descend();
         }
@@ -150,18 +143,11 @@ public class AvatarMovement : MonoBehaviour {
     }
 
     /// <summary>
-    /// Applies a force upwards to simulate a jump.
+    /// Applies a force upwards, allowing the player to ascend.
     /// </summary>
-    private void Jump() {
+    private void Ascend() {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-        _rb.AddForce(Orientation.up * _jumpForce, ForceMode.Impulse);
-    }
-
-    /// <summary>
-    /// Reset the boolean jump flag, invoked after a certain amount of time after a jump.
-    /// </summary>
-    private void ResetJump() {
-        _readyToJump = true;
+        _rb.AddForce(Orientation.up * _speed, ForceMode.Impulse);
     }
 
     /// <summary>
@@ -169,12 +155,11 @@ public class AvatarMovement : MonoBehaviour {
     /// </summary>
     private void Descend() {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-        _rb.AddForce(-1f * Orientation.up * _jumpForce, ForceMode.Impulse);
+        _rb.AddForce(-1f * Orientation.up * _speed, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter() {
         // Stop moving Avatar when it collides with an object
         _rb.velocity = Vector3.zero;
     }
-    
 }

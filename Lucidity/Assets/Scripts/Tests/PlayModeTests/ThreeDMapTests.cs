@@ -150,31 +150,6 @@ public class ThreeDMapTests {
     }
 
     [UnityTest]
-    public IEnumerator AvatarCanJump() {
-        // 3D-ify
-        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
-        yield return null;
-        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
-        yield return new WaitForEndOfFrame();
-        
-        // Get current Avatar position
-        GameObject avatar = GameObject.Find("Avatar");
-        Vector3 avatarPosition = avatar.transform.position;
-
-        // Make Avatar jump
-        AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
-        AvatarMovement.JumpTestingInput = true;
-        yield return new WaitForFixedUpdate();
-
-        // Check Avatar position updated properly
-        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
-                        PlayModeTestUtil.FloatTolerance);
-        Assert.Greater(avatar.transform.position.y, avatarPosition.y);
-        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
-                        PlayModeTestUtil.FloatTolerance);
-    }
-
-    [UnityTest]
     public IEnumerator AvatarCanNoclip() {
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -202,7 +177,20 @@ public class ThreeDMapTests {
         Render3DScene.EscapeTestingInput = false;
         yield return null;
 
+        // Make Avatar ascend
+        AvatarMovement.AscendTestingInput = true;
+        yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Greater(avatar.transform.position.y, avatarPosition.y);
+        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
+
         // Make Avatar descend (going into the ground)
+        avatarPosition = avatar.transform.position;
+        AvatarMovement.AscendTestingInput = false;
         AvatarMovement.DescendTestingInput = true;
         yield return new WaitForFixedUpdate();
 

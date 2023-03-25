@@ -32,7 +32,7 @@ public class Util {
         Layer.LayerNames.Clear();
         AvatarMovement.HorizontalTestingInput = 0f;
         AvatarMovement.VerticalTestingInput = 0f;
-        AvatarMovement.JumpTestingInput = false;
+        AvatarMovement.AscendTestingInput = false;
         AvatarMovement.DescendTestingInput = false;
         Render3DScene.EscapeTestingInput = false;
     }
