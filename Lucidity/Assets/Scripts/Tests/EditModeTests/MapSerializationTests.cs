@@ -12,11 +12,11 @@ public class MapSerializationTests {
         new Vector2(0, 0),
         new List<Dictionary<int, MapObject>> {new Dictionary<int, MapObject> {
             {0, new MapObject(new MapObject(0, "Tree", 3, new Vector2(0, 0), 
-            new Vector2(-100,200), new Vector3(1, 1, 1), Quaternion.identity, true), 
+            new Vector2(-100,200), new Vector3(1, 1, 1), Quaternion.identity, true, true), 
             "Layer0")}},
             new Dictionary<int, MapObject> {
             {1, new MapObject(new MapObject(1, "House", 1, new Vector2(0, 0), 
-            new Vector2(250,0), new Vector3(1, 1, 1), Quaternion.identity, true), 
+            new Vector2(250,0), new Vector3(1, 1, 1), Quaternion.identity, true, true), 
             "Layer0")}}},
         new Dictionary<string, int> {{"Layer0", 0}, {"a different name", 1}});
 

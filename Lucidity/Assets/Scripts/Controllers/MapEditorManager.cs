@@ -351,7 +351,7 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-                        newGameObject.transform.rotation, true);
+                        newGameObject.transform.rotation, true, true, newGameObject);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
     }	
 

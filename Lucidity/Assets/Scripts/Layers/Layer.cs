@@ -7,15 +7,19 @@ using UnityEngine.UI;
 public class Layer : MonoBehaviour {
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
+    public static Dictionary<string, bool> LayerVisibility = new Dictionary<string, bool>();
     public static List<string> LayerNames = new List<string>();
     public static int LayerToBeNamed = -1;
     private static GameObject _layerContainer;
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
     private GameObject _layerEdit;
+    private GameObject _layerVisibility;
     private MapEditorManager _editor;
     private string _name;
     private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
+    public Sprite Eye;
+    public Sprite EyeSlash;
 
     public static GameObject LayerContainer {
         get {return _layerContainer;}
@@ -30,6 +34,8 @@ public class Layer : MonoBehaviour {
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
         _layerText.readOnly = true;
+        _layerVisibility = gameObject.transform.GetChild(1).gameObject;
+        _layerVisibility.GetComponent<Button>().onClick.AddListener(ToggleVisibility);
         _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
         _layerTrashCan.SetActive(false);
         _layerEdit = gameObject.transform.GetChild(3).gameObject;
@@ -54,6 +60,10 @@ public class Layer : MonoBehaviour {
             }
         } else {
             _layerText.text = _name;
+        }
+        // to prevent adding the same keys to LayerVisibility
+        if (!LayerVisibility.ContainsKey(_name)) {
+            LayerVisibility.Add(_name, true);
         }
         ChangeSelectedLayer();
     }
@@ -102,5 +112,28 @@ public class Layer : MonoBehaviour {
     private void ChangeLayerName() {
         _layerText.readOnly = false;
         _layerText.ActivateInputField();
+    }
+
+    /// <summary>
+    /// Toggles visibility for a selected layer.
+    /// </summary>
+    private void ToggleVisibility() {
+        bool isLayerVisible = LayerVisibility[_name];
+        LayerVisibility[_name] = !LayerVisibility[_name];
+        if (isLayerVisible) {
+            _layerVisibility.GetComponent<Image>().sprite = EyeSlash;
+        }
+        else {
+            _layerVisibility.GetComponent<Image>().sprite = Eye;
+        }
+
+        // Get the index of the selected layer
+        int layerIndex = LayerIndex[_name];
+
+        // Update the visibility of all MapObjects on the selected layer
+        foreach (KeyValuePair<int, MapObject> obj in MapEditorManager.Layers[layerIndex]) {
+            obj.Value.IsVisible = !obj.Value.IsVisible;
+            obj.Value.GameObject.gameObject.GetComponentInChildren<Image>().enabled = !obj.Value.GameObject.gameObject.GetComponentInChildren<Image>().enabled;
+        }
     }
 }
