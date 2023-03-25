@@ -477,7 +477,7 @@ public class MapEditorManager : MonoBehaviour {
         Reversion = false;
         LoadFlag = false;
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
-        Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
 

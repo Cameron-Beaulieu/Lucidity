@@ -7305,7 +7305,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -30}
+  m_AnchoredPosition: {x: 40, y: -29.99997}
   m_SizeDelta: {x: 0, y: -810}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &849967431
@@ -9127,7 +9127,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -450, y: -30}
+  m_AnchoredPosition: {x: -450, y: -29.99997}
   m_SizeDelta: {x: 300, y: -810}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1045013707
@@ -13824,7 +13824,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226900040}
   m_HandleRect: {fileID: 1226900039}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -14226,7 +14226,6 @@ MonoBehaviour:
   - Mountain
   - Tree
   CursorTextures:
-  - {fileID: 2800000, guid: 1f9a74cb574c943cab2704ebedb39012, type: 3}
   - {fileID: 2800000, guid: 9877486d6957c4072b061733f4be4b79, type: 3}
   - {fileID: 2800000, guid: 2614a1796e5f949fcaba3be115c3d540, type: 3}
   - {fileID: 2800000, guid: 9e96820f1451643f5a99ca45ba440546, type: 3}
