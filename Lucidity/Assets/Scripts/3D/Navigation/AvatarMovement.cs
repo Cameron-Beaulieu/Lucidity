@@ -72,7 +72,7 @@ public class AvatarMovement : MonoBehaviour {
 
         // check if object is grounded
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, 
-                                    _avatarHeight + 0.2f, GroundLayer);
+                                      _avatarHeight + 0.2f, GroundLayer);
         GetInput();
 
         // prevents the avatar from slipping around

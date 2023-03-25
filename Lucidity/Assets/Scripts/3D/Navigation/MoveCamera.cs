@@ -37,7 +37,7 @@ public class MoveCamera : MonoBehaviour {
     // Update is called once per frame
     private void Update() {
         Vector2 mouse = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"))
-                        * _sensitivity * Time.deltaTime;
+            * _sensitivity * Time.deltaTime;
         _rotation += new Vector2(-1f * mouse.y, mouse.x);
         _rotation.x = Mathf.Clamp(_rotation.x, -90f, 90f);
 
