@@ -55,6 +55,9 @@ public class Render3DScene : MonoBehaviour {
         _camera.enabled = _messagePanel.activeSelf;
         _movement.enabled = _messagePanel.activeSelf;
         _movement.NoclipToggleHandler();
+        if (_optionsPanel.activeSelf && _controlPanel.activeSelf) {
+            _movement.SetGravity(false);
+        }
     }
 
     /// <summary>

@@ -101,12 +101,22 @@ public class AvatarMovement : MonoBehaviour {
     /// </summary>
     public void NoclipToggleHandler() {
         _noclip = _noclipToggle.isOn;
-        if (_noclip) {
-            GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = false;
-            Physics.gravity = Vector3.zero;
-        } else {
-            GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = true;
+        GameObject.Find("AvatarBody").GetComponent<CapsuleCollider>().enabled = !_noclip;
+        SetGravity(!_noclip);
+    }
+
+    /// <summary>
+    /// Sets the gravity on or off based on user-provided boolean value.
+    /// </summary>
+    /// <param name="active">
+    /// <c>bool</c> corresponding to whether gravity should be set on or off
+    /// </param>
+    public void SetGravity(bool active) {
+        if (active) {
             Physics.gravity = new Vector3(0, -1000f, 0);
+        } else {
+            Physics.gravity = Vector3.zero;
+            _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         }
     }
 
