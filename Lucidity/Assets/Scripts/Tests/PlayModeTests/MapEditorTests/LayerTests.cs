@@ -121,6 +121,41 @@ public class LayerTests : MapEditorTests {
     }
 
     [Test]
+    public void CanToggleLayers() {
+        // get the base layer
+        GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
+        GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
+        MapEditorManager mapEditorManager = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+
+        // paint a mountain on base layer
+        Button mountainButton = GameObject.Find("MountainButton").GetComponent<Button>();
+        mountainButton.onClick.Invoke();
+        Assert.IsTrue(mountainButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace = new Vector2(3, 3);
+        mapEditorManager.PaintAtPosition(positionToPlace);
+        Assert.AreEqual(1, MapEditorManager.Layers[0].Count);
+
+        // paint a tree on the base layer
+        Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
+        treeButton.onClick.Invoke();
+        Assert.IsTrue(treeButton.GetComponent<AssetController>().Clicked);
+        Vector2 positionToPlace2 = new Vector2(10, 10);
+        mapEditorManager.PaintAtPosition(positionToPlace2);
+        Debug.Log(MapEditorManager.Layers[0].Count);
+        Assert.AreEqual(2, MapEditorManager.Layers[0].Count);
+
+        // Toggle the visibility of the new layer (turning it off)
+        Button toggleButton = baseLayer.transform.Find("VisibilityEye").GetComponent<Button>();
+        toggleButton.onClick.Invoke();
+
+        // Assert that the map objects on the base layer are still visible
+        foreach (KeyValuePair<int, MapObject> obj in MapEditorManager.Layers[0]) {
+            Assert.IsFalse(obj.Value.IsVisible);
+        }
+    }
+
+    [Test]
     public void ResetsToOriginalNameOnEmptyInput() {
         // get the default layer name
         GameObject baseLayer = GameObject.Find("LayerScrollContent").transform.GetChild(0)

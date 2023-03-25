@@ -24,11 +24,11 @@ public class MapSerializationTests {
         + ",\"MapObjects\":[{\"Id\":0,\"Name\":\"Tree\",\"PrefabIndex\":3,\"MapPosition\":"
         + "{\"x\":0.0,\"y\":0.0},\"MapOffset\":{\"x\":-100.0,\"y\":200.0},\"Scale\":{"
         + "\"x\":1.0,\"y\":1.0,\"z\":1.0},"
-        + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,"
+        + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,\"IsVisible\":true,"
         + "\"LayerName\":\"Layer0\"},{\"Id\":1,\"Name\":\"House\",\"PrefabIndex\":1,"
         + "\"MapPosition\":{\"x\":0.0,\"y\":0.0},\"MapOffset\":{\"x\":250.0,\"y\":0.0},"
         + "\"Scale\":{\"x\":1.0,\"y\":1.0,\"z\":1.0},"
-        + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,"
+        + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,\"IsVisible\":true,"
         + "\"LayerName\":\"a different name\"}],\"SpawnPoint\":{\"x\":0.0,\"y\":0.0},"
         + "\"LayerNames\":[\"Layer0\",\"a different name\"]}";
 
@@ -63,6 +63,7 @@ public class MapSerializationTests {
             Assert.True(deserializedData.MapObjects[i].Rotation.z == mapObject.Rotation.z);
             Assert.True(deserializedData.MapObjects[i].Rotation.w == mapObject.Rotation.w);
             Assert.AreEqual(deserializedData.MapObjects[i].IsActive, mapObject.IsActive);
+            Assert.AreEqual(deserializedData.MapObjects[i].IsVisible, mapObject.IsVisible);
             i++;
         }
         Assert.True(deserializedData.SpawnPoint.x == _mockMapData.SpawnPoint.x);
