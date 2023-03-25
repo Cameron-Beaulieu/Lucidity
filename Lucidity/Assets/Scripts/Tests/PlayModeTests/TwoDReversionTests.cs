@@ -41,6 +41,10 @@ public class TwoDReversionTests {
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
 
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
@@ -91,6 +95,10 @@ public class TwoDReversionTests {
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
 
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
@@ -120,6 +128,10 @@ public class TwoDReversionTests {
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
 
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
@@ -151,11 +163,59 @@ public class TwoDReversionTests {
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
 
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // Find new MapObject
+        GameObject newFortress = GameObject.Find("FortressObject Parent");
+
+        // Check that the correct asset type has been placed
+        Assert.IsNotNull(newFortress);
+    }
+
+    [UnityTest]
+    public IEnumerator CorrectNumberOfLayersAfterReversion() {
+        // This is a regression test, previously after reverting, an extra layer was added
+        // that wasn't visible on the UI
+
+        // Paint an asset
+        PlayModeTestUtil.PaintAnAsset(new Vector3(-100, 150, 0), "Fortress");
+
+        // add new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // Paint on the new layer
+        PlayModeTestUtil.PaintAnAsset(new Vector3(100, 150, 0), "House");
+
+        // Make sure everything agrees that there are two layers
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(2, Layer.LayerNames.Count);
+        Assert.AreEqual(2, Layer.LayerStatus.Count);
+        Assert.AreEqual(2, Layer.LayerIndex.Count);
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -169,10 +229,10 @@ public class TwoDReversionTests {
         Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
 
-        // Find new MapObject
-        GameObject newFortress = GameObject.Find("FortressObject Parent");
-
-        // Check that the correct asset type has been placed
-        Assert.IsNotNull(newFortress);
+        // Make sure there are still only two layers
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(2, Layer.LayerNames.Count);
+        Assert.AreEqual(2, Layer.LayerStatus.Count);
+        Assert.AreEqual(2, Layer.LayerIndex.Count);
     }
 }

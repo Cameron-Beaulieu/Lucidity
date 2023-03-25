@@ -37,4 +37,27 @@ public class StartupScreenTests {
         // reset testing var
         StartupScreen.IsTesting = false;
     }
+
+    [Test]
+    public void LoadMapInEditorOpensFileBrowser() {
+        // click button to load a map
+        Button button = GameObject.Find("Load Existing Map Button").GetComponent<Button>();
+        button.onClick.Invoke();
+
+        // check that file browser appears
+        GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
+        Assert.IsNotNull(browser);
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        Assert.AreEqual("Select File", titleText.GetComponent<Text>().text);
+
+        // close file browser
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
+        cancelButton.GetComponent<Button>().onClick.Invoke();
+        Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
 }

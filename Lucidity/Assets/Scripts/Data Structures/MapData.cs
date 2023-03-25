@@ -26,6 +26,9 @@ public class MapData {
     public MapData(string fileName, Biome biome) {
         FileName = fileName;
         Biome = biome;
+        SpawnPoint = Vector2.zero;
+        MapObjects = new List<MapObject>();
+        LayerNames = new List<string>{"Layer0"};
     }
 
     /// <summary>

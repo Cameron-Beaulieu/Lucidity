@@ -20,7 +20,7 @@ public class MapObject {
     /// MapObject constructor, initializing the id, asset, mapPosition, scale, and rotation
     /// </summary>
     /// <param name="id">
-    /// ID used as a key within the MapObject dictionary within MapEditorManager
+    /// ID used as a key within the <c>MapObjects</c> dictionary within <c>MapEditorManager</c>
     /// </param>
     /// <param name="name">
     /// name represents the type of the asset (fortress, tree, etc.)
@@ -59,6 +59,7 @@ public class MapObject {
         IsActive = isActive;
         RelatedObject = relatedObject;
     }
+
 
     /// <summary>
     /// Alternate constructor that adds a layer name to a previously existing <c>MapObject</c>.

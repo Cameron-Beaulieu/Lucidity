@@ -13,8 +13,8 @@ public class Layer : MonoBehaviour {
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
     private GameObject _layerEdit;
-    private MapEditorManager _editor;
-    public string _name;
+    private static MapEditorManager _editor;
+    private string _name;
     private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
 
     public static GameObject LayerContainer {
@@ -22,26 +22,16 @@ public class Layer : MonoBehaviour {
         set {_layerContainer = value;}
     }
 
+    private void Awake() {
+        _editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+    }
+
     private void Start() {
         _layerContainer = GameObject.Find("LayerScrollContent");
-        _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         gameObject.name = "Layer" + (LayerStatus.Count).ToString();
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
-        // Names are applied to the layers after they have been loaded in the MapEditorManager
-        // This ensures that layers are given the proper names if loaded from a file
-        if (LayerToBeNamed >= 0 && LayerToBeNamed < LayerNames.Count) {
-            _layerText.text = LayerNames[LayerToBeNamed];
-            // this is the case where the last layer has been named, so LayerToBeNamed is reset
-            if (LayerToBeNamed + 1 == LayerNames.Count) {
-                LayerToBeNamed = -1;
-            } else {
-                LayerToBeNamed++;
-            }
-        } else {
-            _layerText.text = _name;
-        }
         _layerText.readOnly = true;
         _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
         _layerTrashCan.GetComponent<Button>().onClick.AddListener(DeleteLayer);
@@ -55,6 +45,19 @@ public class Layer : MonoBehaviour {
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
+        }
+        // Names are applied to the layers after they have been loaded in the MapEditorManager
+        // This ensures that layers are given the proper names if loaded from a file
+        if (LayerToBeNamed >= 0 && LayerToBeNamed < LayerNames.Count) {
+            _layerText.text = LayerNames[LayerToBeNamed];
+            // this is the case where the last layer has been named, so LayerToBeNamed is reset
+            if (LayerToBeNamed + 1 == LayerNames.Count) {
+                LayerToBeNamed = -1;
+            } else {
+                LayerToBeNamed++;
+            }
+        } else {
+            _layerText.text = _name;
         }
         ChangeSelectedLayer();
     }
@@ -114,15 +117,15 @@ public class Layer : MonoBehaviour {
     /// <c>MapObjects</c> in the layer inactive, changing the selected layer to the next lowest layer.
     /// </summary>
     public void DeleteLayer() {
-        List<GameObject> relatedObjects = new List<GameObject>{};
+        List<(int, GameObject)> relatedObjects = new List<(int, GameObject)>{};
 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
-            relatedObjects.Add(kvp.Value.RelatedObject);
+            relatedObjects.Add((kvp.Key, kvp.Value.RelatedObject));
             kvp.Value.IsActive = false;
             kvp.Value.RelatedObject.SetActive(false);
         }
 
-        relatedObjects.Add(gameObject);
+        relatedObjects.Add((gameObject.GetInstanceID(), gameObject));
 
         // Adding CreateLayerAction to Undo/Redo LinkedList
         if (MapEditorManager.Actions == null) {
