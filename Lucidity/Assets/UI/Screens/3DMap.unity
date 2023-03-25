@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 257435245}
-  m_IndirectSpecularColor: {r: 0.44767916, g: 0.4976564, b: 0.57538635, a: 1}
+  m_IndirectSpecularColor: {r: 0.4476785, g: 0.4976557, b: 0.57538533, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 69384267}
   - component: {fileID: 69384269}
   - component: {fileID: 69384268}
+  - component: {fileID: 69384270}
   m_Layer: 0
   m_Name: MessagePanel
   m_TagString: Untagged
@@ -335,6 +336,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 69384266}
   m_CullTransparentMesh: 1
+--- !u!114 &69384270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69384266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &156714447
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,6 +1080,7 @@ GameObject:
   - component: {fileID: 777594556}
   - component: {fileID: 777594558}
   - component: {fileID: 777594557}
+  - component: {fileID: 777594559}
   m_Layer: 0
   m_Name: ControlPanel
   m_TagString: Untagged
@@ -1089,7 +1106,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -973.67, y: 130.35}
+  m_AnchoredPosition: {x: -423.33, y: 130.35}
   m_SizeDelta: {x: 238.6642, y: 260.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &777594557
@@ -1130,6 +1147,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 777594555}
   m_CullTransparentMesh: 1
+--- !u!114 &777594559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777594555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &823211952
 GameObject:
   m_ObjectHideFlags: 0
@@ -3369,6 +3401,7 @@ GameObject:
   - component: {fileID: 1954035594}
   - component: {fileID: 1954035596}
   - component: {fileID: 1954035595}
+  - component: {fileID: 1954035597}
   m_Layer: 0
   m_Name: OptionsPanel
   m_TagString: Untagged
@@ -3440,6 +3473,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1954035593}
   m_CullTransparentMesh: 1
+--- !u!114 &1954035597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954035593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1972484954
 GameObject:
   m_ObjectHideFlags: 0
