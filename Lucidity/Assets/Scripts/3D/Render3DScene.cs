@@ -7,9 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class Render3DScene : MonoBehaviour {
 
+    public static bool EscapeTestingInput;
     private static GameObject _map;
     private GameObject _avatar;
     private GameObject _editor;
+    private GameObject _optionsPanel;
+    private GameObject _controlPanel;
+    private GameObject _messagePanel;
+    private MoveCamera _camera;
+    private AvatarMovement _movement;
     private Dictionary<int, GameObject> _sceneObjects = new Dictionary<int, GameObject>();
     [SerializeField] private List<GameObject> _mapTypes;
     [SerializeField] private List<GameObject> _3DPrefabs;
@@ -17,13 +23,44 @@ public class Render3DScene : MonoBehaviour {
     private void Awake() {
         _avatar = GameObject.Find("Avatar");
         _editor = GameObject.Find("MapEditorManager");
+        _optionsPanel = GameObject.Find("OptionsPanel");
+        _controlPanel = GameObject.Find("ControlPanel");
+        _messagePanel = GameObject.Find("MessagePanel");
+        _camera = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
+        _movement = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
         GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
+        GameObject.Find("ExitOptionsButton").GetComponent<Button>().onClick
+            .AddListener(SwitchFocus);
 
         CreateMap();
         PlaceAssets();
         PlaceAvatar();
         FixObjectHeights();        
         _editor.SetActive(false);
+        _optionsPanel.SetActive(false);
+        _controlPanel.SetActive(false);
+        _messagePanel.SetActive(true);
+    }
+
+    private void Update() {        
+        if (Input.GetKeyDown("escape") || EscapeTestingInput) {
+            SwitchFocus();
+        }
+    }
+
+    /// <summary>
+    /// Switches focus between in the 3D navigation mode, and with the 3D options menu.
+    /// </summary>
+    private void SwitchFocus() {
+        _optionsPanel.SetActive(!_optionsPanel.activeSelf);
+        _controlPanel.SetActive(!_controlPanel.activeSelf);
+        _messagePanel.SetActive(!_messagePanel.activeSelf);
+        _camera.enabled = _messagePanel.activeSelf;
+        _movement.enabled = _messagePanel.activeSelf;
+        _movement.NoclipToggleHandler();
+        if (_optionsPanel.activeSelf && _controlPanel.activeSelf) {
+            _movement.SetGravity(false);
+        }
     }
 
     /// <summary>
@@ -207,6 +244,12 @@ public class Render3DScene : MonoBehaviour {
     /// Reverts from the 3D scene back to the 2D scene
     /// </summary>
     public void RevertTo2D() {
+        PlayerPrefs.SetFloat("sensitivity", _camera.Sensitivity / 100);
+        PlayerPrefs.SetFloat("speed", _movement.Speed / 100);
+        PlayerPrefs.SetInt("noclip", _movement.Noclip ? 1 : 0);
+        PlayerPrefs.Save();
+        EscapeTestingInput = false;
+        _editor.SetActive(true);
         MapEditorManager.ReloadFlag = true;
         _editor.SetActive(true);
         SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);

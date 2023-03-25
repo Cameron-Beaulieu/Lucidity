@@ -33,6 +33,11 @@ public class Util {
         Layer.LayerStatus.Clear();
         Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
+        AvatarMovement.HorizontalTestingInput = 0f;
+        AvatarMovement.VerticalTestingInput = 0f;
+        AvatarMovement.AscendTestingInput = false;
+        AvatarMovement.DescendTestingInput = false;
+        Render3DScene.EscapeTestingInput = false;
     }
 
     /// <summary>
