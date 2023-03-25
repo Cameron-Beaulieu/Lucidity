@@ -25,16 +25,18 @@ public class MapSerializationTests {
         + "{\"x\":0.0,\"y\":0.0},\"MapOffset\":{\"x\":-100.0,\"y\":200.0},\"Scale\":{"
         + "\"x\":1.0,\"y\":1.0,\"z\":1.0},"
         + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,\"IsVisible\":true,"
-        + "\"LayerName\":\"Layer0\"},{\"Id\":1,\"Name\":\"House\",\"PrefabIndex\":1,"
+        + "\"LayerName\":\"Layer0\",\"GameObject\":{\"instanceID\":0}},{\"Id\":1,\"Name\":\"House\",\"PrefabIndex\":1,"
         + "\"MapPosition\":{\"x\":0.0,\"y\":0.0},\"MapOffset\":{\"x\":250.0,\"y\":0.0},"
         + "\"Scale\":{\"x\":1.0,\"y\":1.0,\"z\":1.0},"
         + "\"Rotation\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},\"IsActive\":true,\"IsVisible\":true,"
-        + "\"LayerName\":\"a different name\"}],\"SpawnPoint\":{\"x\":0.0,\"y\":0.0},"
+        + "\"LayerName\":\"a different name\",\"GameObject\":{\"instanceID\":0}}],\"SpawnPoint\":{\"x\":0.0,\"y\":0.0},"
         + "\"LayerNames\":[\"Layer0\",\"a different name\"]}";
 
     [Test]
     public void SerializesDataCorrectly() {
         string serializedData = _mockMapData.Serialize();
+        Debug.Log(serializedData);
+        Debug.Log(_mockSerializedData);
         Assert.AreEqual(serializedData, _mockSerializedData);      
     }
 
