@@ -28,8 +28,8 @@ public class Layering : MonoBehaviour {
         GameObject newLayer = (GameObject) Instantiate(
             layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
-        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> {(newLayer.GetInstanceID(), 
-                                                                             newLayer)};
+        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> 
+            {(newLayer.GetInstanceID(), newLayer)};
         return newLayerList;
     }
 
@@ -47,8 +47,8 @@ public class Layering : MonoBehaviour {
         GameObject newLayer = (GameObject) Instantiate(
             layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
-        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> {(newLayer.GetInstanceID(), 
-                                                                             newLayer)};
+        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> 
+            {(newLayer.GetInstanceID(), newLayer)};
         return newLayerList;
     }
 

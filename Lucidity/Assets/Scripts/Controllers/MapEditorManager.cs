@@ -551,7 +551,7 @@ public class MapEditorManager : MonoBehaviour {
             LinkedListNode<EditorAction> pointer = Actions.First;
 
             while (pointer != null) {
-                for (int i = 0; i < pointer.Value.RelatedObjects.Count; i ++) {
+                for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
                     int pointerId = pointer.Value.RelatedObjects[i].Item1;
                     // ensure the object is a MapObject
                     if (mapObjectsMapping.ContainsKey(pointerId)) {
