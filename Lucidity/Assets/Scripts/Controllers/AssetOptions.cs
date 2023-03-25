@@ -21,9 +21,11 @@ public class AssetOptions : MonoBehaviour {
         set { _spread = value; }
     }
 
-    void Start() {
-        _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-            .GetComponent<MapEditorManager>();
+    private void Awake() {
+        _editor = gameObject.GetComponent<MapEditorManager>();
+    }
+
+    private void Start() {
         _countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
         _spreadSlider.onValueChanged.AddListener(delegate{ SpreadSliderHandler(); });
         AssetCountInputHandler(_countInput.text);

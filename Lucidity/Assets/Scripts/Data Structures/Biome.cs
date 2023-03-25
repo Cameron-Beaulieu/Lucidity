@@ -6,9 +6,7 @@ using UnityEngine;
 [Serializable]
 public class Biome {
     public enum BiomeType {
-        Forest,
-        Desert,
-        Ocean
+        Forest
     }
     [SerializeField] private BiomeType _name;
     [SerializeField] private string _groundColour;
@@ -37,12 +35,6 @@ public class Biome {
             case BiomeType.Forest:
                 _groundColour = "5d875c";
                 break;
-            case BiomeType.Desert:
-                _groundColour = "b38f72";
-                break;
-            case BiomeType.Ocean:
-                _groundColour = "66a6d1";
-                break;
         }
     }
 
@@ -57,12 +49,6 @@ public class Biome {
         switch(groundColour) {
             case "5d875c":
                 _name = BiomeType.Forest;
-                break;
-            case "b38f72":
-                _name = BiomeType.Desert;
-                break;
-            case "66a6d1":
-                _name = BiomeType.Ocean;
                 break;
         }
     }

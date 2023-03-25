@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pan : MonoBehaviour {
+    public Texture2D PanCursor;
+    public Texture2D PanCursorMouseDown;
     private MapEditorManager _editor;
     private bool _isDragging = false;
     private Vector3 _offset;
@@ -22,6 +24,9 @@ public class Pan : MonoBehaviour {
 
     private void OnMouseDown() {
         if (Tool.ToolStatus["Panning Tool"]) {
+            if (PanCursorMouseDown != null) {
+                Cursor.SetCursor(PanCursorMouseDown, new Vector2(16f,16f), CursorMode.Auto);
+            }
             _offset = gameObject.transform.position - 
                 Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _isDragging = true;
@@ -30,6 +35,9 @@ public class Pan : MonoBehaviour {
 
     private void OnMouseUp() {
         if (Tool.ToolStatus["Panning Tool"]) {
+            if (PanCursor != null) {
+                Cursor.SetCursor(PanCursor, new Vector2(16f,16f), CursorMode.Auto);
+            }
             _isDragging = false;
         }
     }

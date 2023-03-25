@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -70,5 +72,113 @@ public class MiscellaneousTests : MapEditorTests {
         // check that spawn point was loaded correctly based on mock map data
         Assert.AreEqual("Spawn Point", mapContainer.transform.GetChild(1).name);
         Assert.AreEqual(new Vector3(0,0,0), mapContainer.transform.GetChild(1).localPosition);
+    }
+
+    [Test]
+    public void ModalAppearsWhenLoadingNewMapInEditor() {
+        // check modal is inactive by default
+        GameObject modal = GameObject.Find("SaveModal");
+        Assert.IsNull(modal);
+
+        // try to load a new map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
+        
+        // check that modal appears
+        modal = GameObject.Find("SaveModal");
+        Assert.IsNotNull(modal);
+        Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before opening a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
+    }
+
+    [Test]
+    public void ModalAppearsWhenCreatingNewMapInEditor() {
+        // check modal is inactive by default
+        GameObject modal = GameObject.Find("SaveModal");
+        Assert.IsNull(modal);
+
+        // try to create a new map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+        
+        // check that modal appears
+        modal = GameObject.Find("SaveModal");
+        Assert.IsNotNull(modal);
+        Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before creating a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
+    }
+
+    [Test]
+    public void LoadMapInEditorOpensFileBrowser() {
+        // click button to load a map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
+
+        // decline to save current map
+        GameObject.Find("No Button").GetComponent<Button>().onClick.Invoke();
+
+        // check that file browser appears
+        GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
+        Assert.IsNotNull(browser);
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        Assert.AreEqual("Select File", titleText.GetComponent<Text>().text);
+
+        // close file browser
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
+        cancelButton.GetComponent<Button>().onClick.Invoke();
+        Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [Test]
+    public void SaveAsOpensFileBrowser() {
+        // click button to save map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("Save As Button").GetComponent<Button>().onClick.Invoke();
+
+        // check that file browser appears
+        GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
+        Assert.IsNotNull(browser);
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        Assert.AreEqual("Save", submitButtonText.GetComponent<Text>().text);
+        GameObject titleText = browser.transform
+            .Find("SimpleFileBrowserWindow/Titlebar/TitlebarText").gameObject;
+        Assert.AreEqual("Save Map", titleText.GetComponent<Text>().text);
+
+        // close file browser
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/"
+            + "BottomView/Padding/BottomRow/CancelButton").gameObject;
+        cancelButton.GetComponent<Button>().onClick.Invoke();
+        Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [UnityTest]
+    public IEnumerator NewMapInEditorRedirectsToMapCreation() {
+        // click button to create a new map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+
+        // decline to save current map
+        GameObject.Find("No Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // check that we are redirected to the map creation scene
+        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
     }
 }

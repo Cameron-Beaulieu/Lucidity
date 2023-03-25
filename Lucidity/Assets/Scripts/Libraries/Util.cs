@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Util {
@@ -9,6 +10,7 @@ public class Util {
     /// interference between tests, or when MapEditor is reloaded.
     /// </summary>
     public static void ResetStaticVariables() {
+        AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
         MapEditorManager.Actions = null;
@@ -16,6 +18,7 @@ public class Util {
         MapEditorManager.ToolToCursorMap.Clear();
         MapEditorManager.Map = null;
         MapEditorManager.MapContainer = null;
+        MapEditorManager.Reversion = false;
         MapEditorManager.SpawnPoint = Vector2.zero;
         MapEditorManager.CurrentButtonPressed = 0;
         Tool.ToolKeys.Clear();
@@ -45,8 +48,10 @@ public class Util {
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         editor.AssetButtons.Clear();
-        foreach (GameObject paintButton in GameObject
-                .FindGameObjectsWithTag("PaintButton")) {
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        paintButtons = paintButtons.OrderBy(x => x.name.ToLower()).ToArray();
+        foreach (GameObject paintButton in paintButtons) {
+            paintButton.GetComponent<AssetController>().GetInstanceID();
             editor.AssetButtons.Add(paintButton.GetComponent<AssetController>());
         }
     }

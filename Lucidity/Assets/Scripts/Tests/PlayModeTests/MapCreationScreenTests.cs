@@ -18,16 +18,43 @@ public class MapCreationScreenTests {
     [UnityTest]
     public IEnumerator CancelButtonRedirectsToStartupScreen() {
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name); 
-        Button button = GameObject.Find("Cancel Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        Button cancelButton = GameObject.Find("Cancel Button").GetComponent<Button>();
+        cancelButton.onClick.Invoke();
         yield return null;
         Assert.AreEqual("Startup", SceneManager.GetActiveScene().name); 
     }
 
     [Test]
+    public void CreateButtonOpensFileBrowser() {
+        // give map name
+        InputField nameInputField = GameObject.Find("Name Input").GetComponent<InputField>();
+        nameInputField.text = "TestMap";
+
+        // click create button to create a new map
+        Button createButton = GameObject.Find("Create Button").GetComponent<Button>();
+        createButton.onClick.Invoke();
+
+        // check that file browser appears
+        GameObject browser = GameObject.Find("SimpleFileBrowserCanvas(Clone)");
+        Assert.IsNotNull(browser);
+        GameObject submitButtonText = browser.transform.Find("SimpleFileBrowserWindow/Padding/" + 
+            "BottomView/Padding/BottomRow/SubmitButton/SubmitButtonText").gameObject;
+        Assert.AreEqual("Select", submitButtonText.GetComponent<Text>().text);
+        GameObject titleText = browser.transform.Find("SimpleFileBrowserWindow/Titlebar/TitlebarText")
+            .gameObject;
+        Assert.AreEqual("Select Save Location", titleText.GetComponent<Text>().text);
+
+        // close file browser
+        GameObject cancelButton = browser.transform.Find("SimpleFileBrowserWindow/Padding/" +
+            "BottomView/Padding/BottomRow/CancelButton").gameObject;
+        cancelButton.GetComponent<Button>().onClick.Invoke();
+        Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [Test]
     public void ErrorsOnEmptyFileName() {
-        Button button = GameObject.Find("Create Button").GetComponent<Button>();
-        button.onClick.Invoke();
+        Button createButton = GameObject.Find("Create Button").GetComponent<Button>();
+        createButton.onClick.Invoke();
         Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
         Assert.AreEqual("You must provide a file name to create a map.", 
                         GameObject.Find("ErrorMessage").GetComponent<Text>().text);
