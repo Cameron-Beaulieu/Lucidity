@@ -13,7 +13,7 @@ public class Layer : MonoBehaviour {
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
     private GameObject _layerEdit;
-    private MapEditorManager _editor;
+    private static MapEditorManager _editor;
     private string _name;
     private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
 
@@ -22,10 +22,13 @@ public class Layer : MonoBehaviour {
         set {_layerContainer = value;}
     }
 
+    private void Awake() {
+        _editor = GameObject.Find("MapEditorManager")
+            .GetComponent<MapEditorManager>();
+    }
+
     private void Start() {
         _layerContainer = GameObject.Find("LayerScrollContent");
-        _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         gameObject.name = "Layer" + (LayerStatus.Count).ToString();
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();

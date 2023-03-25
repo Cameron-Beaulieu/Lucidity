@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -88,6 +89,31 @@ public class MiscellaneousTests : MapEditorTests {
         modal = GameObject.Find("SaveModal");
         Assert.IsNotNull(modal);
         Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before opening a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
+    }
+
+    [Test]
+    public void ModalAppearsWhenCreatingNewMapInEditor() {
+        // check modal is inactive by default
+        GameObject modal = GameObject.Find("SaveModal");
+        Assert.IsNull(modal);
+
+        // try to create a new map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+        
+        // check that modal appears
+        modal = GameObject.Find("SaveModal");
+        Assert.IsNotNull(modal);
+        Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before creating a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
     }
 
     [Test]
@@ -139,5 +165,20 @@ public class MiscellaneousTests : MapEditorTests {
             + "BottomView/Padding/BottomRow/CancelButton").gameObject;
         cancelButton.GetComponent<Button>().onClick.Invoke();
         Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [UnityTest]
+    public IEnumerator NewMapInEditorRedirectsToMapCreation() {
+        // click button to create a new map
+        GameObject.Find("File Button").GetComponent<EventTrigger>()
+            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+
+        // decline to save current map
+        GameObject.Find("No Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // check that we are redirected to the map creation scene
+        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
     }
 }

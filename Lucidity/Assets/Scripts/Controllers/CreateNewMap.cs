@@ -10,9 +10,7 @@ using UnityEngine.UI;
 public class CreateNewMap : MonoBehaviour {
     public static bool IsTesting = false;
     [SerializeField] private InputField _mapName;
-    [SerializeField] private Dropdown _mapSizeDropdown;
     [SerializeField] private Dropdown _biomeDropdown;
-    [SerializeField] private Toggle _startingAssetsToggle;
     [SerializeField] private Button _cancelMapButton;
     [SerializeField] private Button _createMapButton;
     private static Biome _biome;
@@ -82,6 +80,10 @@ public class CreateNewMap : MonoBehaviour {
             MapData jsonContent = new MapData(fileName, ChosenBiome);
             File.WriteAllText(fileName, jsonContent.Serialize());
             _biome = GetBiomeFromDropdown();
+            if (StartupScreen.FilePath != null) {
+                // if filepath is not null, we're creating a map from the MapEditor scene
+                StartupScreen.FilePath = fileName;
+            }
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
             return;
         }
@@ -101,10 +103,6 @@ public class CreateNewMap : MonoBehaviour {
         switch (_biomeDropdown.value) {
             case 0:
                 return new Biome(Biome.BiomeType.Forest);
-            case 1:
-                return new Biome(Biome.BiomeType.Desert);
-            case 2:
-                return new Biome(Biome.BiomeType.Ocean);
             default:
                 return new Biome(Biome.BiomeType.Forest);
         }
@@ -117,12 +115,4 @@ public class CreateNewMap : MonoBehaviour {
     /// <c>string</c> of the map name.
     /// </returns>
     public string GetMapName() { return _mapName.text; }
-
-    /// <summary>
-    /// Starting asset toggle accessor.
-    /// </summary>
-    /// <returns>
-    /// <c>bool</c> of starting asset toggle.
-    /// </returns>
-    public bool GetStartingAssetsToggle() { return _startingAssetsToggle.isOn; }
 }

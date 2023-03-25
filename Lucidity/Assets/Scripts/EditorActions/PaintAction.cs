@@ -10,7 +10,7 @@ public class PaintAction : EditorAction {
     /// <param name="relatedObjects">
     /// List of <c>GameObject</c> that are related to the paint action.
     /// </param>
-    public PaintAction(List<GameObject> relatedObjects) {
+    public PaintAction(List<(int, GameObject)> relatedObjects) {
         base.Type = ActionType.Paint;
         base.RelatedObjects = relatedObjects;
     }

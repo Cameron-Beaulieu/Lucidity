@@ -135,7 +135,6 @@ public class AssetCollision : MonoBehaviour {
                             LayerCollisions.Add(new List<MapObject>() {obj2, obj1});
                         }
                     }
-
                 }
                 hitCollidersClone.Remove(collider);
             }
