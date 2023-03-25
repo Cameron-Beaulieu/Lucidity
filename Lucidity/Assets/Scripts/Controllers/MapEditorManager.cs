@@ -464,7 +464,7 @@ public class MapEditorManager : MonoBehaviour {
             AddNewMapObject(newGameObject, mapObject.Name, newParent, 
                             newMapObjects, mapObject.PrefabIndex);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
-                newGameObject.GetInstanceID(), mapObject);
+                newGameObject.GetInstanceID(), newMapObjects[newGameObject.GetInstanceID()]);
         }
         MapObjects = newMapObjects;
         GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class DynamicBoundingBoxTests : MapEditorTests {
 
     [SetUp]
-    public void SetUp() {
+    public void DynamicBoundingBoxSetUp() {
         Util.ResetAssetButtons();
     }
 
