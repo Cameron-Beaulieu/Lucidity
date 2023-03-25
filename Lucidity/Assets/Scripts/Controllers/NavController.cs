@@ -20,6 +20,7 @@ public class NavController : MonoBehaviour {
         = "Would you like to save your current map before creating a new one?";
 
     private void Start() {
+
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
 
         // add listeners to save modal option buttons
