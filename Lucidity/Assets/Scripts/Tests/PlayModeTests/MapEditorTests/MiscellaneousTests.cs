@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -75,14 +74,42 @@ public class MiscellaneousTests : MapEditorTests {
     }
 
     [Test]
+    public void FileButtonTogglesDropdown() {
+        // check dropdown is inactive by default
+        GameObject dropdown = GameObject.Find("File Dropdown");
+        Assert.IsNull(dropdown);
+
+        // click file button
+        GameObject fileButtonGameObject = GameObject.Find("File Button");
+        Color originalColor = fileButtonGameObject.GetComponent<Image>().color;
+        Button fileButton = fileButtonGameObject.GetComponent<Button>();
+        fileButton.onClick.Invoke();
+
+        // check that file button color changes
+        Assert.AreNotEqual(originalColor, fileButtonGameObject.GetComponent<Image>().color);
+
+        // check that dropdown appears
+        dropdown = GameObject.Find("File Dropdown");
+        Assert.IsTrue(dropdown.activeSelf);
+
+        // click file button again
+       fileButton.onClick.Invoke();
+
+       // check that file button color changes back
+        Assert.AreEqual(originalColor, fileButtonGameObject.GetComponent<Image>().color);
+
+        // check that dropdown disappears
+        Assert.IsFalse(dropdown.activeSelf);
+    }
+
+    [Test]
     public void ModalAppearsWhenLoadingNewMapInEditor() {
         // check modal is inactive by default
         GameObject modal = GameObject.Find("SaveModal");
         Assert.IsNull(modal);
 
         // try to load a new map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
         
         // check that modal appears
@@ -102,8 +129,7 @@ public class MiscellaneousTests : MapEditorTests {
         Assert.IsNull(modal);
 
         // try to create a new map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
         
         // check that modal appears
@@ -119,8 +145,7 @@ public class MiscellaneousTests : MapEditorTests {
     [Test]
     public void LoadMapInEditorOpensFileBrowser() {
         // click button to load a map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
 
         // decline to save current map
@@ -146,8 +171,7 @@ public class MiscellaneousTests : MapEditorTests {
     [Test]
     public void SaveAsOpensFileBrowser() {
         // click button to save map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Save As Button").GetComponent<Button>().onClick.Invoke();
 
         // check that file browser appears
@@ -170,8 +194,7 @@ public class MiscellaneousTests : MapEditorTests {
     [UnityTest]
     public IEnumerator NewMapInEditorRedirectsToMapCreation() {
         // click button to create a new map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
 
         // decline to save current map
