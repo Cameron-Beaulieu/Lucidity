@@ -109,7 +109,7 @@ public class TwoDReversionTests {
         GameObject revertedGameObject = GameObject.Find("FortressObject(Clone)");
         Assert.Null(revertedGameObject);
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
-        revertedGameObject = GameObject.Find("FortressObject(Clone)");
+        yield return null;
         revertedGameObject = GameObject.Find("FortressObject(Clone)");
         int revertedGameObjectId = revertedGameObject.GetInstanceID();
         Assert.IsTrue(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
