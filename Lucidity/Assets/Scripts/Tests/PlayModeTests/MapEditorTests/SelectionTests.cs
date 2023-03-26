@@ -32,9 +32,7 @@ public class SelectionTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanOnlySelectObjectsOnCurrentLayer() {
         // Check CurrentLayer is tracking base layer and that it is empty
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.Zero(MapEditorManager.MapObjects.Count);
 
         // paint an object on base layer
@@ -44,7 +42,7 @@ public class SelectionTests : MapEditorTests {
 
         // select the object while on base layer
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
@@ -58,7 +56,7 @@ public class SelectionTests : MapEditorTests {
         // create a new layer (should switch to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();      
         yield return null;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
 
         // select the object while on a new layer
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
@@ -73,9 +71,7 @@ public class SelectionTests : MapEditorTests {
     public IEnumerator CanSelectSpawnPointRegardlessOfLayer() {
         // Check CurrentLayer is tracking base layer and that spawnSpoint is not selected
         GameObject spawnPoint = GameObject.Find("Spawn Point");
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.AreEqual(Color.white, spawnPoint.GetComponent<Image>().color);
 
         // select the spawn point while on base layer
@@ -97,7 +93,7 @@ public class SelectionTests : MapEditorTests {
         // add new layer (switches to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual(Color.white, 
                          spawnPoint.GetComponent<Image>().color);

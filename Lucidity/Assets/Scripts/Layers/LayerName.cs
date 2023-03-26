@@ -6,11 +6,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LayerName : MonoBehaviour {
-    private TMP_InputField _layerText;
+    public TMP_InputField _layerText;
     public string CurrentText;
     public static bool IsTesting = false;
 
-    private void Start() {
+    private void Awake() {
        _layerText = gameObject.GetComponent<TMP_InputField>();
        _layerText.onSubmit.AddListener(HandleSubmission);
        _layerText.onDeselect.AddListener(HandleSubmission);
@@ -82,7 +82,7 @@ public class LayerName : MonoBehaviour {
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     /// </summary>
-    private void UpdateLayerName(string oldName, string newName) {
+    public void UpdateLayerName(string oldName, string newName) {
         if (newName.Equals(oldName)) {return;}
         int oldIndex = Layer.LayerIndex[oldName];
         bool oldStatus = Layer.LayerStatus[oldName];

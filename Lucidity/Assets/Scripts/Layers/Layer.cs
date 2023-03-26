@@ -13,7 +13,6 @@ public class Layer : MonoBehaviour {
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
     private GameObject _layerEdit;
-    private static MapEditorManager _editor;
     private string _name;
     private Color _unselected = new Color(48/255f, 49/255f, 52/255f);
 
@@ -23,11 +22,6 @@ public class Layer : MonoBehaviour {
     }
 
     private void Awake() {
-        _editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-    }
-
-    private void Start() {
         _layerContainer = GameObject.Find("LayerScrollContent");
         gameObject.name = "Layer" + (LayerStatus.Count).ToString();
         _name = gameObject.name;
@@ -70,7 +64,7 @@ public class Layer : MonoBehaviour {
             gameObject.GetComponent<Image>().color = Color.black;
             _layerTrashCan.SetActive(true);
             _layerEdit.SetActive(true);
-            _editor.CurrentLayer = LayerIndex[_name];
+            MapEditorManager.CurrentLayer = LayerIndex[_name];
         } else if (LayerStatus.ContainsKey(_name)
             && !LayerStatus[_name]
             && gameObject.GetComponent<Image>().color != _unselected) {
@@ -90,8 +84,7 @@ public class Layer : MonoBehaviour {
                 LayerStatus[layerKey] = false;
             } else {
                 LayerStatus[layerKey] = true;
-                GameObject.Find("MapEditorManager")
-                    .GetComponent<MapEditorManager>().CurrentLayer = LayerIndex[layerKey];
+                MapEditorManager.CurrentLayer = LayerIndex[layerKey];
             }
         }  
     }
@@ -175,11 +168,11 @@ public class Layer : MonoBehaviour {
 
         MapEditorManager.Layers.RemoveAt(LayerIndex[_name]);
 
-       SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
-       LayerNames.RemoveAt(LayerIndex[_name]);
-       LayerStatus.Remove(_name);
-       LayerIndex.Remove(_name);
+        SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
+        LayerNames.RemoveAt(LayerIndex[_name]);
+        LayerStatus.Remove(_name);
+        LayerIndex.Remove(_name);
 
-       Destroy(gameObject);
+        Destroy(gameObject);
     }
 }
