@@ -298,6 +298,7 @@ public class MapEditorManager : MonoBehaviour {
                             obj.SetActive(false);
                         }
                     }
+                    Layer.NumberOfActiveLayers--;
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
@@ -371,6 +372,7 @@ public class MapEditorManager : MonoBehaviour {
                                 .LayerIndex[obj.name]]);
                         }
                     }
+                    Layer.NumberOfActiveLayers++;
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
