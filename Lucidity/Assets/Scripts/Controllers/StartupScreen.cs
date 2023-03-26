@@ -26,13 +26,14 @@ public class StartupScreen : MonoBehaviour {
             SceneManager.LoadScene("MapEditor", LoadSceneMode.Single);
             return;
         }
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 
         FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
         FileBrowser.SetDefaultFilter( ".json" );
 
-        FileBrowser.ShowLoadDialog((paths) => { ValidatePath(paths[0]); }, null, 
-                                   FileBrowser.PickMode.Files, false, null, null, "Select File", 
-                                   "Select");
+        FileBrowser.ShowLoadDialog((paths) => { ValidatePath(paths[0]); }, 
+                                   Tool.ChangeCursorToActiveTool, FileBrowser.PickMode.Files, 
+                                   false, null, null, "Select File", "Select");
     }
 
     /// <summary>

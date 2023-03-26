@@ -91,11 +91,12 @@ public class NavController : MonoBehaviour {
     public static void SaveAsButtonClickHandler() {
         // The second argument to SaveFilePanel can eventually be replaced with the user's default
         // map file location
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
         FileBrowser.SetDefaultFilter(".json");
-        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, null, 
-                                   FileBrowser.PickMode.Files, false, null, "Untitled.json", 
-                                   "Save Map", "Save");
+        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, 
+                                   Tool.ChangeCursorToActiveTool, FileBrowser.PickMode.Files, 
+                                   false, null, "Untitled.json", "Save Map", "Save");
     }
 
     /// <summary>
