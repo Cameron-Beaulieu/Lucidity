@@ -14,7 +14,6 @@ public class MapObject {
     public Quaternion Rotation;
     public bool IsActive;
     public string LayerName;
-    public GameObject RelatedObject;
 
     /// <summary>
     /// MapObject constructor, initializing the id, asset, mapPosition, scale, and rotation
@@ -44,11 +43,8 @@ public class MapObject {
     /// <param name="isActive">
     /// A <c>boolean</c> representing whether or not the asset is active in the map.
     /// </param>
-    /// <param name="relatedObject">
-    /// The <c>GameObject</c> attached to the Mapobject
-    /// </param>
     public MapObject (int id, string name, int prefabIndex, Vector2 mapPosition, Vector2 mapOffset,
-                      Vector3 scale, Quaternion rotation, bool isActive, GameObject relatedObject) {
+                      Vector3 scale, Quaternion rotation, bool isActive) {
         Id = id;
         Name = name;
         PrefabIndex = prefabIndex;
@@ -57,7 +53,6 @@ public class MapObject {
         Scale = scale;
         Rotation = rotation;
         IsActive = isActive;
-        RelatedObject = relatedObject;
     }
 
 

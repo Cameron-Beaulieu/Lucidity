@@ -107,15 +107,16 @@ public class Layer : MonoBehaviour {
 
     /// <summary>
     /// The function called when clicking on the trash can of a layer. Sets the layer and all
-    /// <c>MapObjects</c> in the layer inactive, changing the selected layer to the next lowest layer.
+    /// <c>MapObjects</c> in the layer inactive, changing the selected layer to the next lowest 
+    /// layer.
     /// </summary>
     public void DeleteLayer() {
         List<(int, GameObject)> relatedObjects = new List<(int, GameObject)>{};
 
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
-            relatedObjects.Add((kvp.Key, kvp.Value.RelatedObject));
+            relatedObjects.Add((kvp.Key, MapEditorManager.IdToGameObjectMapping[kvp.Value.Id]));
             kvp.Value.IsActive = false;
-            kvp.Value.RelatedObject.SetActive(false);
+            MapEditorManager.IdToGameObjectMapping[kvp.Value.Id].SetActive(false);
         }
 
         relatedObjects.Add((gameObject.GetInstanceID(), gameObject));
@@ -163,7 +164,7 @@ public class Layer : MonoBehaviour {
         foreach (KeyValuePair <int, MapObject> kvp in MapEditorManager.Layers[LayerIndex[_name]]) {
             MapEditorManager.Layers[LayerIndex[_name]].Remove(kvp.Value.Id);
             MapEditorManager.MapObjects.Remove(kvp.Value.Id);
-            Destroy(kvp.Value.RelatedObject);
+            Destroy(MapEditorManager.IdToGameObjectMapping[kvp.Value.Id]);
         }
 
         MapEditorManager.Layers.RemoveAt(LayerIndex[_name]);

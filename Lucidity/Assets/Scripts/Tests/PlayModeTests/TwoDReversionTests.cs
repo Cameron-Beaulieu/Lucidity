@@ -110,6 +110,7 @@ public class TwoDReversionTests {
         Assert.Null(revertedGameObject);
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
         revertedGameObject = GameObject.Find("FortressObject(Clone)");
+        revertedGameObject = GameObject.Find("FortressObject(Clone)");
         int revertedGameObjectId = revertedGameObject.GetInstanceID();
         Assert.IsTrue(MapEditorManager.MapObjects[revertedGameObjectId].IsActive);
 
@@ -222,6 +223,10 @@ public class TwoDReversionTests {
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
 
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();

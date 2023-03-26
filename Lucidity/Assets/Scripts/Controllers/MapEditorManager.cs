@@ -15,6 +15,7 @@ public class MapEditorManager : MonoBehaviour {
     public List<Texture2D> CursorTextures;
     public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
     public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
+    public static Dictionary<int, GameObject> IdToGameObjectMapping = new Dictionary<int, GameObject>();
     public static int CurrentLayer;
     [SerializeField] private GameObject _layerPrefab;
     public static LinkedList<EditorAction> Actions;
@@ -406,8 +407,11 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-            newGameObject.transform.rotation, true, newGameObject);
+            newGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
+        if (!IdToGameObjectMapping.ContainsKey(newGameObject.GetInstanceID())) {
+            IdToGameObjectMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+        }
     }	
 
     /// <summary>
@@ -471,33 +475,16 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerStatus[mapData.LayerNames[0]] = true;
 
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
+        Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
 
         foreach (MapObject mapObject in mapData.MapObjects) {
-            GameObject newParent = new GameObject();
-            newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
-            newParent.transform.SetParent(MapContainer.transform, true);
-            newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
-                                                            mapObject.MapOffset.y, 0);
-            GameObject newGameObject = (GameObject) Instantiate(
-                AssetPrefabs[mapObject.PrefabIndex], 
-                new Vector3(newParent.transform.position.x, 
-                            newParent.transform.position.y, 
-                            0), 
-                Quaternion.identity, newParent.transform);
-            newGameObject.transform.localPosition = new Vector3(
-                newGameObject.transform.localPosition.x, 
-                newGameObject.transform.localPosition.y, 0);
-            newGameObject.transform.rotation = mapObject.Rotation;
-            newGameObject.transform.localScale = 
-                new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
-                            newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                            newGameObject.transform.localScale.z + Zoom.zoomFactor);
-            AddNewMapObject(newGameObject, mapObject.Name, newParent, 
-                            newMapObjects, mapObject.PrefabIndex);
+            GameObject  newGameObject = RebuildMapObject(mapObject, mapObject.Id, newMapObjects);
+            newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
                 newGameObject.GetInstanceID(), newMapObjects[newGameObject.GetInstanceID()]);
         }
         MapObjects = newMapObjects;
+        IdToGameObjectMapping = newIdMapping;
         GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;
     }
 
@@ -534,13 +521,13 @@ public class MapEditorManager : MonoBehaviour {
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(tempLayerNames[i], i);
             if (i == CurrentLayer) {
-                Debug.Log(tempLayerNames[i]);
                 Layer.LayerStatus.Add(tempLayerNames[i], true);
             } else {
                 Layer.LayerStatus.Add(tempLayerNames[i], false);
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
-            tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()._layerText.text = Layer.LayerNames[i];
+            tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
+                ._layerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
         }
         Layer.SelectedChangeSelectedLayer(Layer.LayerNames[tempCurrentLayer]);
@@ -549,19 +536,23 @@ public class MapEditorManager : MonoBehaviour {
         // Reloading MapObjects
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
         Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
+        Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
         List<Dictionary<int, MapObject>> newLayers = new List<Dictionary<int, MapObject>>();
 
         MapContainer = GameObject.Find("Map Container");
         foreach (Dictionary<int, MapObject> layer in Layers) {
             Dictionary<int, MapObject> currentLayer = new Dictionary<int, MapObject>();
             foreach (KeyValuePair <int, MapObject> mapObject in layer) {
-               GameObject newGameObject = RebuildMapObject(mapObject.Value, mapObject.Key, newMapObjects, mapObjectsMapping);
-               currentLayer.Add(newGameObject.GetInstanceID(), 
+               GameObject newGameObject = RebuildMapObject(mapObject.Value, mapObject.Key, 
+                    newMapObjects);
+                newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+                mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
+                currentLayer.Add(newGameObject.GetInstanceID(), 
                              newMapObjects[newGameObject.GetInstanceID()]);
-               if (!mapObject.Value.IsActive) {
+                if (!mapObject.Value.IsActive) {
                     currentLayer[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
-               }
+                }
             }
             newLayers.Add(currentLayer);
         }
@@ -574,7 +565,10 @@ public class MapEditorManager : MonoBehaviour {
                 for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
                     if (pointer.Value.Type == EditorAction.ActionType.DeleteMapObject) {
                         MapObject mapObject = ((DeleteMapObjectAction) pointer.Value).MapObject;
-                        GameObject newGameObject = RebuildMapObject(mapObject, ((DeleteMapObjectAction) pointer.Value).GameObjectID, newMapObjects, mapObjectsMapping);
+                        GameObject newGameObject = RebuildMapObject(mapObject, 
+                            ((DeleteMapObjectAction) pointer.Value).GameObjectID, newMapObjects);
+                        newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+                        mapObjectsMapping.Add(mapObject.Id, newGameObject);
                         if (!mapObject.IsActive) {
                             newGameObject.SetActive(false);
                         }
@@ -596,6 +590,7 @@ public class MapEditorManager : MonoBehaviour {
         // Resetting MapObjects  and Layers Dictionaries
         MapObjects = new Dictionary<int, MapObject>(newMapObjects);
         Layers = new List<Dictionary<int, MapObject>>(newLayers);
+        IdToGameObjectMapping = new Dictionary<int, GameObject>(newIdMapping);
 
         // Swapping MapObjects in LayerCollisions List
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
@@ -604,7 +599,9 @@ public class MapEditorManager : MonoBehaviour {
         }
     }
 
-    private GameObject RebuildMapObject(MapObject mapObject, int gameObjectID, Dictionary<int, MapObject> newMapObjects, Dictionary<int, GameObject> mapObjectsMapping) {
+    private GameObject RebuildMapObject(MapObject mapObject, 
+                                        int gameObjectID, 
+                                        Dictionary<int, MapObject> newMapObjects) {
         GameObject newParent = new GameObject();
         newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
         newParent.transform.SetParent(MapContainer.transform, true);
@@ -620,7 +617,6 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                         newGameObject.transform.localScale.y + Zoom.zoomFactor, 
                         newGameObject.transform.localScale.z + Zoom.zoomFactor);
-        mapObjectsMapping.Add(gameObjectID, newGameObject);
         AddNewMapObject(newGameObject, mapObject.Name, 
                         newParent, newMapObjects, mapObject.PrefabIndex);
         if (!mapObject.IsActive) {

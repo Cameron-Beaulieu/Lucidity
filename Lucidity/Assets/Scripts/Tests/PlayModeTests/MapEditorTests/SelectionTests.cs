@@ -136,6 +136,9 @@ public class SelectionTests : MapEditorTests {
     public void CanDeleteAsset() {
         // paint an object to delete
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // check asset is in <c>Layers</c>
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         
         // select the object
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
@@ -148,6 +151,8 @@ public class SelectionTests : MapEditorTests {
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
         deleteButton.onClick.Invoke();
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        // check asset is in <c>Layers</c>
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
     }
 }

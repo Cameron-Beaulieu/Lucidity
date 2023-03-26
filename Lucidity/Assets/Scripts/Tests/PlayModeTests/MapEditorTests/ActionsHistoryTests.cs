@@ -32,9 +32,9 @@ public class ActionsHistoryTests : MapEditorTests {
     [Test]
     public void CanUndoAndRedoAssetDeletion() {
         // paint an asset
-        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.Zero(MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
@@ -48,14 +48,17 @@ public class ActionsHistoryTests : MapEditorTests {
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
         deleteButton.onClick.Invoke();
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // undo the deletion
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // redo the deletion
         GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // reset testing var
         SelectMapObject.IsTesting = false;

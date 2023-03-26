@@ -13,6 +13,7 @@ public class Util {
         AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
+        MapEditorManager.IdToGameObjectMapping.Clear();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
         MapEditorManager.ToolToCursorMap.Clear();

@@ -43,7 +43,7 @@ public class MiscellaneousTests : MapEditorTests {
                                                                 new Vector2(0, 0), 
                                                                 new Vector2(100,100), 
                                                                 new Vector3(1, 1, 1), 
-                                                                Quaternion.identity, true, null),
+                                                                Quaternion.identity, true),
                                                                 "Layer0")}}},
                                       new Dictionary<string, int> {{"Layer0", 0}});
         MapEditorManager editor = GameObject.Find("MapEditorManager")
