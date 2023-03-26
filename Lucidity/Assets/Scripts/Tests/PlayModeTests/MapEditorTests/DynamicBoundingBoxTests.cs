@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class DynamicBoundingBoxTests : MapEditorTests {
 
     [SetUp]
-    public void SetUp() {
+    public void DynamicBoundingBoxSetUp() {
         Util.ResetAssetButtons();
     }
 
@@ -51,6 +51,10 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
 
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();

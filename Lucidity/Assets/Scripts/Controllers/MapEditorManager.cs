@@ -464,7 +464,7 @@ public class MapEditorManager : MonoBehaviour {
             AddNewMapObject(newGameObject, mapObject.Name, newParent, 
                             newMapObjects, mapObject.PrefabIndex);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
-                newGameObject.GetInstanceID(), mapObject);
+                newGameObject.GetInstanceID(), newMapObjects[newGameObject.GetInstanceID()]);
         }
         MapObjects = newMapObjects;
         GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;
@@ -477,7 +477,7 @@ public class MapEditorManager : MonoBehaviour {
         Reversion = false;
         LoadFlag = false;
         SpawnPoint = GameObject.Find("Spawn Point").transform.localPosition;
-        Cursor.SetCursor(null, new Vector2(16f, 16f), CursorMode.Auto);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         SceneManager.LoadScene("3DMap", LoadSceneMode.Single);
     }
 
