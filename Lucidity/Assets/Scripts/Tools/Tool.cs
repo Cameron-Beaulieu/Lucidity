@@ -89,12 +89,7 @@ public class Tool : MonoBehaviour {
             }
         }
 
-        if (MapEditorManager.ToolToCursorMap.ContainsKey(toolSelected)) {
-            Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolSelected], new Vector2(16f,16f), 
-                             CursorMode.Auto);
-        } else {
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        }
+        ChangeCursorToActiveTool();
     }
 
     /// <summary>
@@ -122,5 +117,22 @@ public class Tool : MonoBehaviour {
             StopPainting();
         }
         ChangeTools(_name);
+    }
+
+    /// <summary>
+    /// Changes the cursor to the appropriate cursor for the currently selected tool.
+    /// </summary>
+    public static void ChangeCursorToActiveTool() {
+        foreach (string toolKey in ToolKeys) {
+            if (ToolStatus[toolKey]) {
+                if (MapEditorManager.ToolToCursorMap.ContainsKey(toolKey)) {
+                    Cursor.SetCursor(MapEditorManager.ToolToCursorMap[toolKey], 
+                                     new Vector2(16f,16f), 
+                                     CursorMode.Auto);
+                } else {
+                    Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                }
+            }
+        }
     }
 }

@@ -20,6 +20,7 @@ public class NavController : MonoBehaviour {
         = "Would you like to save your current map before creating a new one?";
 
     private void Start() {
+
         _savingText = GameObject.Find("Saving Text").GetComponent<TMP_Text>();
 
         // add listeners to save modal option buttons
@@ -90,11 +91,12 @@ public class NavController : MonoBehaviour {
     public static void SaveAsButtonClickHandler() {
         // The second argument to SaveFilePanel can eventually be replaced with the user's default
         // map file location
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         FileBrowser.SetFilters(true, new FileBrowser.Filter("JSON", ".json"));
         FileBrowser.SetDefaultFilter(".json");
-        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, null, 
-                                   FileBrowser.PickMode.Files, false, null, "Untitled.json", 
-                                   "Save Map", "Save");
+        FileBrowser.ShowSaveDialog((paths) => { ValidateSave(paths[0]); }, 
+                                   Tool.ChangeCursorToActiveTool, FileBrowser.PickMode.Files, 
+                                   false, null, "Untitled.json", "Save Map", "Save");
     }
 
     /// <summary>
