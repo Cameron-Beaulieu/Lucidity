@@ -535,8 +535,6 @@ public class MapEditorManager : MonoBehaviour {
 
         for (int i = 0; i < tempLayerNames.Count; i++) {
             Layer.LayerToBeNamed = 0;
-            // Create a dictionary for each layer
-            List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(tempLayerNames[i], i);
             if (i == CurrentLayer) {
@@ -546,6 +544,8 @@ public class MapEditorManager : MonoBehaviour {
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
             Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
+            // Create a list for each layer
+            List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
             tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
                 .LayerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
