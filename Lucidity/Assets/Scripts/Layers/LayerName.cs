@@ -6,15 +6,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LayerName : MonoBehaviour {
-    private TMP_InputField _layerText;
+    public TMP_InputField LayerText;
     public string CurrentText;
     public static bool IsTesting = false;
 
-    private void Start() {
-       _layerText = gameObject.GetComponent<TMP_InputField>();
-       _layerText.onSubmit.AddListener(HandleSubmission);
-       _layerText.onDeselect.AddListener(HandleSubmission);
-       _layerText.onSelect.AddListener(UpdateCurrentText);
+    private void Awake() {
+       LayerText = gameObject.GetComponent<TMP_InputField>();
+       LayerText.onSubmit.AddListener(HandleSubmission);
+       LayerText.onDeselect.AddListener(HandleSubmission);
+       LayerText.onSelect.AddListener(UpdateCurrentText);
     }
 
     /// <summary>
@@ -34,15 +34,15 @@ public class LayerName : MonoBehaviour {
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     public void HandleSubmission(string newName) {
-        if (IsTesting) { CurrentText = _layerText.text; }
-        _layerText.text = newName;
+        if (IsTesting) { CurrentText = LayerText.text; }
+        LayerText.text = newName;
         string oldName = CurrentText;
         int duplicateIndex = 2;
         if(String.IsNullOrWhiteSpace(newName)) {
-            _layerText.text = CurrentText;
-            _layerText.readOnly = true;
+            LayerText.text = CurrentText;
+            LayerText.readOnly = true;
             return;
-        } else if(_layerText.GetComponent<RectTransform>().rect.width >= 165) {
+        } else if(LayerText.GetComponent<RectTransform>().rect.width >= 165) {
             newName = newName.Substring(0,10) + "...";
             while (Layer.LayerNames.Contains(newName) && !newName.Equals(oldName)) {
                 if (duplicateIndex == 2) {
@@ -66,10 +66,10 @@ public class LayerName : MonoBehaviour {
                 duplicateIndex++;
             }
         }
-        _layerText.text = newName;
+        LayerText.text = newName;
         CurrentText = newName;
         UpdateLayerName(oldName, newName);
-        _layerText.readOnly = true;
+        LayerText.readOnly = true;
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class LayerName : MonoBehaviour {
     /// <c>string</c> corresponding to the new layer name inputted by the user.
     /// </param>
     /// </summary>
-    private void UpdateLayerName(string oldName, string newName) {
+    public void UpdateLayerName(string oldName, string newName) {
         if (newName.Equals(oldName)) {return;}
         int oldIndex = Layer.LayerIndex[oldName];
         bool oldStatus = Layer.LayerStatus[oldName];
@@ -93,7 +93,10 @@ public class LayerName : MonoBehaviour {
         Layer.LayerStatus.Remove(oldName);
         Layer.LayerStatus.Add(newName, oldStatus);
         // Update LayerNames
-        int index = Layer.LayerNames.FindIndex(s => s == oldName);
-        Layer.LayerNames[index] = newName;
+        Layer.LayerNames.Remove(oldName);
+        Layer.LayerNames.Insert(oldIndex, newName);
+
+        GameObject layer = GameObject.Find(oldName);
+        layer.name = newName;
     }
 }

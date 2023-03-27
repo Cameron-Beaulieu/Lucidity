@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,9 @@ public class MapEditorManager : MonoBehaviour {
     public List<Texture2D> CursorTextures;
     public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
     public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
-    public int CurrentLayer = 0;
+    public static Dictionary<int, GameObject> IdToGameObjectMapping 
+        = new Dictionary<int, GameObject>();
+    public static int CurrentLayer;
     [SerializeField] private GameObject _layerPrefab;
     public static LinkedList<EditorAction> Actions;
     public static Dictionary<string, Texture2D> ToolToCursorMap =
@@ -93,6 +96,7 @@ public class MapEditorManager : MonoBehaviour {
             } else {
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
+            CurrentLayer = 0;
         } 
         DontDestroyOnLoad(this.gameObject);
     }
@@ -226,6 +230,9 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     Destroy(obj);
                 }
+            } else if (actionToDelete.Value.Type == EditorAction.ActionType.CreateLayer) {
+                actionToDelete.Value.RelatedObjects[0].Item2.GetComponent<Layer>()
+                    .PermanentlyDeleteLayer();
             }
             actionToDelete = actionToDelete.Next;
         }
@@ -257,7 +264,9 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
                         if (obj != null) {
                             MapObjects[id].IsActive = false;
-                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            Layers[((DeleteMapObjectAction) actionToRedo).LayerID][id].IsActive
+                                 = false;
+                            Layers[((DeleteMapObjectAction) actionToRedo).LayerID].Remove(id);
                             obj.SetActive(false);
                         }
                     }
@@ -272,10 +281,25 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
-                    List<(int, GameObject)> newLayerList = Layering.AddLayer(_layerPrefab);
+                    actionToRedo.RelatedObjects[0].Item2.SetActive(true);
+                    CurrentLayer = Layer.LayerIndex[actionToRedo.RelatedObjects[0].Item2.name];
+                    Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex
+                        [actionToRedo.RelatedObjects[0].Item2.name]]);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
+                        if (obj != null && obj != actionToRedo.RelatedObjects.Last().Item2) {
+                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                            obj.SetActive(false);
+                        } else if (obj == actionToRedo.RelatedObjects.Last().Item2) {
+                            CurrentLayer = Layer.LayerIndex[obj.name] - 1;
+                            Layer.SelectedChangeSelectedLayer(Layer.LayerNames
+                                [Layer.LayerIndex[obj.name] - 1]);
+                            Layer.LayerDeletions[obj.name] = true;
+                            obj.SetActive(false);
+                        }
+                    }
+                    Layer.NumberOfActiveLayers--;
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
@@ -314,7 +338,10 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                         if (obj != null) {
                             MapObjects[id].IsActive = true;
-                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            Layers[((DeleteMapObjectAction) actionToUndo).LayerID].Add
+                                (id, MapObjects[id]);
+                            Layers[((DeleteMapObjectAction) actionToUndo).LayerID][id].IsActive
+                                 = true;
                             obj.SetActive(true);
                         }
                     }
@@ -329,10 +356,25 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.CreateLayer:
-                    Layering.DeleteLastLayer();
+                    CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name] - 1;
+                    Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex
+                        [actionToUndo.RelatedObjects[0].Item2.name] - 1]);
+                    actionToUndo.RelatedObjects[0].Item2.SetActive(false);
                     break;
                 case EditorAction.ActionType.DeleteLayer:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                        if (obj != null && obj != actionToUndo.RelatedObjects.Last().Item2) {
+                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                            obj.SetActive(true);
+                        } else if (obj == actionToUndo.RelatedObjects.Last().Item2) {
+                            obj.SetActive(true);
+                            CurrentLayer = Layer.LayerIndex[obj.name];
+                            Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer
+                                .LayerIndex[obj.name]]);
+                            Layer.LayerDeletions[obj.name] = false;
+                        }
+                    }
+                    Layer.NumberOfActiveLayers++;
                     break;
                 case EditorAction.ActionType.MoveLayer:
                     // TODO: Implement
@@ -375,8 +417,11 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-                        newGameObject.transform.rotation, true);
+            newGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
+        if (!IdToGameObjectMapping.ContainsKey(newGameObject.GetInstanceID())) {
+            IdToGameObjectMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+        }
     }	
 
     /// <summary>
@@ -426,47 +471,36 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
 
-        for (int i = 0; i < mapData.LayerNames.Count; i++) {
-            // Create a dictionary for each layer
-            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
+        for (int i = 0; i < mapData.LayerNames.Count; i++) {            
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(mapData.LayerNames[i], i);
             Layer.LayerStatus.Add(mapData.LayerNames[i], false);
             Layer.LayerNames.Add(mapData.LayerNames[i]);
+            Layer.LayerDeletions.Add(mapData.LayerNames[i], false);
+        }
+
+        for (int i = 0; i < mapData.LayerNames.Count; i++) {
+            // Create a list for each layer
+            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
+            tempLayerList[0].Item2.name = mapData.LayerNames[i];
         }
 
         // Select the layer with index 0
-        Layer.LayerStatus[mapData.LayerNames[0]] = true;
+        Layer.SelectedChangeSelectedLayer(mapData.LayerNames[0]);
 
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
+        Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
 
         foreach (MapObject mapObject in mapData.MapObjects) {
-            GameObject newParent = new GameObject();
-            newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
-            newParent.transform.SetParent(MapContainer.transform, true);
-            newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
-                                                            mapObject.MapOffset.y, 0);
-            GameObject newGameObject = (GameObject) Instantiate(
-                AssetPrefabs[mapObject.PrefabIndex], 
-                new Vector3(newParent.transform.position.x, 
-                            newParent.transform.position.y, 
-                            0), 
-                Quaternion.identity, newParent.transform);
-            newGameObject.transform.localPosition = new Vector3(
-                newGameObject.transform.localPosition.x, 
-                newGameObject.transform.localPosition.y, 0);
-            newGameObject.transform.rotation = mapObject.Rotation;
-            newGameObject.transform.localScale = 
-                new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
-                            newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                            newGameObject.transform.localScale.z + Zoom.zoomFactor);
-            AddNewMapObject(newGameObject, mapObject.Name, newParent, 
-                            newMapObjects, mapObject.PrefabIndex);
+            GameObject  newGameObject = RebuildMapObject(mapObject, newMapObjects);
+            newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
                 newGameObject.GetInstanceID(), newMapObjects[newGameObject.GetInstanceID()]);
         }
         MapObjects = newMapObjects;
+        IdToGameObjectMapping = newIdMapping;
         GameObject.Find("Spawn Point").GetComponent<CircleCollider2D>().enabled = true;
     }
 
@@ -487,17 +521,20 @@ public class MapEditorManager : MonoBehaviour {
     private void ReloadScene() {
         Reversion = true;
         LoadFlag = false;
-
-        Layer.LayerToBeNamed = 0;
+        
         List<string> tempLayerNames = new List<string>(Layer.LayerNames);
+        List<bool> tempDeletions = Layer.LayerDeletions.Values.ToList();
 
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
+        Layer.NumberOfActiveLayers = 0;
+
+        int tempCurrentLayer = CurrentLayer;
 
         for (int i = 0; i < tempLayerNames.Count; i++) {
-            // Create a dictionary for each layer
-            List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+            Layer.LayerToBeNamed = 0;
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(tempLayerNames[i], i);
             if (i == CurrentLayer) {
@@ -506,39 +543,36 @@ public class MapEditorManager : MonoBehaviour {
                 Layer.LayerStatus.Add(tempLayerNames[i], false);
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
+            Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
         }
+
+        for (int i = 0; i <tempLayerNames.Count; i++) {
+            // Create a list for each layer
+            List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
+            tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
+                .LayerText.text = Layer.LayerNames[i];
+            tempLayerList[0].Item2.name = Layer.LayerNames[i];
+        }
+
+        Layer.SelectedChangeSelectedLayer(Layer.LayerNames[tempCurrentLayer]);
+        CurrentLayer = tempCurrentLayer;
 
         // Reloading MapObjects
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
         Dictionary<int, GameObject> mapObjectsMapping = new Dictionary<int, GameObject>();
+        Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
         List<Dictionary<int, MapObject>> newLayers = new List<Dictionary<int, MapObject>>();
 
         MapContainer = GameObject.Find("Map Container");
         foreach (Dictionary<int, MapObject> layer in Layers) {
             Dictionary<int, MapObject> currentLayer = new Dictionary<int, MapObject>();
             foreach (KeyValuePair <int, MapObject> mapObject in layer) {
-                GameObject newParent = new GameObject();
-                newParent.name = AssetPrefabs[mapObject.Value.PrefabIndex].name + " Parent";
-                newParent.transform.SetParent(MapContainer.transform, true);
-                newParent.transform.localPosition = new Vector3(mapObject.Value.MapOffset.x, 
-                                                                mapObject.Value.MapOffset.y, 0);
-                newParent.transform.localScale = mapObject.Value.Scale;
-                GameObject newGameObject = (GameObject) Instantiate(
-                    AssetPrefabs[mapObject.Value.PrefabIndex], newParent.transform);
-                newGameObject.transform.localPosition = new Vector3(mapObject.Value.MapPosition.x, 
-                    mapObject.Value.MapPosition.y, 0);
-                newGameObject.transform.rotation = mapObject.Value.Rotation;
-                newGameObject.transform.localScale = 
-                    new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
-                                newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                                newGameObject.transform.localScale.z + Zoom.zoomFactor);
-                mapObjectsMapping.Add(mapObject.Key, newGameObject);
-                AddNewMapObject(newGameObject, mapObject.Value.Name, 
-                                newParent, newMapObjects, mapObject.Value.PrefabIndex);
+               GameObject newGameObject = RebuildMapObject(mapObject.Value, newMapObjects);
+                newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+                mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 currentLayer.Add(newGameObject.GetInstanceID(), 
-                                 newMapObjects[newGameObject.GetInstanceID()]);
+                             newMapObjects[newGameObject.GetInstanceID()]);
                 if (!mapObject.Value.IsActive) {
-                    newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
                     currentLayer[newGameObject.GetInstanceID()].IsActive = false;
                     newGameObject.SetActive(false);
                 }
@@ -552,6 +586,20 @@ public class MapEditorManager : MonoBehaviour {
 
             while (pointer != null) {
                 for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
+                    if (pointer.Value.Type == EditorAction.ActionType.DeleteMapObject) {
+                        MapObject mapObject = ((DeleteMapObjectAction) pointer.Value).MapObject;
+                        GameObject newGameObject = RebuildMapObject(mapObject, newMapObjects);
+                        newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
+                        mapObjectsMapping.Add(mapObject.Id, newGameObject);
+                        if (!mapObject.IsActive) {
+                                newGameObject.SetActive(false);
+                        }
+                    } else if (pointer.Value.Type == EditorAction.ActionType.DeleteLayer 
+                        && i == pointer.Value.RelatedObjects.Count - 1) {
+                        GameObject layer = GameObject.Find(((DeleteLayerAction) pointer
+                            .Value).LayerName);
+                        pointer.Value.RelatedObjects[i] = (layer.GetInstanceID(), layer);
+                    }
                     int pointerId = pointer.Value.RelatedObjects[i].Item1;
                     // ensure the object is a MapObject
                     if (mapObjectsMapping.ContainsKey(pointerId)) {
@@ -569,11 +617,60 @@ public class MapEditorManager : MonoBehaviour {
         // Resetting MapObjects  and Layers Dictionaries
         MapObjects = new Dictionary<int, MapObject>(newMapObjects);
         Layers = new List<Dictionary<int, MapObject>>(newLayers);
+        IdToGameObjectMapping = new Dictionary<int, GameObject>(newIdMapping);
 
         // Swapping MapObjects in LayerCollisions List
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
             mapObjects[0] = MapObjects[mapObjectsMapping[mapObjects[0].Id].GetInstanceID()];
             mapObjects[1] = MapObjects[mapObjectsMapping[mapObjects[1].Id].GetInstanceID()];
         }
+
+        foreach (string name in Layer.LayerNames) {
+            if (Layer.LayerDeletions[name] == true) {
+                foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
+                    IdToGameObjectMapping[mapObject.Id].SetActive(false);
+                }
+                Layer.NumberOfActiveLayers--;
+                GameObject.Find(name).SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds a <c>GameObject</c> and <c>MapObject</c> based on a current <c>MapObject</c> and then adds the new
+    /// <c>MapObject</c> to a dictionary used to track it.
+    /// </summary>
+    /// <param name="mapObject">
+    /// The <c>MapObject</c> that will be used as the template for the new one being built
+    /// </param>
+    /// <param name="newMapObjects">
+    /// The dictionary being used to track the new <c>MapObject</c> that has been added
+    /// </param>
+    /// <returns>
+    /// The <c>GameObject</c> that was created as part of creating the new MapObject
+    /// </returns>
+    private GameObject RebuildMapObject(MapObject mapObject, 
+                                        Dictionary<int, MapObject> newMapObjects) {
+        GameObject newParent = new GameObject();
+        newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
+        newParent.transform.SetParent(MapContainer.transform, true);
+        newParent.transform.localPosition = new Vector3(mapObject.MapOffset.x, 
+                                                        mapObject.MapOffset.y, 0);
+        newParent.transform.localScale = mapObject.Scale;
+        GameObject newGameObject = (GameObject) Instantiate(
+            AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
+        newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
+            mapObject.MapPosition.y, 0);
+        newGameObject.transform.rotation = mapObject.Rotation;
+        newGameObject.transform.localScale = 
+            new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
+                        newGameObject.transform.localScale.y + Zoom.zoomFactor, 
+                        newGameObject.transform.localScale.z + Zoom.zoomFactor);
+        AddNewMapObject(newGameObject, mapObject.Name, 
+                        newParent, newMapObjects, mapObject.PrefabIndex);
+        if (!mapObject.IsActive) {
+            newMapObjects[newGameObject.GetInstanceID()].IsActive = false;
+        }
+        return newGameObject;
     }
 }

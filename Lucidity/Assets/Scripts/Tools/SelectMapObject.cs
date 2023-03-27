@@ -21,7 +21,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             int id = clickedObject.GetInstanceID();
             MapEditorManager editor = GameObject.Find("MapEditorManager")
                 .GetComponent<MapEditorManager>();
-            if (MapEditorManager.Layers[editor.CurrentLayer].ContainsKey(id)
+            if (MapEditorManager.Layers[MapEditorManager.CurrentLayer].ContainsKey(id)
                     || clickedObject.name == "Spawn Point") {
                 if (SelectedObject != null) {
                     UnselectMapObject();
@@ -57,6 +57,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].IsActive = false;
         int layer = MapEditorManager.LayerContainsMapObject(SelectedObject.GetInstanceID());
         MapEditorManager.Layers[layer][SelectedObject.GetInstanceID()].IsActive = false;
+        MapEditorManager.Layers[layer].Remove(SelectedObject.GetInstanceID());
+        SelectedObject.GetComponent<Image>().color = Color.white;
         SelectedObject.SetActive(false);
         List<(int, GameObject)> objectsToDelete = 
             new List<(int, GameObject)>(){(SelectedObject.GetInstanceID(), SelectedObject)};
@@ -72,18 +74,21 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                         actionToRemove = temp;
                     }
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                                                      new DeleteMapObjectAction(objectsToDelete));
+                        new DeleteMapObjectAction(objectsToDelete, layer, 
+                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction != null) {
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                                                      new DeleteMapObjectAction(objectsToDelete));
+                        new DeleteMapObjectAction(objectsToDelete, layer, 
+                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction == null 
                            && MapEditorManager.Actions != null) {
                     // There is only one action and it has been undone
                     MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
                     MapEditorManager.Actions.Clear();
-                    MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete));
+                    MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete, 
+                        layer, MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
                 }
         SelectedObject = null;

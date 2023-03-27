@@ -32,9 +32,9 @@ public class ActionsHistoryTests : MapEditorTests {
     [Test]
     public void CanUndoAndRedoAssetDeletion() {
         // paint an asset
-        Assert.Zero(MapEditorManager.MapObjects.Count);
+        Assert.Zero(MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
-        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
 
@@ -48,14 +48,17 @@ public class ActionsHistoryTests : MapEditorTests {
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
         deleteButton.onClick.Invoke();
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // undo the deletion
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
         Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // redo the deletion
         GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
 
         // reset testing var
         SelectMapObject.IsTesting = false;
@@ -64,9 +67,7 @@ public class ActionsHistoryTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanUndoAndRedoLayerCreation() {
         // Confirm current layer is tracking the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
 
         // create a layer
         Assert.AreEqual(1, MapEditorManager.Layers.Count);
@@ -75,23 +76,58 @@ public class ActionsHistoryTests : MapEditorTests {
         yield return null;
         
         // assert that the new layer is selected
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
 
         // undo the creation
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
         yield return null;
-        Assert.AreEqual(1, MapEditorManager.Layers.Count);
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
 
         // redo the creation
         GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual(2, MapEditorManager.Layers.Count);
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
     }
 
-    [Test]
-    public void PermanentlyDeleteActionsThatCannotBeRedone() {
+    [UnityTest]
+    public IEnumerator CanUndoAndRedoLayerDeletion() {
+        // Confirm current layer is tracking the base layer
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+
+        // create a layer
+        Assert.AreEqual(1, MapEditorManager.Layers.Count);
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject layer = GameObject.Find("Layer1");
+        
+        // assert that the new layer is selected
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+        // delete layer
+        layer.transform.GetChild(2).gameObject.GetComponent<Button>().onClick.Invoke();
+
+        // undo deletion
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.IsTrue(layer.activeSelf);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
+
+        // redo the deletion
+        GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.IsFalse(layer.activeSelf);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+    }
+
+    [UnityTest]
+    public IEnumerator PermanentlyDeleteActionsThatCannotBeRedone() {
         // paint an asset
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
@@ -104,5 +140,21 @@ public class ActionsHistoryTests : MapEditorTests {
 
         // check that the original asset painted is permanently deleted
         Assert.IsFalse(MapEditorManager.MapObjects.ContainsKey(placedObjectId));
+
+        // create a layer
+        Assert.AreEqual(1, MapEditorManager.Layers.Count);
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+
+        // undo the creation
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+
+        // create a new layer
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        
+        // check that the original new layer was permantently deleted
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
     }
 }
