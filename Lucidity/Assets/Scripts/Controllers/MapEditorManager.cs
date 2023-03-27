@@ -546,7 +546,7 @@ public class MapEditorManager : MonoBehaviour {
             Layer.LayerNames.Add(tempLayerNames[i]);
             Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
             tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
-                ._layerText.text = Layer.LayerNames[i];
+                .LayerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
         }
         Layer.SelectedChangeSelectedLayer(Layer.LayerNames[tempCurrentLayer]);

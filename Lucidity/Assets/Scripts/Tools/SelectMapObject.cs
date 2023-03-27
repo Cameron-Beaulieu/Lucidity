@@ -75,14 +75,12 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                     }
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
                         new DeleteMapObjectAction(objectsToDelete, layer, 
-                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()],
-                            SelectedObject.GetInstanceID()));
+                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction != null) {
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
                         new DeleteMapObjectAction(objectsToDelete, layer, 
-                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()],
-                            SelectedObject.GetInstanceID()));
+                            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction == null 
                            && MapEditorManager.Actions != null) {
@@ -90,8 +88,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                     MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
                     MapEditorManager.Actions.Clear();
                     MapEditorManager.Actions.AddFirst(new DeleteMapObjectAction(objectsToDelete, 
-                        layer, MapEditorManager.MapObjects[SelectedObject.GetInstanceID()],
-                        SelectedObject.GetInstanceID()));
+                        layer, MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]));
                     MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
                 }
         SelectedObject = null;
