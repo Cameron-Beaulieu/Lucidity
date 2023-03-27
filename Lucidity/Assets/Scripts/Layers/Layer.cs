@@ -167,11 +167,20 @@ public class Layer : MonoBehaviour {
                     MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
                 }
             }
+            int indexToSwapTo;
             if (LayerIndex[_name] - 1 >= 0) {
-                SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] - 1]);
+                indexToSwapTo = LayerIndex[_name] - 1;
             } else {
-                SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] + 1]);
+                indexToSwapTo = LayerIndex[_name] + 1;
             }
+            
+            while (LayerDeletions[LayerNames[indexToSwapTo]] == true) {
+                indexToSwapTo --;
+                if (indexToSwapTo < 0) {
+                    indexToSwapTo = LayerNames.Count - 1;
+                }
+            }
+            SelectedChangeSelectedLayer(LayerNames[indexToSwapTo]);
             NumberOfActiveLayers--;
             LayerDeletions[_name] = true;
             gameObject.SetActive(false);
