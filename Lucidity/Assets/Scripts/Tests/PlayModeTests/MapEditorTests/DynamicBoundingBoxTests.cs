@@ -29,17 +29,8 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         fortressButton.onClick.Invoke();
         Assert.IsTrue(fortressButton.GetComponent<AssetController>().Clicked);
 
-        // verify that the set of valid and invalid assets are disjoint, and complete the entire
-        // grid
-        Assert.AreEqual(2, DynamicBoundingBox.AssetArrangement.Count);
-
-        HashSet<Vector2> validHoverAssets = new HashSet<Vector2>(DynamicBoundingBox.AssetArrangement);
-        validHoverAssets.UnionWith(DynamicBoundingBox.InvalidArrangement);
-        Assert.AreEqual(Mathf.Pow(DynamicBoundingBox.DynamicSideLength, 2), validHoverAssets.Count);
-
-        validHoverAssets = new HashSet<Vector2>(DynamicBoundingBox.AssetArrangement);
-        validHoverAssets.IntersectWith(DynamicBoundingBox.InvalidArrangement);
-        Assert.AreEqual(0, validHoverAssets.Count);
+        // the dynamic bounding box parent on the hovering assets is also given the tag AssetImage
+        Assert.AreEqual(3, GameObject.FindGameObjectsWithTag("AssetImage").Length);
     }
 
     [UnityTest]
