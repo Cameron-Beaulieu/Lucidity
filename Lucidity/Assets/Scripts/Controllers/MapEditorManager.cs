@@ -544,12 +544,16 @@ public class MapEditorManager : MonoBehaviour {
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
             Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
+        }
+
+        for (int i = 0; i <tempLayerNames.Count; i++) {
             // Create a list for each layer
             List<(int, GameObject)> tempLayerList = Layering.RemakeLayer(_layerPrefab);
             tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
                 .LayerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
         }
+        
         Layer.SelectedChangeSelectedLayer(Layer.LayerNames[tempCurrentLayer]);
         CurrentLayer = tempCurrentLayer;
 

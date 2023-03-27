@@ -25,9 +25,11 @@ public class Layer : MonoBehaviour {
 
     private void Awake() {
         _layerContainer = GameObject.Find("LayerScrollContent");
-        int append = LayerStatus.Count;
-        while (LayerNames.Contains("Layer" + append.ToString())) {
+        int append = 0;
+        while (LayerNames.Contains("Layer" + append.ToString()) && LayerToBeNamed == -1) {
+            Debug.Log(LayerNames[append]);
             append ++;
+            Debug.Log("Layer" + append.ToString());
         }
         gameObject.name = "Layer" + append.ToString();
         _name = gameObject.name;
@@ -42,6 +44,7 @@ public class Layer : MonoBehaviour {
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
         if (LayerToBeNamed == -1) {
+            Debug.Log("Correct if");
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
@@ -58,6 +61,7 @@ public class Layer : MonoBehaviour {
                 LayerToBeNamed++;
             }
         } else {
+            Debug.Log("Correct else");
             _layerText.text = _name;
         }
         NumberOfActiveLayers++;
