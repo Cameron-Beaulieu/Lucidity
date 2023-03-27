@@ -494,7 +494,7 @@ public class MapEditorManager : MonoBehaviour {
         Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
 
         foreach (MapObject mapObject in mapData.MapObjects) {
-            GameObject  newGameObject = RebuildMapObject(mapObject, mapObject.Id, newMapObjects);
+            GameObject  newGameObject = RebuildMapObject(mapObject, newMapObjects);
             newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
             Layers[Layer.LayerIndex[mapObject.LayerName]].Add(
                 newGameObject.GetInstanceID(), newMapObjects[newGameObject.GetInstanceID()]);
@@ -562,8 +562,7 @@ public class MapEditorManager : MonoBehaviour {
         foreach (Dictionary<int, MapObject> layer in Layers) {
             Dictionary<int, MapObject> currentLayer = new Dictionary<int, MapObject>();
             foreach (KeyValuePair <int, MapObject> mapObject in layer) {
-               GameObject newGameObject = RebuildMapObject(mapObject.Value, mapObject.Key, 
-                    newMapObjects);
+               GameObject newGameObject = RebuildMapObject(mapObject.Value, newMapObjects);
                 newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
                 mapObjectsMapping.Add(mapObject.Value.Id, newGameObject);
                 currentLayer.Add(newGameObject.GetInstanceID(), 
@@ -584,8 +583,7 @@ public class MapEditorManager : MonoBehaviour {
                 for (int i = 0; i < pointer.Value.RelatedObjects.Count; i++) {
                     if (pointer.Value.Type == EditorAction.ActionType.DeleteMapObject) {
                         MapObject mapObject = ((DeleteMapObjectAction) pointer.Value).MapObject;
-                        GameObject newGameObject = RebuildMapObject(mapObject, 
-                            ((DeleteMapObjectAction) pointer.Value).GameObjectID, newMapObjects);
+                        GameObject newGameObject = RebuildMapObject(mapObject, newMapObjects);
                         newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
                         mapObjectsMapping.Add(mapObject.Id, newGameObject);
                         if (!mapObject.IsActive) {
