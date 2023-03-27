@@ -553,7 +553,7 @@ public class MapEditorManager : MonoBehaviour {
                 .LayerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
         }
-        
+
         Layer.SelectedChangeSelectedLayer(Layer.LayerNames[tempCurrentLayer]);
         CurrentLayer = tempCurrentLayer;
 
@@ -630,7 +630,7 @@ public class MapEditorManager : MonoBehaviour {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
                     IdToGameObjectMapping[mapObject.Id].SetActive(false);
                 }
-                Layer.NumberOfActiveLayers --;
+                Layer.NumberOfActiveLayers--;
                 GameObject.Find(name).SetActive(false);
             }
         }

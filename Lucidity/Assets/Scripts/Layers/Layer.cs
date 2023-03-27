@@ -27,7 +27,7 @@ public class Layer : MonoBehaviour {
         _layerContainer = GameObject.Find("LayerScrollContent");
         int append = 0;
         while (LayerNames.Contains("Layer" + append.ToString()) && LayerToBeNamed == -1) {
-            append ++;
+            append++;
         }
         gameObject.name = "Layer" + append.ToString();
         _name = gameObject.name;
