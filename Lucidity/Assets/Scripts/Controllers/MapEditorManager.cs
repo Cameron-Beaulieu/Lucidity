@@ -295,6 +295,7 @@ public class MapEditorManager : MonoBehaviour {
                             CurrentLayer = Layer.LayerIndex[obj.name] - 1;
                             Layer.SelectedChangeSelectedLayer(Layer.LayerNames
                                 [Layer.LayerIndex[obj.name] - 1]);
+                            Layer.LayerDeletions[obj.name] = true;
                             obj.SetActive(false);
                         }
                     }
@@ -370,6 +371,7 @@ public class MapEditorManager : MonoBehaviour {
                             CurrentLayer = Layer.LayerIndex[obj.name];
                             Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer
                                 .LayerIndex[obj.name]]);
+                            Layer.LayerDeletions[obj.name] = false;
                         }
                     }
                     Layer.NumberOfActiveLayers++;
@@ -469,18 +471,26 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
 
         for (int i = 0; i < mapData.LayerNames.Count; i++) {
             // Create a dictionary for each layer
-            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
+            
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(mapData.LayerNames[i], i);
             Layer.LayerStatus.Add(mapData.LayerNames[i], false);
             Layer.LayerNames.Add(mapData.LayerNames[i]);
+            Layer.LayerDeletions.Add(mapData.LayerNames[i], false);
+        }
+
+        for (int i = 0; i < mapData.LayerNames.Count; i++) {
+            // Create a dictionary for each layer
+            List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
+            tempLayerList[0].Item2.name = mapData.LayerNames[i];
         }
 
         // Select the layer with index 0
-        Layer.LayerStatus[mapData.LayerNames[0]] = true;
+        Layer.SelectedChangeSelectedLayer(mapData.LayerNames[0]);
 
         Dictionary<int, MapObject> newMapObjects = new Dictionary<int, MapObject>();
         Dictionary<int, GameObject> newIdMapping = new Dictionary<int, GameObject>();
@@ -515,10 +525,12 @@ public class MapEditorManager : MonoBehaviour {
         LoadFlag = false;
         
         List<string> tempLayerNames = new List<string>(Layer.LayerNames);
+        List<bool> tempDeletions = Layer.LayerDeletions.Values.ToList();
 
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
 
         int tempCurrentLayer = CurrentLayer;
 
@@ -534,6 +546,7 @@ public class MapEditorManager : MonoBehaviour {
                 Layer.LayerStatus.Add(tempLayerNames[i], false);
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
+            Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
             tempLayerList[0].Item2.transform.GetChild(0).gameObject.GetComponent<LayerName>()
                 ._layerText.text = Layer.LayerNames[i];
             tempLayerList[0].Item2.name = Layer.LayerNames[i];
@@ -578,8 +591,13 @@ public class MapEditorManager : MonoBehaviour {
                         newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
                         mapObjectsMapping.Add(mapObject.Id, newGameObject);
                         if (!mapObject.IsActive) {
-                            newGameObject.SetActive(false);
+                                newGameObject.SetActive(false);
                         }
+                    } else if (pointer.Value.Type == EditorAction.ActionType.DeleteLayer 
+                        && i == pointer.Value.RelatedObjects.Count - 1) {
+                        GameObject layer = GameObject.Find(((DeleteLayerAction) pointer
+                            .Value).LayerName);
+                        pointer.Value.RelatedObjects[i] = (layer.GetInstanceID(), layer);
                     }
                     int pointerId = pointer.Value.RelatedObjects[i].Item1;
                     // ensure the object is a MapObject
@@ -604,6 +622,15 @@ public class MapEditorManager : MonoBehaviour {
         foreach (List<MapObject> mapObjects in AssetCollision.LayerCollisions) {
             mapObjects[0] = MapObjects[mapObjectsMapping[mapObjects[0].Id].GetInstanceID()];
             mapObjects[1] = MapObjects[mapObjectsMapping[mapObjects[1].Id].GetInstanceID()];
+        }
+
+        foreach (string name in Layer.LayerNames) {
+            if (Layer.LayerDeletions[name] == true) {
+                foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
+                    IdToGameObjectMapping[mapObject.Id].SetActive(false);
+                }
+                GameObject.Find(name).SetActive(false);
+            }
         }
     }
 

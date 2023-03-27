@@ -8,6 +8,7 @@ public class Layer : MonoBehaviour {
     public static Dictionary<string, bool> LayerStatus = new Dictionary<string, bool>();
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
+    public static Dictionary<string, bool> LayerDeletions = new Dictionary<string, bool>();
     public static int LayerToBeNamed = -1;
     public static int NumberOfActiveLayers = 0;
     private static GameObject _layerContainer;
@@ -23,8 +24,13 @@ public class Layer : MonoBehaviour {
     }
 
     private void Awake() {
+        Debug.Log(LayerToBeNamed);
         _layerContainer = GameObject.Find("LayerScrollContent");
-        gameObject.name = "Layer" + (LayerStatus.Count).ToString();
+        int append = LayerStatus.Count;
+        while (LayerNames.Contains("Layer" + append.ToString())) {
+            append ++;
+        }
+        gameObject.name = "Layer" + append.ToString();
         _name = gameObject.name;
         _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
         _layerText.readOnly = true;
@@ -37,23 +43,30 @@ public class Layer : MonoBehaviour {
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
         if (LayerToBeNamed == -1) {
+            Debug.Log("wrong if");
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
+            LayerDeletions.Add(_name, false);
         }
         // Names are applied to the layers after they have been loaded in the MapEditorManager
         // This ensures that layers are given the proper names if loaded from a file
         if (LayerToBeNamed >= 0 && LayerToBeNamed < LayerNames.Count) {
+            Debug.Log("correct if");
             _layerText.text = LayerNames[LayerToBeNamed];
             // this is the case where the last layer has been named, so LayerToBeNamed is reset
             if (LayerToBeNamed + 1 == LayerNames.Count) {
+                Debug.Log("turn to -1");
                 LayerToBeNamed = -1;
             } else {
+                Debug.Log("++");
                 LayerToBeNamed++;
             }
         } else {
+            Debug.Log("even more wrong if");
             _layerText.text = _name;
         }
+        Debug.Log(LayerNames.Count);
         NumberOfActiveLayers++;
         ChangeSelectedLayer();
     }
@@ -131,31 +144,33 @@ public class Layer : MonoBehaviour {
             // Adding CreateLayerAction to Undo/Redo LinkedList
             if (MapEditorManager.Actions == null) {
                 MapEditorManager.Actions = new LinkedList<EditorAction>();
-                MapEditorManager.Actions.AddFirst(new DeleteLayerAction(relatedObjects));
+                MapEditorManager.Actions.AddFirst(new DeleteLayerAction(relatedObjects, _name));
                 MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
             } else {
                 if (MapEditorManager.CurrentAction != null && 
                     MapEditorManager.CurrentAction.Next != null) {
                     // These actions can no longer be redone
                     MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);
-                    LinkedListNode<EditorAction> actionToRemove = MapEditorManager.CurrentAction.Next;
+                    LinkedListNode<EditorAction> actionToRemove = MapEditorManager
+                        .CurrentAction.Next;
                     while (actionToRemove != null) {
                         MapEditorManager.Actions.Remove(actionToRemove);
                         actionToRemove = actionToRemove.Next;
                     }
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                        new DeleteLayerAction(relatedObjects));
+                        new DeleteLayerAction(relatedObjects, _name));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction != null) {
                     MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                        new DeleteLayerAction(relatedObjects));
+                        new DeleteLayerAction(relatedObjects, _name));
                     MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
                 } else if (MapEditorManager.CurrentAction == null && 
                     MapEditorManager.Actions != null) {
                     // There is only one action and it has been undone
                     MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
                     MapEditorManager.Actions.Clear();
-                    MapEditorManager.Actions.AddFirst(new DeleteLayerAction(relatedObjects));
+                    MapEditorManager.Actions.AddFirst(new DeleteLayerAction(relatedObjects,
+                                                                            _name));
                     MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
                 }
             }
@@ -165,6 +180,7 @@ public class Layer : MonoBehaviour {
                 SelectedChangeSelectedLayer(LayerNames[LayerIndex[_name] + 1]);
             }
             NumberOfActiveLayers--;
+            LayerDeletions[_name] = true;
             gameObject.SetActive(false);
         }
     }
@@ -186,6 +202,7 @@ public class Layer : MonoBehaviour {
         LayerNames.RemoveAt(LayerIndex[_name]);
         LayerStatus.Remove(_name);
         LayerIndex.Remove(_name);
+        LayerDeletions.Remove(_name);
 
         Destroy(gameObject);
     }

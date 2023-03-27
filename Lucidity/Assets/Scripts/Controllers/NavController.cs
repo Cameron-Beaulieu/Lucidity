@@ -122,9 +122,22 @@ public class NavController : MonoBehaviour {
     private static void SaveFile() {
         string groundColour = ColorUtility.ToHtmlStringRGB(
             MapEditorManager.Map.GetComponent<Image>().color).ToLower();
+            List<Dictionary<int, MapObject>> tempLayers = new List<Dictionary<int, MapObject>>
+                (MapEditorManager.Layers);
+            Dictionary<string, int> tempLayerIndex = new Dictionary<string, int>(Layer.LayerIndex);
+
+            foreach((string name, bool deletionStatus) in Layer.LayerDeletions) {
+                if (deletionStatus == true) {
+                    tempLayers.RemoveAt(Layer.LayerIndex[name]);
+                    for(int i = tempLayerIndex[name]; i < tempLayerIndex.Count; i++) {
+                        tempLayerIndex[Layer.LayerNames[i]]--;
+                    }
+                    tempLayerIndex.Remove(name);
+                }
+            }
 
         MapData jsonContent = new MapData(new Biome(groundColour), MapEditorManager.SpawnPoint, 
-                                          MapEditorManager.Layers, Layer.LayerIndex);
+                                          tempLayers, tempLayerIndex);
 
         File.WriteAllText(MapData.FileName, jsonContent.Serialize());
         _savingText.text = "Saved!";
