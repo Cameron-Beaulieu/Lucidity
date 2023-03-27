@@ -529,6 +529,7 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
         Layer.LayerDeletions.Clear();
+        layer.NumberOfActiveLayers = 0;
 
         int tempCurrentLayer = CurrentLayer;
 
