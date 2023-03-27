@@ -626,6 +626,7 @@ public class MapEditorManager : MonoBehaviour {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
                     IdToGameObjectMapping[mapObject.Id].SetActive(false);
                 }
+                Layer.NumberOfActiveLayers --;
                 GameObject.Find(name).SetActive(false);
             }
         }
