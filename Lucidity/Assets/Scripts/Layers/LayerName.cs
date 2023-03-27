@@ -86,6 +86,7 @@ public class LayerName : MonoBehaviour {
         if (newName.Equals(oldName)) {return;}
         int oldIndex = Layer.LayerIndex[oldName];
         bool oldStatus = Layer.LayerStatus[oldName];
+        bool oldDeletion = Layer.LayerDeletions[oldName];
         // Update LayerIndex dictionary to use the newName
         Layer.LayerIndex.Remove(oldName);
         Layer.LayerIndex.Add(newName, oldIndex);
@@ -95,6 +96,9 @@ public class LayerName : MonoBehaviour {
         // Update LayerNames
         Layer.LayerNames.Remove(oldName);
         Layer.LayerNames.Insert(oldIndex, newName);
+        // Update LayerDeletion to use the NewName
+        Layer.LayerDeletions.Remove(oldName);
+        Layer.LayerDeletions.Add(newName, oldDeletion);
 
         GameObject layer = GameObject.Find(oldName);
         layer.name = newName;
