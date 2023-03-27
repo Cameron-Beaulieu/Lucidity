@@ -122,8 +122,8 @@ public class NavController : MonoBehaviour {
     private static void SaveFile() {
         string groundColour = ColorUtility.ToHtmlStringRGB(
             MapEditorManager.Map.GetComponent<Image>().color).ToLower();
-            List<Dictionary<int, MapObject>> tempLayers = new List<Dictionary<int, MapObject>>
-                (MapEditorManager.Layers);
+            List<Dictionary<int, MapObject>> tempLayers = 
+                new List<Dictionary<int, MapObject>>(MapEditorManager.Layers);
             Dictionary<string, int> tempLayerIndex = new Dictionary<string, int>(Layer.LayerIndex);
 
             foreach((string name, bool deletionStatus) in Layer.LayerDeletions) {
