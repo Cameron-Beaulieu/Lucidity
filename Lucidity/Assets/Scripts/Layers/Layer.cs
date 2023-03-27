@@ -43,7 +43,6 @@ public class Layer : MonoBehaviour {
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
         if (LayerToBeNamed == -1) {
-            Debug.Log("wrong if");
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
@@ -52,21 +51,16 @@ public class Layer : MonoBehaviour {
         // Names are applied to the layers after they have been loaded in the MapEditorManager
         // This ensures that layers are given the proper names if loaded from a file
         if (LayerToBeNamed >= 0 && LayerToBeNamed < LayerNames.Count) {
-            Debug.Log("correct if");
             _layerText.text = LayerNames[LayerToBeNamed];
             // this is the case where the last layer has been named, so LayerToBeNamed is reset
             if (LayerToBeNamed + 1 == LayerNames.Count) {
-                Debug.Log("turn to -1");
                 LayerToBeNamed = -1;
             } else {
-                Debug.Log("++");
                 LayerToBeNamed++;
             }
         } else {
-            Debug.Log("even more wrong if");
             _layerText.text = _name;
         }
-        Debug.Log(LayerNames.Count);
         NumberOfActiveLayers++;
         ChangeSelectedLayer();
     }

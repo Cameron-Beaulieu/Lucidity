@@ -473,9 +473,7 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerNames.Clear();
         Layer.LayerDeletions.Clear();
 
-        for (int i = 0; i < mapData.LayerNames.Count; i++) {
-            // Create a dictionary for each layer
-            
+        for (int i = 0; i < mapData.LayerNames.Count; i++) {            
             // fill in LayerIndex and LayerStatus dictionaries
             Layer.LayerIndex.Add(mapData.LayerNames[i], i);
             Layer.LayerStatus.Add(mapData.LayerNames[i], false);
@@ -484,7 +482,7 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         for (int i = 0; i < mapData.LayerNames.Count; i++) {
-            // Create a dictionary for each layer
+            // Create a list for each layer
             List<(int, GameObject)> tempLayerList = Layering.AddLayer(_layerPrefab);
             tempLayerList[0].Item2.name = mapData.LayerNames[i];
         }
@@ -634,8 +632,20 @@ public class MapEditorManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Rebuilds a <c>GameObject</c> and <c>MapObject</c> based on a current <c>MapObject</c> and then adds the new
+    /// <c>MapObject</c> to a dictionary used to track it.
+    /// </summary>
+    /// <param name="mapObject">
+    /// The <c>MapObject</c> that will be used as the template for the new one being built
+    /// </param>
+    /// <param name="newMapObjects">
+    /// The dictionary being used to track the new <c>MapObject</c> that has been added
+    /// </param>
+    /// <returns>
+    /// The <c>GameObject</c> that was created as part of creating the new MapObject
+    /// </returns>
     private GameObject RebuildMapObject(MapObject mapObject, 
-                                        int gameObjectID, 
                                         Dictionary<int, MapObject> newMapObjects) {
         GameObject newParent = new GameObject();
         newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
