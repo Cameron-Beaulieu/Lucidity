@@ -30,6 +30,31 @@ public class ActionsHistoryTests : MapEditorTests {
     }
 
     [Test]
+    public void CanUndoAndRedoAssetPlacementAfterCollision() {
+        // This is a regression test for a bug where previously, collisions would be tracked
+        // within the Action history linked list causing there to be "empty nodes" since the
+        // referenced game object would already have been deleted.
+
+        // paint an asset
+        Assert.Zero(MapEditorManager.MapObjects.Count);
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+        int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        Assert.IsTrue(MapEditorManager.MapObjects[placedObjectId].IsActive);
+
+        // cause a collision
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        Assert.AreEqual(1, MapEditorManager.MapObjects.Count);
+
+        // undo the placement
+        Button undoButton = GameObject.Find("Undo").GetComponent<Button>();
+        undoButton.onClick.Invoke();
+
+        // assert the the paint action was undone and that a empty node did not exist
+        Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+    }
+
+    [Test]
     public void CanUndoAndRedoAssetDeletion() {
         // paint an asset
         Assert.Zero(MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
