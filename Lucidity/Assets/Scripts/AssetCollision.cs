@@ -250,4 +250,34 @@ public class AssetCollision : MonoBehaviour {
         }
         return false;
     }
+
+    public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
+        Debug.Log("Checking collisions after scale");
+        List<Collider2D> hitColliders = GetAssetCollisions();
+        if (GetCollisionCount() > 1) {
+            foreach (Collider2D collisionObject in hitColliders) {
+                if (collisionObject.gameObject.layer == _assetLayer
+                    && collisionObject.gameObject.GetComponent<Image>() != null
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
+                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
+                    collisionObject.gameObject.GetComponent<Image>()
+                        .color = Color.red;
+                    StartCoroutine(RevertMaterialAndScale(originalScale, scalingObject, collisionObject.gameObject));
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    IEnumerator RevertMaterialAndScale(float originalScale, GameObject scalingObject, GameObject collisionObject) {
+        yield return new WaitForSecondsRealtime(0.5f);
+        collisionObject.gameObject.GetComponent<Image>().color = Color.white;
+
+        if (collisionObject.gameObject == scalingObject) {
+            Debug.Log("Reverting scale to " + originalScale);
+            collisionObject.transform.localScale = new Vector3(originalScale, originalScale, 1);
+        }
+    }
 }

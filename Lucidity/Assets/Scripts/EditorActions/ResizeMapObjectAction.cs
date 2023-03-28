@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ResizeMapObjectAction : EditorAction {
-    private Vector2 _newSize;
-    private Vector2 _oldSize;
+    private float _newSize;
+    private float _oldSize;
 
-    public Vector2 NewSize {
+    public float NewSize {
         get { return _newSize; }
     }
 
-    public Vector2 OldSize {
+    public float OldSize {
         get { return _oldSize; }
     }
 
@@ -28,8 +28,8 @@ public class ResizeMapObjectAction : EditorAction {
     /// <c>Vector2</c> corresponding to the new scale for the map object to be resized to.
     /// </param>
     public ResizeMapObjectAction(List<(int, GameObject)> relatedObjects,
-                                 Vector2 oldSize, Vector2 newSize) {
-        base.Type = ActionType.RotateMapObject;
+                                 float oldSize, float newSize) {
+        base.Type = ActionType.ResizeMapObject;
         base.RelatedObjects = relatedObjects;
         _oldSize = oldSize;
         _newSize = newSize;

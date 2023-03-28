@@ -37,6 +37,10 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
                     = "Editing " + SelectedObject.name;
                 SelectedObject.GetComponent<Image>().color = new Color32(73, 48, 150, 255);
+                if (SelectedObject.name != "Spawn Point") {
+                    GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>().UpdateScaleText(
+                        SelectedObject.transform.localScale.x);
+                }
             }
         }
     }
