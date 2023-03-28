@@ -472,6 +472,7 @@ public class MapEditorManager : MonoBehaviour {
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
         Layer.LayerDeletions.Clear();
+        Layer.LayerVisibility.Clear();
 
         for (int i = 0; i < mapData.LayerNames.Count; i++) {            
             // fill in LayerIndex and LayerStatus dictionaries
@@ -479,6 +480,7 @@ public class MapEditorManager : MonoBehaviour {
             Layer.LayerStatus.Add(mapData.LayerNames[i], false);
             Layer.LayerNames.Add(mapData.LayerNames[i]);
             Layer.LayerDeletions.Add(mapData.LayerNames[i], false);
+            Layer.LayerVisibility.Add(mapData.LayerNames[i], true);
         }
 
         for (int i = 0; i < mapData.LayerNames.Count; i++) {
@@ -524,11 +526,13 @@ public class MapEditorManager : MonoBehaviour {
         
         List<string> tempLayerNames = new List<string>(Layer.LayerNames);
         List<bool> tempDeletions = Layer.LayerDeletions.Values.ToList();
+        List<bool> tempVisibility = Layer.LayerVisibility.Values.ToList();
 
         Layer.LayerIndex.Clear();
         Layer.LayerStatus.Clear();
         Layer.LayerNames.Clear();
         Layer.LayerDeletions.Clear();
+        Layer.LayerVisibility.Clear();
         Layer.NumberOfActiveLayers = 0;
 
         int tempCurrentLayer = CurrentLayer;
@@ -544,6 +548,7 @@ public class MapEditorManager : MonoBehaviour {
             }
             Layer.LayerNames.Add(tempLayerNames[i]);
             Layer.LayerDeletions.Add(tempLayerNames[i], tempDeletions[i]);
+            Layer.LayerVisibility.Add(tempLayerNames[i], tempVisibility[i]);
         }
 
         for (int i = 0; i <tempLayerNames.Count; i++) {
@@ -626,7 +631,14 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         foreach (string name in Layer.LayerNames) {
-            if (Layer.LayerDeletions[name] == true) {
+            // Fixing layer visibility upon reversion
+            if (!Layer.LayerVisibility[name]) {
+                GameObject layer = GameObject.Find(name);
+                layer.GetComponent<Layer>().ToggleLayerVisibility();
+            }
+
+            // Fixing layer deletions upon revertion
+            if (Layer.LayerDeletions[name]) {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
                     IdToGameObjectMapping[mapObject.Id].SetActive(false);
                 }

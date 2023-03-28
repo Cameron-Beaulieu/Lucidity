@@ -35,6 +35,7 @@ public class Util {
         Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
         Layer.LayerDeletions.Clear();
+        Layer.LayerVisibility.Clear();
         AvatarMovement.HorizontalTestingInput = 0f;
         AvatarMovement.VerticalTestingInput = 0f;
         AvatarMovement.AscendTestingInput = false;

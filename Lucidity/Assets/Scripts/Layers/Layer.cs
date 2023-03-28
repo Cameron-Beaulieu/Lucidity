@@ -9,9 +9,12 @@ public class Layer : MonoBehaviour {
     public static Dictionary<string, int> LayerIndex = new Dictionary<string, int>();
     public static List<string> LayerNames = new List<string>();
     public static Dictionary<string, bool> LayerDeletions = new Dictionary<string, bool>();
+    public static Dictionary<string, bool> LayerVisibility = new Dictionary<string, bool>();
     public static int LayerToBeNamed = -1;
     public static int NumberOfActiveLayers = 0;
     private static GameObject _layerContainer;
+    private GameObject _layerEye;
+    private GameObject _layerSlashEye;
     private GameObject _layerTrashCan;
     private TMP_InputField _layerText;
     private GameObject _layerEdit;
@@ -31,21 +34,27 @@ public class Layer : MonoBehaviour {
         }
         gameObject.name = "Layer" + append.ToString();
         _name = gameObject.name;
-        _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
+        _layerText = gameObject.transform.Find("InputField (TMP)").gameObject.GetComponent<TMP_InputField>();
         _layerText.readOnly = true;
-        _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
+        _layerEye = gameObject.transform.Find("VisibilityEye").gameObject;
+        _layerEye.GetComponent<Button>().onClick.AddListener(ToggleLayerVisibility);
+        _layerTrashCan = gameObject.transform.Find("TrashCan").gameObject;
         _layerTrashCan.GetComponent<Button>().onClick.AddListener(DeleteLayer);
         _layerTrashCan.SetActive(false);
-        _layerEdit = gameObject.transform.GetChild(3).gameObject;
+        _layerEdit = gameObject.transform.Find("Edit").gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
         _layerEdit.SetActive(false);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
+        _layerSlashEye = gameObject.transform.Find("SlashEye").gameObject;
+        _layerSlashEye.SetActive(false);
+        _layerSlashEye.GetComponent<Button>().onClick.AddListener(ToggleLayerVisibility);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)
         if (LayerToBeNamed == -1) {
             LayerStatus.Add(_name, false);
             LayerIndex.Add(_name, LayerIndex.Count);
             LayerNames.Add(_name);
             LayerDeletions.Add(_name, false);
+            LayerVisibility.Add(_name, true);
         }
         // Names are applied to the layers after they have been loaded in the MapEditorManager
         // This ensures that layers are given the proper names if loaded from a file
@@ -205,7 +214,29 @@ public class Layer : MonoBehaviour {
         LayerStatus.Remove(_name);
         LayerIndex.Remove(_name);
         LayerDeletions.Remove(_name);
+        LayerVisibility.Remove(_name);
 
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Toggles the visibility of all <c>MapObjects</c> on a given layer.
+    /// </summary>
+    public void ToggleLayerVisibility() {
+        if (_layerEye.activeSelf) {
+            _layerEye.SetActive(false);
+            _layerSlashEye.SetActive(true);
+            foreach ((int id, MapObject mapObject) in MapEditorManager.Layers[LayerIndex[_name]]) {
+                MapEditorManager.IdToGameObjectMapping[mapObject.Id].GetComponent<Image>().enabled = false;
+            }
+            LayerVisibility[name] = false;
+        } else {
+            _layerEye.SetActive(true);
+            _layerSlashEye.SetActive(false);
+            foreach ((int id, MapObject mapObject) in MapEditorManager.Layers[LayerIndex[_name]]) {
+                MapEditorManager.IdToGameObjectMapping[mapObject.Id].GetComponent<Image>().enabled = true;
+            }
+            LayerVisibility[name] = true;
+        }
     }
 }
