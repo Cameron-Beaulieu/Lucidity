@@ -99,6 +99,12 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
         Tool.SelectionOptions.SetActive(false);
     }
 
+    /// <summary>
+    /// Rotates the selected map object in the specified direction.
+    /// </summary>
+    /// <param name="isClockwise">
+    /// <c>true</c> for a clockwise rotation, <c>false</c> for a counterclockwise rotation.
+    ///</param>
     public void RotateMapObject(bool isClockwise) {
         if (SelectedObject != null) {
             AssetCollision collisionScript = SelectedObject.GetComponent<AssetCollision>();
@@ -112,6 +118,23 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 SelectedObject.transform.parent.Rotate(0, 0, 90);
             }
 
+            StartCoroutine(collisionScript
+                .CheckCollisionsAfterRotation(isClockwise, SelectedObject, 
+                                              TrackRotation));
+        }
+    }
+
+    /// <summary>
+    /// Callback method for post-collision handling.
+    /// If the rotation did not cause a collision, track the new rotation and add it to the 
+    /// action history.
+    /// </summary>
+    /// <param name="isColliding">If set to <c>true</c> is colliding.</param>
+    /// <param name="isClockwise">If set to <c>true</c> is clockwise.</param>
+    public void TrackRotation(bool isColliding, bool isClockwise) {
+        if (isColliding) {
+            Debug.Log("colliding");
+        } else {
             // add to MapObjects and Layers
             MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].Rotation = new Quaternion(
                 SelectedObject.transform.parent.rotation.x, 
@@ -124,42 +147,35 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 SelectedObject.transform.parent.rotation.z, 
                 SelectedObject.transform.parent.rotation.w);
 
-            bool isColliding = collisionScript.RotationCausesCollision(isClockwise, SelectedObject);
-            if (isColliding) {
-                Debug.Log("colliding");
-
-                // take out from MapObjects and Layers
-            } else {
-                // add to actions history
-                RotateMapObjectAction action = new RotateMapObjectAction(new List<(int, GameObject)>{(SelectedObject.GetInstanceID(), SelectedObject)}, 
-                    originalRotation, newRotation);
-                if (MapEditorManager.CurrentAction != null 
-                    && MapEditorManager.CurrentAction.Next != null) {
-                    // These actions can no longer be redone
-                    MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);
-                    LinkedListNode<EditorAction> actionToRemove = 
-                        MapEditorManager.CurrentAction.Next;
-                    while (actionToRemove != null) {
-                        LinkedListNode<EditorAction> temp = actionToRemove.Next;
-                        MapEditorManager.Actions.Remove(actionToRemove);
-                        actionToRemove = temp;
-                    }
-                    MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                                                      action);
-                    MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
-                } else if (MapEditorManager.CurrentAction != null) {
-                    MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
-                                                      action);
-                    MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
-                } else if (MapEditorManager.CurrentAction == null 
-                           && MapEditorManager.Actions != null) {
-                    // There is only one action and it has been undone
-                    MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
-                    MapEditorManager.Actions.Clear();
-                    MapEditorManager.Actions.AddFirst(action);
-                    MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
+            // add to actions history
+            RotateMapObjectAction action = new RotateMapObjectAction(new List<(int, GameObject)>{(SelectedObject.GetInstanceID(), SelectedObject)}, 
+                isClockwise);
+            if (MapEditorManager.CurrentAction != null 
+                && MapEditorManager.CurrentAction.Next != null) {
+                // These actions can no longer be redone
+                MapEditorManager.PermanentlyDeleteActions(MapEditorManager.CurrentAction.Next);
+                LinkedListNode<EditorAction> actionToRemove = 
+                    MapEditorManager.CurrentAction.Next;
+                while (actionToRemove != null) {
+                    LinkedListNode<EditorAction> temp = actionToRemove.Next;
+                    MapEditorManager.Actions.Remove(actionToRemove);
+                    actionToRemove = temp;
                 }
+                MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+                                                    action);
+                MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+            } else if (MapEditorManager.CurrentAction != null) {
+                MapEditorManager.Actions.AddAfter(MapEditorManager.CurrentAction, 
+                                                    action);
+                MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Next;
+            } else if (MapEditorManager.CurrentAction == null 
+                        && MapEditorManager.Actions != null) {
+                // There is only one action and it has been undone
+                MapEditorManager.PermanentlyDeleteActions(MapEditorManager.Actions.First);
+                MapEditorManager.Actions.Clear();
+                MapEditorManager.Actions.AddFirst(action);
+                MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
             }
-        }
+        }   
     }
 }

@@ -131,8 +131,9 @@ public class Render3DScene : MonoBehaviour {
     /// The data of the <c>MapObject</c> to be placed on the 3D map
     /// </param>
     private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
-        Debug.Log("Scale is: " + kvp.Value.Scale);
-        GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), kvp.Value.Rotation);
+        GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), Quaternion.identity);
+        newGameObject.transform.rotation = Quaternion.Euler(0, kvp.Value.Rotation.eulerAngles.z, 
+                                                            0);
         newGameObject.transform.localScale = new Vector3(
             newGameObject.transform.localScale.x * kvp.Value.Scale.x, 
             newGameObject.transform.localScale.y * kvp.Value.Scale.y, 

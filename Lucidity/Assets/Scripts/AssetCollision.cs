@@ -1,4 +1,5 @@
 using RaycastingLibrary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,10 +13,15 @@ public class AssetCollision : MonoBehaviour {
     // Use this to ensure that the Gizmos are being drawn when in Play Mode
     private bool _detectionStarted = true;
     public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>();
+    private bool _isCollidingAfterRotation = false;
+
+    public bool IsCollidingAfterRotation {
+        get { return _isCollidingAfterRotation; }
+    }
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
-        CheckAssetOnUI();
+        // CheckAssetOnUI();
     }
 
     private void Start() {
@@ -100,18 +106,10 @@ public class AssetCollision : MonoBehaviour {
     /// Array of <c>Collider2D</c> corresponding to the collisions that occur with the
     /// <c>GameObject</c>
     /// </returns>
-    public List<Collider2D> GetAssetCollisions(bool rotated = false) {
+    public List<Collider2D> GetAssetCollisions() {
         List<Collider2D> hitColliders = new List<Collider2D>();
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
-        if (rotated) {
-            int gameObjectID = gameObject.GetInstanceID();
-            gameObject.SetActive(false);
-            Dictionary<int, MapObject> temp = new Dictionary<int, MapObject>();
-            GameObject newGameObject = GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>().RebuildMapObject(MapEditorManager.MapObjects[gameObjectID], temp);
-            // transforms being destroyed in CheckAssetOnUI() bc mouse is on ui when rotation occurs
-            // Debug.Log(newGameObject.GetComponent<Collider2D>().bounds.extents);
-        }
         int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
         List<Collider2D> hitCollidersClone = new List<Collider2D>(hitColliders);
         foreach (Collider2D collider in hitColliders) {
@@ -259,6 +257,19 @@ public class AssetCollision : MonoBehaviour {
         return false;
     }
 
+    /// <summary>
+    /// Checks if the scaling of the current <c>MapObject</c> would cause a collision with
+    /// another <c>MapObject</c> or not.
+    /// </summary>
+    /// <param name="originalScale">
+    /// The original scale of the <c>MapObject</c> before scaling.
+    /// </param>
+    /// <param name="scalingObject">
+    /// The <c>GameObject</c> that is being scaled.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the scaling would cause a collision, <c>false</c> otherwise.
+    /// </returns>
     public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
         List<Collider2D> hitColliders = GetAssetCollisions();
         if (GetCollisionCount() > 1) {
@@ -278,7 +289,21 @@ public class AssetCollision : MonoBehaviour {
         return false;
     }
 
-    IEnumerator RevertMaterialAndScale(float originalScale, GameObject scalingObject, GameObject collisionObject) {
+    /// <summary>
+    /// Changes a <c>MapObject</c>'s material back to its original color from red and scales
+    /// the placed asset causing the collision back down to the original scale before the 
+    /// collision.
+    /// </summary>
+    /// <param name="originalScale">
+    /// The original scale of the <c>MapObject</c> before the collision.
+    /// </param>
+    /// <param name="scalingObject">
+    /// <c>GameObject</c> that was scaled and caused the collision.
+    /// </param>
+    /// <param name="collisionObject">
+    /// <c>GameObject</c> that is colliding with the scaled object.
+    /// </param>
+    private IEnumerator RevertMaterialAndScale(float originalScale, GameObject scalingObject, GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 
@@ -289,8 +314,28 @@ public class AssetCollision : MonoBehaviour {
         }
     }
 
-    public bool RotationCausesCollision(bool isClockwise, GameObject rotatingObject) {
-        List <Collider2D> hitColliders = GetAssetCollisions(true);
+    /// <summary>
+    /// Checks if any collisions occur as a result of rotating the specified <c>GameObject</c>.
+    /// </summary>
+    /// <param name="isClockwise">
+    /// <c>true</c> if the rotation is clockwise, <c>false</c> otherwise.
+    /// </param>
+    /// <param name="rotatingObject">
+    /// <c>GameObject</c> that is being rotated.
+    /// </param>
+    /// <param name="originalRotation">
+    /// The original rotation of the <c>GameObject</c> before the rotation.
+    /// </param>
+    /// <param name="newRotation">
+    /// The new rotation of the <c>GameObject</c> after the rotation.
+    /// </param>
+    /// <param name="callback">
+    /// The callback function to be called after the coroutine is finished.
+    /// </param>
+    public IEnumerator CheckCollisionsAfterRotation(bool isClockwise, GameObject rotatingObject,  
+                                                    System.Action<bool, bool> callback) {
+        yield return new WaitForFixedUpdate(); 
+        List<Collider2D> hitColliders = GetAssetCollisions();
         if (GetCollisionCount() > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
@@ -300,15 +345,31 @@ public class AssetCollision : MonoBehaviour {
                     != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
-                    StartCoroutine(RevertMaterialAndRotate(isClockwise, rotatingObject, collisionObject.gameObject));
+                    StartCoroutine(RevertMaterialAndRotate(isClockwise, rotatingObject,
+                                                           collisionObject.gameObject));
                 }
             }
-            return true;
+            callback(true, isClockwise);
+        } else {
+            callback(false, isClockwise);
         }
-        return false;
     }
 
-    IEnumerator RevertMaterialAndRotate(bool isClockwise, GameObject rotatingObject, GameObject collisionObject) {
+    /// <summary>
+    /// Reverts the material of the <c>GameObject</c> that is colliding with the rotating object
+    /// and reverts the rotation of the parent object that caused the collision.
+    /// </summary>
+    /// <param name="isClockwise">
+    /// <c>true</c> if the rotation is clockwise, <c>false</c> otherwise.
+    /// </param>
+    /// <param name="rotatingObject">
+    /// <c>GameObject</c> that was rotated and caused the collision.
+    /// </param>
+    /// <param name="collisionObject">
+    /// <c>GameObject</c> that is colliding with the rotating object.
+    /// </param>
+    private IEnumerator RevertMaterialAndRotate(bool isClockwise, GameObject rotatingObject, 
+                                                GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 

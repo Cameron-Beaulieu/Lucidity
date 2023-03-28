@@ -284,7 +284,16 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            bool isClockwise = ((RotateMapObjectAction) actionToRedo).IsClockwise;
+                            if (isClockwise) {
+                                obj.transform.parent.Rotate(0, 0, -90);
+                            } else {
+                                obj.transform.parent.Rotate(0, 0, 90);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     actionToRedo.RelatedObjects[0].Item2.SetActive(true);
@@ -366,7 +375,16 @@ public class MapEditorManager : MonoBehaviour {
                     }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            bool isClockwise = ((RotateMapObjectAction) actionToUndo).IsClockwise;
+                            if (isClockwise) {
+                                obj.transform.parent.Rotate(0, 0, 90);
+                            } else {
+                                obj.transform.parent.Rotate(0, 0, -90);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name] - 1;
