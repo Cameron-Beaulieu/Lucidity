@@ -188,6 +188,7 @@ public class AssetCollision : MonoBehaviour {
             MapEditorManager.Layers[MapEditorManager.LayerContainsMapObject(
                 gameObject.GetInstanceID())].Remove(gameObject.GetInstanceID());
             GameObject parent = gameObject.transform.parent.gameObject;
+            MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Previous;
             Destroy(gameObject);
             Destroy(parent);
         }
