@@ -310,7 +310,8 @@ public class AssetCollision : MonoBehaviour {
         if (collisionObject.gameObject == scalingObject) {
             collisionObject.transform.parent.localScale = 
                 new Vector3(Util.ParentAssetDefaultScale * originalScale, 
-                            Util.ParentAssetDefaultScale * originalScale, 1);
+                            Util.ParentAssetDefaultScale * originalScale, 
+                            Util.ParentAssetDefaultScale * originalScale);
         }
     }
 

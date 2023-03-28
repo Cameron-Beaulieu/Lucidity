@@ -11,7 +11,7 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
     private AssetCollision _collisionScript;
     private float _currentSelectionOriginalScale;
 
-    private new void Start() {
+    protected override void Start() {
         _text = transform.parent.Find("ValueText").GetComponent<TMP_Text>();
         if (SelectMapObject.SelectedObject != null) {
             _collisionScript = SelectMapObject.SelectedObject.GetComponent<AssetCollision>();
@@ -19,6 +19,10 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
         onValueChanged.AddListener(OnValueChanged);
     }
 
+    /// <summary>
+    /// Updates the scale text to reflect the current scale of the selected object.
+    /// </summary>
+    /// <param name="selectedObjectScale">The scale of the selected object.</param>
     public void UpdateScaleText(float selectedObjectScale) {
         value = Mathf.Round(selectedObjectScale * 10f) / 10f;
         _currentSelectionOriginalScale = value;
@@ -28,14 +32,17 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
         if (SelectMapObject.SelectedObject != null) {
             float roundedValue = Mathf.Round(newValue * 10f) / 10f;
             _text.text = roundedValue + "x";
+            value = roundedValue;
             Transform parent = SelectMapObject.SelectedObject.transform.parent;
             parent.localScale = new Vector3(Util.ParentAssetDefaultScale * roundedValue, 
-                                            Util.ParentAssetDefaultScale * roundedValue, 1);
+                                            Util.ParentAssetDefaultScale * roundedValue, 
+                                            Util.ParentAssetDefaultScale * roundedValue);
         }
     }
 
     public override void OnPointerUp(PointerEventData eventData) {
-        bool isColliding = _collisionScript.ScaleCausesCollision(_currentSelectionOriginalScale, SelectMapObject.SelectedObject);
+        bool isColliding = _collisionScript.ScaleCausesCollision(_currentSelectionOriginalScale, 
+                                                                 SelectMapObject.SelectedObject);
         if (isColliding) {
             value = _currentSelectionOriginalScale;
             float roundedValue = Mathf.Round(value * 10f) / 10f;

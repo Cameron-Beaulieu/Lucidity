@@ -132,8 +132,8 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
     /// <param name="isColliding">If set to <c>true</c> is colliding.</param>
     /// <param name="isClockwise">If set to <c>true</c> is clockwise.</param>
     public void TrackRotation(bool isColliding, bool isClockwise) {
-        if (isColliding) {
-            Debug.Log("colliding");
+        if (isColliding) { 
+            // don't do anything
         } else {
             // add to MapObjects and Layers
             MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].Rotation = new Quaternion(

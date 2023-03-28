@@ -279,7 +279,7 @@ public class MapEditorManager : MonoBehaviour {
                         if (obj != null) {
                             float newSize = ((ResizeMapObjectAction) actionToRedo).NewSize;
                             obj.transform.parent.localScale = 
-                                new Vector3(newSize, newSize, obj.transform.localScale.z);
+                                new Vector3(newSize, newSize, newSize);
                         }
                     }
                     break;
@@ -370,7 +370,7 @@ public class MapEditorManager : MonoBehaviour {
                             float originalSize = ((ResizeMapObjectAction) actionToUndo).OldSize;
                             obj.transform.parent.localScale = 
                                 new Vector3(originalSize, originalSize, 
-                                            obj.transform.localScale.z);
+                                            originalSize);
                         }
                     }
                     break;
@@ -692,7 +692,7 @@ public class MapEditorManager : MonoBehaviour {
             AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
         newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
             mapObject.MapPosition.y, 0);
-        newGameObject.transform.rotation = mapObject.Rotation;
+        newParent.transform.rotation = mapObject.Rotation;
         newGameObject.transform.localScale = 
             new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                         newGameObject.transform.localScale.y + Zoom.zoomFactor, 
