@@ -227,11 +227,11 @@ public class AssetCollision : MonoBehaviour {
                     collisionObject.GetInstanceID()];
             
             if ((collisionObjectLayer <= gameObjectLayer &&  
-                (collisionMapObject.Name == "Mountain" || 
-                gameObjectMapObject.Name == "Tree")) || 
+                collisionMapObject.Name == "Mountain" && 
+                gameObjectMapObject.Name == "Tree") || 
                 (collisionObjectLayer > gameObjectLayer &&  
-                (collisionMapObject.Name == "Tree" || 
-                gameObjectMapObject.Name == "Mountain"))) {
+                collisionMapObject.Name == "Tree" && 
+                gameObjectMapObject.Name == "Mountain")) {
                     if (collisionMapObject.Name == "Mountain" && 
                         IsFullyEncompassed(collisionObject, gameObject)) {
                         return true;
@@ -261,11 +261,11 @@ public class AssetCollision : MonoBehaviour {
                     collisionObject.GetInstanceID()];
 
             if ((collisionObjectLayer <= gameObjectLayer &&  
-                (collisionMapObject.Name == "Mountain" || 
-                gameObjectMapObject.Name == "Tree")) || 
+                collisionMapObject.Name == "Mountain" && 
+                gameObjectMapObject.Name == "Tree") || 
                 (collisionObjectLayer > gameObjectLayer &&  
-                (collisionMapObject.Name == "Tree" || 
-                gameObjectMapObject.Name == "Mountain"))) {
+                collisionMapObject.Name == "Tree" && 
+                gameObjectMapObject.Name == "Mountain")) {
                     if (collisionMapObject.Name == "Mountain" && 
                         IsFullyEncompassed(collisionObject, gameObject)) {
                         Debug.Log("Fully encompassed + mountain");
