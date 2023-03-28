@@ -280,6 +280,10 @@ public class MapEditorManager : MonoBehaviour {
                             float newSize = ((ResizeMapObjectAction) actionToRedo).NewSize;
                             obj.transform.parent.localScale = 
                                 new Vector3(newSize, newSize, newSize);
+                            if (obj == SelectMapObject.SelectedObject) {
+                                GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>().UpdateScaleText(
+                                    newSize);
+                            }
                         }
                     }
                     break;
@@ -371,6 +375,10 @@ public class MapEditorManager : MonoBehaviour {
                             obj.transform.parent.localScale = 
                                 new Vector3(originalSize, originalSize, 
                                             originalSize);
+                            if (obj == SelectMapObject.SelectedObject) {
+                                GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>().UpdateScaleText(
+                                    originalSize);
+                            }
                         }
                     }
                     break;
