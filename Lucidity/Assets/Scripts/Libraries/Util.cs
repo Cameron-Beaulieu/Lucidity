@@ -15,6 +15,7 @@ public class Util {
         AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
+        MapEditorManager.IdToGameObjectMapping.Clear();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
         MapEditorManager.ToolToCursorMap.Clear();
@@ -35,6 +36,7 @@ public class Util {
         Layer.LayerStatus.Clear();
         Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
         AvatarMovement.HorizontalTestingInput = 0f;
         AvatarMovement.VerticalTestingInput = 0f;
         AvatarMovement.AscendTestingInput = false;

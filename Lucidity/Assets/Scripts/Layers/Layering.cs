@@ -90,17 +90,4 @@ public class Layering : MonoBehaviour {
             }
        }
     }
-
-    /// <summary>
-    /// Deletes the most recently added layer from all Lists and from the scene.
-    /// </summary>
-    public static void DeleteLastLayer() {
-        Layer.LayerStatus.Remove(Layer.LayerNames.Last());
-        Layer.LayerIndex.Remove(Layer.LayerNames.Last());
-        MapEditorManager.Layers.RemoveAt(MapEditorManager.Layers.Count - 1);
-        GameObject layerToBeRemoved = GameObject.Find(Layer.LayerNames.Last());
-        Destroy(layerToBeRemoved);
-        Layer.LayerNames.Remove(Layer.LayerNames.Last());
-        Layer.SelectedChangeSelectedLayer(Layer.LayerNames.Last());
-    }
 }
