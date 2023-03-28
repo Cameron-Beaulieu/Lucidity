@@ -631,6 +631,12 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         foreach (string name in Layer.LayerNames) {
+            // Fixing layer visibility upon reversion
+            if (Layer.LayerVisibility[name] == false) {
+                GameObject layer = GameObject.Find(name);
+                layer.GetComponent<Layer>().ToggleLayerVisibility();
+            }
+
             // Fixing layer deletions upon revertion
             if (Layer.LayerDeletions[name] == true) {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
@@ -638,12 +644,6 @@ public class MapEditorManager : MonoBehaviour {
                 }
                 Layer.NumberOfActiveLayers--;
                 GameObject.Find(name).SetActive(false);
-            }
-
-            // Fixing layer visibility upon reversion
-            if (Layer.LayerVisibility[name] == false) {
-                GameObject layer = GameObject.Find(name);
-                layer.GetComponent<Layer>().ToggleLayerVisibility();
             }
         }
     }
