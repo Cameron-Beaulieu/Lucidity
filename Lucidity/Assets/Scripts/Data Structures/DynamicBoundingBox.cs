@@ -171,9 +171,8 @@ public class DynamicBoundingBox : MonoBehaviour {
         parent.name = assetPrefab.name + " Parent";
         parent.transform.SetParent(MapEditorManager.MapContainer.transform, true);
         parent.transform.localScale =
-            new Vector3(parent.transform.localScale.x * (Zoom.zoomFactor + 1),
-                        parent.transform.localScale.y * (Zoom.zoomFactor + 1),
-                        parent.transform.localScale.z * (Zoom.zoomFactor + 1));
+            new Vector3(Util.ParentAssetDefaultScale, Util.ParentAssetDefaultScale,
+                        Util.ParentAssetDefaultScale);
 
         Vector3 scale = Vector3.one / (_dynamicSideLength * AssetOptions.Spread);
         Vector3 relativePosition =

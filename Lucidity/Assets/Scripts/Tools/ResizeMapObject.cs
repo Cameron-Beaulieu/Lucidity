@@ -28,7 +28,9 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
         if (SelectMapObject.SelectedObject != null) {
             float roundedValue = Mathf.Round(newValue * 10f) / 10f;
             _text.text = roundedValue + "x";
-            SelectMapObject.SelectedObject.transform.localScale = new Vector3(roundedValue, roundedValue, 1);
+            Transform parent = SelectMapObject.SelectedObject.transform.parent;
+            parent.localScale = new Vector3(Util.ParentAssetDefaultScale * roundedValue, 
+                                            Util.ParentAssetDefaultScale * roundedValue, 1);
         }
     }
 
@@ -39,12 +41,19 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
             float roundedValue = Mathf.Round(value * 10f) / 10f;
             _text.text = roundedValue + "x";
         } else {
+            float newParentScale = Util.ParentAssetDefaultScale * value;
+            float oldParentScale = Util.ParentAssetDefaultScale * _currentSelectionOriginalScale;
+            MapEditorManager.MapObjects[SelectMapObject.SelectedObject.GetInstanceID()]
+                .Scale = new Vector3(newParentScale, newParentScale, newParentScale);
+            // change in layers as well
+
             // add to actions history
             List<(int, GameObject)> relatedObjects = 
                 new List<(int, GameObject)>{(SelectMapObject.SelectedObject.GetInstanceID(), 
                                              SelectMapObject.SelectedObject)};
-            ResizeMapObjectAction action = 
-                new ResizeMapObjectAction(relatedObjects, _currentSelectionOriginalScale, value);
+            ResizeMapObjectAction action = new ResizeMapObjectAction(relatedObjects, 
+                                                                     oldParentScale, 
+                                                                     newParentScale);
             if (MapEditorManager.CurrentAction != null 
                 && MapEditorManager.CurrentAction.Next != null) {
                 // these actions can no longer be redone

@@ -252,7 +252,6 @@ public class AssetCollision : MonoBehaviour {
     }
 
     public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
-        Debug.Log("Checking collisions after scale");
         List<Collider2D> hitColliders = GetAssetCollisions();
         if (GetCollisionCount() > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
@@ -276,8 +275,9 @@ public class AssetCollision : MonoBehaviour {
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 
         if (collisionObject.gameObject == scalingObject) {
-            Debug.Log("Reverting scale to " + originalScale);
-            collisionObject.transform.localScale = new Vector3(originalScale, originalScale, 1);
+            collisionObject.transform.parent.localScale = 
+                new Vector3(Util.ParentAssetDefaultScale * originalScale, 
+                            Util.ParentAssetDefaultScale * originalScale, 1);
         }
     }
 }

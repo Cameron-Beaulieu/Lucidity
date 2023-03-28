@@ -269,8 +269,8 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
                         if (obj != null) {
                             float newSize = ((ResizeMapObjectAction) actionToRedo).NewSize;
-                            obj.transform.localScale = new Vector3(newSize, newSize, 
-                                                                   obj.transform.localScale.z);
+                            obj.transform.parent.localScale = 
+                                new Vector3(newSize, newSize, obj.transform.localScale.z);
                         }
                     }
                     break;
@@ -332,8 +332,9 @@ public class MapEditorManager : MonoBehaviour {
                     foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                         if (obj != null) {
                             float originalSize = ((ResizeMapObjectAction) actionToUndo).OldSize;
-                            obj.transform.localScale = new Vector3(originalSize, originalSize, 
-                                                                   obj.transform.localScale.z);
+                            obj.transform.parent.localScale = 
+                                new Vector3(originalSize, originalSize, 
+                                            obj.transform.localScale.z);
                         }
                     }
                     break;

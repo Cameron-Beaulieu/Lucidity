@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 
 public class Util {
+
+    public static float ParentAssetDefaultScale = 81f;
     
     /// <summary>
     /// Resets all static variables in MapEditorManager and Tool. This is necessary to avoid 
