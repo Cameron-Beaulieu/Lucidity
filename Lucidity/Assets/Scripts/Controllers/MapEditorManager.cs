@@ -632,13 +632,13 @@ public class MapEditorManager : MonoBehaviour {
 
         foreach (string name in Layer.LayerNames) {
             // Fixing layer visibility upon reversion
-            if (Layer.LayerVisibility[name] == false) {
+            if (!Layer.LayerVisibility[name]) {
                 GameObject layer = GameObject.Find(name);
                 layer.GetComponent<Layer>().ToggleLayerVisibility();
             }
 
             // Fixing layer deletions upon revertion
-            if (Layer.LayerDeletions[name] == true) {
+            if (Layer.LayerDeletions[name]) {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
                     IdToGameObjectMapping[mapObject.Id].SetActive(false);
                 }

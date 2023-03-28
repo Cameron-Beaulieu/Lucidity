@@ -50,7 +50,7 @@ public class AssetCollision : MonoBehaviour {
                     && collisionObject.gameObject.tag != "DynamicBoundingBox"
                     && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
                     != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
-                    if(collisionObject.gameObject.GetComponent<Image>().enabled == false) {
+                    if(!collisionObject.gameObject.GetComponent<Image>().enabled) {
                         collisionObject.gameObject.GetComponent<Image>().enabled = true;
                         collisionObject.gameObject.GetComponent<Image>()
                             .color = Color.red;
@@ -179,7 +179,7 @@ public class AssetCollision : MonoBehaviour {
     IEnumerator RevertMaterialAndDestroy(GameObject collisionObject, bool imageFlag) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
-        if (imageFlag == true) {
+        if (imageFlag) {
             collisionObject.gameObject.GetComponent<Image>().enabled = false;
         }
 
