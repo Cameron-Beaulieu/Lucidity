@@ -329,4 +329,40 @@ public class LayerTests : MapEditorTests {
         Assert.IsFalse(MapEditorManager.Layers[1][placedObjectId].IsActive);
         Assert.IsFalse(layer.activeSelf);
     }
+
+    [Test]
+    public void CanToggleLayerVisibility() {
+        // confirm current layer is tracking the base layer
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        GameObject fortress = GameObject.Find("FortressObject(Clone)");
+        // this is the eye with no slash
+        Button visibilityOffButton = GameObject.Find("VisibilityEye").GetComponent<Button>();
+
+        // check layer and asset are not visible
+        Assert.IsTrue(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsTrue(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOffButton.transform.parent.gameObject.activeSelf);
+
+        // toggle visibility
+        visibilityOffButton.onClick.Invoke();
+
+        // get new button
+        Button visibilityOnButton = GameObject.Find("SlashEye").GetComponent<Button>();
+
+        // check layer and asset are not visible
+        Assert.IsFalse(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsFalse(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOnButton.transform.parent.gameObject.activeSelf);
+
+        // toggle visibility
+        visibilityOnButton.onClick.Invoke();
+
+        // check layer and asset are visible
+        Assert.IsTrue(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsTrue(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOffButton.transform.parent.gameObject.activeSelf);
+    }
 }

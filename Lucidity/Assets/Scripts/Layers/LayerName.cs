@@ -87,6 +87,7 @@ public class LayerName : MonoBehaviour {
         int oldIndex = Layer.LayerIndex[oldName];
         bool oldStatus = Layer.LayerStatus[oldName];
         bool oldDeletion = Layer.LayerDeletions[oldName];
+        bool oldVisibility = Layer.LayerVisibility[oldName];
         // Update LayerIndex dictionary to use the newName
         Layer.LayerIndex.Remove(oldName);
         Layer.LayerIndex.Add(newName, oldIndex);
@@ -99,6 +100,9 @@ public class LayerName : MonoBehaviour {
         // Update LayerDeletion to use the NewName
         Layer.LayerDeletions.Remove(oldName);
         Layer.LayerDeletions.Add(newName, oldDeletion);
+        // Update LayerVisibility to use the NewName
+        Layer.LayerVisibility.Remove(oldName);
+        Layer.LayerVisibility.Add(newName, oldVisibility);
 
         GameObject layer = GameObject.Find(oldName);
         layer.name = newName;

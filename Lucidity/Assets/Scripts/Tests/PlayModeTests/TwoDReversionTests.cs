@@ -240,4 +240,56 @@ public class TwoDReversionTests {
         Assert.AreEqual(2, Layer.LayerStatus.Count);
         Assert.AreEqual(2, Layer.LayerIndex.Count);
     }
+
+    [UnityTest]
+    public IEnumerator CanToggleLayerVisibilityPostReversion() {
+        // confirm current layer is tracking the base layer
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        // this is the eye with no slash
+        Button visibilityOffButton = GameObject.Find("VisibilityEye").GetComponent<Button>();
+
+        // toggle visibility
+        visibilityOffButton.onClick.Invoke();
+
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // Revert to 2D
+        GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("MapEditor", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // get new gameobject
+        GameObject newFortress = GameObject.Find("FortressObject(Clone)");
+
+        // get new button
+        Button visibilityOnButton = GameObject.Find("SlashEye").GetComponent<Button>();
+
+        // check layer and asset are still not visible
+        Assert.IsFalse(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsFalse(newFortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOnButton.transform.parent.gameObject.activeSelf);
+
+        // toggle visibility
+        visibilityOnButton.onClick.Invoke();
+
+        // get new button
+        visibilityOffButton = GameObject.Find("VisibilityEye").GetComponent<Button>();
+
+        // check layer and asset are visible
+        Assert.IsTrue(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsTrue(newFortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOffButton.transform.parent.gameObject.activeSelf);
+    }
 }
