@@ -34,18 +34,18 @@ public class Layer : MonoBehaviour {
         }
         gameObject.name = "Layer" + append.ToString();
         _name = gameObject.name;
-        _layerText = gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_InputField>();
+        _layerText = gameObject.transform.Find("InputField (TMP)").gameObject.GetComponent<TMP_InputField>();
         _layerText.readOnly = true;
-        _layerEye = gameObject.transform.GetChild(1).gameObject;
+        _layerEye = gameObject.transform.Find("VisibilityEye").gameObject;
         _layerEye.GetComponent<Button>().onClick.AddListener(ToggleLayerVisibility);
-        _layerTrashCan = gameObject.transform.GetChild(2).gameObject;
+        _layerTrashCan = gameObject.transform.Find("TrashCan").gameObject;
         _layerTrashCan.GetComponent<Button>().onClick.AddListener(DeleteLayer);
         _layerTrashCan.SetActive(false);
-        _layerEdit = gameObject.transform.GetChild(3).gameObject;
+        _layerEdit = gameObject.transform.Find("Edit").gameObject;
         _layerEdit.GetComponent<Button>().onClick.AddListener(ChangeLayerName);
         _layerEdit.SetActive(false);
         gameObject.GetComponent<Button>().onClick.AddListener(ChangeSelectedLayer);
-        _layerSlashEye = gameObject.transform.GetChild(4).gameObject;
+        _layerSlashEye = gameObject.transform.Find("SlashEye").gameObject;
         _layerSlashEye.SetActive(false);
         _layerSlashEye.GetComponent<Button>().onClick.AddListener(ToggleLayerVisibility);
         // These are updated in the MapEditorManager if loaded from a file (LayerToBeNamed > -1)

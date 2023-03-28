@@ -631,6 +631,7 @@ public class MapEditorManager : MonoBehaviour {
         }
 
         foreach (string name in Layer.LayerNames) {
+            // Fixing layer deletions upon revertion
             if (Layer.LayerDeletions[name] == true) {
                 foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
                     IdToGameObjectMapping[mapObject.Id].SetActive(false);
@@ -638,28 +639,11 @@ public class MapEditorManager : MonoBehaviour {
                 Layer.NumberOfActiveLayers--;
                 GameObject.Find(name).SetActive(false);
             }
-        }
 
-        foreach (string name in Layer.LayerNames) {
+            // Fixing layer visibility upon reversion
             if (Layer.LayerVisibility[name] == false) {
                 GameObject layer = GameObject.Find(name);
-                GameObject layerEye = layer.transform.GetChild(1).gameObject;
-                GameObject layerSlashEye = layer.transform.GetChild(4).gameObject;
-                if (layerEye.activeSelf) {
-                    layerEye.SetActive(false);
-                    layerSlashEye.SetActive(true);
-                    foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
-                        IdToGameObjectMapping[mapObject.Id].GetComponent<Image>().enabled = false;
-                    }
-                    Layer.LayerVisibility[name] = false;
-                } else {
-                    layerEye.SetActive(true);
-                    layerSlashEye.SetActive(false);
-                    foreach ((int id, MapObject mapObject) in Layers[Layer.LayerIndex[name]]) {
-                        IdToGameObjectMapping[mapObject.Id].GetComponent<Image>().enabled = true;
-                    }
-                    Layer.LayerVisibility[name] = true;
-                }
+                layer.GetComponent<Layer>().ToggleLayerVisibility();
             }
         }
     }
