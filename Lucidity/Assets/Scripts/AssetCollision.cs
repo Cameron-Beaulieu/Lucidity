@@ -100,10 +100,18 @@ public class AssetCollision : MonoBehaviour {
     /// Array of <c>Collider2D</c> corresponding to the collisions that occur with the
     /// <c>GameObject</c>
     /// </returns>
-    public List<Collider2D> GetAssetCollisions() {
+    public List<Collider2D> GetAssetCollisions(bool rotated = false) {
         List<Collider2D> hitColliders = new List<Collider2D>();
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
+        if (rotated) {
+            int gameObjectID = gameObject.GetInstanceID();
+            gameObject.SetActive(false);
+            Dictionary<int, MapObject> temp = new Dictionary<int, MapObject>();
+            GameObject newGameObject = GameObject.Find("MapEditorManager").GetComponent<MapEditorManager>().RebuildMapObject(MapEditorManager.MapObjects[gameObjectID], temp);
+            // transforms being destroyed in CheckAssetOnUI() bc mouse is on ui when rotation occurs
+            // Debug.Log(newGameObject.GetComponent<Collider2D>().bounds.extents);
+        }
         int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
         List<Collider2D> hitCollidersClone = new List<Collider2D>(hitColliders);
         foreach (Collider2D collider in hitColliders) {
@@ -278,6 +286,40 @@ public class AssetCollision : MonoBehaviour {
             collisionObject.transform.parent.localScale = 
                 new Vector3(Util.ParentAssetDefaultScale * originalScale, 
                             Util.ParentAssetDefaultScale * originalScale, 1);
+        }
+    }
+
+    public bool RotationCausesCollision(bool isClockwise, GameObject rotatingObject) {
+        List <Collider2D> hitColliders = GetAssetCollisions(true);
+        if (GetCollisionCount() > 1) {
+            foreach (Collider2D collisionObject in hitColliders) {
+                if (collisionObject.gameObject.layer == _assetLayer
+                    && collisionObject.gameObject.GetComponent<Image>() != null
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
+                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
+                    collisionObject.gameObject.GetComponent<Image>()
+                        .color = Color.red;
+                    StartCoroutine(RevertMaterialAndRotate(isClockwise, rotatingObject, collisionObject.gameObject));
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    IEnumerator RevertMaterialAndRotate(bool isClockwise, GameObject rotatingObject, GameObject collisionObject) {
+        yield return new WaitForSecondsRealtime(0.5f);
+        collisionObject.gameObject.GetComponent<Image>().color = Color.white;
+
+        if (collisionObject.gameObject == rotatingObject) {
+            // revert the rotation of the parent object depending on whether the applied rotation 
+            // was clockwise or counter-clockwise
+            if (isClockwise) {
+                rotatingObject.transform.parent.Rotate(0, 0, 90);
+            } else {
+                rotatingObject.transform.parent.Rotate(0, 0, -90);
+            }
         }
     }
 }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RotateMapObjectAction : EditorAction {
-    private Quaternion _newRotation;
-    private Quaternion _oldRotation;
+    private float _newRotation;
+    private float _oldRotation;
 
-    public Quaternion NewRotation {
+    public float NewRotation {
         get { return _newRotation; }
     }
 
-    public Quaternion OldRotation {
+    public float OldRotation {
         get { return _oldRotation; }
     }
 
@@ -29,7 +29,7 @@ public class RotateMapObjectAction : EditorAction {
     /// <c>Quaternion</c> corresponding to the new orientation of the map object to be rotated to.
     /// </param>
     public RotateMapObjectAction(List<(int, GameObject)> relatedObjects,
-                                 Quaternion oldRotation,Quaternion newRotation) {
+                                 float oldRotation, float newRotation) {
         base.Type = ActionType.RotateMapObject;
         base.RelatedObjects = relatedObjects;
         _oldRotation = oldRotation;

@@ -430,7 +430,7 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-            newGameObject.transform.rotation, true);
+            parentGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
         if (!IdToGameObjectMapping.ContainsKey(newGameObject.GetInstanceID())) {
             IdToGameObjectMapping.Add(newGameObject.GetInstanceID(), newGameObject);
@@ -662,7 +662,7 @@ public class MapEditorManager : MonoBehaviour {
     /// <returns>
     /// The <c>GameObject</c> that was created as part of creating the new MapObject
     /// </returns>
-    private GameObject RebuildMapObject(MapObject mapObject, 
+    public GameObject RebuildMapObject(MapObject mapObject, 
                                         Dictionary<int, MapObject> newMapObjects) {
         GameObject newParent = new GameObject();
         newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
