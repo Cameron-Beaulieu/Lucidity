@@ -107,17 +107,19 @@ public class AssetCollision : MonoBehaviour {
     /// <c>GameObject</c>
     /// </returns>
     public List<Collider2D> GetAssetCollisions(bool isRotating = false) {
+        Debug.Log("Getting Collisions");
         List<Collider2D> hitColliders = new List<Collider2D>();
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
         int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
         List<Collider2D> hitCollidersClone = new List<Collider2D>(hitColliders);
+        Debug.Log(hitColliders.Count);
         foreach (Collider2D collider in hitColliders) {
             if (collider.gameObject == gameObject) {
                 return hitCollidersClone;
             }
             if (CheckMapObjectStackingValidity(collider.gameObject, isRotating) && 
-                collider.gameObject != gameObject && hitColliders.Count == 2 || 
+                collider.gameObject != gameObject && hitColliders.Count >= 1 || 
                 MapEditorManager.Reversion || MapEditorManager.LoadFlag) {
                 Debug.Log("Collision between mountain and tree");
 
@@ -207,6 +209,7 @@ public class AssetCollision : MonoBehaviour {
     /// <c>true</c> if the gameObject is stacked legally, <c>false</c> otherwise
     /// </returns>
     private bool CheckMapObjectStackingValidity(GameObject collisionObject, bool isRotating = false) {
+        Debug.Log(collisionObject.name);
         Debug.Log("isRotating: " + isRotating);
         if (isRotating) {
             int gameObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
@@ -223,38 +226,62 @@ public class AssetCollision : MonoBehaviour {
             MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
                     collisionObject.GetInstanceID()];
             
-            if (collisionObjectLayer <= gameObjectLayer || 
-                collisionMapObject.Name != "Tree" || 
-                gameObjectMapObject.Name != "Mountain" || 
-                !IsFullyEncompassed(gameObject, collisionObject)) { 
-                    Debug.Log(gameObjectLayer + " " + collisionObjectLayer + " " + gameObjectMapObject.Name + " " + collisionMapObject.Name);
+            if ((collisionObjectLayer <= gameObjectLayer &&  
+                (collisionMapObject.Name == "Mountain" || 
+                gameObjectMapObject.Name == "Tree")) || 
+                (collisionObjectLayer > gameObjectLayer &&  
+                (collisionMapObject.Name == "Tree" || 
+                gameObjectMapObject.Name == "Mountain"))) {
+                    if (collisionMapObject.Name == "Mountain" && 
+                        IsFullyEncompassed(collisionObject, gameObject)) {
+                        return true;
+                    } else if (IsFullyEncompassed(gameObject, collisionObject)) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+            } else {
+                Debug.Log(gameObjectLayer + " " + collisionObjectLayer + " " + gameObjectMapObject.Name + " " + collisionMapObject.Name);
                 return false;
             }
-
-            return true;
         } else {
-            int newObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+            int gameObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
             int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(
                     collisionObject.GetInstanceID());
 
-            if (newObjectLayer == -1 || collisionObjectLayer == -1) {
+            if (gameObjectLayer == -1 || collisionObjectLayer == -1) {
                 Debug.Log("Invalid layer1");
                 return false;
             }
 
-            MapObject newMapObject = MapEditorManager.Layers[newObjectLayer][
+            MapObject gameObjectMapObject = MapEditorManager.Layers[gameObjectLayer][
                 gameObject.GetInstanceID()];
             MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
                     collisionObject.GetInstanceID()];
 
-            if (newObjectLayer <= collisionObjectLayer || newMapObject.Name != "Tree" || 
-                collisionMapObject.Name != "Mountain" || !IsFullyEncompassed(collisionObject, gameObject)) { 
-                Debug.Log("invalid stacking");
+            if ((collisionObjectLayer <= gameObjectLayer &&  
+                (collisionMapObject.Name == "Mountain" || 
+                gameObjectMapObject.Name == "Tree")) || 
+                (collisionObjectLayer > gameObjectLayer &&  
+                (collisionMapObject.Name == "Tree" || 
+                gameObjectMapObject.Name == "Mountain"))) {
+                    if (collisionMapObject.Name == "Mountain" && 
+                        IsFullyEncompassed(collisionObject, gameObject)) {
+                        Debug.Log("Fully encompassed + mountain");
+                        return true;
+                    } else if (IsFullyEncompassed(gameObject, collisionObject)) {
+                        Debug.Log("Fully encompassed + tree");
+                        return true;
+                    }
+                    else {
+                        Debug.Log("Not fully encompassed");
+                        return false;
+                    }
+            } else {
+                Debug.Log(gameObjectLayer + " " + collisionObjectLayer + " " + gameObjectMapObject.Name + " " + collisionMapObject.Name);
                 return false;
             }
-
-            Debug.Log("return true from stacking");
-            return true;
         }
     }
 
@@ -305,16 +332,19 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
         List<Collider2D> hitColliders = GetAssetCollisions();
-        if (GetCollisionCount() > 1) {
+        if (hitColliders.Count > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
                     && collisionObject.gameObject.tag != "DynamicBoundingBox"
                     && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
+                    != LayerCollisions[LayerCollisions.Count - 1][0].Id || 
+                    collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count - 1][1].Id)) {
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
-                    StartCoroutine(RevertMaterialAndScale(originalScale, scalingObject, collisionObject.gameObject));
+                    StartCoroutine(RevertMaterialAndScale(originalScale, scalingObject, 
+                        collisionObject.gameObject));
                 }
             }
             return true;
@@ -336,7 +366,8 @@ public class AssetCollision : MonoBehaviour {
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is colliding with the scaled object.
     /// </param>
-    private IEnumerator RevertMaterialAndScale(float originalScale, GameObject scalingObject, GameObject collisionObject) {
+    private IEnumerator RevertMaterialAndScale(float originalScale, GameObject scalingObject, 
+        GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 
@@ -371,13 +402,16 @@ public class AssetCollision : MonoBehaviour {
                                                     System.Action<bool, bool> callback) {
         yield return new WaitForFixedUpdate(); 
         List<Collider2D> hitColliders = GetAssetCollisions(true);
-        if (GetCollisionCount() > 1) {
+        if (hitColliders.Count > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
+                Debug.Log(collisionObject.gameObject.name);
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
                     && collisionObject.gameObject.tag != "DynamicBoundingBox"
                     && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
+                    != LayerCollisions[LayerCollisions.Count - 1][1].Id || 
+                    collisionObject.gameObject.GetInstanceID() 
+                    != LayerCollisions[LayerCollisions.Count - 1][1].Id)) {
                     Debug.Log("collisionObject: " + collisionObject.gameObject.name);
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
