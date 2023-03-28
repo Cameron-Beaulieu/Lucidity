@@ -39,7 +39,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                 SelectedObject.GetComponent<Image>().color = new Color32(73, 48, 150, 255);
                 if (SelectedObject.name != "Spawn Point") {
                     GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>().UpdateScaleText(
-                        SelectedObject.transform.localScale.x);
+                        SelectedObject.transform.parent.localScale.x);
                 }
             }
         }

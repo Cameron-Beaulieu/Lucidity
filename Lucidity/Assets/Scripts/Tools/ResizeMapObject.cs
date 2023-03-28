@@ -24,8 +24,12 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
     /// </summary>
     /// <param name="selectedObjectScale">The scale of the selected object.</param>
     public void UpdateScaleText(float selectedObjectScale) {
-        value = Mathf.Round(selectedObjectScale * 10f) / 10f;
+        value = Mathf.Round(selectedObjectScale / 81f * 10f) / 10f;
         _currentSelectionOriginalScale = value;
+        if (_text == null) {
+            _text = transform.parent.Find("ValueText").GetComponent<TMP_Text>();
+        }
+        _text.text = value + "x";
     }
 
     public void OnValueChanged(float newValue) {
