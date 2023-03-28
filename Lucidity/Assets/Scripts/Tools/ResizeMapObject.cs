@@ -45,7 +45,9 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
             float oldParentScale = Util.ParentAssetDefaultScale * _currentSelectionOriginalScale;
             MapEditorManager.MapObjects[SelectMapObject.SelectedObject.GetInstanceID()]
                 .Scale = new Vector3(newParentScale, newParentScale, newParentScale);
-            // change in layers as well
+            MapEditorManager.Layers[MapEditorManager.CurrentLayer]
+                [SelectMapObject.SelectedObject.GetInstanceID()]
+                    .Scale = new Vector3(newParentScale, newParentScale, newParentScale);
 
             // add to actions history
             List<(int, GameObject)> relatedObjects = 
