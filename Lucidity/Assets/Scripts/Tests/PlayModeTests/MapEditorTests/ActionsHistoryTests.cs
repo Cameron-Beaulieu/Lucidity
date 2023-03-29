@@ -179,11 +179,13 @@ public class ActionsHistoryTests : MapEditorTests {
         yield return null;
 
         // scale the asset
-        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>();
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
         scaleScript.OnValueChanged(2f);
         scaleScript.OnPointerUp(new PointerEventData(EventSystem.current));
         Assert.AreEqual(defaultScale * 2, parentToScale.transform.localScale);
-        Assert.AreEqual(EditorAction.ActionType.ResizeMapObject, MapEditorManager.CurrentAction.Value.Type);
+        Assert.AreEqual(EditorAction.ActionType.ResizeMapObject, 
+                        MapEditorManager.CurrentAction.Value.Type);
 
         // undo the scaling
         GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();

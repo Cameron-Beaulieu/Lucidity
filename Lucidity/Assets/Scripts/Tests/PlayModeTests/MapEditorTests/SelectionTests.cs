@@ -207,7 +207,8 @@ public class SelectionTests : MapEditorTests {
         Assert.AreEqual("1x", scaleValueText.text);
 
         // scale the object up
-        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>();
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
         scaleScript.OnValueChanged(2f);
         Assert.AreEqual("2x", scaleValueText.text);
         Assert.AreEqual(defaultScale * 2, placedAssetParent.transform.localScale);
