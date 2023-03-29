@@ -132,7 +132,7 @@ public class Render3DScene : MonoBehaviour {
     /// </param>
     private void Place3DObject(GameObject prefab, KeyValuePair <int,MapObject> kvp) {
         GameObject newGameObject = Instantiate(prefab, new Vector3(0,0,0), Quaternion.identity);
-        newGameObject.transform.rotation = Quaternion.Euler(0, kvp.Value.Rotation.eulerAngles.z, 
+        newGameObject.transform.rotation = Quaternion.Euler(0, -kvp.Value.Rotation.eulerAngles.z, 
                                                             0);
         newGameObject.transform.localScale = new Vector3(
             newGameObject.transform.localScale.x * kvp.Value.Scale.x, 

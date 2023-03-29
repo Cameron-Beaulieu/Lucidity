@@ -303,7 +303,8 @@ public class ThreeDMapTests {
         // check that the assets are scaled and rotated properly
         Assert.AreEqual(fortressScale, fortress3D.transform.localScale);
         Assert.AreEqual(mountainScale, mountain3D.transform.localScale);
-        Assert.AreEqual(fortressRotation, fortress3D.transform.localRotation.eulerAngles.y, 
+        // the rotation is inverted (so it's -90, which is equivalent to 270)
+        Assert.AreEqual(360-fortressRotation, fortress3D.transform.localRotation.eulerAngles.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(mountainRotation, mountain3D.transform.localRotation.eulerAngles.y,
                         PlayModeTestUtil.FloatTolerance);
