@@ -260,7 +260,7 @@ public class AssetCollision : MonoBehaviour {
             MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
                     collisionObject.GetInstanceID()];
 
-            if ((collisionObjectLayer <= gameObjectLayer &&  
+            if ((collisionObjectLayer < gameObjectLayer &&  
                 collisionMapObject.Name == "Mountain" && 
                 gameObjectMapObject.Name == "Tree") || 
                 (collisionObjectLayer > gameObjectLayer &&  
