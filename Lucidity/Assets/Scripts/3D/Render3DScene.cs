@@ -36,10 +36,10 @@ public class Render3DScene : MonoBehaviour {
 
         // set the map name by dropping file path using regex
         if (MapData.FileName != null) {
-            string pattern = @"\b\w*\b.json";
+            string pattern = @"(?<=\/)[^\/]*(?=\.\w+$)";
             Match m = Regex.Match(MapData.FileName, pattern, RegexOptions.IgnoreCase);
             if (m.Success) {
-                string name = m.Value.Replace(".json", "");
+                string name = m.Value;
                 GameObject.Find("OptionsPanel/BackText").GetComponent<TMP_Text>().text =
                     "Currently Navigating: " + name;
             }
