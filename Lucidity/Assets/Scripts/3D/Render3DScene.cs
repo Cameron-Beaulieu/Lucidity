@@ -36,7 +36,7 @@ public class Render3DScene : MonoBehaviour {
 
         // set the map name by dropping file path using regex
         if (MapData.FileName != null) {
-            string pattern = @"(?<=\/)[^\/]*(?=\.\w+$)";
+            string pattern = @"(?<=\\|\/)[^\\\/]*(?=\.\w+$)";
             Match m = Regex.Match(MapData.FileName, pattern, RegexOptions.IgnoreCase);
             if (m.Success) {
                 string name = m.Value;
