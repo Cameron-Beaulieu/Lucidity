@@ -43,6 +43,7 @@ public class Util {
         AvatarMovement.AscendTestingInput = false;
         AvatarMovement.DescendTestingInput = false;
         Render3DScene.EscapeTestingInput = false;
+        Zoom.zoomFactor = 0f;
     }
 
     /// <summary>

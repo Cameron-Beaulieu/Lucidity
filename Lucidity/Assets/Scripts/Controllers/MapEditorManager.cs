@@ -453,9 +453,9 @@ public class MapEditorManager : MonoBehaviour {
                                           newGameObject.transform.localPosition.y),  
             new Vector2(parentGameObject.transform.localPosition.x, 
                         parentGameObject.transform.localPosition.y),
-            new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
-                        parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
-                        parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
+            new Vector3(parentGameObject.transform.localScale.x, 
+                        parentGameObject.transform.localScale.y, 
+                        parentGameObject.transform.localScale.z), 
             parentGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
         if (!IdToGameObjectMapping.ContainsKey(newGameObject.GetInstanceID())) {
@@ -714,9 +714,9 @@ public class MapEditorManager : MonoBehaviour {
             mapObject.MapPosition.y, 0);
         newParent.transform.rotation = mapObject.Rotation;
         newGameObject.transform.localScale = 
-            new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
-                        newGameObject.transform.localScale.y + Zoom.zoomFactor, 
-                        newGameObject.transform.localScale.z + Zoom.zoomFactor);
+            new Vector3(newGameObject.transform.localScale.x * (Zoom.zoomFactor + 1), 
+                        newGameObject.transform.localScale.y * (Zoom.zoomFactor + 1), 
+                        newGameObject.transform.localScale.z * (Zoom.zoomFactor + 1));
         AddNewMapObject(newGameObject, mapObject.Name, 
                         newParent, newMapObjects, mapObject.PrefabIndex);
         if (!mapObject.IsActive) {
