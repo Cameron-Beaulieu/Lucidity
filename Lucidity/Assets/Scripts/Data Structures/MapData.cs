@@ -96,6 +96,7 @@ public class MapData {
     /// The path to the json file being deserialized.
     /// </param>
     public static MapData Deserialize(string filePath) {
+        FileName = filePath;
         string jsonContent = File.ReadAllText(filePath);
         return JsonUtility.FromJson<MapData>(jsonContent);
     }

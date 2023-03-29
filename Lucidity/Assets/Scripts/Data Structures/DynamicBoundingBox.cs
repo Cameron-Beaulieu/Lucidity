@@ -5,17 +5,21 @@ using UnityEngine;
 public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
-    private static HashSet<Vector2> _randomAssetArrangement;
+    private static HashSet<Vector2> _assetArrangement;
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
         set { _dynamicSideLength = value; }
     }
 
+    public static HashSet<Vector2> AssetArrangement {
+        get { return _assetArrangement; }
+        set { _assetArrangement = value; }
+    }
+
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
-        
     }
 
     /// <summary>
@@ -40,10 +44,14 @@ public class DynamicBoundingBox : MonoBehaviour {
         // Remove old material 
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
 
-        GenerateRandomCoordinates();
+        if (AssetOptions.Random) {
+            GenerateRandomCoordinates();
+        } else {
+            GenerateUniformCoordinates();
+        }
 
         // Create a hovering asset image in each randomly assigned coordinate position
-        foreach (Vector2 coordinate in _randomAssetArrangement) {
+        foreach (Vector2 coordinate in _assetArrangement) {
             CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
         }
 
@@ -136,7 +144,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     public static List<GameObject> CreateAssets(GameObject assetPrefab,
                                                 GameObject dynamicBoundingBox) {
         List<GameObject> assets = new List<GameObject>();
-        foreach (Vector2 coordinate in _randomAssetArrangement) {
+        foreach (Vector2 coordinate in _assetArrangement) {
             GameObject newGameObject = CreateNewObject(assetPrefab,
                                                        coordinate,
                                                        dynamicBoundingBox);
@@ -196,16 +204,35 @@ public class DynamicBoundingBox : MonoBehaviour {
     }
 
     /// <summary>
+    /// Generate coordinate pairs (with no repeating pair) up to the desired number of assets.
+    /// Generated in a uniform manner, with population of assets going top-down, left-right.
+    /// these will be used in selecting the random arrangement of grouped assets
+    /// </summary>
+    public static void GenerateUniformCoordinates() {
+        _assetArrangement = new HashSet<Vector2>();
+        int row = 0;
+        int col = _dynamicSideLength - 1;
+        do {
+            _assetArrangement.Add(new Vector2(row, col));
+            row++;
+            if (row >= _dynamicSideLength) {
+                row = 0;
+                col--;
+            }
+        } while (_assetArrangement.Count < AssetOptions.AssetCount);
+    }
+
+    /// <summary>
     ///	Generate random coordinate pairs (with no repeating pair) up to the desired number of
     /// assets. These will be used in selecting the random arrangement of grouped assets.
     /// </summary>
     public static void GenerateRandomCoordinates() {
-        _randomAssetArrangement = new HashSet<Vector2>();
+        _assetArrangement = new HashSet<Vector2>();
         do {
-            _randomAssetArrangement.Add(new Vector2(
+            _assetArrangement.Add(new Vector2(
                 Random.Range(0, _dynamicSideLength),
                 Random.Range(0, _dynamicSideLength)));
-        } while (_randomAssetArrangement.Count < AssetOptions.AssetCount);
+        } while (_assetArrangement.Count < AssetOptions.AssetCount);
     }
 
     /// <summary>

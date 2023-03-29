@@ -44,6 +44,35 @@ public class DynamicBoundingBoxTests : MapEditorTests {
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
     }
 
+    [Test]
+    public void DynamicBoundingBoxRandomnessControlledByToggle() {
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        Toggle randomToggle = GameObject.Find("RandomContainer").transform.Find("RandomToggle")
+            .GetComponent<Toggle>();
+        
+        // the Random variable in AssetOptions should correspond to the toggle option
+        randomToggle.isOn = true;
+        Assert.AreEqual(randomToggle.isOn, AssetOptions.Random);
+
+        // change the asset count to a larger value to verify uniform arrangement
+        randomToggle.isOn = false;
+        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+        countInput.text = "5";
+        countInput.onEndEdit.Invoke(countInput.text);
+        Assert.AreEqual(5, AssetOptions.AssetCount);
+
+        fortressButton.onClick.Invoke();
+
+        // simulate the uniform placement of 5 assets, which goes top-bottom and left-right
+        HashSet<Vector2> fiveUniformAssets = new HashSet<Vector2>();
+        fiveUniformAssets.Add(new Vector2(0, 2));
+        fiveUniformAssets.Add(new Vector2(1, 2));
+        fiveUniformAssets.Add(new Vector2(2, 2));
+        fiveUniformAssets.Add(new Vector2(0, 1));
+        fiveUniformAssets.Add(new Vector2(1, 1));
+        Assert.AreEqual(DynamicBoundingBox.AssetArrangement, fiveUniformAssets);
+    }
+
     [UnityTest]
     public IEnumerator DynamicBoundingBoxAssetHoverUpdatesAfterReversion() {
         // 3D-ify

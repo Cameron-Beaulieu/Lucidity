@@ -10,6 +10,8 @@ public class AssetOptions : MonoBehaviour {
     private static float _spread;
     [SerializeField] private InputField _countInput;
     private static int _assetCount;
+    [SerializeField] private Toggle _randomToggle;
+    private static bool _random;
 
     public static int AssetCount {
         get { return _assetCount; }
@@ -21,6 +23,11 @@ public class AssetOptions : MonoBehaviour {
         set { _spread = value; }
     }
 
+    public static bool Random {
+        get { return _random; }
+        set { _random = value; }
+    }
+
     private void Awake() {
         _editor = gameObject.GetComponent<MapEditorManager>();
     }
@@ -28,8 +35,10 @@ public class AssetOptions : MonoBehaviour {
     private void Start() {
         _countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
         _spreadSlider.onValueChanged.AddListener(delegate{ SpreadSliderHandler(); });
+        _randomToggle.onValueChanged.AddListener(delegate{ RandomToggleHandler(); });
         AssetCountInputHandler(_countInput.text);
         SpreadSliderHandler();
+        RandomToggleHandler();
     }
 
     /// <summary>
@@ -56,6 +65,14 @@ public class AssetOptions : MonoBehaviour {
         _spread = 1 + (_spreadSlider.value) / 10;
         string sliderMessage = _spread.ToString("0.0") + " x";
         _spreadText.text = sliderMessage;
+        UpdateAssetImage();
+    }
+
+    /// <summary>
+    /// Updates <c>_random<c> and the asset image to match the setting.
+    /// </summary>
+    public void RandomToggleHandler() {
+        _random = _randomToggle.isOn;
         UpdateAssetImage();
     }
 
