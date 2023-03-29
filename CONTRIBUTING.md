@@ -6,6 +6,6 @@ All types of contributions are encouraged and valued! Please make sure to read t
 
 > And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
 > - Star the project
-> - Share Lucidity no social media with #Lucidity
+> - Share Lucidity on social media with #Lucidity
 > - Mention the project at local meetups and tell your friends about it
 
