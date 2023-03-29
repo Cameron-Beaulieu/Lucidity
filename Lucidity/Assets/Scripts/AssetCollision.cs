@@ -324,7 +324,7 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
         List<Collider2D> hitColliders = GetAssetCollisions();
-        if (hitColliders.Count > 2) {
+        if (CountCollisionsWithoutDynamicBoundingBox(hitColliders) > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
@@ -389,7 +389,7 @@ public class AssetCollision : MonoBehaviour {
                                                     System.Action<bool, bool> callback) {
         yield return new WaitForFixedUpdate(); 
         List<Collider2D> hitColliders = GetAssetCollisions(true);
-        if (hitColliders.Count > 2) {
+        if (CountCollisionsWithoutDynamicBoundingBox(hitColliders) > 1) {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
@@ -403,6 +403,28 @@ public class AssetCollision : MonoBehaviour {
         } else {
             callback(false, isClockwise);
         }
+    }
+
+    /// <summary>
+    /// Counts the number of colliders in the specified list that are not the dynamic bounding
+    /// box.
+    /// </summary>
+    /// <param name="hitColliders">
+    /// The list of colliders to count.
+    /// </param>
+    /// <returns>
+    /// The number of colliders in the specified list that are not the dynamic bounding box.
+    /// </returns>
+    private int CountCollisionsWithoutDynamicBoundingBox(List<Collider2D> hitColliders) {
+        int count = 0;
+        foreach (Collider2D collisionObject in hitColliders) {
+            if (collisionObject.gameObject.layer == _assetLayer
+                && collisionObject.gameObject.GetComponent<Image>() != null
+                && collisionObject.gameObject.tag != "DynamicBoundingBox") {
+                count++;
+            }
+        }
+        return count;
     }
 
     /// <summary>
