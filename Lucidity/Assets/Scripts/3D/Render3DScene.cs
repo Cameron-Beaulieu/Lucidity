@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -31,6 +33,17 @@ public class Render3DScene : MonoBehaviour {
         GameObject.Find("BackButton").GetComponent<Button>().onClick.AddListener(RevertTo2D);
         GameObject.Find("ExitOptionsButton").GetComponent<Button>().onClick
             .AddListener(SwitchFocus);
+
+        // set the map name by dropping file path using regex
+        if (MapData.FileName != null) {
+            string pattern = @"\b\w*\b.json";
+            Match m = Regex.Match(MapData.FileName, pattern, RegexOptions.IgnoreCase);
+            if (m.Success) {
+                string name = m.Value.Replace(".json", "");
+                GameObject.Find("OptionsPanel/BackText").GetComponent<TMP_Text>().text =
+                    "Currently Navigating: " + name;
+            }
+        }
 
         CreateMap();
         PlaceAssets();
