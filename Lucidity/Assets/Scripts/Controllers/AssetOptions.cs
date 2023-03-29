@@ -66,6 +66,9 @@ public class AssetOptions : MonoBehaviour {
         UpdateAssetImage();
     }
 
+    /// <summary>
+    /// Updates <c>_random<c> and the asset image to match the setting.
+    /// </summary>
     public void RandomToggleHandler() {
         _random = _randomToggle.isOn;
         UpdateAssetImage();
