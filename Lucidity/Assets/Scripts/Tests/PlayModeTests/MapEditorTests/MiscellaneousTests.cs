@@ -41,8 +41,8 @@ public class MiscellaneousTests : MapEditorTests {
                                                                 0, 
                                                                 new Vector2(0, 0), 
                                                                 new Vector2(100,100), 
-                                                                new Vector3(1, 1, 1), 
-                                                                Quaternion.identity, true),
+                                                                new Vector3(100f,100f,100f), 
+                                                                Quaternion.Euler(0,0,90), true),
                                                                 "Layer0")}}},
                                       new Dictionary<string, int> {{"Layer0", 0}});
         MapEditorManager editor = GameObject.Find("MapEditorManager")
@@ -63,6 +63,8 @@ public class MiscellaneousTests : MapEditorTests {
         GameObject fortress = fortressParent.transform.GetChild(0).gameObject;
         Assert.AreEqual("FortressObject Parent", fortressParent.name);
         Assert.AreEqual(new Vector3(100,100,0), fortressParent.transform.localPosition);
+        Assert.AreEqual(new Vector3(100f,100f,100f), fortressParent.transform.localScale);
+        Assert.AreEqual(90, fortressParent.transform.eulerAngles.z);
         Assert.AreEqual("FortressObject(Clone)", fortress.name);
         Assert.AreEqual(0, fortress.transform.localPosition.x, PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(0, fortress.transform.localPosition.y, PlayModeTestUtil.FloatTolerance);

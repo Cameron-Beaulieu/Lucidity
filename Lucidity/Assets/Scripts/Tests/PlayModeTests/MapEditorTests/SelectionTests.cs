@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
@@ -154,5 +155,62 @@ public class SelectionTests : MapEditorTests {
         // check asset is in <c>Layers</c>
         Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+    }
+
+    [UnityTest]
+    public IEnumerator CanRotateAsset() {
+        // paint an object to rotate
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // select the object
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject placedAssetParent = GameObject.Find("FortressObject Parent");
+        GameObject placedAsset = placedAssetParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(0, placedAssetParent.transform.rotation.eulerAngles.z);
+        
+        // rotate the object clockwise
+        Button clockwiseButton = GameObject.Find("CWButton").GetComponent<Button>();
+        clockwiseButton.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(270, placedAssetParent.transform.rotation.eulerAngles.z);
+
+        // rotate the object counter-clockwise
+        Button counterClockwiseButton = GameObject.Find("CCWButton").GetComponent<Button>();
+        counterClockwiseButton.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(0, placedAssetParent.transform.rotation.eulerAngles.z);
+    }
+
+    [UnityTest]
+    public IEnumerator CanScaleAsset() {
+        Vector3 defaultScale = new Vector3(Util.ParentAssetDefaultScale, 
+                                           Util.ParentAssetDefaultScale, 
+                                           Util.ParentAssetDefaultScale);
+        // paint an object to scale
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // select the object
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject placedAssetParent = GameObject.Find("FortressObject Parent");
+        GameObject placedAsset = placedAssetParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(defaultScale, placedAssetParent.transform.localScale);
+        yield return null;
+
+        // check that Asset Options displays the default scale
+        TMP_Text scaleValueText = GameObject.Find("ValueText").GetComponent<TMP_Text>();
+        Assert.AreEqual("1x", scaleValueText.text);
+
+        // scale the object up
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
+        scaleScript.OnValueChanged(2f);
+        Assert.AreEqual("2x", scaleValueText.text);
+        Assert.AreEqual(defaultScale * 2, placedAssetParent.transform.localScale);
     }
 }

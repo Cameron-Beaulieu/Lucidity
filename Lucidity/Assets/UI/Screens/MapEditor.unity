@@ -7305,7 +7305,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -29.99997}
+  m_AnchoredPosition: {x: 40, y: -30}
   m_SizeDelta: {x: 0, y: -810}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &849967431
@@ -9127,7 +9127,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -450, y: -29.99997}
+  m_AnchoredPosition: {x: -450, y: -30}
   m_SizeDelta: {x: 300, y: -810}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1045013707
@@ -10477,7 +10477,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228933416}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 531796471}
+        m_TargetAssemblyTypeName: SelectMapObject, General
+        m_MethodName: RotateMapObject
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1228933416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10660,7 +10672,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1237108171}
-  - component: {fileID: 1237108172}
+  - component: {fileID: 1237108173}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -10691,7 +10703,7 @@ RectTransform:
   m_AnchoredPosition: {x: 95, y: -40}
   m_SizeDelta: {x: 150, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1237108172
+--- !u!114 &1237108173
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10700,7 +10712,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237108170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Script: {fileID: 11500000, guid: f9b163d86e7dc496582d574b60eac38d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -10738,7 +10750,7 @@ MonoBehaviour:
   m_MinValue: 0.5
   m_MaxValue: 10
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -12725,7 +12737,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1482263761}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 531796471}
+        m_TargetAssemblyTypeName: SelectMapObject, General
+        m_MethodName: RotateMapObject
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1482263761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13824,7 +13848,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226900040}
   m_HandleRect: {fileID: 1226900039}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -14230,7 +14254,6 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 2614a1796e5f949fcaba3be115c3d540, type: 3}
   - {fileID: 2800000, guid: 9e96820f1451643f5a99ca45ba440546, type: 3}
   - {fileID: 2800000, guid: 12cc7043656ec41d2b33a9a22dc17da0, type: 3}
-  CurrentLayer: 0
   _layerPrefab: {fileID: 1082086638989995338, guid: e5edca1a50d0632439ec8b0a20ce3471, type: 3}
 --- !u!4 &1640203420
 Transform:

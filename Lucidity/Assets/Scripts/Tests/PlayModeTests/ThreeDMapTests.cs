@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -252,9 +253,28 @@ public class ThreeDMapTests {
         GameObject fortressParent = GameObject.Find("FortressObject Parent");
         GameObject mountainParent = GameObject.Find("MountainObject Parent");
         Vector2 fortressPosition = fortressParent.transform.localPosition;
-        Vector3 fortressScale = fortressParent.transform.localScale;
         Vector2 mountainPosition = mountainParent.transform.localPosition;
+
+        // scale Fortress
+        SelectMapObject.IsTesting = true;
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        SelectMapObject.SelectedObject = fortressParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        yield return null;
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
+        scaleScript.OnValueChanged(1.5f);
+        scaleScript.OnPointerUp(new PointerEventData(EventSystem.current));
+        yield return null;
+        Vector3 fortressScale = fortressParent.transform.localScale;
         Vector3 mountainScale = mountainParent.transform.localScale;
+
+        // rotate the Fortress
+        GameObject.Find("CWButton").GetComponent<Button>().onClick.Invoke();
+        yield return new WaitForFixedUpdate();
+        float fortressRotation = fortressParent.transform.localRotation.eulerAngles.z;
+        float mountainRotation = mountainParent.transform.localRotation.eulerAngles.z;
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -279,6 +299,16 @@ public class ThreeDMapTests {
                         PlayModeTestUtil.FloatTolerance);
         // mountain has special positioning for the y due to the way the asset was modelled
         Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
+
+        // check that the assets are scaled and rotated properly
+        Assert.AreEqual(fortressScale, fortress3D.transform.localScale);
+        Assert.AreEqual(mountainScale, mountain3D.transform.localScale);
+        // the rotation is inverted (so it's -90, which is equivalent to 270)
+        Assert.AreEqual(360-fortressRotation, fortress3D.transform.localRotation.eulerAngles.y, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainRotation, mountain3D.transform.localRotation.eulerAngles.y,
+                        PlayModeTestUtil.FloatTolerance);
+        SelectMapObject.IsTesting = false;
     }
 
     [UnityTest]

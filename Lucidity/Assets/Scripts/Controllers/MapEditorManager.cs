@@ -275,10 +275,29 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            float newSize = ((ResizeMapObjectAction) actionToRedo).NewSize;
+                            obj.transform.parent.localScale = 
+                                new Vector3(newSize, newSize, newSize);
+                            if (obj == SelectMapObject.SelectedObject) {
+                                GameObject.Find("ScaleContainer/Slider")
+                                    .GetComponent<ResizeMapObject>().UpdateScaleText(newSize);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToRedo.RelatedObjects) {
+                        if (obj != null) {
+                            bool isClockwise = ((RotateMapObjectAction) actionToRedo).IsClockwise;
+                            if (isClockwise) {
+                                obj.transform.parent.Rotate(0, 0, -90);
+                            } else {
+                                obj.transform.parent.Rotate(0, 0, 90);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     actionToRedo.RelatedObjects[0].Item2.SetActive(true);
@@ -350,10 +369,30 @@ public class MapEditorManager : MonoBehaviour {
                     // TODO: Implement
                     break;
                 case EditorAction.ActionType.ResizeMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            float originalSize = ((ResizeMapObjectAction) actionToUndo).OldSize;
+                            obj.transform.parent.localScale = 
+                                new Vector3(originalSize, originalSize, 
+                                            originalSize);
+                            if (obj == SelectMapObject.SelectedObject) {
+                                GameObject.Find("ScaleContainer/Slider")
+                                    .GetComponent<ResizeMapObject>().UpdateScaleText(originalSize);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.RotateMapObject:
-                    // TODO: Implement
+                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                        if (obj != null) {
+                            bool isClockwise = ((RotateMapObjectAction) actionToUndo).IsClockwise;
+                            if (isClockwise) {
+                                obj.transform.parent.Rotate(0, 0, 90);
+                            } else {
+                                obj.transform.parent.Rotate(0, 0, -90);
+                            }
+                        }
+                    }
                     break;
                 case EditorAction.ActionType.CreateLayer:
                     CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name] - 1;
@@ -417,7 +456,7 @@ public class MapEditorManager : MonoBehaviour {
             new Vector3(parentGameObject.transform.localScale.x - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.y - Zoom.zoomFactor, 
                         parentGameObject.transform.localScale.z - Zoom.zoomFactor), 
-            newGameObject.transform.rotation, true);
+            parentGameObject.transform.rotation, true);
         mapObjectDictionary.Add(newMapObject.Id, newMapObject);
         if (!IdToGameObjectMapping.ContainsKey(newGameObject.GetInstanceID())) {
             IdToGameObjectMapping.Add(newGameObject.GetInstanceID(), newGameObject);
@@ -661,7 +700,7 @@ public class MapEditorManager : MonoBehaviour {
     /// <returns>
     /// The <c>GameObject</c> that was created as part of creating the new MapObject
     /// </returns>
-    private GameObject RebuildMapObject(MapObject mapObject, 
+    public GameObject RebuildMapObject(MapObject mapObject, 
                                         Dictionary<int, MapObject> newMapObjects) {
         GameObject newParent = new GameObject();
         newParent.name = AssetPrefabs[mapObject.PrefabIndex].name + " Parent";
@@ -673,7 +712,7 @@ public class MapEditorManager : MonoBehaviour {
             AssetPrefabs[mapObject.PrefabIndex], newParent.transform);
         newGameObject.transform.localPosition = new Vector3(mapObject.MapPosition.x, 
             mapObject.MapPosition.y, 0);
-        newGameObject.transform.rotation = mapObject.Rotation;
+        newParent.transform.rotation = mapObject.Rotation;
         newGameObject.transform.localScale = 
             new Vector3(newGameObject.transform.localScale.x + Zoom.zoomFactor, 
                         newGameObject.transform.localScale.y + Zoom.zoomFactor, 

@@ -182,4 +182,81 @@ public class ActionsHistoryTests : MapEditorTests {
         // check that the original new layer was permantently deleted
         Assert.AreEqual(2, MapEditorManager.Layers.Count);
     }
+
+    [UnityTest]
+    public IEnumerator CanUndoAndRedoAssetScaling() {
+        SelectMapObject.IsTesting = true;
+        Vector3 defaultScale = new Vector3(Util.ParentAssetDefaultScale,
+                                           Util.ParentAssetDefaultScale, 
+                                           Util.ParentAssetDefaultScale);
+                    
+        // paint an asset
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        GameObject parentToScale = GameObject.Find("FortressObject Parent");
+        GameObject child = parentToScale.transform.GetChild(0).gameObject;
+
+        // select the asset
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        SelectMapObject.SelectedObject = child;
+        child.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(defaultScale, parentToScale.transform.localScale);
+        yield return null;
+
+        // scale the asset
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
+        scaleScript.OnValueChanged(2f);
+        scaleScript.OnPointerUp(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(defaultScale * 2, parentToScale.transform.localScale);
+        Assert.AreEqual(EditorAction.ActionType.ResizeMapObject, 
+                        MapEditorManager.CurrentAction.Value.Type);
+
+        // undo the scaling
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(defaultScale, parentToScale.transform.localScale);
+
+        // redo the scaling
+        GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(defaultScale * 2, parentToScale.transform.localScale);
+        SelectMapObject.IsTesting = false;
+    }
+
+    [UnityTest]
+    public IEnumerator CanUndoAndRedoAssetRotation() {
+        SelectMapObject.IsTesting = true;
+
+        // paint an asset
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+        GameObject parentToRotate = GameObject.Find("FortressObject Parent");
+        GameObject child = parentToRotate.transform.GetChild(0).gameObject;
+        Assert.AreEqual(0, parentToRotate.transform.rotation.eulerAngles.z);
+
+        // select the asset
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        SelectMapObject.SelectedObject = child;
+        child.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(0, parentToRotate.transform.rotation.eulerAngles.z);
+        yield return null;
+
+        // rotate the asset
+        Button clockwiseButton = GameObject.Find("CWButton").GetComponent<Button>();
+        clockwiseButton.onClick.Invoke();
+        yield return new WaitForFixedUpdate();
+        Assert.AreEqual(270, parentToRotate.transform.rotation.eulerAngles.z);
+
+        // undo the rotation
+        GameObject.Find("Undo").GetComponent<Button>().onClick.Invoke();
+        yield return new WaitForFixedUpdate();
+        Assert.AreEqual(0, parentToRotate.transform.rotation.eulerAngles.z);
+
+        // redo the rotation
+        GameObject.Find("Redo").GetComponent<Button>().onClick.Invoke();
+        yield return new WaitForFixedUpdate();
+        Assert.AreEqual(270, parentToRotate.transform.rotation.eulerAngles.z);
+        SelectMapObject.IsTesting = false;
+    }
 }
