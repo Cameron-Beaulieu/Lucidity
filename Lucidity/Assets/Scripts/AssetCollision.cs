@@ -332,7 +332,7 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     public bool ScaleCausesCollision(float originalScale, GameObject scalingObject) {
         List<Collider2D> hitColliders = GetAssetCollisions();
-        if (hitColliders.Count > 1) {
+        if (hitColliders.Count > 2) {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
@@ -398,8 +398,9 @@ public class AssetCollision : MonoBehaviour {
                                                     System.Action<bool, bool> callback) {
         yield return new WaitForFixedUpdate(); 
         List<Collider2D> hitColliders = GetAssetCollisions(true);
-        if (hitColliders.Count > 1) {
+        if (hitColliders.Count > 2) {
             foreach (Collider2D collisionObject in hitColliders) {
+                Debug.Log("Within rotation");
                 Debug.Log(collisionObject.gameObject.name);
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
