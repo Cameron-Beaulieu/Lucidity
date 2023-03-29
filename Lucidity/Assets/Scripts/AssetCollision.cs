@@ -21,7 +21,6 @@ public class AssetCollision : MonoBehaviour {
 
     private void Awake() {
         _filterMask = LayerMask.GetMask("Asset");
-        // CheckAssetOnUI();
     }
 
     private void Start() {
@@ -102,6 +101,10 @@ public class AssetCollision : MonoBehaviour {
     /// <summary>
     /// Retrieve an array of Collider2D that the <c>GameObject</c> is in direct collision with.
     /// </summary>
+    /// <param name="isRotating">
+    /// <c>bool</c> representing whether collision check is for a <c>MapObject</c> that is
+    /// rotating.
+    /// </param>
     /// <returns>
     /// Array of <c>Collider2D</c> corresponding to the collisions that occur with the
     /// <c>GameObject</c>
@@ -172,7 +175,7 @@ public class AssetCollision : MonoBehaviour {
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision, to be highlighted briefly.
     /// </param>
-    IEnumerator RevertMaterialAndDestroy(GameObject collisionObject) {
+    private IEnumerator RevertMaterialAndDestroy(GameObject collisionObject) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
 
@@ -201,12 +204,17 @@ public class AssetCollision : MonoBehaviour {
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision.
     /// </param>
+    /// <param name="isRotating">
+    /// <c>bool</c> that indicates whether check is for a rotating <c>MapObject</c> or not.
+    /// </param>
     /// <returns>
     /// <c>true</c> if the gameObject is stacked legally, <c>false</c> otherwise
     /// </returns>
-    private bool CheckMapObjectStackingValidity(GameObject collisionObject, bool isRotating = false) {
+    private bool CheckMapObjectStackingValidity(GameObject collisionObject, 
+                                                bool isRotating = false) {
         if (isRotating) {
-            int gameObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
+            int gameObjectLayer = MapEditorManager
+                .LayerContainsMapObject(gameObject.GetInstanceID());
             int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(
                     collisionObject.GetInstanceID());
             
@@ -216,8 +224,8 @@ public class AssetCollision : MonoBehaviour {
 
             MapObject gameObjectMapObject = MapEditorManager.Layers[gameObjectLayer][
                 gameObject.GetInstanceID()];
-            MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
-                    collisionObject.GetInstanceID()];
+            MapObject collisionMapObject = MapEditorManager
+                .Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
             
             if ((collisionObjectLayer <= gameObjectLayer &&  
                 collisionMapObject.Name == "Mountain" && 
@@ -238,34 +246,32 @@ public class AssetCollision : MonoBehaviour {
                 return false;
             }
         } else {
-            int gameObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
-            int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(
-                    collisionObject.GetInstanceID());
+            int gameObjectLayer = MapEditorManager
+                .LayerContainsMapObject(gameObject.GetInstanceID());
+            int collisionObjectLayer = MapEditorManager
+                .LayerContainsMapObject(collisionObject.GetInstanceID());
 
             if (gameObjectLayer == -1 || collisionObjectLayer == -1) {
                 return false;
             }
 
-            MapObject gameObjectMapObject = MapEditorManager.Layers[gameObjectLayer][
-                gameObject.GetInstanceID()];
-            MapObject collisionMapObject = MapEditorManager.Layers[collisionObjectLayer][
-                    collisionObject.GetInstanceID()];
+            MapObject gameObjectMapObject = MapEditorManager
+                .Layers[gameObjectLayer][gameObject.GetInstanceID()];
+            MapObject collisionMapObject = MapEditorManager
+                .Layers[collisionObjectLayer][collisionObject.GetInstanceID()];
 
-            if ((collisionObjectLayer < gameObjectLayer &&  
-                collisionMapObject.Name == "Mountain" && 
-                gameObjectMapObject.Name == "Tree") || 
-                (collisionObjectLayer > gameObjectLayer &&  
-                collisionMapObject.Name == "Tree" && 
-                gameObjectMapObject.Name == "Mountain")) {
-                    if (collisionMapObject.Name == "Mountain" && 
-                        IsFullyEncompassed(collisionObject, gameObject)) {
-                        return true;
-                    } else if (IsFullyEncompassed(gameObject, collisionObject)) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
+            if ((collisionObjectLayer < gameObjectLayer 
+                && collisionMapObject.Name == "Mountain" && gameObjectMapObject.Name == "Tree")
+                    || (collisionObjectLayer > gameObjectLayer && collisionMapObject.Name == "Tree"
+                        && gameObjectMapObject.Name == "Mountain")) {
+                if (collisionMapObject.Name == "Mountain" && 
+                    IsFullyEncompassed(collisionObject, gameObject)) {
+                    return true;
+                } else if (IsFullyEncompassed(gameObject, collisionObject)) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -284,10 +290,10 @@ public class AssetCollision : MonoBehaviour {
     /// </returns>
     private bool IsFullyEncompassed(GameObject mountainObject, GameObject treeObject) {
         foreach (Vector2 point in treeObject.GetComponent<PolygonCollider2D>().points) {
-            Vector3 newPoint = treeObject.GetComponent<PolygonCollider2D>().bounds.center + 
-                new Vector3(point.x, point.y, 0);
-            if (!mountainObject.GetComponent<PolygonCollider2D>().bounds.IntersectRay(new Ray(
-                    newPoint, new Vector3(0,0, 1)))) {
+            Vector3 newPoint = treeObject.GetComponent<PolygonCollider2D>().bounds.center 
+                + new Vector3(point.x, point.y, 0);
+            if (!mountainObject.GetComponent<PolygonCollider2D>().bounds
+                .IntersectRay(new Ray(newPoint, new Vector3(0,0, 1)))) {
                 return false;
             }
         }
@@ -323,10 +329,9 @@ public class AssetCollision : MonoBehaviour {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
                     && collisionObject.gameObject.tag != "DynamicBoundingBox") {
-                    collisionObject.gameObject.GetComponent<Image>()
-                        .color = Color.red;
+                    collisionObject.gameObject.GetComponent<Image>().color = Color.red;
                     StartCoroutine(RevertMaterialAndScale(originalScale, scalingObject, 
-                        collisionObject.gameObject));
+                                                          collisionObject.gameObject));
                 }
             }
             return true;
@@ -388,9 +393,8 @@ public class AssetCollision : MonoBehaviour {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
-                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
-                    collisionObject.gameObject.GetComponent<Image>()
-                        .color = Color.red;
+                        && collisionObject.gameObject.tag != "DynamicBoundingBox") {
+                    collisionObject.gameObject.GetComponent<Image>().color = Color.red;
                     StartCoroutine(RevertMaterialAndRotate(isClockwise, rotatingObject,
                                                            collisionObject.gameObject));
                 }

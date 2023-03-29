@@ -34,12 +34,12 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
                     Tool.SpawnPointOptions.SetActive(false);
                     Tool.SelectionOptions.SetActive(true);
                 }
-                GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>().text 
-                    = "Editing " + SelectedObject.name;
+                GameObject.Find("SelectedObjectLabel").GetComponent<TMPro.TextMeshProUGUI>()
+                    .text = "Editing " + SelectedObject.name;
                 SelectedObject.GetComponent<Image>().color = new Color32(73, 48, 150, 255);
                 if (SelectedObject.name != "Spawn Point") {
-                    GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>().UpdateScaleText(
-                        SelectedObject.transform.parent.localScale.x);
+                    GameObject.Find("ScaleContainer/Slider").GetComponent<ResizeMapObject>()
+                        .UpdateScaleText(SelectedObject.transform.parent.localScale.x);
                 }
             }
         }
@@ -111,7 +111,7 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             float originalRotation = SelectedObject.transform.parent.rotation.z;
             float newRotation = originalRotation;
             if (isClockwise) {
-                newRotation-= 90;
+                newRotation -= 90;
                 SelectedObject.transform.parent.Rotate(0, 0, -90);
             } else {
                 newRotation += 90;
@@ -136,20 +136,22 @@ public class SelectMapObject : MonoBehaviour, IPointerClickHandler {
             // don't do anything
         } else {
             // add to MapObjects and Layers
-            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()].Rotation = new Quaternion(
-                SelectedObject.transform.parent.rotation.x, 
-                SelectedObject.transform.parent.rotation.y, 
-                SelectedObject.transform.parent.rotation.z, 
-                SelectedObject.transform.parent.rotation.w);
-            MapEditorManager.Layers[MapEditorManager.CurrentLayer][SelectedObject.GetInstanceID()].Rotation = 
-                new Quaternion(SelectedObject.transform.parent.rotation.x, 
-                SelectedObject.transform.parent.rotation.y, 
-                SelectedObject.transform.parent.rotation.z, 
-                SelectedObject.transform.parent.rotation.w);
+            MapEditorManager.MapObjects[SelectedObject.GetInstanceID()]
+                .Rotation = new Quaternion(SelectedObject.transform.parent.rotation.x, 
+                                           SelectedObject.transform.parent.rotation.y, 
+                                           SelectedObject.transform.parent.rotation.z, 
+                                           SelectedObject.transform.parent.rotation.w);
+            MapEditorManager.Layers[MapEditorManager.CurrentLayer][SelectedObject.GetInstanceID()]
+                .Rotation = new Quaternion(SelectedObject.transform.parent.rotation.x, 
+                                           SelectedObject.transform.parent.rotation.y, 
+                                           SelectedObject.transform.parent.rotation.z, 
+                                           SelectedObject.transform.parent.rotation.w);
 
             // add to actions history
-            RotateMapObjectAction action = new RotateMapObjectAction(new List<(int, GameObject)>{(SelectedObject.GetInstanceID(), SelectedObject)}, 
-                isClockwise);
+            RotateMapObjectAction action = 
+                new RotateMapObjectAction(
+                    new List<(int, GameObject)>{(SelectedObject.GetInstanceID(), SelectedObject)}, 
+                    isClockwise);
             if (MapEditorManager.CurrentAction != null 
                 && MapEditorManager.CurrentAction.Next != null) {
                 // These actions can no longer be redone
