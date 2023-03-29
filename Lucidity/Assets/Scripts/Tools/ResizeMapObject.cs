@@ -24,12 +24,13 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
     /// </summary>
     /// <param name="selectedObjectScale">The scale of the selected object.</param>
     public void UpdateScaleText(float selectedObjectScale) {
-        value = Mathf.Round(selectedObjectScale / 81f * 10f) / 10f;
-        _currentSelectionOriginalScale = value;
+        float roundedValue = Mathf.Round(selectedObjectScale / Util.ParentAssetDefaultScale * 10f) / 10f;
+        value = roundedValue;
+        _currentSelectionOriginalScale = roundedValue;
         if (_text == null) {
             _text = transform.parent.Find("ValueText").GetComponent<TMP_Text>();
         }
-        _text.text = value + "x";
+        _text.text = roundedValue + "x";
     }
 
     public void OnValueChanged(float newValue) {
@@ -49,8 +50,7 @@ public class ResizeMapObject : Slider, IPointerUpHandler {
                                                                  SelectMapObject.SelectedObject);
         if (isColliding) {
             value = _currentSelectionOriginalScale;
-            float roundedValue = Mathf.Round(value * 10f) / 10f;
-            _text.text = roundedValue + "x";
+            _text.text = value + "x";
         } else {
             float newParentScale = Util.ParentAssetDefaultScale * value;
             float oldParentScale = Util.ParentAssetDefaultScale * _currentSelectionOriginalScale;
