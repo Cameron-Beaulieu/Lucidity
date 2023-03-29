@@ -26,7 +26,7 @@ public class MoveLayerAction : EditorAction {
     /// <param name="newIndex">
     /// <c>int</c> corresponding to the new index for the layer to be moved to.
     /// </param>
-    public MoveLayerAction(List<GameObject> relatedObjects, int oldIndex, int newIndex) {
+    public MoveLayerAction(List<(int, GameObject)> relatedObjects, int oldIndex, int newIndex) {
         base.Type = ActionType.MoveLayer;
         base.RelatedObjects = relatedObjects;
         _oldIndex = oldIndex;

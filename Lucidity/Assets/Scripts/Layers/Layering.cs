@@ -22,13 +22,14 @@ public class Layering : MonoBehaviour {
     /// <returns>
     /// <c>GameObject List</c> containing the new layer GameObject.
     /// </returns>
-    public static List<GameObject> AddLayer(GameObject layerPrefab) {
+    public static List<(int, GameObject)> AddLayer(GameObject layerPrefab) {
         MapEditorManager.Layers.Add(new Dictionary<int, MapObject>());
         Vector3 newPosition = new Vector3(150, 0, 0);
         GameObject newLayer = (GameObject) Instantiate(
             layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
-        List<GameObject> newLayerList = new List<GameObject> {newLayer};
+        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> 
+            {(newLayer.GetInstanceID(), newLayer)};
         return newLayerList;
     }
 
@@ -41,12 +42,13 @@ public class Layering : MonoBehaviour {
     /// <returns>
     /// <c>GameObject List</c> containing the new layer GameObject.
     /// </returns>
-    public static List<GameObject> RemakeLayer(GameObject layerPrefab) {
+    public static List<(int, GameObject)> RemakeLayer(GameObject layerPrefab) {
         Vector3 newPosition = new Vector3(150, 0, 0);
         GameObject newLayer = (GameObject) Instantiate(
             layerPrefab, _layerContainer.transform);
         newLayer.transform.localPosition = newPosition;
-        List<GameObject> newLayerList = new List<GameObject> {newLayer};
+        List<(int, GameObject)> newLayerList = new List<(int, GameObject)> 
+            {(newLayer.GetInstanceID(), newLayer)};
         return newLayerList;
     }
 
@@ -54,7 +56,7 @@ public class Layering : MonoBehaviour {
     /// Creates a new layer using the AddLayer method and updates the Undo/Redo linked list.
     /// </summary>
     private void CreateNewLayer() {
-        List<GameObject> newLayerList = AddLayer(_layerPrefab);
+        List<(int, GameObject)> newLayerList = AddLayer(_layerPrefab);
 
         // Adding CreateLayerAction to Undo/Redo LinkedList
         if (MapEditorManager.Actions == null) {
@@ -87,18 +89,5 @@ public class Layering : MonoBehaviour {
                 MapEditorManager.CurrentAction = MapEditorManager.Actions.First;
             }
        }
-    }
-
-    /// <summary>
-    /// Deletes the most recently added layer from all Lists and from the scene.
-    /// </summary>
-    public static void DeleteLastLayer() {
-        Layer.LayerStatus.Remove(Layer.LayerNames.Last());
-        Layer.LayerIndex.Remove(Layer.LayerNames.Last());
-        MapEditorManager.Layers.RemoveAt(MapEditorManager.Layers.Count - 1);
-        GameObject layerToBeRemoved = GameObject.Find(Layer.LayerNames.Last());
-        Destroy(layerToBeRemoved);
-        Layer.LayerNames.Remove(Layer.LayerNames.Last());
-        Layer.SelectedChangeSelectedLayer(Layer.LayerNames.Last());
     }
 }

@@ -9,13 +9,8 @@ using UnityEngine.UI;
 [TestFixture]
 public class DynamicBoundingBoxTests : MapEditorTests {
 
-    [UnitySetUp]
-    public IEnumerator DynamicBoundingBoxSetUp() {
-        Util.ResetStaticVariables();
-        StartupScreen.FilePath = null;
-        MapEditorManager.ReloadFlag = false;
-        SceneManager.LoadScene("MapEditor");
-        yield return null;
+    [SetUp]
+    public void DynamicBoundingBoxSetUp() {
         Util.ResetAssetButtons();
     }
 
@@ -85,6 +80,10 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
         yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
 
         // Revert to 2D
         GameObject.Find("BackButton").GetComponent<Button>().onClick.Invoke();

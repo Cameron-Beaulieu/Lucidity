@@ -1,8 +1,8 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -41,8 +41,8 @@ public class MiscellaneousTests : MapEditorTests {
                                                                 0, 
                                                                 new Vector2(0, 0), 
                                                                 new Vector2(100,100), 
-                                                                new Vector3(1, 1, 1), 
-                                                                Quaternion.identity, true),
+                                                                new Vector3(100f,100f,100f), 
+                                                                Quaternion.Euler(0,0,90), true),
                                                                 "Layer0")}}},
                                       new Dictionary<string, int> {{"Layer0", 0}});
         MapEditorManager editor = GameObject.Find("MapEditorManager")
@@ -63,6 +63,8 @@ public class MiscellaneousTests : MapEditorTests {
         GameObject fortress = fortressParent.transform.GetChild(0).gameObject;
         Assert.AreEqual("FortressObject Parent", fortressParent.name);
         Assert.AreEqual(new Vector3(100,100,0), fortressParent.transform.localPosition);
+        Assert.AreEqual(new Vector3(100f,100f,100f), fortressParent.transform.localScale);
+        Assert.AreEqual(90, fortressParent.transform.eulerAngles.z);
         Assert.AreEqual("FortressObject(Clone)", fortress.name);
         Assert.AreEqual(0, fortress.transform.localPosition.x, PlayModeTestUtil.FloatTolerance);
         Assert.AreEqual(0, fortress.transform.localPosition.y, PlayModeTestUtil.FloatTolerance);
@@ -74,27 +76,78 @@ public class MiscellaneousTests : MapEditorTests {
     }
 
     [Test]
+    public void FileButtonTogglesDropdown() {
+        // check dropdown is inactive by default
+        GameObject dropdown = GameObject.Find("File Dropdown");
+        Assert.IsNull(dropdown);
+
+        // click file button
+        GameObject fileButtonGameObject = GameObject.Find("File Button");
+        Color originalColor = fileButtonGameObject.GetComponent<Image>().color;
+        Button fileButton = fileButtonGameObject.GetComponent<Button>();
+        fileButton.onClick.Invoke();
+
+        // check that file button color changes
+        Assert.AreNotEqual(originalColor, fileButtonGameObject.GetComponent<Image>().color);
+
+        // check that dropdown appears
+        dropdown = GameObject.Find("File Dropdown");
+        Assert.IsTrue(dropdown.activeSelf);
+
+        // click file button again
+       fileButton.onClick.Invoke();
+
+       // check that file button color changes back
+        Assert.AreEqual(originalColor, fileButtonGameObject.GetComponent<Image>().color);
+
+        // check that dropdown disappears
+        Assert.IsFalse(dropdown.activeSelf);
+    }
+
+    [Test]
     public void ModalAppearsWhenLoadingNewMapInEditor() {
         // check modal is inactive by default
         GameObject modal = GameObject.Find("SaveModal");
         Assert.IsNull(modal);
 
         // try to load a new map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
         
         // check that modal appears
         modal = GameObject.Find("SaveModal");
         Assert.IsNotNull(modal);
         Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before opening a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
+    }
+
+    [Test]
+    public void ModalAppearsWhenCreatingNewMapInEditor() {
+        // check modal is inactive by default
+        GameObject modal = GameObject.Find("SaveModal");
+        Assert.IsNull(modal);
+
+        // try to create a new map
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+        
+        // check that modal appears
+        modal = GameObject.Find("SaveModal");
+        Assert.IsNotNull(modal);
+        Assert.IsTrue(modal.activeSelf);
+
+        // check that the modal message is correct
+        Assert.AreEqual("Would you like to save your current map before creating a new one?", 
+                        modal.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text);
     }
 
     [Test]
     public void LoadMapInEditorOpensFileBrowser() {
         // click button to load a map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Open Button").GetComponent<Button>().onClick.Invoke();
 
         // decline to save current map
@@ -120,8 +173,7 @@ public class MiscellaneousTests : MapEditorTests {
     [Test]
     public void SaveAsOpensFileBrowser() {
         // click button to save map
-        GameObject.Find("File Button").GetComponent<EventTrigger>()
-            .OnPointerEnter(new PointerEventData(EventSystem.current));
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
         GameObject.Find("Save As Button").GetComponent<Button>().onClick.Invoke();
 
         // check that file browser appears
@@ -139,5 +191,19 @@ public class MiscellaneousTests : MapEditorTests {
             + "BottomView/Padding/BottomRow/CancelButton").gameObject;
         cancelButton.GetComponent<Button>().onClick.Invoke();
         Assert.IsNull(GameObject.Find("SimpleFileBrowserCanvas(Clone)"));
+    }
+
+    [UnityTest]
+    public IEnumerator NewMapInEditorRedirectsToMapCreation() {
+        // click button to create a new map
+        GameObject.Find("File Button").GetComponent<Button>().onClick.Invoke();
+        GameObject.Find("New Button").GetComponent<Button>().onClick.Invoke();
+
+        // decline to save current map
+        GameObject.Find("No Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // check that we are redirected to the map creation scene
+        Assert.AreEqual("MapCreation", SceneManager.GetActiveScene().name);
     }
 }

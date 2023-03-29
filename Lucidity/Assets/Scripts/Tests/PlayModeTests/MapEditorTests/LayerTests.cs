@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -41,13 +42,11 @@ public class LayerTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanAddLayers() {
         // should start with only the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
         Assert.AreEqual(1, MapEditorManager.Layers.Count);
         Assert.AreEqual(layerScrollContent.transform.childCount, 1);
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.IsTrue(Layer.LayerStatus[baseLayer.name]);
 
         // add a layer
@@ -58,15 +57,13 @@ public class LayerTests : MapEditorTests {
         yield return null;
 
         // check that the new layer is the selected layer
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
         Assert.IsTrue(Layer.LayerStatus[newLayer.name]);
     }
 
     [UnityTest]
     public IEnumerator CanSwitchBetweenLayers() {
         // add a layer in addition to the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
@@ -75,14 +72,14 @@ public class LayerTests : MapEditorTests {
         GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
 
         // check that the new layer is the selected layer
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
         Assert.IsTrue(Layer.LayerStatus[newLayer.name]);
         Assert.IsFalse(Layer.LayerStatus[baseLayer.name]);
 
         // switch to the base layer
         baseLayer.GetComponent<Button>().onClick.Invoke();
         yield return null;
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.IsTrue(Layer.LayerStatus[baseLayer.name]);
         Assert.IsFalse(Layer.LayerStatus[newLayer.name]);
     }
@@ -162,11 +159,9 @@ public class LayerTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanOnlyEditAndDeleteSelectedLayer() {
         // check edit and delete on base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.IsTrue(baseLayer.transform.Find("Edit").gameObject.activeSelf);
         Assert.IsTrue(baseLayer.transform.Find("TrashCan").gameObject.activeSelf);
 
@@ -174,7 +169,7 @@ public class LayerTests : MapEditorTests {
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
         GameObject newLayer = layerScrollContent.transform.GetChild(1).gameObject;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
 
         // check that you can edit and delete
         Assert.IsTrue(newLayer.transform.Find("Edit").gameObject.activeSelf);
@@ -189,8 +184,6 @@ public class LayerTests : MapEditorTests {
     public IEnumerator LayerNamesCannotBeTheSame() {
         LayerName.IsTesting = true;
         // Get the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
 
@@ -218,8 +211,6 @@ public class LayerTests : MapEditorTests {
     public IEnumerator LayerNamesWithTruncationCannotBeTheSame() {
         LayerName.IsTesting = true;
         // Get the base layer
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
         GameObject layerScrollContent = GameObject.Find("LayerScrollContent");
         GameObject baseLayer = layerScrollContent.transform.GetChild(0).gameObject;
 
@@ -290,7 +281,7 @@ public class LayerTests : MapEditorTests {
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual(2, MapEditorManager.Layers.Count);
-        Assert.AreEqual(1, mapEditorManager.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
 
         // paint the tree partially on mountain
         Button treeButton = GameObject.Find("TreeButton").GetComponent<Button>();
@@ -300,5 +291,78 @@ public class LayerTests : MapEditorTests {
         yield return null;
         yield return new WaitForSeconds(0.5f);
         Assert.AreEqual(0, MapEditorManager.Layers[1].Count);
+    }
+
+
+    [UnityTest]
+    public IEnumerator CanDeleteLayers() {
+        // Confirm current layer is tracking the base layer
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+
+        // create a layer
+        Assert.AreEqual(1, MapEditorManager.Layers.Count);
+        GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        GameObject layer = GameObject.Find("Layer1");
+        Assert.IsTrue(layer.activeSelf);
+        yield return null;
+        
+        // assert that the new layer is selected
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        int placedObjectId = new List<int>(MapEditorManager.Layers[1].Keys)[0];
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+        // delete layer
+        layer.transform.GetChild(2).gameObject.GetComponent<Button>().onClick.Invoke();
+        yield return null;
+
+        // assert layer and asset still exist and CurrentLayer has been changed
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+        Assert.AreEqual(2, MapEditorManager.Layers.Count);
+        Assert.AreEqual(1, MapEditorManager.Layers[1].Count);
+
+        // assert layer and MapObjects on layer have been set inactive
+        Assert.IsFalse(MapEditorManager.Layers[1][placedObjectId].IsActive);
+        Assert.IsFalse(layer.activeSelf);
+    }
+
+    [Test]
+    public void CanToggleLayerVisibility() {
+        // confirm current layer is tracking the base layer
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
+
+        // add an asset to the layer
+        PlayModeTestUtil.PaintAnAsset(new Vector2(100, 150), "Fortress");
+        GameObject fortress = GameObject.Find("FortressObject(Clone)");
+        // this is the eye with no slash
+        Button visibilityOffButton = GameObject.Find("VisibilityEye").GetComponent<Button>();
+
+        // check layer and asset are not visible
+        Assert.IsTrue(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsTrue(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOffButton.transform.parent.gameObject.activeSelf);
+
+        // toggle visibility
+        visibilityOffButton.onClick.Invoke();
+
+        // get new button
+        Button visibilityOnButton = GameObject.Find("SlashEye").GetComponent<Button>();
+
+        // check layer and asset are not visible
+        Assert.IsFalse(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsFalse(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOnButton.transform.parent.gameObject.activeSelf);
+
+        // toggle visibility
+        visibilityOnButton.onClick.Invoke();
+
+        // check layer and asset are visible
+        Assert.IsTrue(Layer.LayerVisibility[Layer.LayerNames[0]]);
+        Assert.IsTrue(fortress.GetComponent<Image>().enabled);
+        Assert.IsTrue(visibilityOffButton.transform.parent.gameObject.activeSelf);
     }
 }

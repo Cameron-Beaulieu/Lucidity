@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
@@ -32,9 +33,7 @@ public class SelectionTests : MapEditorTests {
     [UnityTest]
     public IEnumerator CanOnlySelectObjectsOnCurrentLayer() {
         // Check CurrentLayer is tracking base layer and that it is empty
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.Zero(MapEditorManager.MapObjects.Count);
 
         // paint an object on base layer
@@ -44,7 +43,7 @@ public class SelectionTests : MapEditorTests {
 
         // select the object while on base layer
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
         SelectMapObject.SelectedObject = placedAsset;
         placedAsset.GetComponent<SelectMapObject>()
@@ -58,7 +57,7 @@ public class SelectionTests : MapEditorTests {
         // create a new layer (should switch to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();      
         yield return null;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
 
         // select the object while on a new layer
         Assert.IsFalse(Tool.SelectionOptions.activeSelf);
@@ -73,9 +72,7 @@ public class SelectionTests : MapEditorTests {
     public IEnumerator CanSelectSpawnPointRegardlessOfLayer() {
         // Check CurrentLayer is tracking base layer and that spawnSpoint is not selected
         GameObject spawnPoint = GameObject.Find("Spawn Point");
-        MapEditorManager editor = GameObject.Find("MapEditorManager")
-            .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
         Assert.AreEqual(Color.white, spawnPoint.GetComponent<Image>().color);
 
         // select the spawn point while on base layer
@@ -97,7 +94,7 @@ public class SelectionTests : MapEditorTests {
         // add new layer (switches to it automatically)
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
         Assert.IsFalse(Tool.SpawnPointOptions.activeSelf);
         Assert.AreEqual(Color.white, 
                          spawnPoint.GetComponent<Image>().color);
@@ -140,6 +137,9 @@ public class SelectionTests : MapEditorTests {
     public void CanDeleteAsset() {
         // paint an object to delete
         PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // check asset is in <c>Layers</c>
+        Assert.AreEqual(1, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         
         // select the object
         GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
@@ -152,6 +152,65 @@ public class SelectionTests : MapEditorTests {
         Button deleteButton = GameObject.Find("Delete Button").GetComponent<Button>();
         deleteButton.onClick.Invoke();
         int placedObjectId = new List<int>(MapEditorManager.MapObjects.Keys)[0];
+        // check asset is in <c>Layers</c>
+        Assert.AreEqual(0, MapEditorManager.Layers[MapEditorManager.CurrentLayer].Count);
         Assert.IsFalse(MapEditorManager.MapObjects[placedObjectId].IsActive);
+    }
+
+    [UnityTest]
+    public IEnumerator CanRotateAsset() {
+        // paint an object to rotate
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // select the object
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject placedAssetParent = GameObject.Find("FortressObject Parent");
+        GameObject placedAsset = placedAssetParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(0, placedAssetParent.transform.rotation.eulerAngles.z);
+        
+        // rotate the object clockwise
+        Button clockwiseButton = GameObject.Find("CWButton").GetComponent<Button>();
+        clockwiseButton.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(270, placedAssetParent.transform.rotation.eulerAngles.z);
+
+        // rotate the object counter-clockwise
+        Button counterClockwiseButton = GameObject.Find("CCWButton").GetComponent<Button>();
+        counterClockwiseButton.onClick.Invoke();
+        yield return null;
+        Assert.AreEqual(0, placedAssetParent.transform.rotation.eulerAngles.z);
+    }
+
+    [UnityTest]
+    public IEnumerator CanScaleAsset() {
+        Vector3 defaultScale = new Vector3(Util.ParentAssetDefaultScale, 
+                                           Util.ParentAssetDefaultScale, 
+                                           Util.ParentAssetDefaultScale);
+        // paint an object to scale
+        PlayModeTestUtil.PaintAnAsset(new Vector2(-100, 150), "Fortress");
+
+        // select the object
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        GameObject placedAssetParent = GameObject.Find("FortressObject Parent");
+        GameObject placedAsset = placedAssetParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject = placedAsset;
+        placedAsset.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        Assert.AreEqual(defaultScale, placedAssetParent.transform.localScale);
+        yield return null;
+
+        // check that Asset Options displays the default scale
+        TMP_Text scaleValueText = GameObject.Find("ValueText").GetComponent<TMP_Text>();
+        Assert.AreEqual("1x", scaleValueText.text);
+
+        // scale the object up
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
+        scaleScript.OnValueChanged(2f);
+        Assert.AreEqual("2x", scaleValueText.text);
+        Assert.AreEqual(defaultScale * 2, placedAssetParent.transform.localScale);
     }
 }

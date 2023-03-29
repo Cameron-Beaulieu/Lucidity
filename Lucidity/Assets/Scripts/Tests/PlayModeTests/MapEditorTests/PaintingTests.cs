@@ -230,7 +230,7 @@ public class PaintingTests : MapEditorTests {
         // Check CurrentLayer is tracking base layer
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
-        Assert.AreEqual(0, editor.CurrentLayer);
+        Assert.AreEqual(0, MapEditorManager.CurrentLayer);
 
         // place an asset on base layer
         GameObject.Find("FortressButton").GetComponent<Button>().onClick.Invoke();
@@ -242,7 +242,7 @@ public class PaintingTests : MapEditorTests {
         // add and switch to layer 1
         GameObject.Find("Layer Tool").GetComponent<Button>().onClick.Invoke();
         yield return null;
-        Assert.AreEqual(1, editor.CurrentLayer);
+        Assert.AreEqual(1, MapEditorManager.CurrentLayer);
         
         // place an asset on layer 1
         GameObject.Find("HouseButton").GetComponent<Button>().onClick.Invoke();

@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Util {
+
+    public static float ParentAssetDefaultScale = 81f;
     
     /// <summary>
     /// Resets all static variables in MapEditorManager and Tool. This is necessary to avoid 
@@ -12,6 +15,7 @@ public class Util {
         AssetCollision.LayerCollisions.Clear();
         MapEditorManager.MapObjects.Clear();
         MapEditorManager.Layers.Clear();
+        MapEditorManager.IdToGameObjectMapping.Clear();
         MapEditorManager.Actions = null;
         MapEditorManager.CurrentAction = null;
         MapEditorManager.ToolToCursorMap.Clear();
@@ -32,6 +36,13 @@ public class Util {
         Layer.LayerStatus.Clear();
         Layer.LayerToBeNamed = -1;
         Layer.LayerNames.Clear();
+        Layer.LayerDeletions.Clear();
+        Layer.LayerVisibility.Clear();
+        AvatarMovement.HorizontalTestingInput = 0f;
+        AvatarMovement.VerticalTestingInput = 0f;
+        AvatarMovement.AscendTestingInput = false;
+        AvatarMovement.DescendTestingInput = false;
+        Render3DScene.EscapeTestingInput = false;
     }
 
     /// <summary>
@@ -42,8 +53,10 @@ public class Util {
         MapEditorManager editor = GameObject.Find("MapEditorManager")
             .GetComponent<MapEditorManager>();
         editor.AssetButtons.Clear();
-        foreach (GameObject paintButton in GameObject
-                .FindGameObjectsWithTag("PaintButton")) {
+        GameObject[] paintButtons = GameObject.FindGameObjectsWithTag("PaintButton");
+        paintButtons = paintButtons.OrderBy(x => x.name.ToLower()).ToArray();
+        foreach (GameObject paintButton in paintButtons) {
+            paintButton.GetComponent<AssetController>().GetInstanceID();
             editor.AssetButtons.Add(paintButton.GetComponent<AssetController>());
         }
     }

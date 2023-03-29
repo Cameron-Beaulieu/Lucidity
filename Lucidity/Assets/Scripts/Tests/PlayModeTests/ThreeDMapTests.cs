@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -24,8 +25,6 @@ public class ThreeDMapTests {
     [TearDown]
     public void TearDown() {
         Util.ResetStaticVariables();
-        AvatarMovement.HorizontalTestingInput = 0f;
-        AvatarMovement.VerticalTestingInput = 0f;
     }
 
     [OneTimeTearDown]
@@ -103,7 +102,7 @@ public class ThreeDMapTests {
 
     [UnityTest]
     public IEnumerator AvatarCanMoveRight() {
-        // 3D0ify
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
@@ -115,7 +114,6 @@ public class ThreeDMapTests {
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
 
         // Move Avatar right
-        float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = 1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
@@ -125,7 +123,6 @@ public class ThreeDMapTests {
         Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
-        Assert.Greater(movementScript.Orientation.rotation.y, avatarOrientation);
     }
 
     [UnityTest]
@@ -142,7 +139,6 @@ public class ThreeDMapTests {
 
         // Move Avatar left
         AvatarMovement movementScript = avatar.GetComponent<AvatarMovement>();
-        float avatarOrientation = movementScript.Orientation.rotation.y;
         AvatarMovement.HorizontalTestingInput = -1;
         AvatarMovement.VerticalTestingInput = 1;
         yield return new WaitForFixedUpdate();
@@ -152,7 +148,101 @@ public class ThreeDMapTests {
         Assert.AreEqual(avatarPosition.y, avatar.transform.position.y, 
                         PlayModeTestUtil.FloatTolerance);
         Assert.Greater(avatar.transform.position.z, avatarPosition.z);
-        Assert.Less(movementScript.Orientation.rotation.y, avatarOrientation);
+    }
+
+    [UnityTest]
+    public IEnumerator AvatarCanNoclip() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+        
+        // Get current Avatar position
+        GameObject avatar = GameObject.Find("Avatar");
+        Vector3 avatarPosition = avatar.transform.position;
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the noclip toggle value
+        AvatarMovement movementScript = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
+        Toggle noclipToggle = GameObject.Find("NoclipContainer").transform.Find("Toggle")
+            .GetComponent<Toggle>();
+        noclipToggle.isOn = true;
+        yield return null;
+        Assert.AreEqual(true, movementScript.Noclip);
+
+        // close options menu
+        Render3DScene.EscapeTestingInput = false;
+        yield return null;
+
+        // Make Avatar ascend
+        AvatarMovement.AscendTestingInput = true;
+        yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Greater(avatar.transform.position.y, avatarPosition.y);
+        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
+
+        // Make Avatar descend (going into the ground)
+        avatarPosition = avatar.transform.position;
+        AvatarMovement.AscendTestingInput = false;
+        AvatarMovement.DescendTestingInput = true;
+        yield return new WaitForFixedUpdate();
+
+        // Check Avatar position updated properly
+        Assert.AreEqual(avatar.transform.position.x, avatarPosition.x, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.Less(avatar.transform.position.y, avatarPosition.y);
+        Assert.AreEqual(avatar.transform.position.z, avatarPosition.z, 
+                        PlayModeTestUtil.FloatTolerance);
+    }
+
+    [UnityTest]
+    public IEnumerator SpeedSliderModifiesAvatarSpeed() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the slider value
+        AvatarMovement movementScript = GameObject.Find("Avatar").GetComponent<AvatarMovement>();
+        Slider speedSlider = GameObject.Find("SpeedContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        speedSlider.value = 50f;
+        yield return null;
+        Assert.AreEqual((speedSlider.value * 10f), movementScript.Speed);
+    }
+
+    [UnityTest]
+    public IEnumerator SensitivitySliderModifiesMouseSensitivity() {
+        // 3D-ify
+        GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);
+        yield return new WaitForEndOfFrame();
+
+        // open up options menu
+        Render3DScene.EscapeTestingInput = true;
+        yield return null;
+
+        // change the slider value
+        MoveCamera cameraScript = GameObject.Find("Camera Holder").GetComponent<MoveCamera>();
+        Slider sensitivitySlider = GameObject.Find("SensitivityContainer").transform.Find("Slider")
+            .GetComponent<Slider>();
+        sensitivitySlider.value = 50f;
+        yield return null;
+        Assert.AreEqual((sensitivitySlider.value * 10f), cameraScript.Sensitivity);
     }
 
     [UnityTest]
@@ -163,9 +253,28 @@ public class ThreeDMapTests {
         GameObject fortressParent = GameObject.Find("FortressObject Parent");
         GameObject mountainParent = GameObject.Find("MountainObject Parent");
         Vector2 fortressPosition = fortressParent.transform.localPosition;
-        Vector3 fortressScale = fortressParent.transform.localScale;
         Vector2 mountainPosition = mountainParent.transform.localPosition;
+
+        // scale Fortress
+        SelectMapObject.IsTesting = true;
+        GameObject.Find("Selection Tool").GetComponent<Button>().onClick.Invoke();
+        SelectMapObject.SelectedObject = fortressParent.transform.GetChild(0).gameObject;
+        SelectMapObject.SelectedObject.GetComponent<SelectMapObject>()
+            .OnPointerClick(new PointerEventData(EventSystem.current));
+        yield return null;
+        ResizeMapObject scaleScript = GameObject.Find("ScaleContainer/Slider")
+            .GetComponent<ResizeMapObject>();
+        scaleScript.OnValueChanged(1.5f);
+        scaleScript.OnPointerUp(new PointerEventData(EventSystem.current));
+        yield return null;
+        Vector3 fortressScale = fortressParent.transform.localScale;
         Vector3 mountainScale = mountainParent.transform.localScale;
+
+        // rotate the Fortress
+        GameObject.Find("CWButton").GetComponent<Button>().onClick.Invoke();
+        yield return new WaitForFixedUpdate();
+        float fortressRotation = fortressParent.transform.localRotation.eulerAngles.z;
+        float mountainRotation = mountainParent.transform.localRotation.eulerAngles.z;
 
         // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
@@ -190,6 +299,16 @@ public class ThreeDMapTests {
                         PlayModeTestUtil.FloatTolerance);
         // mountain has special positioning for the y due to the way the asset was modelled
         Assert.AreEqual(0, mountain3D.transform.position.y, PlayModeTestUtil.FloatTolerance);
+
+        // check that the assets are scaled and rotated properly
+        Assert.AreEqual(fortressScale, fortress3D.transform.localScale);
+        Assert.AreEqual(mountainScale, mountain3D.transform.localScale);
+        // the rotation is inverted (so it's -90, which is equivalent to 270)
+        Assert.AreEqual(360-fortressRotation, fortress3D.transform.localRotation.eulerAngles.y, 
+                        PlayModeTestUtil.FloatTolerance);
+        Assert.AreEqual(mountainRotation, mountain3D.transform.localRotation.eulerAngles.y,
+                        PlayModeTestUtil.FloatTolerance);
+        SelectMapObject.IsTesting = false;
     }
 
     [UnityTest]
