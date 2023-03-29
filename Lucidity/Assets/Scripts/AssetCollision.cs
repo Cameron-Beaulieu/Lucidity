@@ -336,11 +336,7 @@ public class AssetCollision : MonoBehaviour {
             foreach (Collider2D collisionObject in hitColliders) {
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
-                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
-                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count - 1][0].Id || 
-                    collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count - 1][1].Id)) {
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
                     StartCoroutine(RevertMaterialAndScale(originalScale, scalingObject, 
@@ -407,11 +403,7 @@ public class AssetCollision : MonoBehaviour {
                 Debug.Log(collisionObject.gameObject.name);
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
-                    && collisionObject.gameObject.tag != "DynamicBoundingBox"
-                    && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count - 1][1].Id || 
-                    collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count - 1][1].Id)) {
+                    && collisionObject.gameObject.tag != "DynamicBoundingBox") {
                     Debug.Log("collisionObject: " + collisionObject.gameObject.name);
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
