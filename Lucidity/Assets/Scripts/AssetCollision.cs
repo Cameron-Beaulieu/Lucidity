@@ -107,13 +107,11 @@ public class AssetCollision : MonoBehaviour {
     /// <c>GameObject</c>
     /// </returns>
     public List<Collider2D> GetAssetCollisions(bool isRotating = false) {
-        Debug.Log("Getting Collisions");
         List<Collider2D> hitColliders = new List<Collider2D>();
         ContactFilter2D filter2D = new ContactFilter2D();
         filter2D.SetLayerMask(_filterMask);
         int collisions = GetComponent<Collider2D>().OverlapCollider(filter2D, hitColliders);
         List<Collider2D> hitCollidersClone = new List<Collider2D>(hitColliders);
-        Debug.Log(hitColliders.Count);
         foreach (Collider2D collider in hitColliders) {
             if (collider.gameObject == gameObject) {
                 return hitCollidersClone;
@@ -121,7 +119,6 @@ public class AssetCollision : MonoBehaviour {
             if (CheckMapObjectStackingValidity(collider.gameObject, isRotating) && 
                 collider.gameObject != gameObject && hitColliders.Count >= 1 || 
                 MapEditorManager.Reversion || MapEditorManager.LoadFlag) {
-                Debug.Log("Collision between mountain and tree");
 
                 int layerIndex1 = MapEditorManager.LayerContainsMapObject(
                     collider.gameObject.GetInstanceID());
@@ -145,7 +142,6 @@ public class AssetCollision : MonoBehaviour {
                         }
                     }
                 }
-                Debug.Log("removing collider of " + collider.gameObject.name);
                 hitCollidersClone.Remove(collider);
             }
         }
@@ -209,15 +205,12 @@ public class AssetCollision : MonoBehaviour {
     /// <c>true</c> if the gameObject is stacked legally, <c>false</c> otherwise
     /// </returns>
     private bool CheckMapObjectStackingValidity(GameObject collisionObject, bool isRotating = false) {
-        Debug.Log(collisionObject.name);
-        Debug.Log("isRotating: " + isRotating);
         if (isRotating) {
             int gameObjectLayer = MapEditorManager.LayerContainsMapObject(gameObject.GetInstanceID());
             int collisionObjectLayer = MapEditorManager.LayerContainsMapObject(
                     collisionObject.GetInstanceID());
             
             if (gameObjectLayer == -1 || collisionObjectLayer == -1) {
-                Debug.Log("Invalid layer");
                 return false;
             }
 
@@ -242,7 +235,6 @@ public class AssetCollision : MonoBehaviour {
                         return false;
                     }
             } else {
-                Debug.Log(gameObjectLayer + " " + collisionObjectLayer + " " + gameObjectMapObject.Name + " " + collisionMapObject.Name);
                 return false;
             }
         } else {
@@ -251,7 +243,6 @@ public class AssetCollision : MonoBehaviour {
                     collisionObject.GetInstanceID());
 
             if (gameObjectLayer == -1 || collisionObjectLayer == -1) {
-                Debug.Log("Invalid layer1");
                 return false;
             }
 
@@ -268,18 +259,14 @@ public class AssetCollision : MonoBehaviour {
                 gameObjectMapObject.Name == "Mountain")) {
                     if (collisionMapObject.Name == "Mountain" && 
                         IsFullyEncompassed(collisionObject, gameObject)) {
-                        Debug.Log("Fully encompassed + mountain");
                         return true;
                     } else if (IsFullyEncompassed(gameObject, collisionObject)) {
-                        Debug.Log("Fully encompassed + tree");
                         return true;
                     }
                     else {
-                        Debug.Log("Not fully encompassed");
                         return false;
                     }
             } else {
-                Debug.Log(gameObjectLayer + " " + collisionObjectLayer + " " + gameObjectMapObject.Name + " " + collisionMapObject.Name);
                 return false;
             }
         }
@@ -301,7 +288,6 @@ public class AssetCollision : MonoBehaviour {
                 new Vector3(point.x, point.y, 0);
             if (!mountainObject.GetComponent<PolygonCollider2D>().bounds.IntersectRay(new Ray(
                     newPoint, new Vector3(0,0, 1)))) {
-                Debug.Log("Not fully encompassed");
                 return false;
             }
         }
@@ -400,12 +386,9 @@ public class AssetCollision : MonoBehaviour {
         List<Collider2D> hitColliders = GetAssetCollisions(true);
         if (hitColliders.Count > 2) {
             foreach (Collider2D collisionObject in hitColliders) {
-                Debug.Log("Within rotation");
-                Debug.Log(collisionObject.gameObject.name);
                 if (collisionObject.gameObject.layer == _assetLayer
                     && collisionObject.gameObject.GetComponent<Image>() != null
                     && collisionObject.gameObject.tag != "DynamicBoundingBox") {
-                    Debug.Log("collisionObject: " + collisionObject.gameObject.name);
                     collisionObject.gameObject.GetComponent<Image>()
                         .color = Color.red;
                     StartCoroutine(RevertMaterialAndRotate(isClockwise, rotatingObject,
