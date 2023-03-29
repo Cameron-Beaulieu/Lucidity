@@ -102,7 +102,7 @@ public class ThreeDMapTests {
 
     [UnityTest]
     public IEnumerator AvatarCanMoveRight() {
-        // 3D0ify
+        // 3D-ify
         GameObject.Find("3D-ify Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Assert.AreEqual("3DMap", SceneManager.GetActiveScene().name);

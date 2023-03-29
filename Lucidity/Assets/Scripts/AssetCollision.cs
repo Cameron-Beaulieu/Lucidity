@@ -55,9 +55,16 @@ public class AssetCollision : MonoBehaviour {
                     && collisionObject.gameObject.tag != "DynamicBoundingBox"
                     && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
                     != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
-                    collisionObject.gameObject.GetComponent<Image>()
-                        .color = Color.red;
-                    StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject));
+                    if(!collisionObject.gameObject.GetComponent<Image>().enabled) {
+                        collisionObject.gameObject.GetComponent<Image>().enabled = true;
+                        collisionObject.gameObject.GetComponent<Image>()
+                            .color = Color.red;
+                        StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject , true));
+                    } else {
+                        collisionObject.gameObject.GetComponent<Image>()
+                            .color = Color.red;
+                        StartCoroutine(RevertMaterialAndDestroy(collisionObject.gameObject, false));
+                    }
                 }
             }
         }
@@ -175,15 +182,22 @@ public class AssetCollision : MonoBehaviour {
     /// <param name="collisionObject">
     /// <c>GameObject</c> that is experiencing collision, to be highlighted briefly.
     /// </param>
-    private IEnumerator RevertMaterialAndDestroy(GameObject collisionObject) {
+    /// <param name="imageFlag">
+    /// <c>bool</c> used to show what the visibility status of the asset should be post material reversion
+    /// </param>
+    private IEnumerator RevertMaterialAndDestroy(GameObject collisionObject, bool imageFlag) {
         yield return new WaitForSecondsRealtime(0.5f);
         collisionObject.gameObject.GetComponent<Image>().color = Color.white;
+        if (imageFlag) {
+            collisionObject.gameObject.GetComponent<Image>().enabled = false;
+        }
 
         if (collisionObject.gameObject == gameObject) {
             MapEditorManager.MapObjects.Remove(gameObject.GetInstanceID());
             MapEditorManager.Layers[MapEditorManager.LayerContainsMapObject(
                 gameObject.GetInstanceID())].Remove(gameObject.GetInstanceID());
             GameObject parent = gameObject.transform.parent.gameObject;
+            MapEditorManager.CurrentAction = MapEditorManager.CurrentAction.Previous;
             Destroy(gameObject);
             Destroy(parent);
         }
