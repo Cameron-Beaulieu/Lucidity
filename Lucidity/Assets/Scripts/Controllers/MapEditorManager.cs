@@ -418,13 +418,15 @@ public class MapEditorManager : MonoBehaviour {
                     case EditorAction.ActionType.ResizeMapObject:
                         foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                             if (obj != null) {
-                                float originalSize = ((ResizeMapObjectAction) actionToUndo).OldSize;
+                                float originalSize = ((ResizeMapObjectAction) actionToUndo)
+                                    .OldSize;
                                 obj.transform.parent.localScale = 
                                     new Vector3(originalSize, originalSize, 
                                                 originalSize);
                                 if (obj == SelectMapObject.SelectedObject) {
                                     GameObject.Find("ScaleContainer/Slider")
-                                        .GetComponent<ResizeMapObject>().UpdateScaleText(originalSize);
+                                        .GetComponent<ResizeMapObject>()
+                                            .UpdateScaleText(originalSize);
                                 }
                             }
                         }
@@ -432,7 +434,8 @@ public class MapEditorManager : MonoBehaviour {
                     case EditorAction.ActionType.RotateMapObject:
                         foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
                             if (obj != null) {
-                                bool isClockwise = ((RotateMapObjectAction) actionToUndo).IsClockwise;
+                                bool isClockwise = ((RotateMapObjectAction) actionToUndo)
+                                    .IsClockwise;
                                 if (isClockwise) {
                                     obj.transform.parent.Rotate(0, 0, 90);
                                 } else {
@@ -442,7 +445,8 @@ public class MapEditorManager : MonoBehaviour {
                         }
                         break;
                     case EditorAction.ActionType.CreateLayer:
-                        CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name] - 1;
+                        CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name]
+                             - 1;
                         Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex
                             [actionToUndo.RelatedObjects[0].Item2.name] - 1]);
                         actionToUndo.RelatedObjects[0].Item2.SetActive(false);
