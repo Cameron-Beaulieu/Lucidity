@@ -5,9 +5,9 @@ using UnityEngine;
 public class Pan : MonoBehaviour {
     public Texture2D PanCursor;
     public Texture2D PanCursorMouseDown;
-    private MapEditorManager _editor;
-    private bool _isDragging = false;
-    private Vector3 _offset;
+    private static MapEditorManager _editor;
+    private static bool _isDragging = false;
+    private static Vector3 _offset;
 
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -22,7 +22,7 @@ public class Pan : MonoBehaviour {
         }
     }
 
-    private void OnMouseDown() {
+    public void OnMouseDown() {
         if (Tool.ToolStatus["Panning Tool"]) {
             if (PanCursorMouseDown != null) {
                 Cursor.SetCursor(PanCursorMouseDown, new Vector2(16f,16f), CursorMode.Auto);
@@ -33,7 +33,7 @@ public class Pan : MonoBehaviour {
         }
     }
 
-    private void OnMouseUp() {
+    public void OnMouseUp() {
         if (Tool.ToolStatus["Panning Tool"]) {
             if (PanCursor != null) {
                 Cursor.SetCursor(PanCursor, new Vector2(16f,16f), CursorMode.Auto);
