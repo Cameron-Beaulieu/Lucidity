@@ -253,18 +253,18 @@ public class MapEditorManager : MonoBehaviour {
     public static LinkedListNode<EditorAction> PermanentlyDeleteActionWithoutObjects(
             LinkedListNode<EditorAction> actionToCheck) {
         if (actionToCheck.Value.Type == EditorAction.ActionType.Paint) {
-            bool gameobjectfoundflag = false;
+            bool gameObjectFoundFlag = false;
 
-            while (!gameobjectfoundflag) {
-                gameobjectfoundflag = false;
+            while (!gameObjectFoundFlag) {
+                gameObjectFoundFlag = false;
                 foreach ((int id, GameObject currentGameObject) in 
                     actionToCheck.Value.RelatedObjects) {
                     if (MapEditorManager.MapObjects.ContainsKey(currentGameObject
                         .GetInstanceID())) {
-                        gameobjectfoundflag = true;
+                        gameObjectFoundFlag = true;
                     }
                 }
-                if (!gameobjectfoundflag) {
+                if (!gameObjectFoundFlag) {
                     if (actionToCheck.Previous != null) {
                         actionToCheck = actionToCheck.Previous;
                         Actions.Remove(actionToCheck.Next);
