@@ -1,3 +1,4 @@
+using RaycastingLibrary;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class Pan : MonoBehaviour {
     public Texture2D PanCursor;
     public Texture2D PanCursorMouseDown;
+    private RayLibrary _rayLib;
+    private int _uiLayer = 5;
     private static MapEditorManager _editor;
     private static bool _isDragging = false;
     private static Vector3 _offset;
@@ -12,6 +15,7 @@ public class Pan : MonoBehaviour {
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
             .GetComponent<MapEditorManager>();
+        _rayLib = new RayLibrary();
     }
     
     private void Update() {
@@ -23,7 +27,7 @@ public class Pan : MonoBehaviour {
     }
 
     public void OnMouseDown() {
-        if (Tool.ToolStatus["Panning Tool"]) {
+        if (Tool.ToolStatus["Panning Tool"] && !_rayLib.IsPointerOverLayer(_uiLayer)) {
             if (PanCursorMouseDown != null) {
                 Cursor.SetCursor(PanCursorMouseDown, new Vector2(16f,16f), CursorMode.Auto);
             }
