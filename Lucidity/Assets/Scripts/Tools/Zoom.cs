@@ -10,7 +10,7 @@ public class Zoom : MonoBehaviour
     private MapEditorManager _editor;
     private RayLibrary _rayLib;
     private int _uiLayer = 5;
-    private float zoomIncrement = 0.5f;
+    private float zoomIncrement = 0.25f;
 
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -27,7 +27,7 @@ public class Zoom : MonoBehaviour
                                 gameObject.transform.localScale.y + zoomIncrement, 
                                 gameObject.transform.localScale.z + zoomIncrement);
                 zoomFactor += zoomIncrement;
-            } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
+            } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 0.25) {
                 gameObject.transform.localScale =
                     new Vector3(gameObject.transform.localScale.x - zoomIncrement, 
                                 gameObject.transform.localScale.y - zoomIncrement, 
