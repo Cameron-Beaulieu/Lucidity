@@ -634,7 +634,9 @@ public class MapEditorManager : MonoBehaviour {
                         MapObject mapObject = ((DeleteMapObjectAction) pointer.Value).MapObject;
                         GameObject newGameObject = RebuildMapObject(mapObject, newMapObjects);
                         newIdMapping.Add(newGameObject.GetInstanceID(), newGameObject);
-                        mapObjectsMapping.Add(mapObject.Id, newGameObject);
+                        if (!mapObjectsMapping.ContainsKey(mapObject.Id)) {
+                            mapObjectsMapping.Add(mapObject.Id, newGameObject);
+                        }
                         if (!mapObject.IsActive) {
                                 newGameObject.SetActive(false);
                         }
