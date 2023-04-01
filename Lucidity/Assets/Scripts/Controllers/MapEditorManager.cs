@@ -239,6 +239,50 @@ public class MapEditorManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// Continuously checks all previous Action nodes to see if all GameObjects associated with
+    /// them have been deleted and if so, deletes the node. Will do so until it reaches the end
+    /// of the linked list or finds one that still has existing GameObjects.
+    /// </summary>
+    /// <param name="actionToCheck">
+    /// <c>LinkedListNode</c> of the <c>EditorAction</c> to check for no <c>GameObjects</c> 
+    /// attached
+    /// </param>
+    /// <returns>
+    /// <c>LinkedListNode</c> if node found with existing <c>GameObject</c>, <c>null</c> otherwise
+    /// </returns>
+    public static LinkedListNode<EditorAction> PermanentlyDeleteActionWithoutObjects(
+            LinkedListNode<EditorAction> actionToCheck) {
+        if (actionToCheck.Value.Type == EditorAction.ActionType.Paint) {
+            bool gameObjectFoundFlag = false;
+
+            while (!gameObjectFoundFlag) {
+                gameObjectFoundFlag = false;
+                foreach ((int id, GameObject currentGameObject) in 
+                    actionToCheck.Value.RelatedObjects) {
+                    if (MapEditorManager.MapObjects.ContainsKey(currentGameObject
+                        .GetInstanceID())) {
+                        gameObjectFoundFlag = true;
+                    }
+                }
+                if (!gameObjectFoundFlag) {
+                    if (actionToCheck.Previous != null) {
+                        actionToCheck = actionToCheck.Previous;
+                        Actions.Remove(actionToCheck.Next);
+                    } else {
+                        Actions.Remove(actionToCheck);
+                        return null;
+                    }
+                } else {
+                    return actionToCheck;
+                }
+            }
+            return actionToCheck;
+        } else {
+            return actionToCheck;
+        }
+    }
+
+    /// <summary>
     /// Action redo functionality.
     /// </summary>
     public void Redo() {
@@ -341,93 +385,101 @@ public class MapEditorManager : MonoBehaviour {
     /// </summary>
     public void Undo() {
         if (_currentAction != null) {
+
+            _currentAction = PermanentlyDeleteActionWithoutObjects(_currentAction);
             EditorAction actionToUndo = _currentAction.Value;
 
-            switch (actionToUndo.Type) {
-                case EditorAction.ActionType.Paint:
-                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
-                        if (obj != null) {
-                            MapObjects[id].IsActive = false;
-                            Layers[LayerContainsMapObject(id)][id].IsActive = false;
-                            obj.SetActive(false);
-                        }
-                    }
-                    break;
-                case EditorAction.ActionType.DeleteMapObject:
-                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
-                        if (obj != null) {
-                            MapObjects[id].IsActive = true;
-                            Layers[((DeleteMapObjectAction) actionToUndo).LayerID].Add
-                                (id, MapObjects[id]);
-                            Layers[((DeleteMapObjectAction) actionToUndo).LayerID][id].IsActive
-                                 = true;
-                            obj.SetActive(true);
-                        }
-                    }
-                    break;
-                case EditorAction.ActionType.MoveMapObject:
-                    // TODO: Implement
-                    break;
-                case EditorAction.ActionType.ResizeMapObject:
-                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
-                        if (obj != null) {
-                            float originalSize = ((ResizeMapObjectAction) actionToUndo).OldSize;
-                            obj.transform.parent.localScale = 
-                                new Vector3(originalSize, originalSize, 
-                                            originalSize);
-                            if (obj == SelectMapObject.SelectedObject) {
-                                GameObject.Find("ScaleContainer/Slider")
-                                    .GetComponent<ResizeMapObject>().UpdateScaleText(originalSize);
+            if (actionToUndo != null) {
+                switch (actionToUndo.Type) {
+                    case EditorAction.ActionType.Paint:
+                        foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                            if (obj != null) {
+                                MapObjects[id].IsActive = false;
+                                Layers[LayerContainsMapObject(id)][id].IsActive = false;
+                                obj.SetActive(false);
                             }
                         }
-                    }
-                    break;
-                case EditorAction.ActionType.RotateMapObject:
-                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
-                        if (obj != null) {
-                            bool isClockwise = ((RotateMapObjectAction) actionToUndo).IsClockwise;
-                            if (isClockwise) {
-                                obj.transform.parent.Rotate(0, 0, 90);
-                            } else {
-                                obj.transform.parent.Rotate(0, 0, -90);
+                        break;
+                    case EditorAction.ActionType.DeleteMapObject:
+                        foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                            if (obj != null) {
+                                MapObjects[id].IsActive = true;
+                                Layers[((DeleteMapObjectAction) actionToUndo).LayerID].Add
+                                    (id, MapObjects[id]);
+                                Layers[((DeleteMapObjectAction) actionToUndo).LayerID][id].IsActive
+                                    = true;
+                                obj.SetActive(true);
                             }
                         }
-                    }
-                    break;
-                case EditorAction.ActionType.CreateLayer:
-                    CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name] - 1;
-                    Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex
-                        [actionToUndo.RelatedObjects[0].Item2.name] - 1]);
-                    actionToUndo.RelatedObjects[0].Item2.SetActive(false);
-                    break;
-                case EditorAction.ActionType.DeleteLayer:
-                    foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
-                        if (obj != null && obj != actionToUndo.RelatedObjects.Last().Item2) {
-                            Layers[LayerContainsMapObject(id)][id].IsActive = true;
-                            obj.SetActive(true);
-                        } else if (obj == actionToUndo.RelatedObjects.Last().Item2) {
-                            obj.SetActive(true);
-                            CurrentLayer = Layer.LayerIndex[obj.name];
-                            Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer
-                                .LayerIndex[obj.name]]);
-                            Layer.LayerDeletions[obj.name] = false;
+                        break;
+                    case EditorAction.ActionType.MoveMapObject:
+                        // TODO: Implement
+                        break;
+                    case EditorAction.ActionType.ResizeMapObject:
+                        foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                            if (obj != null) {
+                                float originalSize = ((ResizeMapObjectAction) actionToUndo)
+                                    .OldSize;
+                                obj.transform.parent.localScale = 
+                                    new Vector3(originalSize, originalSize, 
+                                                originalSize);
+                                if (obj == SelectMapObject.SelectedObject) {
+                                    GameObject.Find("ScaleContainer/Slider")
+                                        .GetComponent<ResizeMapObject>()
+                                            .UpdateScaleText(originalSize);
+                                }
+                            }
                         }
-                    }
-                    Layer.NumberOfActiveLayers++;
-                    break;
-                case EditorAction.ActionType.MoveLayer:
-                    // TODO: Implement
-                    break;
-                case EditorAction.ActionType.RenameLayer:
-                    // TODO: Implement
-                    break;
-            }
+                        break;
+                    case EditorAction.ActionType.RotateMapObject:
+                        foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                            if (obj != null) {
+                                bool isClockwise = ((RotateMapObjectAction) actionToUndo)
+                                    .IsClockwise;
+                                if (isClockwise) {
+                                    obj.transform.parent.Rotate(0, 0, 90);
+                                } else {
+                                    obj.transform.parent.Rotate(0, 0, -90);
+                                }
+                            }
+                        }
+                        break;
+                    case EditorAction.ActionType.CreateLayer:
+                        CurrentLayer = Layer.LayerIndex[actionToUndo.RelatedObjects[0].Item2.name]
+                             - 1;
+                        Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer.LayerIndex
+                            [actionToUndo.RelatedObjects[0].Item2.name] - 1]);
+                        actionToUndo.RelatedObjects[0].Item2.SetActive(false);
+                        break;
+                    case EditorAction.ActionType.DeleteLayer:
+                        foreach ((int id, GameObject obj) in actionToUndo.RelatedObjects) {
+                            if (obj != null && obj != actionToUndo.RelatedObjects.Last().Item2) {
+                                Layers[LayerContainsMapObject(id)][id].IsActive = true;
+                                obj.SetActive(true);
+                            } else if (obj == actionToUndo.RelatedObjects.Last().Item2) {
+                                obj.SetActive(true);
+                                CurrentLayer = Layer.LayerIndex[obj.name];
+                                Layer.SelectedChangeSelectedLayer(Layer.LayerNames[Layer
+                                    .LayerIndex[obj.name]]);
+                                Layer.LayerDeletions[obj.name] = false;
+                            }
+                        }
+                        Layer.NumberOfActiveLayers++;
+                        break;
+                    case EditorAction.ActionType.MoveLayer:
+                        // TODO: Implement
+                        break;
+                    case EditorAction.ActionType.RenameLayer:
+                        // TODO: Implement
+                        break;
+                }
 
-            if (_currentAction.Previous != null) {
-                _currentAction = _currentAction.Previous;
-            }
-            else {
-                _currentAction = null;
+                if (_currentAction.Previous != null) {
+                    _currentAction = _currentAction.Previous;
+                }
+                else {
+                    _currentAction = null;
+                }
             }
         }
     }
