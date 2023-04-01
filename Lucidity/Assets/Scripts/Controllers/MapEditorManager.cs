@@ -244,23 +244,27 @@ public class MapEditorManager : MonoBehaviour {
     /// of the linked list or finds one that still has existing GameObjects.
     /// </summary>
     /// <param name="actionToCheck">
-    /// <c>LinkedListNode</c> of the <c>EditorAction</c> to check for no <c>GameObjects</c> attached
+    /// <c>LinkedListNode</c> of the <c>EditorAction</c> to check for no <c>GameObjects</c> 
+    /// attached
     /// </param>
     /// <returns>
     /// <c>LinkedListNode</c> if node found with existing <c>GameObject</c>, <c>null</c> otherwise
     /// </returns>
-    public static LinkedListNode<EditorAction> PermanentlyDeleteActionWithoutObjects(LinkedListNode<EditorAction> actionToCheck) {
+    public static LinkedListNode<EditorAction> PermanentlyDeleteActionWithoutObjects(
+            LinkedListNode<EditorAction> actionToCheck) {
         if (actionToCheck.Value.Type == EditorAction.ActionType.Paint) {
-            bool flag = false;
+            bool gameobjectfoundflag = false;
 
-            while (!flag) {
-                flag = false;
-                foreach ((int id, GameObject currentGameObject) in actionToCheck.Value.RelatedObjects) {
-                    if (MapEditorManager.MapObjects.ContainsKey(currentGameObject.GetInstanceID())) {
-                        flag = true;
+            while (!gameobjectfoundflag) {
+                gameobjectfoundflag = false;
+                foreach ((int id, GameObject currentGameObject) in 
+                    actionToCheck.Value.RelatedObjects) {
+                    if (MapEditorManager.MapObjects.ContainsKey(currentGameObject
+                        .GetInstanceID())) {
+                        gameobjectfoundflag = true;
                     }
                 }
-                if (!flag) {
+                if (!gameobjectfoundflag) {
                     if (actionToCheck.Previous != null) {
                         actionToCheck = actionToCheck.Previous;
                         Actions.Remove(actionToCheck.Next);
