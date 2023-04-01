@@ -50,8 +50,12 @@ public class AssetOptions : MonoBehaviour {
     /// </param>
     public void AssetCountInputHandler(string input) {
         _assetCount = int.Parse(input);
-        if (_assetCount < 0) {   // Restrict input to only be positive
-            _assetCount *= -1;
+        if (_assetCount <= 0) {   // Restrict input to only be positive
+            _assetCount = 1;
+            _countInput.text = _assetCount.ToString();
+        }
+        if (_assetCount > 9) {  // Restrict input to be a maximum of 9
+            _assetCount = 9;
             _countInput.text = _assetCount.ToString();
         }
         DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
