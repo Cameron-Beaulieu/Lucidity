@@ -79,10 +79,10 @@ public class DynamicBoundingBox : MonoBehaviour {
         obj.transform.localScale /= _dynamicSideLength * AssetOptions.Spread;
         Vector3 offsetPosition = GetOffsetPosition(coordinate, obj.transform.localScale,
                                                    obj.GetComponent<SpriteRenderer>().size);
-        obj.transform.SetLocalPositionAndRotation(offsetPosition, Quaternion.identity);
-        obj.transform.localScale = new Vector3(obj.transform.localScale.x + Zoom.zoomFactor,
-                                               obj.transform.localScale.y + Zoom.zoomFactor,
-                                               obj.transform.localScale.z + Zoom.zoomFactor);
+        obj.transform.SetLocalPositionAndRotation(offsetPosition * (Zoom.zoomFactor + 1), Quaternion.identity);
+        obj.transform.localScale = new Vector3(obj.transform.localScale.x * (Zoom.zoomFactor + 1),
+                                               obj.transform.localScale.y * (Zoom.zoomFactor + 1),
+                                               obj.transform.localScale.z * (Zoom.zoomFactor + 1));
     }
 
     /// <summary>
@@ -105,9 +105,9 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicBoundingBox.name = "DynamicBoundingBox";
         dynamicBoundingBox.tag = "DynamicBoundingBox";
         dynamicBoundingBox.transform.localScale =
-            new Vector3(dynamicBoundingBox.transform.localScale.x + Zoom.zoomFactor,
-                        dynamicBoundingBox.transform.localScale.y + Zoom.zoomFactor,
-                        dynamicBoundingBox.transform.localScale.z + Zoom.zoomFactor)
+            new Vector3(dynamicBoundingBox.transform.localScale.x * (Zoom.zoomFactor + 1),
+                        dynamicBoundingBox.transform.localScale.y * (Zoom.zoomFactor + 1),
+                        dynamicBoundingBox.transform.localScale.z * (Zoom.zoomFactor + 1))
                 * _dynamicSideLength * AssetOptions.Spread;
         Destroy(dynamicBoundingBox.GetComponent<SpriteRenderer>());
 
