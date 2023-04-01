@@ -221,7 +221,6 @@ public class MapEditorManager : MonoBehaviour {
     /// </param>
     public static void PermanentlyDeleteActions(LinkedListNode<EditorAction> actionToDelete) {
         while (actionToDelete != null) {
-            Debug.Log("Deleting Node");
             if (actionToDelete.Value.Type == EditorAction.ActionType.Paint) {
                 foreach ((int id, GameObject obj) in actionToDelete.Value.RelatedObjects) {
                     MapObjects.Remove(id);
@@ -251,28 +250,32 @@ public class MapEditorManager : MonoBehaviour {
     /// <c>LinkedListNode</c> if node found with existing <c>GameObject</c>, <c>null</c> otherwise
     /// </returns>
     public static LinkedListNode<EditorAction> PermanentlyDeleteActionWithoutObjects(LinkedListNode<EditorAction> actionToCheck) {
-        bool flag = false;
+        if (actionToCheck.Value.Type == EditorAction.ActionType.Paint) {
+            bool flag = false;
 
-        while (!flag) {
-            flag = false;
-            foreach ((int id, GameObject currentGameObject) in actionToCheck.Value.RelatedObjects) {
-                if (MapEditorManager.MapObjects.ContainsKey(currentGameObject.GetInstanceID())) {
-                    flag = true;
+            while (!flag) {
+                flag = false;
+                foreach ((int id, GameObject currentGameObject) in actionToCheck.Value.RelatedObjects) {
+                    if (MapEditorManager.MapObjects.ContainsKey(currentGameObject.GetInstanceID())) {
+                        flag = true;
+                    }
                 }
-            }
-            if (!flag) {
-                if (actionToCheck.Previous != null) {
-                    actionToCheck = actionToCheck.Previous;
-                    Actions.Remove(actionToCheck.Next);
+                if (!flag) {
+                    if (actionToCheck.Previous != null) {
+                        actionToCheck = actionToCheck.Previous;
+                        Actions.Remove(actionToCheck.Next);
+                    } else {
+                        Actions.Remove(actionToCheck);
+                        return null;
+                    }
                 } else {
-                    Actions.Remove(actionToCheck);
-                    return null;
+                    return actionToCheck;
                 }
-            } else {
-                return actionToCheck;
             }
+            return actionToCheck;
+        } else {
+            return actionToCheck;
         }
-        return actionToCheck;
     }
 
     /// <summary>
