@@ -14,6 +14,7 @@ public class AssetCollision : MonoBehaviour {
     private bool _detectionStarted = true;
     public static List<List<MapObject>> LayerCollisions = new List<List<MapObject>>();
     private bool _isCollidingAfterRotation = false;
+    private static GameObject _mapContainer;
 
     public bool IsCollidingAfterRotation {
         get { return _isCollidingAfterRotation; }
@@ -25,6 +26,7 @@ public class AssetCollision : MonoBehaviour {
 
     private void Start() {
         CheckAssetCollisions();
+        _mapContainer = GameObject.Find("Map Container");
     }
 
     private void OnDrawGizmos() {
@@ -33,6 +35,20 @@ public class AssetCollision : MonoBehaviour {
             // Draw a cube where the OverlapBox is (positioned where the GameObject and with
             // identical size).
             Gizmos.DrawWireCube(transform.position, transform.localScale);
+        }
+    }
+
+    private void OnMouseDown() {
+        if (Tool.ToolStatus["Panning Tool"]) {
+            _mapContainer.GetComponent<Pan>().OnMouseDown();
+        } else if (Tool.ToolStatus["Zoom In"] || Tool.ToolStatus["Zoom Out"]) {
+            _mapContainer.GetComponent<Zoom>().OnMouseDown();
+        } 
+    }
+
+    private void OnMouseUp() {
+        if (Tool.ToolStatus["Panning Tool"]) {
+            _mapContainer.GetComponent<Pan>().OnMouseUp();
         }
     }
 

@@ -10,7 +10,7 @@ public class Zoom : MonoBehaviour
     private MapEditorManager _editor;
     private RayLibrary _rayLib;
     private int _uiLayer = 5;
-    private float zoomIncrement = 0.5f;
+    private float zoomIncrement = 0.25f;
 
     private void Start() {
         _editor = GameObject.FindGameObjectWithTag("MapEditorManager")
@@ -21,17 +21,21 @@ public class Zoom : MonoBehaviour
 
     public void OnMouseDown () {
         if (IsTesting || (Input.GetMouseButtonDown(0) && !_rayLib.IsPointerOverLayer(_uiLayer))) {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 offset = gameObject.transform.position - mousePosition;
             if (Tool.ToolStatus["Zoom In"] && gameObject.transform.localScale.x < 3) {
                 gameObject.transform.localScale = 
                     new Vector3(gameObject.transform.localScale.x + zoomIncrement, 
                                 gameObject.transform.localScale.y + zoomIncrement, 
                                 gameObject.transform.localScale.z + zoomIncrement);
+                gameObject.transform.position = offset;      
                 zoomFactor += zoomIncrement;
-            } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 1) {
+            } else if (Tool.ToolStatus["Zoom Out"] && gameObject.transform.localScale.x > 0.25) {
                 gameObject.transform.localScale =
                     new Vector3(gameObject.transform.localScale.x - zoomIncrement, 
                                 gameObject.transform.localScale.y - zoomIncrement, 
                                 gameObject.transform.localScale.z - zoomIncrement);
+                gameObject.transform.position = offset;
                 zoomFactor -= zoomIncrement;
             }
         }

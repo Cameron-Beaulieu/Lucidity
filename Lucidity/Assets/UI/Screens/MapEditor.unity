@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311915, g: 0.3807396, b: 0.35872662, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2267,6 +2267,7 @@ GameObject:
   - component: {fileID: 218240323}
   - component: {fileID: 218240326}
   - component: {fileID: 218240327}
+  - component: {fileID: 218240328}
   m_Layer: 6
   m_Name: Spawn Point
   m_TagString: Untagged
@@ -2360,6 +2361,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &218240328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218240319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c073312a2ce1ab049ac7756b6a299819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &224498649
 GameObject:
   m_ObjectHideFlags: 0
@@ -2828,7 +2841,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1403460569}
   m_HandleRect: {fileID: 1403460568}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
@@ -14416,7 +14429,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1226900040}
   m_HandleRect: {fileID: 1226900039}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 4
   m_OnValueChanged:
