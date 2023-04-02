@@ -44,34 +44,99 @@ public class DynamicBoundingBoxTests : MapEditorTests {
                         GameObject.Find("HoverDynamicBoundingBoxObject").transform.localScale);
     }
 
+    /// <summary>
+    /// Calculates the factorial of a given number.
+    /// </summary>
+    /// <param name="i">
+    /// <c>int</c> to calculate the factorial for
+    /// </param>
+    /// <returns>
+    /// The computed factorial of the input number
+    /// </returns>
+    private int factorial(int i) {
+        int result = 1;
+        while (i > 0) {
+            result *= i;
+            i--;
+        }
+        return result;
+    }
+
     [Test]
-    public void DynamicBoundingBoxRandomnessControlledByToggle() {
+    public void DynamicBoundingBoxVariationHasCorrectNumber() {
         Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        Toggle randomToggle = GameObject.Find("RandomContainer").transform.Find("RandomToggle")
-            .GetComponent<Toggle>();
-        
-        // the Random variable in AssetOptions should correspond to the toggle option
-        randomToggle.isOn = true;
-        Assert.AreEqual(randomToggle.isOn, AssetOptions.Random);
-
-        // change the asset count to a larger value to verify uniform arrangement
-        randomToggle.isOn = false;
-        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
-        countInput.text = "5";
-        countInput.onEndEdit.Invoke(countInput.text);
-        Assert.AreEqual(5, AssetOptions.AssetCount);
-
         fortressButton.onClick.Invoke();
 
-        // simulate the uniform placement of 5 assets, which goes top-bottom and left-right
-        HashSet<Vector2> fiveUniformAssets = new HashSet<Vector2>();
-        fiveUniformAssets.Add(new Vector2(0, 2));
-        fiveUniformAssets.Add(new Vector2(1, 2));
-        fiveUniformAssets.Add(new Vector2(2, 2));
-        fiveUniformAssets.Add(new Vector2(0, 1));
-        fiveUniformAssets.Add(new Vector2(1, 1));
-        Assert.AreEqual(DynamicBoundingBox.AssetArrangement, fiveUniformAssets);
+        // set the number of assets to place equal to 7
+        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+        countInput.text = "7";
+        countInput.onEndEdit.Invoke(countInput.text);
+        Assert.AreEqual(7, AssetOptions.AssetCount);        
+        Assert.AreEqual(DynamicBoundingBox.DynamicSideLength, 3);
+
+        // verify the correct number of variations are available: 9 choose 7
+        Assert.AreEqual(DynamicBoundingBox.AssetArrangements.Count,
+                        (factorial(9)) / (factorial(7) * factorial(9 - 7)));
     }
+
+    [Test]
+    public void DynamicBoundingBoxVariationInputChangesHover() {
+        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+        fortressButton.onClick.Invoke();
+        
+        // set the number of assets to place equal to 2
+        InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+        countInput.text = "2";
+        countInput.onEndEdit.Invoke(countInput.text);
+        Assert.AreEqual(2, AssetOptions.AssetCount); 
+
+        // save the original variation
+        List<Vector2> var1 = DynamicBoundingBox.AssetArrangements[AssetOptions.Variation];
+
+        // change to a new variation
+        InputField variationInput = GameObject.Find("VariationInput").GetComponent<InputField>();
+        variationInput.text = "1";
+        variationInput.onEndEdit.Invoke(variationInput.text);
+        Assert.AreEqual(1, AssetOptions.Variation);
+
+        // verify that the old variation and the newly selected one are not the same
+        Assert.AreNotEqual(var1, DynamicBoundingBox.AssetArrangements[AssetOptions.Variation]);
+
+        // revert the variation and verify that the variation is the same
+        variationInput.text = "0";
+        variationInput.onEndEdit.Invoke(variationInput.text);
+        Assert.AreEqual(0, AssetOptions.Variation);
+        Assert.AreEqual(var1, DynamicBoundingBox.AssetArrangements[AssetOptions.Variation]);
+    }
+
+    // [Test]
+    // public void DynamicBoundingBoxRandomnessControlledByToggle() {
+    //     Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
+    //     Toggle randomToggle = GameObject.Find("RandomContainer").transform.Find("RandomToggle")
+    //         .GetComponent<Toggle>();
+        
+    //     // the Random variable in AssetOptions should correspond to the toggle option
+    //     randomToggle.isOn = true;
+    //     Assert.AreEqual(randomToggle.isOn, AssetOptions.Random);
+
+    //     // change the asset count to a larger value to verify uniform arrangement
+    //     randomToggle.isOn = false;
+    //     InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
+    //     countInput.text = "5";
+    //     countInput.onEndEdit.Invoke(countInput.text);
+    //     Assert.AreEqual(5, AssetOptions.AssetCount);
+
+    //     fortressButton.onClick.Invoke();
+
+    //     // simulate the uniform placement of 5 assets, which goes top-bottom and left-right
+    //     HashSet<Vector2> fiveUniformAssets = new HashSet<Vector2>();
+    //     fiveUniformAssets.Add(new Vector2(0, 2));
+    //     fiveUniformAssets.Add(new Vector2(1, 2));
+    //     fiveUniformAssets.Add(new Vector2(2, 2));
+    //     fiveUniformAssets.Add(new Vector2(0, 1));
+    //     fiveUniformAssets.Add(new Vector2(1, 1));
+    //     Assert.AreEqual(DynamicBoundingBox.AssetArrangement, fiveUniformAssets);
+    // }
 
     [UnityTest]
     public IEnumerator DynamicBoundingBoxAssetHoverUpdatesAfterReversion() {
