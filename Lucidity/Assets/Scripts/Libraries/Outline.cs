@@ -39,26 +39,41 @@ public class Outline : MonoBehaviour {
     private void CreateOutline() {
         GameObject left = CreateSideOutline(
             gameObject.transform,
-            new Vector3(0, _outlineScale.x + gameObject.GetComponent<SpriteRenderer>().size.y, 0),
+            new Vector3(
+                0,
+                (_outlineScale.x + gameObject.GetComponent<SpriteRenderer>().size.y)
+                    * (Zoom.zoomFactor + 1),
+                0),
             new Vector3(-(gameObject.GetComponent<SpriteRenderer>().size.x + _outlineScale.x) / 2,
                         0, 0));
 
         GameObject right = CreateSideOutline(
             gameObject.transform,
-            new Vector3(0, _outlineScale.x + gameObject.GetComponent<SpriteRenderer>().size.y, 0),
+            new Vector3(
+                0,
+                (_outlineScale.x + gameObject.GetComponent<SpriteRenderer>().size.y)
+                    * (Zoom.zoomFactor + 1),
+                0),
             new Vector3((gameObject.GetComponent<SpriteRenderer>().size.x + _outlineScale.x) / 2,
                         0, 0));
 
         GameObject top = CreateSideOutline(
             gameObject.transform,
-            new Vector3(_outlineScale.y + gameObject.GetComponent<SpriteRenderer>().size.x, 0, 0),
+            new Vector3(
+                (_outlineScale.y + gameObject.GetComponent<SpriteRenderer>().size.x)
+                    * (Zoom.zoomFactor + 1),
+                0,
+                0),
             new Vector3(0,
                         (gameObject.GetComponent<SpriteRenderer>().size.y + _outlineScale.y) / 2,
                         0));
 
         GameObject bottom = CreateSideOutline(
             gameObject.transform,
-            new Vector3(_outlineScale.y + gameObject.GetComponent<SpriteRenderer>().size.x, 0, 0),
+            new Vector3((_outlineScale.y + gameObject.GetComponent<SpriteRenderer>().size.x)
+                    * (Zoom.zoomFactor + 1),
+                0,
+                0),
             new Vector3(0,
                         -(gameObject.GetComponent<SpriteRenderer>().size.y + _outlineScale.y) / 2,
                         0));
@@ -82,10 +97,11 @@ public class Outline : MonoBehaviour {
     private GameObject CreateSideOutline(Transform parentTransform, Vector3 scaleOffset,
                                          Vector3 position) {
         GameObject outline = Instantiate(_editor.OutlinePrefab, parentTransform, false);
-        // outline.transform.localScale = ElementWiseDivision(outline.transform.localScale,
-        //                                                    new Vector3(parentTransform.localScale.x, 1, 1));
+        outline.transform.localScale = ElementWiseDivision(outline.transform.localScale,
+                                                           parentTransform.localScale);
         outline.transform.localScale += scaleOffset;
-        outline.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+        outline.transform.SetLocalPositionAndRotation(position * (Zoom.zoomFactor + 1),
+                                                      Quaternion.identity);
         return outline;
     }
 }
