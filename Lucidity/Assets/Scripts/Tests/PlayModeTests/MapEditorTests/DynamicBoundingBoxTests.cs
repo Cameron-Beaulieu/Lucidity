@@ -95,7 +95,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
 
         // change to a new variation
         InputField variationInput = GameObject.Find("VariationInput").GetComponent<InputField>();
-        variationInput.text = "1";
+        variationInput.text = "2";
         variationInput.onEndEdit.Invoke(variationInput.text);
         Assert.AreEqual(1, AssetOptions.Variation);
 
@@ -103,7 +103,7 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         Assert.AreNotEqual(var1, DynamicBoundingBox.AssetArrangements[AssetOptions.Variation]);
 
         // revert the variation and verify that the variation is the same
-        variationInput.text = "0";
+        variationInput.text = "1";
         variationInput.onEndEdit.Invoke(variationInput.text);
         Assert.AreEqual(0, AssetOptions.Variation);
         Assert.AreEqual(var1, DynamicBoundingBox.AssetArrangements[AssetOptions.Variation]);

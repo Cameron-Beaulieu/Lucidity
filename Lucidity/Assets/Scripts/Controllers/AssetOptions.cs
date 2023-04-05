@@ -11,6 +11,7 @@ public class AssetOptions : MonoBehaviour {
     [SerializeField] private InputField _countInput;
     private static int _assetCount;
     [SerializeField] private InputField _variationInput;
+    [SerializeField] private Text _variationMaximumText;
     private static int _variation;
 
     public static int AssetCount {
@@ -59,7 +60,7 @@ public class AssetOptions : MonoBehaviour {
             _countInput.text = _assetCount.ToString();
         }
         DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
-        VariationInputHandler("0");    // Change variation number if needed
+        VariationInputHandler("1");    // Change variation number if needed
         UpdateAssetImage();
     }
 
@@ -81,18 +82,18 @@ public class AssetOptions : MonoBehaviour {
     /// <c>string</c> corresponding to provided user input.
     /// </param>
     public void VariationInputHandler(string input) {
-        if (_variation == int.Parse(input)) {
+        if (_variation == int.Parse(input) - 1) {
             return;
         }
-        _variation = int.Parse(input);
-        if (_variation < 0) {   // Restrict input to only be positive
-            _variation = 0;
-        }
+        _variation = int.Parse(input) - 1;
         // Restrict input to be the maximum number of variations
         if (_variation > DynamicBoundingBox.AssetArrangements.Count - 1) {
             _variation = DynamicBoundingBox.AssetArrangements.Count - 1;
         }
-        _variationInput.text = _variation.ToString();
+        if (_variation < 0) {   // Restrict input to only be positive
+            _variation = 0;
+        }
+        _variationInput.text = (_variation + 1).ToString();
         UpdateAssetImage();
     }
 
