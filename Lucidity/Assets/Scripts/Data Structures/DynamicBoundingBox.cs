@@ -244,15 +244,15 @@ public class DynamicBoundingBox : MonoBehaviour {
         // returned lists and return it
         } else {
             // Case where the current position is not included in the arrangement
-            List<Vector2> p1 = new List<Vector2>(currVariation);
-            List<List<Vector2>> l1 = Permute(index - 1, p1);
+            List<Vector2> permutation1 = new List<Vector2>(currVariation);
+            List<List<Vector2>> list1 = Permute(index - 1, permutation1);
 
             // Case where the current position is included in the arrangement
-            List<Vector2> p2 = new List<Vector2>(currVariation);
-            p2.Add(new Vector2(index / _dynamicSideLength, index % _dynamicSideLength));
-            List<List<Vector2>> l2 = Permute(index - 1, p2);
+            List<Vector2> permutation2 = new List<Vector2>(currVariation);
+            permutation2.Add(new Vector2(index / _dynamicSideLength, index % _dynamicSideLength));
+            List<List<Vector2>> list2 = Permute(index - 1, permutation2);
             
-            return l1.Union(l2).ToList();
+            return list1.Union(list2).ToList();
         }
     }
 
