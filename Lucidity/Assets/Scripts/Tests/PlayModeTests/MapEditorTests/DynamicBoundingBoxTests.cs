@@ -64,9 +64,6 @@ public class DynamicBoundingBoxTests : MapEditorTests {
 
     [Test]
     public void DynamicBoundingBoxVariationHasCorrectNumber() {
-        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        fortressButton.onClick.Invoke();
-
         // set the number of assets to place equal to 7
         InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
         countInput.text = "7";
@@ -83,9 +80,6 @@ public class DynamicBoundingBoxTests : MapEditorTests {
 
     [Test]
     public void DynamicBoundingBoxVariationInputChangesHover() {
-        Button fortressButton = GameObject.Find("FortressButton").GetComponent<Button>();
-        fortressButton.onClick.Invoke();
-        
         // set the number of assets to place equal to 2
         InputField countInput = GameObject.Find("CountInput").GetComponent<InputField>();
         countInput.text = "2";

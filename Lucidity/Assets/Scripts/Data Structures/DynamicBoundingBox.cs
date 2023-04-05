@@ -44,7 +44,6 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.Spread;
         // Remove old material 
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
-        DynamicBoundingBox.GenerateVariations();
         // Create a hovering asset image in each randomly assigned coordinate position
         foreach (Vector2 coordinate in _assetArrangements[AssetOptions.Variation]) {
             CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
@@ -205,16 +204,16 @@ public class DynamicBoundingBox : MonoBehaviour {
     public static void GenerateVariations() {
         _assetArrangements.Clear();
         // Permute all possible variations
-        List<List<Vector2>> _placement = Permute((int)Mathf.Pow(_dynamicSideLength, 2) - 1,
+        List<List<Vector2>> placement = Permute((int)Mathf.Pow(_dynamicSideLength, 2) - 1,
                                                  new List<Vector2>());
-        foreach (List<Vector2> arrangement in _placement) {
+        foreach (List<Vector2> arrangement in placement) {
             // If there is not a correct number of assets selected, the current variation is not
             // valid and is not added to the list of possible arrangements
             if (arrangement.Count() == AssetOptions.AssetCount) {
                 _assetArrangements.Add(arrangement);
             }
         }
-        _placement.Clear();
+        placement.Clear();
     }
 
     /// <summary>
