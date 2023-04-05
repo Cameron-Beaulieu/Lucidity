@@ -75,8 +75,10 @@ public class DynamicBoundingBoxTests : MapEditorTests {
         Assert.AreEqual(DynamicBoundingBox.DynamicSideLength, 3);
 
         // verify the correct number of variations are available: 9 choose 7
-        Assert.AreEqual(DynamicBoundingBox.AssetArrangements.Count,
-                        (factorial(9)) / (factorial(7) * factorial(9 - 7)));
+        int variations = (factorial(9)) / (factorial(7) * factorial(9 - 7));
+        Assert.AreEqual(DynamicBoundingBox.AssetArrangements.Count, variations);
+        Text maximumText = GameObject.Find("VariationMaximumText").GetComponent<Text>();
+        Assert.AreEqual(int.Parse(maximumText.text.Replace("Max: ", "")), variations);
     }
 
     [Test]

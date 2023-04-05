@@ -62,6 +62,11 @@ public class AssetOptions : MonoBehaviour {
         DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
         VariationInputHandler("1");    // Change variation number if needed
         UpdateAssetImage();
+        int maximum = DynamicBoundingBox.AssetArrangements.Count;
+        if (maximum <= 0) {
+            maximum = 1;
+        }
+        _variationMaximumText.text = "Max: " + maximum.ToString();
     }
 
     /// <summary>
