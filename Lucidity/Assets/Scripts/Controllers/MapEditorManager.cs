@@ -13,6 +13,7 @@ public class MapEditorManager : MonoBehaviour {
     public Biome SelectedBiome;
     public List<string> AssetNames;
     public List<Texture2D> CursorTextures;
+    public GameObject OutlinePrefab;
     public static Dictionary<int, MapObject> MapObjects = new Dictionary<int, MapObject>();
     public static List<Dictionary<int, MapObject>> Layers = new List<Dictionary<int, MapObject>>();
     public static Dictionary<int, GameObject> IdToGameObjectMapping 
