@@ -70,7 +70,7 @@ public class AssetCollision : MonoBehaviour {
                     && collisionObject.gameObject.GetComponent<Image>() != null
                     && collisionObject.gameObject.tag != "DynamicBoundingBox"
                     && (LayerCollisions.Count == 0 || collisionObject.gameObject.GetInstanceID() 
-                    != LayerCollisions[LayerCollisions.Count -1][0].Id )) {
+                    != LayerCollisions[LayerCollisions.Count -1][0].Id)) {
                     if(!collisionObject.gameObject.GetComponent<Image>().enabled) {
                         collisionObject.gameObject.GetComponent<Image>().enabled = true;
                         collisionObject.gameObject.GetComponent<Image>()
