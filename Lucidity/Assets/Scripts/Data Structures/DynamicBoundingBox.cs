@@ -205,7 +205,7 @@ public class DynamicBoundingBox : MonoBehaviour {
         _assetArrangements.Clear();
         // Permute all possible variations
         List<List<Vector2>> placement = Permute((int)Mathf.Pow(_dynamicSideLength, 2) - 1,
-                                                 new List<Vector2>());
+                                                new List<Vector2>());
         foreach (List<Vector2> arrangement in placement) {
             // If there is not a correct number of assets selected, the current variation is not
             // valid and is not added to the list of possible arrangements
