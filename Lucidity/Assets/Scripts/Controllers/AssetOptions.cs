@@ -10,8 +10,9 @@ public class AssetOptions : MonoBehaviour {
     private static float _spread;
     [SerializeField] private InputField _countInput;
     private static int _assetCount;
-    [SerializeField] private Toggle _randomToggle;
-    private static bool _random;
+    [SerializeField] private InputField _variationInput;
+    [SerializeField] private Text _variationMaximumText;
+    private static int _variation;
 
     public static int AssetCount {
         get { return _assetCount; }
@@ -23,9 +24,9 @@ public class AssetOptions : MonoBehaviour {
         set { _spread = value; }
     }
 
-    public static bool Random {
-        get { return _random; }
-        set { _random = value; }
+    public static int Variation {
+        get { return _variation; }
+        set { _variation = value; }
     }
 
     private void Awake() {
@@ -35,10 +36,10 @@ public class AssetOptions : MonoBehaviour {
     private void Start() {
         _countInput.onEndEdit.AddListener(delegate{ AssetCountInputHandler(_countInput.text); });
         _spreadSlider.onValueChanged.AddListener(delegate{ SpreadSliderHandler(); });
-        _randomToggle.onValueChanged.AddListener(delegate{ RandomToggleHandler(); });
+        _variationInput.onEndEdit.AddListener(delegate{ VariationInputHandler(_variationInput.text); });
         AssetCountInputHandler(_countInput.text);
         SpreadSliderHandler();
-        RandomToggleHandler();
+        VariationInputHandler(_variationInput.text);
     }
 
     /// <summary>
@@ -50,12 +51,23 @@ public class AssetOptions : MonoBehaviour {
     /// </param>
     public void AssetCountInputHandler(string input) {
         _assetCount = int.Parse(input);
-        if (_assetCount < 0) {   // Restrict input to only be positive
-            _assetCount *= -1;
+        if (_assetCount <= 0) {   // Restrict input to only be positive
+            _assetCount = 1;
+            _countInput.text = _assetCount.ToString();
+        }
+        if (_assetCount > 9) {  // Restrict input to be a maximum of 9
+            _assetCount = 9;
             _countInput.text = _assetCount.ToString();
         }
         DynamicBoundingBox.DynamicSideLength = (int)Mathf.Ceil(Mathf.Sqrt(_assetCount));
+        DynamicBoundingBox.GenerateVariations();
+        VariationInputHandler("1");    // Change variation number if needed
         UpdateAssetImage();
+        int maximum = DynamicBoundingBox.AssetArrangements.Count;
+        if (maximum <= 0) {
+            maximum = 1;
+        }
+        _variationMaximumText.text = "Max: " + maximum.ToString();
     }
 
     /// <summary>
@@ -69,10 +81,25 @@ public class AssetOptions : MonoBehaviour {
     }
 
     /// <summary>
-    /// Updates <c>_random<c> and the asset image to match the setting.
+    /// Parses and updates <c>Variation</c> and corresponding hover variation text value based on
+    /// variation input.
     /// </summary>
-    public void RandomToggleHandler() {
-        _random = _randomToggle.isOn;
+    /// <param name="input">
+    /// <c>string</c> corresponding to provided user input.
+    /// </param>
+    public void VariationInputHandler(string input) {
+        if (_variation == int.Parse(input) - 1) {
+            return;
+        }
+        _variation = int.Parse(input) - 1;
+        // Restrict input to be the maximum number of variations
+        if (_variation > DynamicBoundingBox.AssetArrangements.Count - 1) {
+            _variation = DynamicBoundingBox.AssetArrangements.Count - 1;
+        }
+        if (_variation < 0) {   // Restrict input to only be positive
+            _variation = 0;
+        }
+        _variationInput.text = (_variation + 1).ToString();
         UpdateAssetImage();
     }
 
@@ -82,10 +109,12 @@ public class AssetOptions : MonoBehaviour {
     public void UpdateAssetImage() {
         if (_editor.AssetButtons[MapEditorManager.CurrentButtonPressed].Clicked
                 && _editor.AssetPrefabs[MapEditorManager.CurrentButtonPressed] != null) {
-            GameObject activeImage = GameObject.FindGameObjectWithTag("AssetImage");
+            GameObject[] activeImages = GameObject.FindGameObjectsWithTag("AssetImage");
             // if there is an Image being shown on hover already, destroy it
-            if (activeImage != null) {
-                Destroy(activeImage);
+            if (activeImages != null) {
+                foreach (GameObject image in activeImages) {
+                    Destroy(image);
+                }
             }
             DynamicBoundingBox.CreateDynamicAssetImage(
                 _editor.AssetImage[MapEditorManager.CurrentButtonPressed],

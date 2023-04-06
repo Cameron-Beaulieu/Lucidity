@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DynamicBoundingBox : MonoBehaviour {
     private MapEditorManager _editor;
     private static int _dynamicSideLength;  // Side length of the bounding box in number of assets
-    private static HashSet<Vector2> _assetArrangement;
+    private static List<List<Vector2>> _assetArrangements = new List<List<Vector2>>();
 
     public static int DynamicSideLength {
         get { return _dynamicSideLength; }
         set { _dynamicSideLength = value; }
     }
 
-    public static HashSet<Vector2> AssetArrangement {
-        get { return _assetArrangement; }
-        set { _assetArrangement = value; }
+    public static List<List<Vector2>> AssetArrangements {
+        get { return _assetArrangements; }
+        set { _assetArrangements = value; }
     }
 
     private void Start() {
@@ -45,14 +46,8 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
         dynamicAssetImage.AddComponent<Outline>();
 
-        if (AssetOptions.Random) {
-            GenerateRandomCoordinates();
-        } else {
-            GenerateUniformCoordinates();
-        }
-
         // Create a hovering asset image in each randomly assigned coordinate position
-        foreach (Vector2 coordinate in _assetArrangement) {
+        foreach (Vector2 coordinate in _assetArrangements[AssetOptions.Variation]) {
             CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
         }
 
@@ -145,7 +140,7 @@ public class DynamicBoundingBox : MonoBehaviour {
     public static List<GameObject> CreateAssets(GameObject assetPrefab,
                                                 GameObject dynamicBoundingBox) {
         List<GameObject> assets = new List<GameObject>();
-        foreach (Vector2 coordinate in _assetArrangement) {
+        foreach (Vector2 coordinate in _assetArrangements[AssetOptions.Variation]) {
             GameObject newGameObject = CreateNewObject(assetPrefab,
                                                        coordinate,
                                                        dynamicBoundingBox);
@@ -205,35 +200,61 @@ public class DynamicBoundingBox : MonoBehaviour {
     }
 
     /// <summary>
-    /// Generate coordinate pairs (with no repeating pair) up to the desired number of assets.
-    /// Generated in a uniform manner, with population of assets going top-down, left-right.
-    /// these will be used in selecting the random arrangement of grouped assets
+    /// Generate all coordinate pair variations (with no repeating pairs) up to the desired number
+    /// of assets. These will be used in selecting the asset grouping.
     /// </summary>
-    public static void GenerateUniformCoordinates() {
-        _assetArrangement = new HashSet<Vector2>();
-        int row = 0;
-        int col = _dynamicSideLength - 1;
-        do {
-            _assetArrangement.Add(new Vector2(row, col));
-            row++;
-            if (row >= _dynamicSideLength) {
-                row = 0;
-                col--;
+    public static void GenerateVariations() {
+        _assetArrangements.Clear();
+        // Permute all possible variations
+        List<List<Vector2>> placement = Permute((int)Mathf.Pow(_dynamicSideLength, 2) - 1,
+                                                new List<Vector2>());
+        foreach (List<Vector2> arrangement in placement) {
+            // If there is not a correct number of assets selected, the current variation is not
+            // valid and is not added to the list of possible arrangements
+            if (arrangement.Count() == AssetOptions.AssetCount) {
+                _assetArrangements.Add(arrangement);
             }
-        } while (_assetArrangement.Count < AssetOptions.AssetCount);
+        }
+        placement.Clear();
     }
 
     /// <summary>
-    ///	Generate random coordinate pairs (with no repeating pair) up to the desired number of
-    /// assets. These will be used in selecting the random arrangement of grouped assets.
+    /// Permutes all possible arrangements using recursion. Specifies <c>index</c> as depth, and
+    /// <c>currVariation</c> as the current asset arrangement. Recursion is done by assuming the
+    /// next position in the dynamic bounding box is either included, or not included in the final
+    /// arrangement.
     /// </summary>
-    public static void GenerateRandomCoordinates() {
-        _assetArrangement = new HashSet<Vector2>();
-        do {
-            _assetArrangement.Add(new Vector2(
-                Random.Range(0, _dynamicSideLength),
-                Random.Range(0, _dynamicSideLength)));
-        } while (_assetArrangement.Count < AssetOptions.AssetCount);
+    /// <param name="index">
+    /// <c>int<c> representing the remaining recursion levels (i.e., positions)
+    /// </param>
+    /// <param name="currVariation">
+    /// <c>List</c> of <c>Vector2</c> representing the current arrangement for the variation
+    /// </param>
+    /// <returns>
+    /// <c>List</c> of arrangements for the current asset count
+    /// </returns>
+    private static List<List<Vector2>> Permute(int index, List<Vector2> currVariation) {
+        // Base case: if there are no more positions to explore, simply return the variation
+        if (index < 0) {
+            List<List<Vector2>> list = new List<List<Vector2>>();
+            list.Add(currVariation);
+            return list;
+        // Recursive case: add the variation so far along with the current position to the
+        // arrangement and perform a recursive invocation. Perform a recursive invocation
+        // on the original variation (assuming the current position is not added). Combine the
+        // returned lists and return it
+        } else {
+            // Case where the current position is not included in the arrangement
+            List<Vector2> permutation1 = new List<Vector2>(currVariation);
+            List<List<Vector2>> list1 = Permute(index - 1, permutation1);
+
+            // Case where the current position is included in the arrangement
+            List<Vector2> permutation2 = new List<Vector2>(currVariation);
+            permutation2.Add(new Vector2(index / _dynamicSideLength, index % _dynamicSideLength));
+            List<List<Vector2>> list2 = Permute(index - 1, permutation2);
+            
+            return list1.Union(list2).ToList();
+        }
     }
 
     /// <summary>

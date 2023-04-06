@@ -44,6 +44,8 @@ public class Util {
         AvatarMovement.DescendTestingInput = false;
         Render3DScene.EscapeTestingInput = false;
         Zoom.zoomFactor = 0f;
+        DynamicBoundingBox.DynamicSideLength = 0;
+        DynamicBoundingBox.AssetArrangements = new List<List<Vector2>>();
     }
 
     /// <summary>
