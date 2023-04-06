@@ -50,9 +50,9 @@ public class OtherToolsTests : MapEditorTests {
         mapContainer.GetComponent<Zoom>().OnMouseDown();
 
         // Checking new scale vs expected scale
-        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, 
-                                    originalScale.y + 0.5f, 
-                                    originalScale.z + 0.5f), 
+        Assert.AreEqual(new Vector3(originalScale.x + 0.25f, 
+                                    originalScale.y + 0.25f, 
+                                    originalScale.z + 0.25f), 
                         mapContainer.transform.localScale);
 
         // reset testing var
@@ -84,9 +84,9 @@ public class OtherToolsTests : MapEditorTests {
         // zoom in first
         GameObject.Find("Zoom In").GetComponent<Button>().onClick.Invoke();
         mapContainer.GetComponent<Zoom>().OnMouseDown();
-        Assert.AreEqual(new Vector3(originalScale.x + 0.5f, 
-                                    originalScale.y + 0.5f, 
-                                    originalScale.z + 0.5f), 
+        Assert.AreEqual(new Vector3(originalScale.x + 0.25f, 
+                                    originalScale.y + 0.25f, 
+                                    originalScale.z + 0.25f), 
                         mapContainer.transform.localScale);
         
         // zoom out

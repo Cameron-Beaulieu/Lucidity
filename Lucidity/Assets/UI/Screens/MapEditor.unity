@@ -2325,6 +2325,7 @@ GameObject:
   - component: {fileID: 218240323}
   - component: {fileID: 218240326}
   - component: {fileID: 218240327}
+  - component: {fileID: 218240328}
   m_Layer: 6
   m_Name: Spawn Point
   m_TagString: Untagged
@@ -2418,6 +2419,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &218240328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218240319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c073312a2ce1ab049ac7756b6a299819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &224498649
 GameObject:
   m_ObjectHideFlags: 0
@@ -14784,6 +14797,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 2614a1796e5f949fcaba3be115c3d540, type: 3}
   - {fileID: 2800000, guid: 9e96820f1451643f5a99ca45ba440546, type: 3}
   - {fileID: 2800000, guid: 12cc7043656ec41d2b33a9a22dc17da0, type: 3}
+  OutlinePrefab: {fileID: 1982170050645969329, guid: 1c0cb22942dffd847904e89726c4b55e, type: 3}
   _layerPrefab: {fileID: 1082086638989995338, guid: e5edca1a50d0632439ec8b0a20ce3471, type: 3}
 --- !u!4 &1640203420
 Transform:
