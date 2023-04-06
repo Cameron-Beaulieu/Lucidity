@@ -43,6 +43,7 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicAssetImage.transform.localScale *= _dynamicSideLength * AssetOptions.Spread;
         // Remove old material 
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
+        dynamicAssetImage.AddComponent<Outline>();
 
         if (AssetOptions.Random) {
             GenerateRandomCoordinates();
