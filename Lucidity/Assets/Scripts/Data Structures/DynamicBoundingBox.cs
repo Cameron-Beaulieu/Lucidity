@@ -46,12 +46,6 @@ public class DynamicBoundingBox : MonoBehaviour {
         dynamicAssetImage.GetComponent<SpriteRenderer>().materials = new Material[0];
         dynamicAssetImage.AddComponent<Outline>();
 
-        if (AssetOptions.Random) {
-            GenerateRandomCoordinates();
-        } else {
-            GenerateUniformCoordinates();
-        }
-
         // Create a hovering asset image in each randomly assigned coordinate position
         foreach (Vector2 coordinate in _assetArrangements[AssetOptions.Variation]) {
             CreateDynamicAssetImageChild(assetImage, coordinate, dynamicAssetImage.transform);
